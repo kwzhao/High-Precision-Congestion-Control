@@ -2,3 +2,4 @@
 /.lock*
 /.waf*
 /mix
+*.pyc
