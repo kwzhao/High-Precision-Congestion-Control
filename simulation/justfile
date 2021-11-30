@@ -1,0 +1,7 @@
+configure-and-build nr_threads:
+    CC='gcc-5' CXX='g++-5' ./waf configure --build-profile=optimized
+    make -j{{nr_threads}}
+
+build nr_threads:
+    make -j{{nr_threads}}
+
