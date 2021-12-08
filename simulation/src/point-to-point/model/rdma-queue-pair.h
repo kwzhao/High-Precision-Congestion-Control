@@ -17,6 +17,7 @@ public:
 	Time startTime;
 	Ipv4Address sip, dip;
 	uint16_t sport, dport;
+	uint32_t m_flowId;
 	uint64_t m_size;
 	uint64_t snd_nxt, snd_una; // next seq to send, the highest unacked seq
 	uint16_t m_pg;
@@ -90,6 +91,7 @@ public:
 	void SetBaseRtt(uint64_t baseRtt);
 	void SetVarWin(bool v);
 	void SetAppNotifyCallback(Callback<void> notifyAppFinish);
+	void SetFlowId(uint32_t flowId);
 
 	uint64_t GetBytesLeft();
 	uint32_t GetHash(void);
