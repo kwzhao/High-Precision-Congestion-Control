@@ -95,6 +95,8 @@ NodeContainer n;
 uint64_t nic_rate;
 
 uint64_t maxRtt, maxBdp;
+bool has_fwin = false;
+uint64_t fwin;
 
 struct Interface{
 	uint32_t idx;
@@ -135,7 +137,7 @@ void ReadFlowInput(){
 void ScheduleFlowInputs(){
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
-		RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
+		RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?(has_fwin?fwin:maxBdp):pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
 
@@ -650,6 +652,12 @@ int main(int argc, char *argv[])
 			}else if (key.compare("PINT_PROB") == 0){
 				conf >> pint_prob;
 				std::cout << "PINT_PROB\t\t\t\t" << pint_prob << '\n';
+			}else if (key.compare("HAS_FIXED_WIN") == 0){
+				conf >> has_fwin;
+				std::cout << "HAS_FIXED_WIN\t\t\t\t" << has_fwin << '\n';
+			}else if (key.compare("FIXED_WIN") == 0){
+				conf >> fwin;
+				std::cout << "FIXED_WIN\t\t\t\t" << fwin << '\n';
 			}
 			fflush(stdout);
 		}
@@ -970,7 +978,7 @@ int main(int argc, char *argv[])
 				sim_setting.port_speed[node][intf] = bps;
 			}
 		}
-		sim_setting.win = maxBdp;
+		sim_setting.win = has_fwin?fwin:maxBdp;
 		sim_setting.Serialize(trace_output);
 	}
 
