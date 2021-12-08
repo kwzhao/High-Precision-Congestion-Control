@@ -88,6 +88,10 @@ void RdmaQueuePair::SetAppNotifyCallback(Callback<void> notifyAppFinish){
 	m_notifyAppFinish = notifyAppFinish;
 }
 
+void RdmaQueuePair::SetFlowId(uint32_t flowId) {
+	m_flowId = flowId;
+}
+
 uint64_t RdmaQueuePair::GetBytesLeft(){
 	return m_size >= snd_nxt ? m_size - snd_nxt : 0;
 }
