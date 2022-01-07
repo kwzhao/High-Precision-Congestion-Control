@@ -96,6 +96,7 @@ uint64_t nic_rate;
 
 uint64_t maxRtt, maxBdp;
 uint64_t fwin;
+uint64_t baseRtt;
 
 struct Interface{
 	uint32_t idx;
@@ -136,7 +137,7 @@ void ReadFlowInput(){
 void ScheduleFlowInputs(){
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
-		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
+		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
 
@@ -661,6 +662,10 @@ int main(int argc, char *argv[])
 				conf >> fwin;
 				std::cout << "FIXED_WIN\t\t\t\t" << fwin << '\n';
 			}
+			}else if (key.compare("BASE_RTT") == 0){
+				conf >> baseRtt;
+				std::cout << "BASE_RTT\t\t\t\t" << baseRtt << '\n';
+			}
 			fflush(stdout);
 		}
 		conf.close();
@@ -946,7 +951,7 @@ int main(int argc, char *argv[])
 		if (n.Get(i)->GetNodeType() == 1){ // switch
 			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
 			sw->SetAttribute("CcMode", UintegerValue(cc_mode));
-			sw->SetAttribute("MaxRtt", UintegerValue(maxRtt));
+			sw->SetAttribute("MaxRtt", UintegerValue(baseRtt));
 		}
 	}
 
