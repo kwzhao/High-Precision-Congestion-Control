@@ -661,7 +661,6 @@ int main(int argc, char *argv[])
 			}else if (key.compare("FIXED_WIN") == 0){
 				conf >> fwin;
 				std::cout << "FIXED_WIN\t\t\t\t" << fwin << '\n';
-			}
 			}else if (key.compare("BASE_RTT") == 0){
 				conf >> baseRtt;
 				std::cout << "BASE_RTT\t\t\t\t" << baseRtt << '\n';
