@@ -909,10 +909,19 @@ int main(int argc, char *argv[])
 	#endif
 
 	// set ACK priority on hosts
-	if (ack_high_prio)
+	if (ack_high_prio) {
 		RdmaEgressQueue::ack_q_idx = 0;
-	else
+		for (uint32_t i = 0; i < node_num; i++)
+		{
+			if (n.Get(i)->GetNodeType() == 1)
+			{ // switch
+				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+				sw->SetAttribute("AckHighPrio", UintegerValue(1));
+			}
+		}
+	} else {
 		RdmaEgressQueue::ack_q_idx = 3;
+	}
 
 	// setup routing
 	CalculateRoutes(n);
