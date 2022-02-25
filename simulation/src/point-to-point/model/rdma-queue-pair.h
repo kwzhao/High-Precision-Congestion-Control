@@ -116,6 +116,7 @@ public:
 	ECNAccount m_ecn_source;
 	uint32_t sip, dip;
 	uint16_t sport, dport;
+	uint16_t pg;
 	uint16_t m_ipid;
 	uint32_t ReceiverNextExpectedSeq;
 	Time m_nackTimer;

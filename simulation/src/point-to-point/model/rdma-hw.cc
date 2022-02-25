@@ -8,6 +8,7 @@
 #include "ns3/double.h"
 #include "ns3/data-rate.h"
 #include "ns3/pointer.h"
+#include "ns3/flow-size-tag.h"
 #include "rdma-hw.h"
 #include "ppp-header.h"
 #include "qbb-header.h"
@@ -184,7 +185,7 @@ RdmaHw::RdmaHw(){
 void RdmaHw::SetNode(Ptr<Node> node){
 	m_node = node;
 }
-void RdmaHw::Setup(QpCompleteCallback cb){
+void RdmaHw::Setup(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered){
 	for (uint32_t i = 0; i < m_nic.size(); i++){
 		Ptr<QbbNetDevice> dev = m_nic[i].dev;
 		if (dev == NULL)
@@ -198,8 +199,9 @@ void RdmaHw::Setup(QpCompleteCallback cb){
 		// config NIC
 		dev->m_rdmaEQ->m_rdmaGetNxtPkt = MakeCallback(&RdmaHw::GetNxtPacket, this);
 	}
-	// setup qp complete callback
-	m_qpCompleteCallback = cb;
+	// setup qp complete and delivered callback
+	m_qpCompleteCallback = qpComplete;
+	m_qpDeliveredCallback = qpDelivered;
 }
 
 uint32_t RdmaHw::GetNicIdxOfQp(Ptr<RdmaQueuePair> qp){
@@ -273,6 +275,7 @@ Ptr<RdmaRxQueuePair> RdmaHw::GetRxQp(uint32_t sip, uint32_t dip, uint16_t sport,
 		// create new rx qp
 		Ptr<RdmaRxQueuePair> q = CreateObject<RdmaRxQueuePair>();
 		// init the qp
+		q->pg = pg;
 		q->sip = sip;
 		q->dip = dip;
 		q->sport = sport;
@@ -339,6 +342,13 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 		uint32_t nic_idx = GetNicIdxOfRxQp(rxQp);
 		m_nic[nic_idx].dev->RdmaEnqueueHighPrioQ(newp);
 		m_nic[nic_idx].dev->TriggerTransmit();
+	}
+	
+	FlowSizeTag tag;
+	p->FindFirstMatchingByteTag (tag);
+	if (rxQp->ReceiverNextExpectedSeq == tag.GetFlowSize()) {
+		NS_ASSERT(!m_qpDeliveredCallback.IsNull());
+		m_qpDeliveredCallback(rxQp);
 	}
 	return 0;
 }
@@ -575,6 +585,9 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	PppHeader ppp;
 	ppp.SetProtocol (0x0021); // EtherToPpp(0x800), see point-to-point-net-device.cc
 	p->AddHeader (ppp);
+	
+	// add flow size tag
+	p->AddByteTag(FlowSizeTag(qp->m_size));
 
 	// update state
 	qp->snd_nxt += payload_size;
