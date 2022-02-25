@@ -45,6 +45,7 @@ NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 uint32_t cc_mode = 1;
 bool enable_qcn = true, use_dynamic_pfc_threshold = true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
+uint32_t ack_size = 59;
 double pause_time = 5, simulator_stop_time = 3.01;
 std::string data_rate, link_delay, topology_file, flow_file, trace_file, trace_output_file;
 std::string fct_output_file = "fct.txt";
@@ -110,10 +111,10 @@ map<Ptr<Node>, map<Ptr<Node>, Interface> > nbr2if;
 // Mapping destination to next hop for each node: <node, <dest, <nexthop0, ...> > >
 map<Ptr<Node>, map<Ptr<Node>, vector<Ptr<Node> > > > nextHop;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairDelay;
-map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairTxDelay;
 map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
+map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
 
 std::vector<Ipv4Address> serverAddress;
 
@@ -163,18 +164,36 @@ uint32_t ip_to_node_id(Ipv4Address ip){
 }
 
 void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
-	uint32_t sid = ip_to_node_id(q->sip), did = ip_to_node_id(q->dip);
-	uint64_t base_rtt = pairRtt[sid][did], b = pairBw[sid][did];
-	uint32_t total_bytes = q->m_size + ((q->m_size-1) / packet_payload_size + 1) * (CustomHeader::GetStaticWholeHeaderSize() - IntHeader::GetStaticSize()); // translate to the minimum bytes required (with header but no INT)
-	uint64_t standalone_fct = base_rtt + total_bytes * 8000000000lu / b;
-	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
-	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
-	fflush(fout);
-
 	// remove rxQp from the receiver
+	uint32_t sid = ip_to_node_id(q->sip), did = ip_to_node_id(q->dip);
 	Ptr<Node> dstNode = n.Get(did);
 	Ptr<RdmaDriver> rdma = dstNode->GetObject<RdmaDriver> ();
 	rdma->m_rdma->DeleteRxQp(q->sip.Get(), q->m_pg, q->sport);
+}
+
+void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
+	uint32_t sid = ip_to_node_id(Ipv4Address(rxq->dip));
+	uint32_t did = ip_to_node_id(Ipv4Address(rxq->sip));
+	Ptr<Node> srcNode = n.Get(sid);
+	Ptr<RdmaDriver> rdma = srcNode->GetObject<RdmaDriver> ();
+	Ptr<RdmaQueuePair> q = rdma->m_rdma->GetQp(rxq->sip, rxq->dport, rxq->pg);
+
+	uint64_t base_rtt = pairRtt[sid][did], b = pairBw[sid][did];
+	uint64_t header = CustomHeader::GetStaticWholeHeaderSize() - IntHeader::GetStaticSize();
+	uint64_t header_delay = header * 8000000000lu / b;
+	uint64_t head = std::min((uint64_t) packet_payload_size, q->m_size);
+	uint64_t rest = q->m_size - head;
+	uint32_t rest_nr_packets = (q->m_size-1) / packet_payload_size;
+	uint64_t tx_delay = 0;
+	for (auto bw: pairBws[sid][did]) {
+		tx_delay += ((head + header) * 8000000000lu / bw);
+	}
+	uint64_t rest_delay = rest * 8000000000lu / b + (rest_nr_packets * header_delay);
+	uint64_t standalone_fct = (base_rtt / 2) + tx_delay + rest_delay;
+	
+	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
+	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
+	fflush(fout);
 }
 
 void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type){
@@ -228,13 +247,12 @@ void CalculateRoute(Ptr<Node> host){
 	// Distance from the host to each node.
 	map<Ptr<Node>, int> dis;
 	map<Ptr<Node>, uint64_t> delay;
-	map<Ptr<Node>, uint64_t> txDelay;
+	map<Ptr<Node>, vector<uint64_t>> bws;
 	map<Ptr<Node>, uint64_t> bw;
 	// init BFS.
 	q.push_back(host);
 	dis[host] = 0;
 	delay[host] = 0;
-	txDelay[host] = 0;
 	bw[host] = 0xfffffffffffffffflu;
 	// BFS.
 	for (int i = 0; i < (int)q.size(); i++){
@@ -249,7 +267,8 @@ void CalculateRoute(Ptr<Node> host){
 			if (dis.find(next) == dis.end()){
 				dis[next] = d + 1;
 				delay[next] = delay[now] + it->second.delay;
-				txDelay[next] = txDelay[now] + packet_payload_size * 1000000000lu * 8 / it->second.bw;
+				bws[next] = bws[now];
+				bws[next].push_back(it->second.bw);
 				bw[next] = std::min(bw[now], it->second.bw);
 				// we only enqueue switch, because we do not want packets to go through host as middle point
 				if (next->GetNodeType() == 1)
@@ -263,10 +282,10 @@ void CalculateRoute(Ptr<Node> host){
 	}
 	for (auto it : delay)
 		pairDelay[it.first][host] = it.second;
-	for (auto it : txDelay)
-		pairTxDelay[it.first][host] = it.second;
 	for (auto it : bw)
 		pairBw[it.first->GetId()][host->GetId()] = it.second;
+	for (auto it: bws)
+		pairBws[it.first->GetId()][host->GetId()] = it.second;
 }
 
 void CalculateRoutes(NodeContainer &n){
@@ -904,6 +923,7 @@ int main(int argc, char *argv[])
 			node->AggregateObject (rdma);
 			rdma->Init();
 			rdma->TraceConnectWithoutContext("QpComplete", MakeBoundCallback (qp_finish, fct_output));
+			rdma->TraceConnectWithoutContext("QpDelivered", MakeBoundCallback (qp_delivered, fct_output));
 		}
 	}
 	#endif
@@ -938,8 +958,7 @@ int main(int argc, char *argv[])
 			if (n.Get(j)->GetNodeType() != 0)
 				continue;
 			uint64_t delay = pairDelay[n.Get(i)][n.Get(j)];
-			uint64_t txDelay = pairTxDelay[n.Get(i)][n.Get(j)];
-			uint64_t rtt = delay * 2 + txDelay;
+			uint64_t rtt = delay * 2;
 			uint64_t bw = pairBw[i][j];
 			uint64_t bdp = rtt * bw / 1000000000/8; 
 			pairBdp[n.Get(i)][n.Get(j)] = bdp;
