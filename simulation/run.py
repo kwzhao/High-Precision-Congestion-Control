@@ -5,7 +5,7 @@ import os
 config_template="""ENABLE_QCN 1
 USE_DYNAMIC_PFC_THRESHOLD 1
 
-PACKET_PAYLOAD_SIZE 1000
+PACKET_PAYLOAD_SIZE 9000
 
 TOPOLOGY_FILE {root}/{topo}.txt
 FLOW_FILE {root}/{trace}.txt
@@ -14,7 +14,7 @@ TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}_{cc}{failure}.tr
 FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}_{cc}{failure}.txt
 PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}_{cc}{failure}.txt
 
-SIMULATOR_STOP_TIME 120.00
+SIMULATOR_STOP_TIME 600.00
 
 CC_MODE {mode}
 ALPHA_RESUME_INTERVAL {t_alpha}
