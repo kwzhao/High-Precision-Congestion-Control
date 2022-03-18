@@ -5,7 +5,7 @@ import os
 config_template="""ENABLE_QCN 1
 USE_DYNAMIC_PFC_THRESHOLD 1
 
-PACKET_PAYLOAD_SIZE 9000
+PACKET_PAYLOAD_SIZE 1000
 
 TOPOLOGY_FILE {root}/{topo}.txt
 FLOW_FILE {root}/{trace}.txt
