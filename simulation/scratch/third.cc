@@ -973,16 +973,6 @@ int main(int argc, char *argv[])
 	}
 	printf("maxRtt=%lu maxBdp=%lu\n", maxRtt, maxBdp);
 
-	for (uint32_t i = 0; i < node_num; i++){
-		if (n.Get(i)->GetNodeType() != 0)
-			continue;
-		for (uint32_t j = 0; j < node_num; j++){
-			if (n.Get(j)->GetNodeType() != 0)
-				continue;
-			printf("[%u, %u] pairRtt=%lu pairBw=%lu\n", i, j, pairRtt[i][j], pairBw[i][j]);
-		}
-	}
-
 	//
 	// setup switch CC
 	//
