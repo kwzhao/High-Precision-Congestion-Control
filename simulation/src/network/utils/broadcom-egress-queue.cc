@@ -61,6 +61,11 @@ namespace ns3 {
 			m_bytesInQueue[i] = 0;
 			m_queues.push_back(CreateObject<DropTailQueue>());
 		}
+		for (uint32_t i = 0; i < qCnt; i++)
+		{
+			m_deficit[i] = 0;
+			m_quantum[i] = 512;
+		}
 	}
 
 	BEgressQueue::~BEgressQueue()
