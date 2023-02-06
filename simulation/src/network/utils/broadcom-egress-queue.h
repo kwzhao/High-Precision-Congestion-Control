@@ -42,6 +42,7 @@ namespace ns3 {
 		uint32_t GetNBytes(uint32_t qIndex) const;
 		uint32_t GetNBytesTotal() const;
 		uint32_t GetLastQueue();
+		void SetWeights(const uint32_t weights[], const uint32_t n);
 
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqEnqueue;
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqDequeue;
@@ -58,6 +59,10 @@ namespace ns3 {
 		uint32_t m_bytesInQueueTotal;
 		uint32_t m_rrlast;
 		uint32_t m_qlast;
+
+		uint32_t m_quantum[qCnt];
+		uint32_t m_deficit[qCnt];
+
 		std::vector<Ptr<Queue> > m_queues; // uc queues
 	};
 

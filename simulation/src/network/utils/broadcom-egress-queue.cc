@@ -68,6 +68,16 @@ namespace ns3 {
 		NS_LOG_FUNCTION_NOARGS();
 	}
 
+	void
+		BEgressQueue::SetWeights(const uint32_t weights[], const uint32_t n)
+	{
+		uint32_t lim = std::min(qCnt, n);
+		for (uint32_t i = 0; i < lim; i++)
+		{
+			m_quantum[i] = weights[i];
+		}
+	}
+
 	bool
 		BEgressQueue::DoEnqueue(Ptr<Packet> p, uint32_t qIndex)
 	{
@@ -87,7 +97,7 @@ namespace ns3 {
 	}
 
 	Ptr<Packet>
-		BEgressQueue::DoDequeueRR(bool paused[]) //this is for switch only
+		BEgressQueue::DoDequeueRR(bool paused[]) // this is for switch only
 	{
 		NS_LOG_FUNCTION(this);
 
@@ -96,46 +106,82 @@ namespace ns3 {
 			NS_LOG_LOGIC("Queue empty");
 			return 0;
 		}
-		bool found = false;
-		uint32_t qIndex;
 
-		if (m_queues[0]->GetNPackets() > 0) //0 is the highest priority
+		uint32_t qIndex; // final index from which to dequeue
+
+		if (m_queues[0]->GetNPackets() > 0)
 		{
-			found = true;
+			// Priority packets in queue 0 will be sent before all others
 			qIndex = 0;
 		}
 		else
 		{
-			if (!found)
+			// No priority packets, so we do deficit round-robin among the
+			// rest. We know there is at least one nonempty queue.
+			bool can_terminate = false;
+			// Searching for a queue to pop from will only terminate if there
+			// is at least one nonempty queue that is unpaused.
+			for (int i = 0; i < qCnt; i++)
 			{
-				for (qIndex = 1; qIndex <= qCnt; qIndex++)
+				if (paused[i])
 				{
-					if (!paused[(qIndex + m_rrlast) % qCnt] && m_queues[(qIndex + m_rrlast) % qCnt]->GetNPackets() > 0)  //round robin
-					{
-						found = true;
-						break;
-					}
+					// XXX: not positive this is the behavior we want
+					m_deficit[i] = 0;
 				}
-				qIndex = (qIndex + m_rrlast) % qCnt;
+				if (m_queues[i]->GetNPackets() > 0 && !paused[i])
+				{
+					can_terminate = true;
+				}
 			}
-		}
-		if (found)
-		{
-			Ptr<Packet> p = m_queues[qIndex]->Dequeue();
-			m_traceBeqDequeue(p, qIndex);
-			m_bytesInQueueTotal -= p->GetSize();
-			m_bytesInQueue[qIndex] -= p->GetSize();
-			if (qIndex != 0)
+			if (!can_terminate)
 			{
-				m_rrlast = qIndex;
+				NS_LOG_LOGIC("All nonempty queues are paused");
+				return 0;
 			}
-			m_qlast = qIndex;
-			NS_LOG_LOGIC("Popped " << p);
-			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
-			return p;
+
+			// Now at this point we know this loop will terminate because the
+			// nonempty unpaused queue will eventually accumulate enough
+			// deficit to send.
+			uint32_t i = m_rrlast % qCnt;
+			while (m_rrlast == (uint32_t)(-1)						// sentinel index
+				   || m_queues[i]->GetNPackets() == 0				// empty queue
+				   || paused[i]										// queue is paused
+				   || m_queues[i]->Peek()->GetSize() > m_deficit[i] // not enough deficit
+			)
+			{
+				m_rrlast++;
+				NS_ASSERT(m_rrlast != (uint32_t)(-1)); // about to hit sentinel and wrap around
+				i = m_rrlast % qCnt;
+				if (m_queues[i]->GetNPackets() > 0 && !paused[i])
+				{
+					// We only bump deficits for queues that are active
+					m_deficit[i] += m_quantum[i];
+				}
+			}
+
+			// `i` now points to a valid dequeue target
+			qIndex = i;
 		}
-		NS_LOG_LOGIC("Nothing can be sent");
-		return 0;
+
+		Ptr<Packet> p = m_queues[qIndex]->Dequeue();
+		m_traceBeqDequeue(p, qIndex);
+		m_bytesInQueueTotal -= p->GetSize();
+		m_bytesInQueue[qIndex] -= p->GetSize();
+		m_qlast = qIndex;
+
+		// Update deficit
+		if (m_queues[qIndex]->GetNPackets() > 0)
+		{
+			m_deficit[qIndex] -= p->GetSize();
+		}
+		else
+		{
+			m_deficit[qIndex] = 0;
+		}
+
+		NS_LOG_LOGIC("Popped " << p);
+		NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+		return p;
 	}
 
 	bool
