@@ -191,8 +191,8 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 	uint64_t rest_delay = rest * 8000000000lu / b + (rest_nr_packets * header_delay);
 	uint64_t standalone_fct = (base_rtt / 2) + tx_delay + rest_delay;
 	
-	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
-	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
+	// id, pg, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
+	fprintf(fout, "%u %u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->m_pg, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
 	fflush(fout);
 }
 
