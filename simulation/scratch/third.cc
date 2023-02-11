@@ -360,6 +360,11 @@ void PrintProgress(Time interval)
 	Simulator::Schedule(interval, &PrintProgress, interval);
 }
 
+void UpdateWeights(Time interval) {
+	std::cout << "this is happening!!!!" << std::endl;
+	Simulator::Schedule(interval, &UpdateWeights, interval);
+}
+
 int main(int argc, char *argv[])
 {
 	clock_t begint, endt;
@@ -1058,6 +1063,7 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 	NS_LOG_INFO("Run Simulation.");
 	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
+	Simulator::Schedule(Seconds(1), &UpdateWeights, Seconds(1));
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
 	Simulator::Destroy();
