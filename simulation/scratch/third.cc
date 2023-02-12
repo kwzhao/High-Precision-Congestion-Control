@@ -131,6 +131,8 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
+uint32_t node_num, switch_num, link_num, trace_num;
+
 void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
@@ -756,7 +758,6 @@ int main(int argc, char *argv[])
 	topof.open(topology_file.c_str());
 	flowf.open(flow_file.c_str());
 	tracef.open(trace_file.c_str());
-	uint32_t node_num, switch_num, link_num, trace_num;
 	topof >> node_num >> switch_num >> link_num;
 	flowf >> flow_num;
 	tracef >> trace_num;
