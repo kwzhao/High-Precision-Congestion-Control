@@ -86,6 +86,8 @@ string qlen_mon_file;
 unordered_map<uint64_t, uint32_t> rate2kmax, rate2kmin;
 unordered_map<uint64_t, double> rate2pmax;
 
+uint32_t max_nr_weights = 8;
+
 /************************************************
  * Runtime varibles
  ***********************************************/
@@ -360,8 +362,31 @@ void PrintProgress(Time interval)
 	Simulator::Schedule(interval, &PrintProgress, interval);
 }
 
-void UpdateWeights(Time interval) {
-	std::cout << "this is happening!!!!" << std::endl;
+void UpdateWeights(Time interval)
+{
+	// Read weights.
+	uint32_t nr_weights;
+	uint32_t weights[max_nr_weights] = {0};
+	std::cin >> nr_weights;
+	uint32_t lim = std::min(max_nr_weights, nr_weights);
+	for (uint32_t i = 0; i < lim; i++) {
+		uint32_t weight;
+		std::cin >> weight;
+		weights[i] = weight;
+	}
+
+	// Apply weights.
+	for (uint32_t i = 0; i < node_num; i++) {
+		if (n.Get(i)->GetNodeType() == 1) {
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			for (uint32_t j = 1; j < sw->GetNDevices(); j++) {
+				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
+				dev->GetQueue()->SetWeights(weights, lim);
+			}
+		}
+	}
+
+	// Reschedule.
 	Simulator::Schedule(interval, &UpdateWeights, interval);
 }
 
@@ -1063,7 +1088,7 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 	NS_LOG_INFO("Run Simulation.");
 	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
-	Simulator::Schedule(Seconds(1), &UpdateWeights, Seconds(1));
+	Simulator::ScheduleNow(&UpdateWeights, Seconds(1));
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
 	Simulator::Destroy();
