@@ -86,8 +86,6 @@ string qlen_mon_file;
 unordered_map<uint64_t, uint32_t> rate2kmax, rate2kmin;
 unordered_map<uint64_t, double> rate2pmax;
 
-uint32_t max_nr_weights = 8;
-
 /************************************************
  * Runtime varibles
  ***********************************************/
@@ -167,6 +165,38 @@ uint32_t ip_to_node_id(Ipv4Address ip){
 	return (ip.Get() >> 8) & 0xffff;
 }
 
+uint32_t max_nr_weights = 8;
+Time weightUpdateInterval = Seconds(1);
+Time weightUpdateTime = Seconds(0);
+
+void UpdateWeights(void)
+{
+	weightUpdateTime = Simulator::Now();	
+	
+	// Read weights.
+	uint32_t nr_weights;
+	uint32_t weights[max_nr_weights] = {0};
+	std::cin >> nr_weights;
+	uint32_t lim = std::min(max_nr_weights, nr_weights);
+	for (uint32_t i = 0; i < lim; i++) {
+		uint32_t weight;
+		std::cin >> weight;
+		weights[i] = weight;
+	}
+
+	// Apply weights.
+	for (uint32_t i = 0; i < node_num; i++) {
+		if (n.Get(i)->GetNodeType() == 1) {
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			for (uint32_t j = 1; j < sw->GetNDevices(); j++) {
+				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
+				dev->GetQueue()->SetWeights(weights, lim);
+			}
+		}
+	}
+}
+
+
 void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
 	// remove rxQp from the receiver
 	uint32_t sid = ip_to_node_id(q->sip), did = ip_to_node_id(q->dip);
@@ -198,6 +228,10 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 	// id, pg, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
 	fprintf(fout, "%u %u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->m_pg, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
 	fflush(fout);
+	
+	if (q->startTime >= weightUpdateTime + weightUpdateInterval) {
+		Simulator::ScheduleNow(&UpdateWeights);
+	}
 }
 
 void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type){
@@ -362,34 +396,6 @@ void PrintProgress(Time interval)
 {
 	std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
 	Simulator::Schedule(interval, &PrintProgress, interval);
-}
-
-void UpdateWeights(Time interval)
-{
-	// Read weights.
-	uint32_t nr_weights;
-	uint32_t weights[max_nr_weights] = {0};
-	std::cin >> nr_weights;
-	uint32_t lim = std::min(max_nr_weights, nr_weights);
-	for (uint32_t i = 0; i < lim; i++) {
-		uint32_t weight;
-		std::cin >> weight;
-		weights[i] = weight;
-	}
-
-	// Apply weights.
-	for (uint32_t i = 0; i < node_num; i++) {
-		if (n.Get(i)->GetNodeType() == 1) {
-			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
-			for (uint32_t j = 1; j < sw->GetNDevices(); j++) {
-				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
-				dev->GetQueue()->SetWeights(weights, lim);
-			}
-		}
-	}
-
-	// Reschedule.
-	Simulator::Schedule(interval, &UpdateWeights, interval);
 }
 
 int main(int argc, char *argv[])
@@ -1089,7 +1095,7 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 	NS_LOG_INFO("Run Simulation.");
 	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
-	Simulator::ScheduleNow(&UpdateWeights, Seconds(1));
+	Simulator::ScheduleNow(&UpdateWeights);
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
 	Simulator::Destroy();
