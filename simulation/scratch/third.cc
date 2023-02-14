@@ -229,7 +229,7 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 	fprintf(fout, "%u %u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->m_pg, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
 	fflush(fout);
 	
-	if (q->startTime >= weightUpdateTime + weightUpdateInterval) {
+	if (Simulator::Now() >= weightUpdateTime + weightUpdateInterval) {
 		Simulator::ScheduleNow(&UpdateWeights);
 	}
 }
@@ -721,6 +721,11 @@ int main(int argc, char *argv[])
 			}else if (key.compare("BASE_RTT") == 0){
 				conf >> baseRtt;
 				std::cout << "BASE_RTT\t\t\t\t" << baseRtt << '\n';
+			}else if (key.compare("WEIGHT_UPDATE_INTERVAL") == 0){
+				uint32_t wint;
+				conf >> wint;
+				weightUpdateInterval = Seconds(wint);
+				std::cout << "WEIGHT_UPDATE_INTERVAL\t\t\t\t" << weightUpdateInterval << '\n';
 			}
 			fflush(stdout);
 		}
