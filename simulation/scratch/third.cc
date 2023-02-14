@@ -168,15 +168,22 @@ uint32_t ip_to_node_id(Ipv4Address ip){
 uint32_t max_nr_weights = 8;
 Time weightUpdateInterval = Seconds(1);
 Time weightUpdateTime = Seconds(0);
+bool weightUpdatesDone = false;
 
 void UpdateWeights(void)
 {
-	weightUpdateTime = Simulator::Now();	
+	if (weightUpdatesDone) {
+		return;
+	}	
 	
 	// Read weights.
 	uint32_t nr_weights;
 	uint32_t weights[max_nr_weights] = {0};
 	std::cin >> nr_weights;
+	if (nr_weights == 0) {
+		weightUpdatesDone = true;
+		return;
+	}
 	uint32_t lim = std::min(max_nr_weights, nr_weights);
 	for (uint32_t i = 0; i < lim; i++) {
 		uint32_t weight;
@@ -229,8 +236,12 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 	fprintf(fout, "%u %u %08x %08x %u %u %lu %lu %lu %lu\n", q->m_flowId, q->m_pg, q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->m_size, q->startTime.GetTimeStep(), (Simulator::Now() - q->startTime).GetTimeStep(), standalone_fct);
 	fflush(fout);
 	
-	if (Simulator::Now() >= weightUpdateTime + weightUpdateInterval) {
+	Time now = Simulator::Now();
+	if (!weightUpdatesDone && now >= weightUpdateTime + weightUpdateInterval) {
 		Simulator::ScheduleNow(&UpdateWeights);
+		while (now >= weightUpdateTime + weightUpdateInterval) {
+			weightUpdateTime += weightUpdateInterval;
+		}
 	}
 }
 
