@@ -176,6 +176,8 @@ void UpdateWeights(void)
 		return;
 	}	
 	
+	std::cout << "Applying weights... " << std::endl;
+
 	// Read weights.
 	uint32_t nr_weights;
 	uint32_t weights[max_nr_weights] = {0};
@@ -188,6 +190,7 @@ void UpdateWeights(void)
 	for (uint32_t i = 0; i < lim; i++) {
 		uint32_t weight;
 		std::cin >> weight;
+		std::cout << weight << std::endl;
 		weights[i] = weight;
 	}
 
@@ -200,7 +203,10 @@ void UpdateWeights(void)
 				dev->GetQueue()->SetWeights(weights, lim);
 			}
 		}
+
 	}
+
+	std::cout << "Applied " << nr_weights << " weights" << std::endl;
 }
 
 
