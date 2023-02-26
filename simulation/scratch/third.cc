@@ -206,7 +206,7 @@ void UpdateWeights(void)
 
 	}
 
-	std::cout << "Applied " << nr_weights << " weights" << std::endl;
+	std::cout << "Applied " << lim << " weights" << std::endl;
 }
 
 
