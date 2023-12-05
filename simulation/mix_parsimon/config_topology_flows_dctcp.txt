@@ -5,12 +5,13 @@ PACKET_PAYLOAD_SIZE 1000
 
 TOPOLOGY_FILE mix_parsimon/topology.txt
 FLOW_FILE mix_parsimon/flows.txt
+FLOW_ON_PATH_FILE mix_parsimon/flows_on_path.txt
 TRACE_FILE mix_parsimon/trace.txt
 TRACE_OUTPUT_FILE mix_parsimon/mix_topology_flows_dctcp.tr
 FCT_OUTPUT_FILE mix_parsimon/fct_topology_flows_dctcp.txt
 PFC_OUTPUT_FILE mix_parsimon/pfc_topology_flows_dctcp.txt
 
-SIMULATOR_STOP_TIME 2.20
+SIMULATOR_STOP_TIME 3.60
 
 CC_MODE 8
 ALPHA_RESUME_INTERVAL 1

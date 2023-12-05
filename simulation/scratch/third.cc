@@ -47,7 +47,7 @@ bool enable_qcn = true, use_dynamic_pfc_threshold = true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
 double pause_time = 5, simulator_stop_time = 3.01;
-std::string data_rate, link_delay, topology_file, flow_file, trace_file, trace_output_file;
+std::string data_rate, link_delay, topology_file, flow_file,flow_on_path_file, trace_file, trace_output_file;
 std::string fct_output_file = "fct.txt";
 std::string pfc_output_file = "pfc.txt";
 
@@ -115,11 +115,12 @@ map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
 map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
-map<uint32_t, map<uint32_t, uint32_t>> src_dst_to_num_flows;
+map<uint32_t, map<uint32_t, set<uint32_t>>> src_dst_to_flows_in_f;
 uint32_t path_src = 0;
 uint32_t path_dst = 0;
-uint32_t path_num_flows = 0;
-uint32_t log_time_interval = 100; //ms
+uint32_t path_num_flows_in_f = 0;
+uint32_t log_time_interval = 1000; //ms
+set<uint32_t> flows_in_f_prime;
 
 std::vector<Ipv4Address> serverAddress;
 
@@ -138,7 +139,7 @@ void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
-		src_dst_to_num_flows[flow_input.src][flow_input.dst]++;
+		src_dst_to_flows_in_f[flow_input.src][flow_input.dst].insert(flow_input.flowId);
 	}
 }
 void ScheduleFlowInputs(){
@@ -204,6 +205,15 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 
 void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type){
 	fprintf(fout, "%lu %u %u %u %u\n", Simulator::Now().GetTimeStep(), dev->GetNode()->GetId(), dev->GetNode()->GetNodeType(), dev->GetIfIndex(), type);
+}
+
+bool areSetsOverlapping(const std::set<uint32_t>& set1, const std::set<uint32_t>& set2) {
+    for (const auto& element : set1) {
+        if (set2.find(element) != set2.end()) {
+            return true;  // Sets have common elements, so they overlap
+        }
+    }
+    return false;  // Sets do not overlap
 }
 
 struct QlenDistribution{
@@ -486,6 +496,13 @@ int main(int argc, char *argv[])
 				flow_file = v;
 				std::cout << "FLOW_FILE\t\t\t" << flow_file << "\n";
 			}
+			else if (key.compare("FLOW_ON_PATH_FILE") == 0)
+			{
+				std::string v;
+				conf >> v;
+				flow_on_path_file = v;
+				std::cout << "FLOW_ON_PATH_FILE\t\t\t" << flow_on_path_file << "\n";
+			}
 			else if (key.compare("TRACE_FILE") == 0)
 			{
 				std::string v;
@@ -753,12 +770,6 @@ int main(int argc, char *argv[])
 			Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
 			n.Add(sw);
 			sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
-		}
-	}
-
-	for (uint32_t i = 0; i < node_num; i++){
-		for (uint32_t j = 0; j < node_num; j++){
-			src_dst_to_num_flows[i][j] = 0;
 		}
 	}
 
@@ -1074,15 +1085,21 @@ int main(int argc, char *argv[])
 
 	for (uint32_t i = 0; i < node_num; i++){
 		for (uint32_t j = 0; j < node_num; j++){
-			if (src_dst_to_num_flows[i][j]>path_num_flows){
-				path_num_flows = src_dst_to_num_flows[i][j];
+			uint32_t tmp=src_dst_to_flows_in_f[i][j].size();
+			if (tmp>path_num_flows_in_f){
+				path_num_flows_in_f = tmp;
 				path_src=i;
 				path_dst=j;
 			}
 		}
 	}
 
-	std::cout<<"path_num_flows="<<path_num_flows<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
+	std::cout<<"path_num_flows_in_f="<<path_num_flows_in_f<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
+	set<uint32_t> flows_in_f=src_dst_to_flows_in_f[path_src][path_dst];
+	// for (auto flowId : src_dst_to_flows_in_f[path_src][path_dst]){
+	// 		std::cout << ", " << flowId;
+	// }
+	// std::cout << '\n';
 
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
@@ -1092,13 +1109,14 @@ int main(int argc, char *argv[])
 				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
 				for (uint32_t k = 0; k < 2; k++){
 					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					// if (m_flowIdSet.size()>0){
-						std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-						for (auto flowId : m_flowIdSet){
-								std::cout << ", " << flowId;
-						}
-						std::cout << '\n';
-					// }
+					if ((m_flowIdSet.size()>0)&&(areSetsOverlapping(m_flowIdSet,flows_in_f))){
+						flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+						// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+						// for (auto flowId : m_flowIdSet){
+						// 		std::cout << ", " << flowId;
+						// }
+						// std::cout << '\n';
+					}
 				}
 			}
 		}
@@ -1109,13 +1127,14 @@ int main(int argc, char *argv[])
 				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
 				for (uint32_t k = 0; k < 2; k++){
 					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					// if (m_flowIdSet.size()>0){
-						std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-						for (auto flowId : m_flowIdSet){
-								std::cout << ", " << flowId;
-						}
-						std::cout << '\n';
-					// }
+					if ((m_flowIdSet.size()>0)&&(areSetsOverlapping(m_flowIdSet,flows_in_f))){
+						flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+						// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+						// for (auto flowId : m_flowIdSet){
+						// 		std::cout << ", " << flowId;
+						// }
+						// std::cout << '\n';
+					}
 				}
 			}
 		}
@@ -1140,4 +1159,20 @@ int main(int argc, char *argv[])
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";
 
+	// Open the file for writing using fopen
+    FILE* outputFile = fopen(flow_on_path_file.c_str(), "w");
+
+    // Check if the file is opened successfully
+    if (!outputFile) {
+        std::cerr << "Error opening file: " << flow_on_path_file << std::endl;
+        return 1;
+    }
+	fprintf(outputFile, "%d,%d,%zu\n", path_src,path_dst,flows_in_f_prime.size());
+    // Write set elements to the file using fprintf
+    for (const auto& element : flows_in_f_prime) {
+        fprintf(outputFile, "%d\n", element);
+    }
+
+    // Close the file using fclose
+    fclose(outputFile);
 }
