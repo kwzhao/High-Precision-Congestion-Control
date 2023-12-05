@@ -99,7 +99,7 @@ public:
    */
   Time GetDelay (void) const;
 
-  std::set<uint32_t> GetFlowIdSet();
+  std::set<uint32_t> GetFlowIdSet(uint32_t i);
 
   /*
    * \brief Get the net-device source 
@@ -131,7 +131,7 @@ private:
 
   Time          m_delay;
   int32_t       m_nDevices;
-  std::set<uint32_t> m_flowIdSet;
+  std::set<uint32_t> m_flowIdSet[N_DEVICES];
   /**
    * The trace source for the packet transmission animation events that the 
    * device can fire.
