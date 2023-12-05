@@ -1,0 +1,3559 @@
+ENABLE_QCN			Yes
+USE_DYNAMIC_PFC_THRESHOLD	Yes
+PACKET_PAYLOAD_SIZE		1000
+TOPOLOGY_FILE			mix_parsimon/topology.txt
+FLOW_FILE			mix_parsimon/flows.txt
+TRACE_FILE			mix_parsimon/trace.txt
+TRACE_OUTPUT_FILE		mix_parsimon/mix_topology_flows_dctcp.tr
+FCT_OUTPUT_FILE		mix_parsimon/fct_topology_flows_dctcp.txt
+PFC_OUTPUT_FILE				mix_parsimon/pfc_topology_flows_dctcp.txt
+SIMULATOR_STOP_TIME		2.1
+CC_MODE		8
+ALPHA_RESUME_INTERVAL		1
+RATE_DECREASE_INTERVAL		4
+CLAMP_TARGET_RATE		No
+RP_TIMER			300
+EWMA_GAIN			0.0625
+FAST_RECOVERY_TIMES		1
+RATE_AI				10Mb/s
+RATE_HAI			10Mb/s
+MIN_RATE		1000Mb/s
+DCTCP_RATE_AI				615Mb/s
+ERROR_RATE_PER_LINK		0
+L2_CHUNK_SIZE			4000
+L2_ACK_INTERVAL			1
+L2_BACK_TO_ZERO			No
+HAS_WIN		1
+GLOBAL_T		1
+VAR_WIN		1
+FAST_REACT		0
+U_TARGET		0.95
+MI_THRESH		0
+INT_MULTI				1
+MULTI_RATE				0
+SAMPLE_FEEDBACK				0
+PINT_LOG_BASE				1.01
+PINT_PROB				1
+RATE_BOUND		1
+ACK_HIGH_PRIO		1
+LINK_DOWN				0 0 0
+ENABLE_TRACE				0
+KMAX_MAP				 10000000000 30 40000000000 120
+KMIN_MAP				 10000000000 30 40000000000 120
+PMAX_MAP				 10000000000 1 40000000000 1
+BUFFER_SIZE				3
+QLEN_MON_FILE				mix_parsimon/qlen_topology_flows_dctcp.txt
+QLEN_MON_START				2000000000
+QLEN_MON_END				3000000000
+FIXED_WIN				100000
+BASE_RTT				8000
+maxRtt=12000 maxBdp=15000
+Running Simulation.
+t = 1 ms
+t = 2 ms
+t = 3 ms
+t = 4 ms
+t = 5 ms
+t = 6 ms
+t = 7 ms
+t = 8 ms
+t = 9 ms
+t = 10 ms
+t = 11 ms
+t = 12 ms
+t = 13 ms
+t = 14 ms
+t = 15 ms
+t = 16 ms
+t = 17 ms
+t = 18 ms
+t = 19 ms
+t = 20 ms
+t = 21 ms
+t = 22 ms
+t = 23 ms
+t = 24 ms
+t = 25 ms
+t = 26 ms
+t = 27 ms
+t = 28 ms
+t = 29 ms
+t = 30 ms
+t = 31 ms
+t = 32 ms
+t = 33 ms
+t = 34 ms
+t = 35 ms
+t = 36 ms
+t = 37 ms
+t = 38 ms
+t = 39 ms
+t = 40 ms
+t = 41 ms
+t = 42 ms
+t = 43 ms
+t = 44 ms
+t = 45 ms
+t = 46 ms
+t = 47 ms
+t = 48 ms
+t = 49 ms
+t = 50 ms
+t = 51 ms
+t = 52 ms
+t = 53 ms
+t = 54 ms
+t = 55 ms
+t = 56 ms
+t = 57 ms
+t = 58 ms
+t = 59 ms
+t = 60 ms
+t = 61 ms
+t = 62 ms
+t = 63 ms
+t = 64 ms
+t = 65 ms
+t = 66 ms
+t = 67 ms
+t = 68 ms
+t = 69 ms
+t = 70 ms
+t = 71 ms
+t = 72 ms
+t = 73 ms
+t = 74 ms
+t = 75 ms
+t = 76 ms
+t = 77 ms
+t = 78 ms
+t = 79 ms
+t = 80 ms
+t = 81 ms
+t = 82 ms
+t = 83 ms
+t = 84 ms
+t = 85 ms
+t = 86 ms
+t = 87 ms
+t = 88 ms
+t = 89 ms
+t = 90 ms
+t = 91 ms
+t = 92 ms
+t = 93 ms
+t = 94 ms
+t = 95 ms
+t = 96 ms
+t = 97 ms
+t = 98 ms
+t = 99 ms
+t = 100 ms
+t = 101 ms
+t = 102 ms
+t = 103 ms
+t = 104 ms
+t = 105 ms
+t = 106 ms
+t = 107 ms
+t = 108 ms
+t = 109 ms
+t = 110 ms
+t = 111 ms
+t = 112 ms
+t = 113 ms
+t = 114 ms
+t = 115 ms
+t = 116 ms
+t = 117 ms
+t = 118 ms
+t = 119 ms
+t = 120 ms
+t = 121 ms
+t = 122 ms
+t = 123 ms
+t = 124 ms
+t = 125 ms
+t = 126 ms
+t = 127 ms
+t = 128 ms
+t = 129 ms
+t = 130 ms
+t = 131 ms
+t = 132 ms
+t = 133 ms
+t = 134 ms
+t = 135 ms
+t = 136 ms
+t = 137 ms
+t = 138 ms
+t = 139 ms
+t = 140 ms
+t = 141 ms
+t = 142 ms
+t = 143 ms
+t = 144 ms
+t = 145 ms
+t = 146 ms
+t = 147 ms
+t = 148 ms
+t = 149 ms
+t = 150 ms
+t = 151 ms
+t = 152 ms
+t = 153 ms
+t = 154 ms
+t = 155 ms
+t = 156 ms
+t = 157 ms
+t = 158 ms
+t = 159 ms
+t = 160 ms
+t = 161 ms
+t = 162 ms
+t = 163 ms
+t = 164 ms
+t = 165 ms
+t = 166 ms
+t = 167 ms
+t = 168 ms
+t = 169 ms
+t = 170 ms
+t = 171 ms
+t = 172 ms
+t = 173 ms
+t = 174 ms
+t = 175 ms
+t = 176 ms
+t = 177 ms
+t = 178 ms
+t = 179 ms
+t = 180 ms
+t = 181 ms
+t = 182 ms
+t = 183 ms
+t = 184 ms
+t = 185 ms
+t = 186 ms
+t = 187 ms
+t = 188 ms
+t = 189 ms
+t = 190 ms
+t = 191 ms
+t = 192 ms
+t = 193 ms
+t = 194 ms
+t = 195 ms
+t = 196 ms
+t = 197 ms
+t = 198 ms
+t = 199 ms
+t = 200 ms
+t = 201 ms
+t = 202 ms
+t = 203 ms
+t = 204 ms
+t = 205 ms
+t = 206 ms
+t = 207 ms
+t = 208 ms
+t = 209 ms
+t = 210 ms
+t = 211 ms
+t = 212 ms
+t = 213 ms
+t = 214 ms
+t = 215 ms
+t = 216 ms
+t = 217 ms
+t = 218 ms
+t = 219 ms
+t = 220 ms
+t = 221 ms
+t = 222 ms
+t = 223 ms
+t = 224 ms
+t = 225 ms
+t = 226 ms
+t = 227 ms
+t = 228 ms
+t = 229 ms
+t = 230 ms
+t = 231 ms
+t = 232 ms
+t = 233 ms
+t = 234 ms
+t = 235 ms
+t = 236 ms
+t = 237 ms
+t = 238 ms
+t = 239 ms
+t = 240 ms
+t = 241 ms
+t = 242 ms
+t = 243 ms
+t = 244 ms
+t = 245 ms
+t = 246 ms
+t = 247 ms
+t = 248 ms
+t = 249 ms
+t = 250 ms
+t = 251 ms
+t = 252 ms
+t = 253 ms
+t = 254 ms
+t = 255 ms
+t = 256 ms
+t = 257 ms
+t = 258 ms
+t = 259 ms
+t = 260 ms
+t = 261 ms
+t = 262 ms
+t = 263 ms
+t = 264 ms
+t = 265 ms
+t = 266 ms
+t = 267 ms
+t = 268 ms
+t = 269 ms
+t = 270 ms
+t = 271 ms
+t = 272 ms
+t = 273 ms
+t = 274 ms
+t = 275 ms
+t = 276 ms
+t = 277 ms
+t = 278 ms
+t = 279 ms
+t = 280 ms
+t = 281 ms
+t = 282 ms
+t = 283 ms
+t = 284 ms
+t = 285 ms
+t = 286 ms
+t = 287 ms
+t = 288 ms
+t = 289 ms
+t = 290 ms
+t = 291 ms
+t = 292 ms
+t = 293 ms
+t = 294 ms
+t = 295 ms
+t = 296 ms
+t = 297 ms
+t = 298 ms
+t = 299 ms
+t = 300 ms
+t = 301 ms
+t = 302 ms
+t = 303 ms
+t = 304 ms
+t = 305 ms
+t = 306 ms
+t = 307 ms
+t = 308 ms
+t = 309 ms
+t = 310 ms
+t = 311 ms
+t = 312 ms
+t = 313 ms
+t = 314 ms
+t = 315 ms
+t = 316 ms
+t = 317 ms
+t = 318 ms
+t = 319 ms
+t = 320 ms
+t = 321 ms
+t = 322 ms
+t = 323 ms
+t = 324 ms
+t = 325 ms
+t = 326 ms
+t = 327 ms
+t = 328 ms
+t = 329 ms
+t = 330 ms
+t = 331 ms
+t = 332 ms
+t = 333 ms
+t = 334 ms
+t = 335 ms
+t = 336 ms
+t = 337 ms
+t = 338 ms
+t = 339 ms
+t = 340 ms
+t = 341 ms
+t = 342 ms
+t = 343 ms
+t = 344 ms
+t = 345 ms
+t = 346 ms
+t = 347 ms
+t = 348 ms
+t = 349 ms
+t = 350 ms
+t = 351 ms
+t = 352 ms
+t = 353 ms
+t = 354 ms
+t = 355 ms
+t = 356 ms
+t = 357 ms
+t = 358 ms
+t = 359 ms
+t = 360 ms
+t = 361 ms
+t = 362 ms
+t = 363 ms
+t = 364 ms
+t = 365 ms
+t = 366 ms
+t = 367 ms
+t = 368 ms
+t = 369 ms
+t = 370 ms
+t = 371 ms
+t = 372 ms
+t = 373 ms
+t = 374 ms
+t = 375 ms
+t = 376 ms
+t = 377 ms
+t = 378 ms
+t = 379 ms
+t = 380 ms
+t = 381 ms
+t = 382 ms
+t = 383 ms
+t = 384 ms
+t = 385 ms
+t = 386 ms
+t = 387 ms
+t = 388 ms
+t = 389 ms
+t = 390 ms
+t = 391 ms
+t = 392 ms
+t = 393 ms
+t = 394 ms
+t = 395 ms
+t = 396 ms
+t = 397 ms
+t = 398 ms
+t = 399 ms
+t = 400 ms
+t = 401 ms
+t = 402 ms
+t = 403 ms
+t = 404 ms
+t = 405 ms
+t = 406 ms
+t = 407 ms
+t = 408 ms
+t = 409 ms
+t = 410 ms
+t = 411 ms
+t = 412 ms
+t = 413 ms
+t = 414 ms
+t = 415 ms
+t = 416 ms
+t = 417 ms
+t = 418 ms
+t = 419 ms
+t = 420 ms
+t = 421 ms
+t = 422 ms
+t = 423 ms
+t = 424 ms
+t = 425 ms
+t = 426 ms
+t = 427 ms
+t = 428 ms
+t = 429 ms
+t = 430 ms
+t = 431 ms
+t = 432 ms
+t = 433 ms
+t = 434 ms
+t = 435 ms
+t = 436 ms
+t = 437 ms
+t = 438 ms
+t = 439 ms
+t = 440 ms
+t = 441 ms
+t = 442 ms
+t = 443 ms
+t = 444 ms
+t = 445 ms
+t = 446 ms
+t = 447 ms
+t = 448 ms
+t = 449 ms
+t = 450 ms
+t = 451 ms
+t = 452 ms
+t = 453 ms
+t = 454 ms
+t = 455 ms
+t = 456 ms
+t = 457 ms
+t = 458 ms
+t = 459 ms
+t = 460 ms
+t = 461 ms
+t = 462 ms
+t = 463 ms
+t = 464 ms
+t = 465 ms
+t = 466 ms
+t = 467 ms
+t = 468 ms
+t = 469 ms
+t = 470 ms
+t = 471 ms
+t = 472 ms
+t = 473 ms
+t = 474 ms
+t = 475 ms
+t = 476 ms
+t = 477 ms
+t = 478 ms
+t = 479 ms
+t = 480 ms
+t = 481 ms
+t = 482 ms
+t = 483 ms
+t = 484 ms
+t = 485 ms
+t = 486 ms
+t = 487 ms
+t = 488 ms
+t = 489 ms
+t = 490 ms
+t = 491 ms
+t = 492 ms
+t = 493 ms
+t = 494 ms
+t = 495 ms
+t = 496 ms
+t = 497 ms
+t = 498 ms
+t = 499 ms
+t = 500 ms
+t = 501 ms
+t = 502 ms
+t = 503 ms
+t = 504 ms
+t = 505 ms
+t = 506 ms
+t = 507 ms
+t = 508 ms
+t = 509 ms
+t = 510 ms
+t = 511 ms
+t = 512 ms
+t = 513 ms
+t = 514 ms
+t = 515 ms
+t = 516 ms
+t = 517 ms
+t = 518 ms
+t = 519 ms
+t = 520 ms
+t = 521 ms
+t = 522 ms
+t = 523 ms
+t = 524 ms
+t = 525 ms
+t = 526 ms
+t = 527 ms
+t = 528 ms
+t = 529 ms
+t = 530 ms
+t = 531 ms
+t = 532 ms
+t = 533 ms
+t = 534 ms
+t = 535 ms
+t = 536 ms
+t = 537 ms
+t = 538 ms
+t = 539 ms
+t = 540 ms
+t = 541 ms
+t = 542 ms
+t = 543 ms
+t = 544 ms
+t = 545 ms
+t = 546 ms
+t = 547 ms
+t = 548 ms
+t = 549 ms
+t = 550 ms
+t = 551 ms
+t = 552 ms
+t = 553 ms
+t = 554 ms
+t = 555 ms
+t = 556 ms
+t = 557 ms
+t = 558 ms
+t = 559 ms
+t = 560 ms
+t = 561 ms
+t = 562 ms
+t = 563 ms
+t = 564 ms
+t = 565 ms
+t = 566 ms
+t = 567 ms
+t = 568 ms
+t = 569 ms
+t = 570 ms
+t = 571 ms
+t = 572 ms
+t = 573 ms
+t = 574 ms
+t = 575 ms
+t = 576 ms
+t = 577 ms
+t = 578 ms
+t = 579 ms
+t = 580 ms
+t = 581 ms
+t = 582 ms
+t = 583 ms
+t = 584 ms
+t = 585 ms
+t = 586 ms
+t = 587 ms
+t = 588 ms
+t = 589 ms
+t = 590 ms
+t = 591 ms
+t = 592 ms
+t = 593 ms
+t = 594 ms
+t = 595 ms
+t = 596 ms
+t = 597 ms
+t = 598 ms
+t = 599 ms
+t = 600 ms
+t = 601 ms
+t = 602 ms
+t = 603 ms
+t = 604 ms
+t = 605 ms
+t = 606 ms
+t = 607 ms
+t = 608 ms
+t = 609 ms
+t = 610 ms
+t = 611 ms
+t = 612 ms
+t = 613 ms
+t = 614 ms
+t = 615 ms
+t = 616 ms
+t = 617 ms
+t = 618 ms
+t = 619 ms
+t = 620 ms
+t = 621 ms
+t = 622 ms
+t = 623 ms
+t = 624 ms
+t = 625 ms
+t = 626 ms
+t = 627 ms
+t = 628 ms
+t = 629 ms
+t = 630 ms
+t = 631 ms
+t = 632 ms
+t = 633 ms
+t = 634 ms
+t = 635 ms
+t = 636 ms
+t = 637 ms
+t = 638 ms
+t = 639 ms
+t = 640 ms
+t = 641 ms
+t = 642 ms
+t = 643 ms
+t = 644 ms
+t = 645 ms
+t = 646 ms
+t = 647 ms
+t = 648 ms
+t = 649 ms
+t = 650 ms
+t = 651 ms
+t = 652 ms
+t = 653 ms
+t = 654 ms
+t = 655 ms
+t = 656 ms
+t = 657 ms
+t = 658 ms
+t = 659 ms
+t = 660 ms
+t = 661 ms
+t = 662 ms
+t = 663 ms
+t = 664 ms
+t = 665 ms
+t = 666 ms
+t = 667 ms
+t = 668 ms
+t = 669 ms
+t = 670 ms
+t = 671 ms
+t = 672 ms
+t = 673 ms
+t = 674 ms
+t = 675 ms
+t = 676 ms
+t = 677 ms
+t = 678 ms
+t = 679 ms
+t = 680 ms
+t = 681 ms
+t = 682 ms
+t = 683 ms
+t = 684 ms
+t = 685 ms
+t = 686 ms
+t = 687 ms
+t = 688 ms
+t = 689 ms
+t = 690 ms
+t = 691 ms
+t = 692 ms
+t = 693 ms
+t = 694 ms
+t = 695 ms
+t = 696 ms
+t = 697 ms
+t = 698 ms
+t = 699 ms
+t = 700 ms
+t = 701 ms
+t = 702 ms
+t = 703 ms
+t = 704 ms
+t = 705 ms
+t = 706 ms
+t = 707 ms
+t = 708 ms
+t = 709 ms
+t = 710 ms
+t = 711 ms
+t = 712 ms
+t = 713 ms
+t = 714 ms
+t = 715 ms
+t = 716 ms
+t = 717 ms
+t = 718 ms
+t = 719 ms
+t = 720 ms
+t = 721 ms
+t = 722 ms
+t = 723 ms
+t = 724 ms
+t = 725 ms
+t = 726 ms
+t = 727 ms
+t = 728 ms
+t = 729 ms
+t = 730 ms
+t = 731 ms
+t = 732 ms
+t = 733 ms
+t = 734 ms
+t = 735 ms
+t = 736 ms
+t = 737 ms
+t = 738 ms
+t = 739 ms
+t = 740 ms
+t = 741 ms
+t = 742 ms
+t = 743 ms
+t = 744 ms
+t = 745 ms
+t = 746 ms
+t = 747 ms
+t = 748 ms
+t = 749 ms
+t = 750 ms
+t = 751 ms
+t = 752 ms
+t = 753 ms
+t = 754 ms
+t = 755 ms
+t = 756 ms
+t = 757 ms
+t = 758 ms
+t = 759 ms
+t = 760 ms
+t = 761 ms
+t = 762 ms
+t = 763 ms
+t = 764 ms
+t = 765 ms
+t = 766 ms
+t = 767 ms
+t = 768 ms
+t = 769 ms
+t = 770 ms
+t = 771 ms
+t = 772 ms
+t = 773 ms
+t = 774 ms
+t = 775 ms
+t = 776 ms
+t = 777 ms
+t = 778 ms
+t = 779 ms
+t = 780 ms
+t = 781 ms
+t = 782 ms
+t = 783 ms
+t = 784 ms
+t = 785 ms
+t = 786 ms
+t = 787 ms
+t = 788 ms
+t = 789 ms
+t = 790 ms
+t = 791 ms
+t = 792 ms
+t = 793 ms
+t = 794 ms
+t = 795 ms
+t = 796 ms
+t = 797 ms
+t = 798 ms
+t = 799 ms
+t = 800 ms
+t = 801 ms
+t = 802 ms
+t = 803 ms
+t = 804 ms
+t = 805 ms
+t = 806 ms
+t = 807 ms
+t = 808 ms
+t = 809 ms
+t = 810 ms
+t = 811 ms
+t = 812 ms
+t = 813 ms
+t = 814 ms
+t = 815 ms
+t = 816 ms
+t = 817 ms
+t = 818 ms
+t = 819 ms
+t = 820 ms
+t = 821 ms
+t = 822 ms
+t = 823 ms
+t = 824 ms
+t = 825 ms
+t = 826 ms
+t = 827 ms
+t = 828 ms
+t = 829 ms
+t = 830 ms
+t = 831 ms
+t = 832 ms
+t = 833 ms
+t = 834 ms
+t = 835 ms
+t = 836 ms
+t = 837 ms
+t = 838 ms
+t = 839 ms
+t = 840 ms
+t = 841 ms
+t = 842 ms
+t = 843 ms
+t = 844 ms
+t = 845 ms
+t = 846 ms
+t = 847 ms
+t = 848 ms
+t = 849 ms
+t = 850 ms
+t = 851 ms
+t = 852 ms
+t = 853 ms
+t = 854 ms
+t = 855 ms
+t = 856 ms
+t = 857 ms
+t = 858 ms
+t = 859 ms
+t = 860 ms
+t = 861 ms
+t = 862 ms
+t = 863 ms
+t = 864 ms
+t = 865 ms
+t = 866 ms
+t = 867 ms
+t = 868 ms
+t = 869 ms
+t = 870 ms
+t = 871 ms
+t = 872 ms
+t = 873 ms
+t = 874 ms
+t = 875 ms
+t = 876 ms
+t = 877 ms
+t = 878 ms
+t = 879 ms
+t = 880 ms
+t = 881 ms
+t = 882 ms
+t = 883 ms
+t = 884 ms
+t = 885 ms
+t = 886 ms
+t = 887 ms
+t = 888 ms
+t = 889 ms
+t = 890 ms
+t = 891 ms
+t = 892 ms
+t = 893 ms
+t = 894 ms
+t = 895 ms
+t = 896 ms
+t = 897 ms
+t = 898 ms
+t = 899 ms
+t = 900 ms
+t = 901 ms
+t = 902 ms
+t = 903 ms
+t = 904 ms
+t = 905 ms
+t = 906 ms
+t = 907 ms
+t = 908 ms
+t = 909 ms
+t = 910 ms
+t = 911 ms
+t = 912 ms
+t = 913 ms
+t = 914 ms
+t = 915 ms
+t = 916 ms
+t = 917 ms
+t = 918 ms
+t = 919 ms
+t = 920 ms
+t = 921 ms
+t = 922 ms
+t = 923 ms
+t = 924 ms
+t = 925 ms
+t = 926 ms
+t = 927 ms
+t = 928 ms
+t = 929 ms
+t = 930 ms
+t = 931 ms
+t = 932 ms
+t = 933 ms
+t = 934 ms
+t = 935 ms
+t = 936 ms
+t = 937 ms
+t = 938 ms
+t = 939 ms
+t = 940 ms
+t = 941 ms
+t = 942 ms
+t = 943 ms
+t = 944 ms
+t = 945 ms
+t = 946 ms
+t = 947 ms
+t = 948 ms
+t = 949 ms
+t = 950 ms
+t = 951 ms
+t = 952 ms
+t = 953 ms
+t = 954 ms
+t = 955 ms
+t = 956 ms
+t = 957 ms
+t = 958 ms
+t = 959 ms
+t = 960 ms
+t = 961 ms
+t = 962 ms
+t = 963 ms
+t = 964 ms
+t = 965 ms
+t = 966 ms
+t = 967 ms
+t = 968 ms
+t = 969 ms
+t = 970 ms
+t = 971 ms
+t = 972 ms
+t = 973 ms
+t = 974 ms
+t = 975 ms
+t = 976 ms
+t = 977 ms
+t = 978 ms
+t = 979 ms
+t = 980 ms
+t = 981 ms
+t = 982 ms
+t = 983 ms
+t = 984 ms
+t = 985 ms
+t = 986 ms
+t = 987 ms
+t = 988 ms
+t = 989 ms
+t = 990 ms
+t = 991 ms
+t = 992 ms
+t = 993 ms
+t = 994 ms
+t = 995 ms
+t = 996 ms
+t = 997 ms
+t = 998 ms
+t = 999 ms
+t = 1000 ms
+t = 1001 ms
+t = 1002 ms
+t = 1003 ms
+t = 1004 ms
+t = 1005 ms
+t = 1006 ms
+t = 1007 ms
+t = 1008 ms
+t = 1009 ms
+t = 1010 ms
+t = 1011 ms
+t = 1012 ms
+t = 1013 ms
+t = 1014 ms
+t = 1015 ms
+t = 1016 ms
+t = 1017 ms
+t = 1018 ms
+t = 1019 ms
+t = 1020 ms
+t = 1021 ms
+t = 1022 ms
+t = 1023 ms
+t = 1024 ms
+t = 1025 ms
+t = 1026 ms
+t = 1027 ms
+t = 1028 ms
+t = 1029 ms
+t = 1030 ms
+t = 1031 ms
+t = 1032 ms
+t = 1033 ms
+t = 1034 ms
+t = 1035 ms
+t = 1036 ms
+t = 1037 ms
+t = 1038 ms
+t = 1039 ms
+t = 1040 ms
+t = 1041 ms
+t = 1042 ms
+t = 1043 ms
+t = 1044 ms
+t = 1045 ms
+t = 1046 ms
+t = 1047 ms
+t = 1048 ms
+t = 1049 ms
+t = 1050 ms
+t = 1051 ms
+t = 1052 ms
+t = 1053 ms
+t = 1054 ms
+t = 1055 ms
+t = 1056 ms
+t = 1057 ms
+t = 1058 ms
+t = 1059 ms
+t = 1060 ms
+t = 1061 ms
+t = 1062 ms
+t = 1063 ms
+t = 1064 ms
+t = 1065 ms
+t = 1066 ms
+t = 1067 ms
+t = 1068 ms
+t = 1069 ms
+t = 1070 ms
+t = 1071 ms
+t = 1072 ms
+t = 1073 ms
+t = 1074 ms
+t = 1075 ms
+t = 1076 ms
+t = 1077 ms
+t = 1078 ms
+t = 1079 ms
+t = 1080 ms
+t = 1081 ms
+t = 1082 ms
+t = 1083 ms
+t = 1084 ms
+t = 1085 ms
+t = 1086 ms
+t = 1087 ms
+t = 1088 ms
+t = 1089 ms
+t = 1090 ms
+t = 1091 ms
+t = 1092 ms
+t = 1093 ms
+t = 1094 ms
+t = 1095 ms
+t = 1096 ms
+t = 1097 ms
+t = 1098 ms
+t = 1099 ms
+t = 1100 ms
+t = 1101 ms
+t = 1102 ms
+t = 1103 ms
+t = 1104 ms
+t = 1105 ms
+t = 1106 ms
+t = 1107 ms
+t = 1108 ms
+t = 1109 ms
+t = 1110 ms
+t = 1111 ms
+t = 1112 ms
+t = 1113 ms
+t = 1114 ms
+t = 1115 ms
+t = 1116 ms
+t = 1117 ms
+t = 1118 ms
+t = 1119 ms
+t = 1120 ms
+t = 1121 ms
+t = 1122 ms
+t = 1123 ms
+t = 1124 ms
+t = 1125 ms
+t = 1126 ms
+t = 1127 ms
+t = 1128 ms
+t = 1129 ms
+t = 1130 ms
+t = 1131 ms
+t = 1132 ms
+t = 1133 ms
+t = 1134 ms
+t = 1135 ms
+t = 1136 ms
+t = 1137 ms
+t = 1138 ms
+t = 1139 ms
+t = 1140 ms
+t = 1141 ms
+t = 1142 ms
+t = 1143 ms
+t = 1144 ms
+t = 1145 ms
+t = 1146 ms
+t = 1147 ms
+t = 1148 ms
+t = 1149 ms
+t = 1150 ms
+t = 1151 ms
+t = 1152 ms
+t = 1153 ms
+t = 1154 ms
+t = 1155 ms
+t = 1156 ms
+t = 1157 ms
+t = 1158 ms
+t = 1159 ms
+t = 1160 ms
+t = 1161 ms
+t = 1162 ms
+t = 1163 ms
+t = 1164 ms
+t = 1165 ms
+t = 1166 ms
+t = 1167 ms
+t = 1168 ms
+t = 1169 ms
+t = 1170 ms
+t = 1171 ms
+t = 1172 ms
+t = 1173 ms
+t = 1174 ms
+t = 1175 ms
+t = 1176 ms
+t = 1177 ms
+t = 1178 ms
+t = 1179 ms
+t = 1180 ms
+t = 1181 ms
+t = 1182 ms
+t = 1183 ms
+t = 1184 ms
+t = 1185 ms
+t = 1186 ms
+t = 1187 ms
+t = 1188 ms
+t = 1189 ms
+t = 1190 ms
+t = 1191 ms
+t = 1192 ms
+t = 1193 ms
+t = 1194 ms
+t = 1195 ms
+t = 1196 ms
+t = 1197 ms
+t = 1198 ms
+t = 1199 ms
+t = 1200 ms
+t = 1201 ms
+t = 1202 ms
+t = 1203 ms
+t = 1204 ms
+t = 1205 ms
+t = 1206 ms
+t = 1207 ms
+t = 1208 ms
+t = 1209 ms
+t = 1210 ms
+t = 1211 ms
+t = 1212 ms
+t = 1213 ms
+t = 1214 ms
+t = 1215 ms
+t = 1216 ms
+t = 1217 ms
+t = 1218 ms
+t = 1219 ms
+t = 1220 ms
+t = 1221 ms
+t = 1222 ms
+t = 1223 ms
+t = 1224 ms
+t = 1225 ms
+t = 1226 ms
+t = 1227 ms
+t = 1228 ms
+t = 1229 ms
+t = 1230 ms
+t = 1231 ms
+t = 1232 ms
+t = 1233 ms
+t = 1234 ms
+t = 1235 ms
+t = 1236 ms
+t = 1237 ms
+t = 1238 ms
+t = 1239 ms
+t = 1240 ms
+t = 1241 ms
+t = 1242 ms
+t = 1243 ms
+t = 1244 ms
+t = 1245 ms
+t = 1246 ms
+t = 1247 ms
+t = 1248 ms
+t = 1249 ms
+t = 1250 ms
+t = 1251 ms
+t = 1252 ms
+t = 1253 ms
+t = 1254 ms
+t = 1255 ms
+t = 1256 ms
+t = 1257 ms
+t = 1258 ms
+t = 1259 ms
+t = 1260 ms
+t = 1261 ms
+t = 1262 ms
+t = 1263 ms
+t = 1264 ms
+t = 1265 ms
+t = 1266 ms
+t = 1267 ms
+t = 1268 ms
+t = 1269 ms
+t = 1270 ms
+t = 1271 ms
+t = 1272 ms
+t = 1273 ms
+t = 1274 ms
+t = 1275 ms
+t = 1276 ms
+t = 1277 ms
+t = 1278 ms
+t = 1279 ms
+t = 1280 ms
+t = 1281 ms
+t = 1282 ms
+t = 1283 ms
+t = 1284 ms
+t = 1285 ms
+t = 1286 ms
+t = 1287 ms
+t = 1288 ms
+t = 1289 ms
+t = 1290 ms
+t = 1291 ms
+t = 1292 ms
+t = 1293 ms
+t = 1294 ms
+t = 1295 ms
+t = 1296 ms
+t = 1297 ms
+t = 1298 ms
+t = 1299 ms
+t = 1300 ms
+t = 1301 ms
+t = 1302 ms
+t = 1303 ms
+t = 1304 ms
+t = 1305 ms
+t = 1306 ms
+t = 1307 ms
+t = 1308 ms
+t = 1309 ms
+t = 1310 ms
+t = 1311 ms
+t = 1312 ms
+t = 1313 ms
+t = 1314 ms
+t = 1315 ms
+t = 1316 ms
+t = 1317 ms
+t = 1318 ms
+t = 1319 ms
+t = 1320 ms
+t = 1321 ms
+t = 1322 ms
+t = 1323 ms
+t = 1324 ms
+t = 1325 ms
+t = 1326 ms
+t = 1327 ms
+t = 1328 ms
+t = 1329 ms
+t = 1330 ms
+t = 1331 ms
+t = 1332 ms
+t = 1333 ms
+t = 1334 ms
+t = 1335 ms
+t = 1336 ms
+t = 1337 ms
+t = 1338 ms
+t = 1339 ms
+t = 1340 ms
+t = 1341 ms
+t = 1342 ms
+t = 1343 ms
+t = 1344 ms
+t = 1345 ms
+t = 1346 ms
+t = 1347 ms
+t = 1348 ms
+t = 1349 ms
+t = 1350 ms
+t = 1351 ms
+t = 1352 ms
+t = 1353 ms
+t = 1354 ms
+t = 1355 ms
+t = 1356 ms
+t = 1357 ms
+t = 1358 ms
+t = 1359 ms
+t = 1360 ms
+t = 1361 ms
+t = 1362 ms
+t = 1363 ms
+t = 1364 ms
+t = 1365 ms
+t = 1366 ms
+t = 1367 ms
+t = 1368 ms
+t = 1369 ms
+t = 1370 ms
+t = 1371 ms
+t = 1372 ms
+t = 1373 ms
+t = 1374 ms
+t = 1375 ms
+t = 1376 ms
+t = 1377 ms
+t = 1378 ms
+t = 1379 ms
+t = 1380 ms
+t = 1381 ms
+t = 1382 ms
+t = 1383 ms
+t = 1384 ms
+t = 1385 ms
+t = 1386 ms
+t = 1387 ms
+t = 1388 ms
+t = 1389 ms
+t = 1390 ms
+t = 1391 ms
+t = 1392 ms
+t = 1393 ms
+t = 1394 ms
+t = 1395 ms
+t = 1396 ms
+t = 1397 ms
+t = 1398 ms
+t = 1399 ms
+t = 1400 ms
+t = 1401 ms
+t = 1402 ms
+t = 1403 ms
+t = 1404 ms
+t = 1405 ms
+t = 1406 ms
+t = 1407 ms
+t = 1408 ms
+t = 1409 ms
+t = 1410 ms
+t = 1411 ms
+t = 1412 ms
+t = 1413 ms
+t = 1414 ms
+t = 1415 ms
+t = 1416 ms
+t = 1417 ms
+t = 1418 ms
+t = 1419 ms
+t = 1420 ms
+t = 1421 ms
+t = 1422 ms
+t = 1423 ms
+t = 1424 ms
+t = 1425 ms
+t = 1426 ms
+t = 1427 ms
+t = 1428 ms
+t = 1429 ms
+t = 1430 ms
+t = 1431 ms
+t = 1432 ms
+t = 1433 ms
+t = 1434 ms
+t = 1435 ms
+t = 1436 ms
+t = 1437 ms
+t = 1438 ms
+t = 1439 ms
+t = 1440 ms
+t = 1441 ms
+t = 1442 ms
+t = 1443 ms
+t = 1444 ms
+t = 1445 ms
+t = 1446 ms
+t = 1447 ms
+t = 1448 ms
+t = 1449 ms
+t = 1450 ms
+t = 1451 ms
+t = 1452 ms
+t = 1453 ms
+t = 1454 ms
+t = 1455 ms
+t = 1456 ms
+t = 1457 ms
+t = 1458 ms
+t = 1459 ms
+t = 1460 ms
+t = 1461 ms
+t = 1462 ms
+t = 1463 ms
+t = 1464 ms
+t = 1465 ms
+t = 1466 ms
+t = 1467 ms
+t = 1468 ms
+t = 1469 ms
+t = 1470 ms
+t = 1471 ms
+t = 1472 ms
+t = 1473 ms
+t = 1474 ms
+t = 1475 ms
+t = 1476 ms
+t = 1477 ms
+t = 1478 ms
+t = 1479 ms
+t = 1480 ms
+t = 1481 ms
+t = 1482 ms
+t = 1483 ms
+t = 1484 ms
+t = 1485 ms
+t = 1486 ms
+t = 1487 ms
+t = 1488 ms
+t = 1489 ms
+t = 1490 ms
+t = 1491 ms
+t = 1492 ms
+t = 1493 ms
+t = 1494 ms
+t = 1495 ms
+t = 1496 ms
+t = 1497 ms
+t = 1498 ms
+t = 1499 ms
+t = 1500 ms
+t = 1501 ms
+t = 1502 ms
+t = 1503 ms
+t = 1504 ms
+t = 1505 ms
+t = 1506 ms
+t = 1507 ms
+t = 1508 ms
+t = 1509 ms
+t = 1510 ms
+t = 1511 ms
+t = 1512 ms
+t = 1513 ms
+t = 1514 ms
+t = 1515 ms
+t = 1516 ms
+t = 1517 ms
+t = 1518 ms
+t = 1519 ms
+t = 1520 ms
+t = 1521 ms
+t = 1522 ms
+t = 1523 ms
+t = 1524 ms
+t = 1525 ms
+t = 1526 ms
+t = 1527 ms
+t = 1528 ms
+t = 1529 ms
+t = 1530 ms
+t = 1531 ms
+t = 1532 ms
+t = 1533 ms
+t = 1534 ms
+t = 1535 ms
+t = 1536 ms
+t = 1537 ms
+t = 1538 ms
+t = 1539 ms
+t = 1540 ms
+t = 1541 ms
+t = 1542 ms
+t = 1543 ms
+t = 1544 ms
+t = 1545 ms
+t = 1546 ms
+t = 1547 ms
+t = 1548 ms
+t = 1549 ms
+t = 1550 ms
+t = 1551 ms
+t = 1552 ms
+t = 1553 ms
+t = 1554 ms
+t = 1555 ms
+t = 1556 ms
+t = 1557 ms
+t = 1558 ms
+t = 1559 ms
+t = 1560 ms
+t = 1561 ms
+t = 1562 ms
+t = 1563 ms
+t = 1564 ms
+t = 1565 ms
+t = 1566 ms
+t = 1567 ms
+t = 1568 ms
+t = 1569 ms
+t = 1570 ms
+t = 1571 ms
+t = 1572 ms
+t = 1573 ms
+t = 1574 ms
+t = 1575 ms
+t = 1576 ms
+t = 1577 ms
+t = 1578 ms
+t = 1579 ms
+t = 1580 ms
+t = 1581 ms
+t = 1582 ms
+t = 1583 ms
+t = 1584 ms
+t = 1585 ms
+t = 1586 ms
+t = 1587 ms
+t = 1588 ms
+t = 1589 ms
+t = 1590 ms
+t = 1591 ms
+t = 1592 ms
+t = 1593 ms
+t = 1594 ms
+t = 1595 ms
+t = 1596 ms
+t = 1597 ms
+t = 1598 ms
+t = 1599 ms
+t = 1600 ms
+t = 1601 ms
+t = 1602 ms
+t = 1603 ms
+t = 1604 ms
+t = 1605 ms
+t = 1606 ms
+t = 1607 ms
+t = 1608 ms
+t = 1609 ms
+t = 1610 ms
+t = 1611 ms
+t = 1612 ms
+t = 1613 ms
+t = 1614 ms
+t = 1615 ms
+t = 1616 ms
+t = 1617 ms
+t = 1618 ms
+t = 1619 ms
+t = 1620 ms
+t = 1621 ms
+t = 1622 ms
+t = 1623 ms
+t = 1624 ms
+t = 1625 ms
+t = 1626 ms
+t = 1627 ms
+t = 1628 ms
+t = 1629 ms
+t = 1630 ms
+t = 1631 ms
+t = 1632 ms
+t = 1633 ms
+t = 1634 ms
+t = 1635 ms
+t = 1636 ms
+t = 1637 ms
+t = 1638 ms
+t = 1639 ms
+t = 1640 ms
+t = 1641 ms
+t = 1642 ms
+t = 1643 ms
+t = 1644 ms
+t = 1645 ms
+t = 1646 ms
+t = 1647 ms
+t = 1648 ms
+t = 1649 ms
+t = 1650 ms
+t = 1651 ms
+t = 1652 ms
+t = 1653 ms
+t = 1654 ms
+t = 1655 ms
+t = 1656 ms
+t = 1657 ms
+t = 1658 ms
+t = 1659 ms
+t = 1660 ms
+t = 1661 ms
+t = 1662 ms
+t = 1663 ms
+t = 1664 ms
+t = 1665 ms
+t = 1666 ms
+t = 1667 ms
+t = 1668 ms
+t = 1669 ms
+t = 1670 ms
+t = 1671 ms
+t = 1672 ms
+t = 1673 ms
+t = 1674 ms
+t = 1675 ms
+t = 1676 ms
+t = 1677 ms
+t = 1678 ms
+t = 1679 ms
+t = 1680 ms
+t = 1681 ms
+t = 1682 ms
+t = 1683 ms
+t = 1684 ms
+t = 1685 ms
+t = 1686 ms
+t = 1687 ms
+t = 1688 ms
+t = 1689 ms
+t = 1690 ms
+t = 1691 ms
+t = 1692 ms
+t = 1693 ms
+t = 1694 ms
+t = 1695 ms
+t = 1696 ms
+t = 1697 ms
+t = 1698 ms
+t = 1699 ms
+t = 1700 ms
+t = 1701 ms
+t = 1702 ms
+t = 1703 ms
+t = 1704 ms
+t = 1705 ms
+t = 1706 ms
+t = 1707 ms
+t = 1708 ms
+t = 1709 ms
+t = 1710 ms
+t = 1711 ms
+t = 1712 ms
+t = 1713 ms
+t = 1714 ms
+t = 1715 ms
+t = 1716 ms
+t = 1717 ms
+t = 1718 ms
+t = 1719 ms
+t = 1720 ms
+t = 1721 ms
+t = 1722 ms
+t = 1723 ms
+t = 1724 ms
+t = 1725 ms
+t = 1726 ms
+t = 1727 ms
+t = 1728 ms
+t = 1729 ms
+t = 1730 ms
+t = 1731 ms
+t = 1732 ms
+t = 1733 ms
+t = 1734 ms
+t = 1735 ms
+t = 1736 ms
+t = 1737 ms
+t = 1738 ms
+t = 1739 ms
+t = 1740 ms
+t = 1741 ms
+t = 1742 ms
+t = 1743 ms
+t = 1744 ms
+t = 1745 ms
+t = 1746 ms
+t = 1747 ms
+t = 1748 ms
+t = 1749 ms
+t = 1750 ms
+t = 1751 ms
+t = 1752 ms
+t = 1753 ms
+t = 1754 ms
+t = 1755 ms
+t = 1756 ms
+t = 1757 ms
+t = 1758 ms
+t = 1759 ms
+t = 1760 ms
+t = 1761 ms
+t = 1762 ms
+t = 1763 ms
+t = 1764 ms
+t = 1765 ms
+t = 1766 ms
+t = 1767 ms
+t = 1768 ms
+t = 1769 ms
+t = 1770 ms
+t = 1771 ms
+t = 1772 ms
+t = 1773 ms
+t = 1774 ms
+t = 1775 ms
+t = 1776 ms
+t = 1777 ms
+t = 1778 ms
+t = 1779 ms
+t = 1780 ms
+t = 1781 ms
+t = 1782 ms
+t = 1783 ms
+t = 1784 ms
+t = 1785 ms
+t = 1786 ms
+t = 1787 ms
+t = 1788 ms
+t = 1789 ms
+t = 1790 ms
+t = 1791 ms
+t = 1792 ms
+t = 1793 ms
+t = 1794 ms
+t = 1795 ms
+t = 1796 ms
+t = 1797 ms
+t = 1798 ms
+t = 1799 ms
+t = 1800 ms
+t = 1801 ms
+t = 1802 ms
+t = 1803 ms
+t = 1804 ms
+t = 1805 ms
+t = 1806 ms
+t = 1807 ms
+t = 1808 ms
+t = 1809 ms
+t = 1810 ms
+t = 1811 ms
+t = 1812 ms
+t = 1813 ms
+t = 1814 ms
+t = 1815 ms
+t = 1816 ms
+t = 1817 ms
+t = 1818 ms
+t = 1819 ms
+t = 1820 ms
+t = 1821 ms
+t = 1822 ms
+t = 1823 ms
+t = 1824 ms
+t = 1825 ms
+t = 1826 ms
+t = 1827 ms
+t = 1828 ms
+t = 1829 ms
+t = 1830 ms
+t = 1831 ms
+t = 1832 ms
+t = 1833 ms
+t = 1834 ms
+t = 1835 ms
+t = 1836 ms
+t = 1837 ms
+t = 1838 ms
+t = 1839 ms
+t = 1840 ms
+t = 1841 ms
+t = 1842 ms
+t = 1843 ms
+t = 1844 ms
+t = 1845 ms
+t = 1846 ms
+t = 1847 ms
+t = 1848 ms
+t = 1849 ms
+t = 1850 ms
+t = 1851 ms
+t = 1852 ms
+t = 1853 ms
+t = 1854 ms
+t = 1855 ms
+t = 1856 ms
+t = 1857 ms
+t = 1858 ms
+t = 1859 ms
+t = 1860 ms
+t = 1861 ms
+t = 1862 ms
+t = 1863 ms
+t = 1864 ms
+t = 1865 ms
+t = 1866 ms
+t = 1867 ms
+t = 1868 ms
+t = 1869 ms
+t = 1870 ms
+t = 1871 ms
+t = 1872 ms
+t = 1873 ms
+t = 1874 ms
+t = 1875 ms
+t = 1876 ms
+t = 1877 ms
+t = 1878 ms
+t = 1879 ms
+t = 1880 ms
+t = 1881 ms
+t = 1882 ms
+t = 1883 ms
+t = 1884 ms
+t = 1885 ms
+t = 1886 ms
+t = 1887 ms
+t = 1888 ms
+t = 1889 ms
+t = 1890 ms
+t = 1891 ms
+t = 1892 ms
+t = 1893 ms
+t = 1894 ms
+t = 1895 ms
+t = 1896 ms
+t = 1897 ms
+t = 1898 ms
+t = 1899 ms
+t = 1900 ms
+t = 1901 ms
+t = 1902 ms
+t = 1903 ms
+t = 1904 ms
+t = 1905 ms
+t = 1906 ms
+t = 1907 ms
+t = 1908 ms
+t = 1909 ms
+t = 1910 ms
+t = 1911 ms
+t = 1912 ms
+t = 1913 ms
+t = 1914 ms
+t = 1915 ms
+t = 1916 ms
+t = 1917 ms
+t = 1918 ms
+t = 1919 ms
+t = 1920 ms
+t = 1921 ms
+t = 1922 ms
+t = 1923 ms
+t = 1924 ms
+t = 1925 ms
+t = 1926 ms
+t = 1927 ms
+t = 1928 ms
+t = 1929 ms
+t = 1930 ms
+t = 1931 ms
+t = 1932 ms
+t = 1933 ms
+t = 1934 ms
+t = 1935 ms
+t = 1936 ms
+t = 1937 ms
+t = 1938 ms
+t = 1939 ms
+t = 1940 ms
+t = 1941 ms
+t = 1942 ms
+t = 1943 ms
+t = 1944 ms
+t = 1945 ms
+t = 1946 ms
+t = 1947 ms
+t = 1948 ms
+t = 1949 ms
+t = 1950 ms
+t = 1951 ms
+t = 1952 ms
+t = 1953 ms
+t = 1954 ms
+t = 1955 ms
+t = 1956 ms
+t = 1957 ms
+t = 1958 ms
+t = 1959 ms
+t = 1960 ms
+t = 1961 ms
+t = 1962 ms
+t = 1963 ms
+t = 1964 ms
+t = 1965 ms
+t = 1966 ms
+t = 1967 ms
+t = 1968 ms
+t = 1969 ms
+t = 1970 ms
+t = 1971 ms
+t = 1972 ms
+t = 1973 ms
+t = 1974 ms
+t = 1975 ms
+t = 1976 ms
+t = 1977 ms
+t = 1978 ms
+t = 1979 ms
+t = 1980 ms
+t = 1981 ms
+t = 1982 ms
+t = 1983 ms
+t = 1984 ms
+t = 1985 ms
+t = 1986 ms
+t = 1987 ms
+t = 1988 ms
+t = 1989 ms
+t = 1990 ms
+t = 1991 ms
+t = 1992 ms
+t = 1993 ms
+t = 1994 ms
+t = 1995 ms
+t = 1996 ms
+t = 1997 ms
+t = 1998 ms
+t = 1999 ms
+t = 2000 ms
+t = 2001 ms
+t = 2002 ms
+t = 2003 ms
+t = 2004 ms
+t = 2005 ms
+t = 2006 ms
+t = 2007 ms
+t = 2008 ms
+t = 2009 ms
+t = 2010 ms
+t = 2011 ms
+t = 2012 ms
+t = 2013 ms
+t = 2014 ms
+t = 2015 ms
+t = 2016 ms
+t = 2017 ms
+t = 2018 ms
+t = 2019 ms
+t = 2020 ms
+t = 2021 ms
+t = 2022 ms
+t = 2023 ms
+t = 2024 ms
+t = 2025 ms
+t = 2026 ms
+t = 2027 ms
+t = 2028 ms
+t = 2029 ms
+t = 2030 ms
+t = 2031 ms
+t = 2032 ms
+t = 2033 ms
+t = 2034 ms
+t = 2035 ms
+t = 2036 ms
+t = 2037 ms
+t = 2038 ms
+t = 2039 ms
+t = 2040 ms
+t = 2041 ms
+t = 2042 ms
+t = 2043 ms
+t = 2044 ms
+t = 2045 ms
+t = 2046 ms
+t = 2047 ms
+t = 2048 ms
+t = 2049 ms
+t = 2050 ms
+t = 2051 ms
+t = 2052 ms
+t = 2053 ms
+t = 2054 ms
+t = 2055 ms
+t = 2056 ms
+t = 2057 ms
+t = 2058 ms
+t = 2059 ms
+t = 2060 ms
+t = 2061 ms
+t = 2062 ms
+t = 2063 ms
+t = 2064 ms
+t = 2065 ms
+t = 2066 ms
+t = 2067 ms
+t = 2068 ms
+t = 2069 ms
+t = 2070 ms
+t = 2071 ms
+t = 2072 ms
+t = 2073 ms
+t = 2074 ms
+t = 2075 ms
+t = 2076 ms
+t = 2077 ms
+t = 2078 ms
+t = 2079 ms
+t = 2080 ms
+t = 2081 ms
+t = 2082 ms
+t = 2083 ms
+t = 2084 ms
+t = 2085 ms
+t = 2086 ms
+t = 2087 ms
+t = 2088 ms
+t = 2089 ms
+t = 2090 ms
+t = 2091 ms
+t = 2092 ms
+t = 2093 ms
+t = 2094 ms
+t = 2095 ms
+t = 2096 ms
+t = 2097 ms
+t = 2098 ms
+t = 2099 ms
+Switch-0: 0-256 has 0 flows:
+Switch-0: 256-0 has 0 flows:
+Switch-1: 1-256 has 0 flows:
+Switch-1: 256-1 has 1 flows:, 1582
+Switch-2: 2-256 has 0 flows:
+Switch-2: 256-2 has 0 flows:
+Switch-3: 3-256 has 0 flows:
+Switch-3: 256-3 has 0 flows:
+Switch-4: 4-256 has 0 flows:
+Switch-4: 256-4 has 0 flows:
+Switch-5: 5-256 has 0 flows:
+Switch-5: 256-5 has 0 flows:
+Switch-6: 6-256 has 0 flows:
+Switch-6: 256-6 has 0 flows:
+Switch-7: 7-256 has 0 flows:
+Switch-7: 256-7 has 0 flows:
+Switch-8: 8-257 has 0 flows:
+Switch-8: 257-8 has 1 flows:, 3069
+Switch-9: 9-257 has 0 flows:
+Switch-9: 257-9 has 0 flows:
+Switch-10: 10-257 has 0 flows:
+Switch-10: 257-10 has 0 flows:
+Switch-11: 11-257 has 0 flows:
+Switch-11: 257-11 has 0 flows:
+Switch-12: 12-257 has 0 flows:
+Switch-12: 257-12 has 0 flows:
+Switch-13: 13-257 has 0 flows:
+Switch-13: 257-13 has 0 flows:
+Switch-14: 14-257 has 0 flows:
+Switch-14: 257-14 has 0 flows:
+Switch-15: 15-257 has 0 flows:
+Switch-15: 257-15 has 0 flows:
+Switch-16: 16-258 has 24 flows:, 226, 268, 960, 1123, 1386, 1516, 1575, 1647, 1650, 1657, 1662, 1900, 2143, 2158, 2211, 2506, 2735, 2815, 2883, 3090, 3161, 3423, 4105, 4278
+Switch-16: 258-16 has 0 flows:
+Switch-17: 17-258 has 13 flows:, 47, 76, 803, 1167, 1552, 1639, 2392, 2890, 3121, 3229, 3350, 3709, 4146
+Switch-17: 258-17 has 0 flows:
+Switch-18: 18-258 has 9 flows:, 566, 740, 807, 864, 1240, 1498, 1582, 1877, 4316
+Switch-18: 258-18 has 0 flows:
+Switch-19: 19-258 has 12 flows:, 221, 254, 846, 1015, 1179, 2317, 3068, 3082, 3752, 3858, 3944, 3993
+Switch-19: 258-19 has 0 flows:
+Switch-20: 20-258 has 12 flows:, 142, 362, 385, 1072, 1828, 2797, 3069, 3249, 3433, 3481, 4004, 4169
+Switch-20: 258-20 has 0 flows:
+Switch-21: 21-258 has 10 flows:, 775, 1684, 2056, 2226, 2876, 3049, 3234, 3331, 3942, 4022
+Switch-21: 258-21 has 0 flows:
+Switch-22: 22-258 has 10 flows:, 67, 647, 1806, 2031, 2179, 2889, 3403, 3578, 3908, 3997
+Switch-22: 258-22 has 0 flows:
+Switch-23: 23-258 has 10 flows:, 15, 228, 397, 1606, 2679, 3550, 3629, 3674, 3925, 4227
+Switch-23: 258-23 has 0 flows:
+Switch-24: 24-259 has 0 flows:
+Switch-24: 259-24 has 0 flows:
+Switch-25: 25-259 has 0 flows:
+Switch-25: 259-25 has 0 flows:
+Switch-26: 26-259 has 0 flows:
+Switch-26: 259-26 has 0 flows:
+Switch-27: 27-259 has 0 flows:
+Switch-27: 259-27 has 0 flows:
+Switch-28: 28-259 has 0 flows:
+Switch-28: 259-28 has 0 flows:
+Switch-29: 29-259 has 0 flows:
+Switch-29: 259-29 has 0 flows:
+Switch-30: 30-259 has 0 flows:
+Switch-30: 259-30 has 0 flows:
+Switch-31: 31-259 has 0 flows:
+Switch-31: 259-31 has 0 flows:
+Switch-32: 32-260 has 0 flows:
+Switch-32: 260-32 has 1 flows:, 647
+Switch-33: 33-260 has 0 flows:
+Switch-33: 260-33 has 0 flows:
+Switch-34: 34-260 has 0 flows:
+Switch-34: 260-34 has 0 flows:
+Switch-35: 35-260 has 0 flows:
+Switch-35: 260-35 has 0 flows:
+Switch-36: 36-260 has 0 flows:
+Switch-36: 260-36 has 2 flows:, 3752, 3997
+Switch-37: 37-260 has 0 flows:
+Switch-37: 260-37 has 0 flows:
+Switch-38: 38-260 has 0 flows:
+Switch-38: 260-38 has 1 flows:, 3433
+Switch-39: 39-260 has 0 flows:
+Switch-39: 260-39 has 0 flows:
+Switch-40: 40-261 has 0 flows:
+Switch-40: 261-40 has 1 flows:, 2392
+Switch-41: 41-261 has 0 flows:
+Switch-41: 261-41 has 1 flows:, 1828
+Switch-42: 42-261 has 0 flows:
+Switch-42: 261-42 has 0 flows:
+Switch-43: 43-261 has 0 flows:
+Switch-43: 261-43 has 2 flows:, 775, 960
+Switch-44: 44-261 has 0 flows:
+Switch-44: 261-44 has 1 flows:, 76
+Switch-45: 45-261 has 0 flows:
+Switch-45: 261-45 has 0 flows:
+Switch-46: 46-261 has 0 flows:
+Switch-46: 261-46 has 3 flows:, 740, 1806, 2506
+Switch-47: 47-261 has 0 flows:
+Switch-47: 261-47 has 0 flows:
+Switch-48: 48-262 has 0 flows:
+Switch-48: 262-48 has 0 flows:
+Switch-49: 49-262 has 0 flows:
+Switch-49: 262-49 has 0 flows:
+Switch-50: 50-262 has 0 flows:
+Switch-50: 262-50 has 0 flows:
+Switch-51: 51-262 has 0 flows:
+Switch-51: 262-51 has 0 flows:
+Switch-52: 52-262 has 0 flows:
+Switch-52: 262-52 has 0 flows:
+Switch-53: 53-262 has 0 flows:
+Switch-53: 262-53 has 0 flows:
+Switch-54: 54-262 has 0 flows:
+Switch-54: 262-54 has 0 flows:
+Switch-55: 55-262 has 0 flows:
+Switch-55: 262-55 has 0 flows:
+Switch-56: 56-263 has 0 flows:
+Switch-56: 263-56 has 0 flows:
+Switch-57: 57-263 has 0 flows:
+Switch-57: 263-57 has 0 flows:
+Switch-58: 58-263 has 0 flows:
+Switch-58: 263-58 has 0 flows:
+Switch-59: 59-263 has 0 flows:
+Switch-59: 263-59 has 0 flows:
+Switch-60: 60-263 has 0 flows:
+Switch-60: 263-60 has 0 flows:
+Switch-61: 61-263 has 0 flows:
+Switch-61: 263-61 has 0 flows:
+Switch-62: 62-263 has 0 flows:
+Switch-62: 263-62 has 0 flows:
+Switch-63: 63-263 has 0 flows:
+Switch-63: 263-63 has 0 flows:
+Switch-64: 64-264 has 0 flows:
+Switch-64: 264-64 has 1 flows:, 2226
+Switch-65: 65-264 has 0 flows:
+Switch-65: 264-65 has 1 flows:, 2890
+Switch-66: 66-264 has 0 flows:
+Switch-66: 264-66 has 0 flows:
+Switch-67: 67-264 has 0 flows:
+Switch-67: 264-67 has 0 flows:
+Switch-68: 68-264 has 0 flows:
+Switch-68: 264-68 has 0 flows:
+Switch-69: 69-264 has 0 flows:
+Switch-69: 264-69 has 0 flows:
+Switch-70: 70-264 has 0 flows:
+Switch-70: 264-70 has 1 flows:, 1684
+Switch-71: 71-264 has 0 flows:
+Switch-71: 264-71 has 0 flows:
+Switch-72: 72-265 has 0 flows:
+Switch-72: 265-72 has 0 flows:
+Switch-73: 73-265 has 0 flows:
+Switch-73: 265-73 has 0 flows:
+Switch-74: 74-265 has 0 flows:
+Switch-74: 265-74 has 2 flows:, 67, 2876
+Switch-75: 75-265 has 0 flows:
+Switch-75: 265-75 has 1 flows:, 3481
+Switch-76: 76-265 has 0 flows:
+Switch-76: 265-76 has 0 flows:
+Switch-77: 77-265 has 0 flows:
+Switch-77: 265-77 has 0 flows:
+Switch-78: 78-265 has 0 flows:
+Switch-78: 265-78 has 0 flows:
+Switch-79: 79-265 has 0 flows:
+Switch-79: 265-79 has 0 flows:
+Switch-80: 80-266 has 0 flows:
+Switch-80: 266-80 has 0 flows:
+Switch-81: 81-266 has 0 flows:
+Switch-81: 266-81 has 0 flows:
+Switch-82: 82-266 has 0 flows:
+Switch-82: 266-82 has 0 flows:
+Switch-83: 83-266 has 0 flows:
+Switch-83: 266-83 has 0 flows:
+Switch-84: 84-266 has 0 flows:
+Switch-84: 266-84 has 0 flows:
+Switch-85: 85-266 has 0 flows:
+Switch-85: 266-85 has 0 flows:
+Switch-86: 86-266 has 0 flows:
+Switch-86: 266-86 has 0 flows:
+Switch-87: 87-266 has 0 flows:
+Switch-87: 266-87 has 0 flows:
+Switch-88: 88-267 has 0 flows:
+Switch-88: 267-88 has 0 flows:
+Switch-89: 89-267 has 0 flows:
+Switch-89: 267-89 has 0 flows:
+Switch-90: 90-267 has 0 flows:
+Switch-90: 267-90 has 0 flows:
+Switch-91: 91-267 has 0 flows:
+Switch-91: 267-91 has 0 flows:
+Switch-92: 92-267 has 0 flows:
+Switch-92: 267-92 has 0 flows:
+Switch-93: 93-267 has 0 flows:
+Switch-93: 267-93 has 0 flows:
+Switch-94: 94-267 has 0 flows:
+Switch-94: 267-94 has 0 flows:
+Switch-95: 95-267 has 0 flows:
+Switch-95: 267-95 has 0 flows:
+Switch-96: 96-268 has 0 flows:
+Switch-96: 268-96 has 0 flows:
+Switch-97: 97-268 has 0 flows:
+Switch-97: 268-97 has 0 flows:
+Switch-98: 98-268 has 0 flows:
+Switch-98: 268-98 has 0 flows:
+Switch-99: 99-268 has 0 flows:
+Switch-99: 268-99 has 0 flows:
+Switch-100: 100-268 has 0 flows:
+Switch-100: 268-100 has 0 flows:
+Switch-101: 101-268 has 0 flows:
+Switch-101: 268-101 has 0 flows:
+Switch-102: 102-268 has 0 flows:
+Switch-102: 268-102 has 0 flows:
+Switch-103: 103-268 has 0 flows:
+Switch-103: 268-103 has 0 flows:
+Switch-104: 104-269 has 0 flows:
+Switch-104: 269-104 has 0 flows:
+Switch-105: 105-269 has 0 flows:
+Switch-105: 269-105 has 0 flows:
+Switch-106: 106-269 has 0 flows:
+Switch-106: 269-106 has 0 flows:
+Switch-107: 107-269 has 0 flows:
+Switch-107: 269-107 has 0 flows:
+Switch-108: 108-269 has 0 flows:
+Switch-108: 269-108 has 0 flows:
+Switch-109: 109-269 has 0 flows:
+Switch-109: 269-109 has 0 flows:
+Switch-110: 110-269 has 0 flows:
+Switch-110: 269-110 has 0 flows:
+Switch-111: 111-269 has 0 flows:
+Switch-111: 269-111 has 0 flows:
+Switch-112: 112-270 has 0 flows:
+Switch-112: 270-112 has 0 flows:
+Switch-113: 113-270 has 0 flows:
+Switch-113: 270-113 has 0 flows:
+Switch-114: 114-270 has 0 flows:
+Switch-114: 270-114 has 0 flows:
+Switch-115: 115-270 has 0 flows:
+Switch-115: 270-115 has 0 flows:
+Switch-116: 116-270 has 0 flows:
+Switch-116: 270-116 has 0 flows:
+Switch-117: 117-270 has 0 flows:
+Switch-117: 270-117 has 0 flows:
+Switch-118: 118-270 has 0 flows:
+Switch-118: 270-118 has 0 flows:
+Switch-119: 119-270 has 0 flows:
+Switch-119: 270-119 has 0 flows:
+Switch-120: 120-271 has 0 flows:
+Switch-120: 271-120 has 1 flows:, 807
+Switch-121: 121-271 has 0 flows:
+Switch-121: 271-121 has 1 flows:, 2317
+Switch-122: 122-271 has 0 flows:
+Switch-122: 271-122 has 0 flows:
+Switch-123: 123-271 has 0 flows:
+Switch-123: 271-123 has 0 flows:
+Switch-124: 124-271 has 0 flows:
+Switch-124: 271-124 has 0 flows:
+Switch-125: 125-271 has 0 flows:
+Switch-125: 271-125 has 1 flows:, 864
+Switch-126: 126-271 has 0 flows:
+Switch-126: 271-126 has 0 flows:
+Switch-127: 127-271 has 0 flows:
+Switch-127: 271-127 has 0 flows:
+Switch-128: 128-272 has 0 flows:
+Switch-128: 272-128 has 0 flows:
+Switch-129: 129-272 has 0 flows:
+Switch-129: 272-129 has 0 flows:
+Switch-130: 130-272 has 0 flows:
+Switch-130: 272-130 has 0 flows:
+Switch-131: 131-272 has 0 flows:
+Switch-131: 272-131 has 0 flows:
+Switch-132: 132-272 has 0 flows:
+Switch-132: 272-132 has 0 flows:
+Switch-133: 133-272 has 0 flows:
+Switch-133: 272-133 has 0 flows:
+Switch-134: 134-272 has 0 flows:
+Switch-134: 272-134 has 0 flows:
+Switch-135: 135-272 has 0 flows:
+Switch-135: 272-135 has 0 flows:
+Switch-136: 136-273 has 0 flows:
+Switch-136: 273-136 has 0 flows:
+Switch-137: 137-273 has 0 flows:
+Switch-137: 273-137 has 2 flows:, 47, 2797
+Switch-138: 138-273 has 0 flows:
+Switch-138: 273-138 has 1 flows:, 3082
+Switch-139: 139-273 has 0 flows:
+Switch-139: 273-139 has 2 flows:, 846, 3121
+Switch-140: 140-273 has 0 flows:
+Switch-140: 273-140 has 1 flows:, 3403
+Switch-141: 141-273 has 0 flows:
+Switch-141: 273-141 has 1 flows:, 3229
+Switch-142: 142-273 has 0 flows:
+Switch-142: 273-142 has 1 flows:, 3993
+Switch-143: 143-273 has 0 flows:
+Switch-143: 273-143 has 1 flows:, 566
+Switch-144: 144-274 has 0 flows:
+Switch-144: 274-144 has 0 flows:
+Switch-145: 145-274 has 0 flows:
+Switch-145: 274-145 has 1 flows:, 1516
+Switch-146: 146-274 has 0 flows:
+Switch-146: 274-146 has 1 flows:, 3908
+Switch-147: 147-274 has 0 flows:
+Switch-147: 274-147 has 1 flows:, 2158
+Switch-148: 148-274 has 0 flows:
+Switch-148: 274-148 has 1 flows:, 3578
+Switch-149: 149-274 has 0 flows:
+Switch-149: 274-149 has 1 flows:, 2679
+Switch-150: 150-274 has 0 flows:
+Switch-150: 274-150 has 0 flows:
+Switch-151: 151-274 has 0 flows:
+Switch-151: 274-151 has 0 flows:
+Switch-152: 152-275 has 0 flows:
+Switch-152: 275-152 has 1 flows:, 254
+Switch-153: 153-275 has 0 flows:
+Switch-153: 275-153 has 0 flows:
+Switch-154: 154-275 has 0 flows:
+Switch-154: 275-154 has 0 flows:
+Switch-155: 155-275 has 0 flows:
+Switch-155: 275-155 has 1 flows:, 3629
+Switch-156: 156-275 has 0 flows:
+Switch-156: 275-156 has 0 flows:
+Switch-157: 157-275 has 0 flows:
+Switch-157: 275-157 has 0 flows:
+Switch-158: 158-275 has 0 flows:
+Switch-158: 275-158 has 0 flows:
+Switch-159: 159-275 has 0 flows:
+Switch-159: 275-159 has 1 flows:, 362
+Switch-160: 160-276 has 0 flows:
+Switch-160: 276-160 has 2 flows:, 803, 2889
+Switch-161: 161-276 has 0 flows:
+Switch-161: 276-161 has 2 flows:, 3161, 4169
+Switch-162: 162-276 has 0 flows:
+Switch-162: 276-162 has 1 flows:, 228
+Switch-163: 163-276 has 0 flows:
+Switch-163: 276-163 has 0 flows:
+Switch-164: 164-276 has 0 flows:
+Switch-164: 276-164 has 0 flows:
+Switch-165: 165-276 has 0 flows:
+Switch-165: 276-165 has 1 flows:, 1877
+Switch-166: 166-276 has 0 flows:
+Switch-166: 276-166 has 1 flows:, 4022
+Switch-167: 167-276 has 0 flows:
+Switch-167: 276-167 has 0 flows:
+Switch-168: 168-277 has 0 flows:
+Switch-168: 277-168 has 0 flows:
+Switch-169: 169-277 has 0 flows:
+Switch-169: 277-169 has 0 flows:
+Switch-170: 170-277 has 0 flows:
+Switch-170: 277-170 has 0 flows:
+Switch-171: 171-277 has 0 flows:
+Switch-171: 277-171 has 0 flows:
+Switch-172: 172-277 has 0 flows:
+Switch-172: 277-172 has 0 flows:
+Switch-173: 173-277 has 0 flows:
+Switch-173: 277-173 has 0 flows:
+Switch-174: 174-277 has 0 flows:
+Switch-174: 277-174 has 0 flows:
+Switch-175: 175-277 has 0 flows:
+Switch-175: 277-175 has 0 flows:
+Switch-176: 176-278 has 0 flows:
+Switch-176: 278-176 has 0 flows:
+Switch-177: 177-278 has 0 flows:
+Switch-177: 278-177 has 0 flows:
+Switch-178: 178-278 has 0 flows:
+Switch-178: 278-178 has 1 flows:, 1900
+Switch-179: 179-278 has 0 flows:
+Switch-179: 278-179 has 0 flows:
+Switch-180: 180-278 has 0 flows:
+Switch-180: 278-180 has 0 flows:
+Switch-181: 181-278 has 0 flows:
+Switch-181: 278-181 has 0 flows:
+Switch-182: 182-278 has 0 flows:
+Switch-182: 278-182 has 0 flows:
+Switch-183: 183-278 has 0 flows:
+Switch-183: 278-183 has 0 flows:
+Switch-184: 184-279 has 0 flows:
+Switch-184: 279-184 has 1 flows:, 2143
+Switch-185: 185-279 has 0 flows:
+Switch-185: 279-185 has 2 flows:, 1015, 3858
+Switch-186: 186-279 has 0 flows:
+Switch-186: 279-186 has 2 flows:, 142, 3049
+Switch-187: 187-279 has 0 flows:
+Switch-187: 279-187 has 4 flows:, 397, 1575, 2179, 2211
+Switch-188: 188-279 has 0 flows:
+Switch-188: 279-188 has 3 flows:, 1240, 1386, 1552
+Switch-189: 189-279 has 0 flows:
+Switch-189: 279-189 has 1 flows:, 4227
+Switch-190: 190-279 has 0 flows:
+Switch-190: 279-190 has 1 flows:, 3249
+Switch-191: 191-279 has 0 flows:
+Switch-191: 279-191 has 1 flows:, 3423
+Switch-192: 192-280 has 0 flows:
+Switch-192: 280-192 has 1 flows:, 1639
+Switch-193: 193-280 has 0 flows:
+Switch-193: 280-193 has 0 flows:
+Switch-194: 194-280 has 0 flows:
+Switch-194: 280-194 has 1 flows:, 3234
+Switch-195: 195-280 has 0 flows:
+Switch-195: 280-195 has 0 flows:
+Switch-196: 196-280 has 0 flows:
+Switch-196: 280-196 has 0 flows:
+Switch-197: 197-280 has 0 flows:
+Switch-197: 280-197 has 0 flows:
+Switch-198: 198-280 has 0 flows:
+Switch-198: 280-198 has 0 flows:
+Switch-199: 199-280 has 0 flows:
+Switch-199: 280-199 has 0 flows:
+Switch-200: 200-281 has 0 flows:
+Switch-200: 281-200 has 0 flows:
+Switch-201: 201-281 has 0 flows:
+Switch-201: 281-201 has 0 flows:
+Switch-202: 202-281 has 0 flows:
+Switch-202: 281-202 has 0 flows:
+Switch-203: 203-281 has 0 flows:
+Switch-203: 281-203 has 0 flows:
+Switch-204: 204-281 has 0 flows:
+Switch-204: 281-204 has 0 flows:
+Switch-205: 205-281 has 0 flows:
+Switch-205: 281-205 has 0 flows:
+Switch-206: 206-281 has 0 flows:
+Switch-206: 281-206 has 0 flows:
+Switch-207: 207-281 has 0 flows:
+Switch-207: 281-207 has 0 flows:
+Switch-208: 208-282 has 0 flows:
+Switch-208: 282-208 has 0 flows:
+Switch-209: 209-282 has 0 flows:
+Switch-209: 282-209 has 1 flows:, 3068
+Switch-210: 210-282 has 0 flows:
+Switch-210: 282-210 has 0 flows:
+Switch-211: 211-282 has 0 flows:
+Switch-211: 282-211 has 2 flows:, 1123, 1498
+Switch-212: 212-282 has 0 flows:
+Switch-212: 282-212 has 1 flows:, 226
+Switch-213: 213-282 has 0 flows:
+Switch-213: 282-213 has 1 flows:, 268
+Switch-214: 214-282 has 0 flows:
+Switch-214: 282-214 has 2 flows:, 3331, 3709
+Switch-215: 215-282 has 0 flows:
+Switch-215: 282-215 has 1 flows:, 1650
+Switch-216: 216-283 has 0 flows:
+Switch-216: 283-216 has 0 flows:
+Switch-217: 217-283 has 0 flows:
+Switch-217: 283-217 has 0 flows:
+Switch-218: 218-283 has 0 flows:
+Switch-218: 283-218 has 0 flows:
+Switch-219: 219-283 has 0 flows:
+Switch-219: 283-219 has 0 flows:
+Switch-220: 220-283 has 0 flows:
+Switch-220: 283-220 has 0 flows:
+Switch-221: 221-283 has 0 flows:
+Switch-221: 283-221 has 0 flows:
+Switch-222: 222-283 has 0 flows:
+Switch-222: 283-222 has 0 flows:
+Switch-223: 223-283 has 0 flows:
+Switch-223: 283-223 has 0 flows:
+Switch-224: 224-284 has 0 flows:
+Switch-224: 284-224 has 0 flows:
+Switch-225: 225-284 has 0 flows:
+Switch-225: 284-225 has 0 flows:
+Switch-226: 226-284 has 0 flows:
+Switch-226: 284-226 has 0 flows:
+Switch-227: 227-284 has 0 flows:
+Switch-227: 284-227 has 0 flows:
+Switch-228: 228-284 has 0 flows:
+Switch-228: 284-228 has 2 flows:, 385, 1179
+Switch-229: 229-284 has 0 flows:
+Switch-229: 284-229 has 1 flows:, 4146
+Switch-230: 230-284 has 0 flows:
+Switch-230: 284-230 has 1 flows:, 2815
+Switch-231: 231-284 has 0 flows:
+Switch-231: 284-231 has 0 flows:
+Switch-232: 232-285 has 0 flows:
+Switch-232: 285-232 has 0 flows:
+Switch-233: 233-285 has 0 flows:
+Switch-233: 285-233 has 0 flows:
+Switch-234: 234-285 has 0 flows:
+Switch-234: 285-234 has 0 flows:
+Switch-235: 235-285 has 0 flows:
+Switch-235: 285-235 has 1 flows:, 3090
+Switch-236: 236-285 has 0 flows:
+Switch-236: 285-236 has 0 flows:
+Switch-237: 237-285 has 0 flows:
+Switch-237: 285-237 has 0 flows:
+Switch-238: 238-285 has 0 flows:
+Switch-238: 285-238 has 2 flows:, 1072, 1647
+Switch-239: 239-285 has 0 flows:
+Switch-239: 285-239 has 2 flows:, 2031, 3550
+Switch-240: 240-286 has 0 flows:
+Switch-240: 286-240 has 2 flows:, 3674, 3942
+Switch-241: 241-286 has 0 flows:
+Switch-241: 286-241 has 2 flows:, 2056, 3350
+Switch-242: 242-286 has 0 flows:
+Switch-242: 286-242 has 0 flows:
+Switch-243: 243-286 has 0 flows:
+Switch-243: 286-243 has 1 flows:, 221
+Switch-244: 244-286 has 0 flows:
+Switch-244: 286-244 has 3 flows:, 1662, 2883, 4105
+Switch-245: 245-286 has 0 flows:
+Switch-245: 286-245 has 2 flows:, 2735, 3925
+Switch-246: 246-286 has 0 flows:
+Switch-246: 286-246 has 2 flows:, 1167, 4278
+Switch-247: 247-286 has 0 flows:
+Switch-247: 286-247 has 1 flows:, 1606
+Switch-248: 248-287 has 0 flows:
+Switch-248: 287-248 has 1 flows:, 1657
+Switch-249: 249-287 has 0 flows:
+Switch-249: 287-249 has 1 flows:, 4004
+Switch-250: 250-287 has 0 flows:
+Switch-250: 287-250 has 0 flows:
+Switch-251: 251-287 has 0 flows:
+Switch-251: 287-251 has 0 flows:
+Switch-252: 252-287 has 0 flows:
+Switch-252: 287-252 has 1 flows:, 3944
+Switch-253: 253-287 has 0 flows:
+Switch-253: 287-253 has 0 flows:
+Switch-254: 254-287 has 0 flows:
+Switch-254: 287-254 has 0 flows:
+Switch-255: 255-287 has 0 flows:
+Switch-255: 287-255 has 2 flows:, 15, 4316
+Switch-256: 256-288 has 0 flows:
+Switch-256: 288-256 has 0 flows:
+Switch-256: 256-289 has 0 flows:
+Switch-256: 289-256 has 1 flows:, 1582
+Switch-256: 0-256 has 0 flows:
+Switch-256: 256-0 has 0 flows:
+Switch-256: 1-256 has 0 flows:
+Switch-256: 256-1 has 1 flows:, 1582
+Switch-256: 2-256 has 0 flows:
+Switch-256: 256-2 has 0 flows:
+Switch-256: 3-256 has 0 flows:
+Switch-256: 256-3 has 0 flows:
+Switch-256: 4-256 has 0 flows:
+Switch-256: 256-4 has 0 flows:
+Switch-256: 5-256 has 0 flows:
+Switch-256: 256-5 has 0 flows:
+Switch-256: 6-256 has 0 flows:
+Switch-256: 256-6 has 0 flows:
+Switch-256: 7-256 has 0 flows:
+Switch-256: 256-7 has 0 flows:
+Switch-257: 257-288 has 0 flows:
+Switch-257: 288-257 has 1 flows:, 3069
+Switch-257: 257-289 has 0 flows:
+Switch-257: 289-257 has 0 flows:
+Switch-257: 8-257 has 0 flows:
+Switch-257: 257-8 has 1 flows:, 3069
+Switch-257: 9-257 has 0 flows:
+Switch-257: 257-9 has 0 flows:
+Switch-257: 10-257 has 0 flows:
+Switch-257: 257-10 has 0 flows:
+Switch-257: 11-257 has 0 flows:
+Switch-257: 257-11 has 0 flows:
+Switch-257: 12-257 has 0 flows:
+Switch-257: 257-12 has 0 flows:
+Switch-257: 13-257 has 0 flows:
+Switch-257: 257-13 has 0 flows:
+Switch-257: 14-257 has 0 flows:
+Switch-257: 257-14 has 0 flows:
+Switch-257: 15-257 has 0 flows:
+Switch-257: 257-15 has 0 flows:
+Switch-258: 258-288 has 49 flows:, 15, 67, 76, 142, 254, 268, 362, 566, 647, 740, 775, 803, 807, 1072, 1123, 1240, 1386, 1498, 1552, 1575, 1639, 1650, 1657, 1806, 1828, 2031, 2056, 2143, 2179, 2392, 2506, 2679, 2735, 2797, 2876, 2890, 3049, 3069, 3082, 3090, 3121, 3161, 3331, 3550, 3858, 3942, 3944, 3997, 4004
+Switch-258: 288-258 has 0 flows:
+Switch-258: 258-289 has 51 flows:, 47, 221, 226, 228, 385, 397, 846, 864, 960, 1015, 1167, 1179, 1516, 1582, 1606, 1647, 1662, 1684, 1877, 1900, 2158, 2211, 2226, 2317, 2815, 2883, 2889, 3068, 3229, 3234, 3249, 3350, 3403, 3423, 3433, 3481, 3578, 3629, 3674, 3709, 3752, 3908, 3925, 3993, 4022, 4105, 4146, 4169, 4227, 4278, 4316
+Switch-258: 289-258 has 0 flows:
+Switch-258: 16-258 has 24 flows:, 226, 268, 960, 1123, 1386, 1516, 1575, 1647, 1650, 1657, 1662, 1900, 2143, 2158, 2211, 2506, 2735, 2815, 2883, 3090, 3161, 3423, 4105, 4278
+Switch-258: 258-16 has 0 flows:
+Switch-258: 17-258 has 13 flows:, 47, 76, 803, 1167, 1552, 1639, 2392, 2890, 3121, 3229, 3350, 3709, 4146
+Switch-258: 258-17 has 0 flows:
+Switch-258: 18-258 has 9 flows:, 566, 740, 807, 864, 1240, 1498, 1582, 1877, 4316
+Switch-258: 258-18 has 0 flows:
+Switch-258: 19-258 has 12 flows:, 221, 254, 846, 1015, 1179, 2317, 3068, 3082, 3752, 3858, 3944, 3993
+Switch-258: 258-19 has 0 flows:
+Switch-258: 20-258 has 12 flows:, 142, 362, 385, 1072, 1828, 2797, 3069, 3249, 3433, 3481, 4004, 4169
+Switch-258: 258-20 has 0 flows:
+Switch-258: 21-258 has 10 flows:, 775, 1684, 2056, 2226, 2876, 3049, 3234, 3331, 3942, 4022
+Switch-258: 258-21 has 0 flows:
+Switch-258: 22-258 has 10 flows:, 67, 647, 1806, 2031, 2179, 2889, 3403, 3578, 3908, 3997
+Switch-258: 258-22 has 0 flows:
+Switch-258: 23-258 has 10 flows:, 15, 228, 397, 1606, 2679, 3550, 3629, 3674, 3925, 4227
+Switch-258: 258-23 has 0 flows:
+Switch-259: 259-288 has 0 flows:
+Switch-259: 288-259 has 0 flows:
+Switch-259: 259-289 has 0 flows:
+Switch-259: 289-259 has 0 flows:
+Switch-259: 24-259 has 0 flows:
+Switch-259: 259-24 has 0 flows:
+Switch-259: 25-259 has 0 flows:
+Switch-259: 259-25 has 0 flows:
+Switch-259: 26-259 has 0 flows:
+Switch-259: 259-26 has 0 flows:
+Switch-259: 27-259 has 0 flows:
+Switch-259: 259-27 has 0 flows:
+Switch-259: 28-259 has 0 flows:
+Switch-259: 259-28 has 0 flows:
+Switch-259: 29-259 has 0 flows:
+Switch-259: 259-29 has 0 flows:
+Switch-259: 30-259 has 0 flows:
+Switch-259: 259-30 has 0 flows:
+Switch-259: 31-259 has 0 flows:
+Switch-259: 259-31 has 0 flows:
+Switch-260: 260-288 has 0 flows:
+Switch-260: 288-260 has 2 flows:, 647, 3997
+Switch-260: 260-289 has 0 flows:
+Switch-260: 289-260 has 2 flows:, 3433, 3752
+Switch-260: 32-260 has 0 flows:
+Switch-260: 260-32 has 1 flows:, 647
+Switch-260: 33-260 has 0 flows:
+Switch-260: 260-33 has 0 flows:
+Switch-260: 34-260 has 0 flows:
+Switch-260: 260-34 has 0 flows:
+Switch-260: 35-260 has 0 flows:
+Switch-260: 260-35 has 0 flows:
+Switch-260: 36-260 has 0 flows:
+Switch-260: 260-36 has 2 flows:, 3752, 3997
+Switch-260: 37-260 has 0 flows:
+Switch-260: 260-37 has 0 flows:
+Switch-260: 38-260 has 0 flows:
+Switch-260: 260-38 has 1 flows:, 3433
+Switch-260: 39-260 has 0 flows:
+Switch-260: 260-39 has 0 flows:
+Switch-261: 261-288 has 0 flows:
+Switch-261: 288-261 has 7 flows:, 76, 740, 775, 1806, 1828, 2392, 2506
+Switch-261: 261-289 has 0 flows:
+Switch-261: 289-261 has 1 flows:, 960
+Switch-261: 40-261 has 0 flows:
+Switch-261: 261-40 has 1 flows:, 2392
+Switch-261: 41-261 has 0 flows:
+Switch-261: 261-41 has 1 flows:, 1828
+Switch-261: 42-261 has 0 flows:
+Switch-261: 261-42 has 0 flows:
+Switch-261: 43-261 has 0 flows:
+Switch-261: 261-43 has 2 flows:, 775, 960
+Switch-261: 44-261 has 0 flows:
+Switch-261: 261-44 has 1 flows:, 76
+Switch-261: 45-261 has 0 flows:
+Switch-261: 261-45 has 0 flows:
+Switch-261: 46-261 has 0 flows:
+Switch-261: 261-46 has 3 flows:, 740, 1806, 2506
+Switch-261: 47-261 has 0 flows:
+Switch-261: 261-47 has 0 flows:
+Switch-262: 262-288 has 0 flows:
+Switch-262: 288-262 has 0 flows:
+Switch-262: 262-289 has 0 flows:
+Switch-262: 289-262 has 0 flows:
+Switch-262: 48-262 has 0 flows:
+Switch-262: 262-48 has 0 flows:
+Switch-262: 49-262 has 0 flows:
+Switch-262: 262-49 has 0 flows:
+Switch-262: 50-262 has 0 flows:
+Switch-262: 262-50 has 0 flows:
+Switch-262: 51-262 has 0 flows:
+Switch-262: 262-51 has 0 flows:
+Switch-262: 52-262 has 0 flows:
+Switch-262: 262-52 has 0 flows:
+Switch-262: 53-262 has 0 flows:
+Switch-262: 262-53 has 0 flows:
+Switch-262: 54-262 has 0 flows:
+Switch-262: 262-54 has 0 flows:
+Switch-262: 55-262 has 0 flows:
+Switch-262: 262-55 has 0 flows:
+Switch-263: 263-288 has 0 flows:
+Switch-263: 288-263 has 0 flows:
+Switch-263: 263-289 has 0 flows:
+Switch-263: 289-263 has 0 flows:
+Switch-263: 56-263 has 0 flows:
+Switch-263: 263-56 has 0 flows:
+Switch-263: 57-263 has 0 flows:
+Switch-263: 263-57 has 0 flows:
+Switch-263: 58-263 has 0 flows:
+Switch-263: 263-58 has 0 flows:
+Switch-263: 59-263 has 0 flows:
+Switch-263: 263-59 has 0 flows:
+Switch-263: 60-263 has 0 flows:
+Switch-263: 263-60 has 0 flows:
+Switch-263: 61-263 has 0 flows:
+Switch-263: 263-61 has 0 flows:
+Switch-263: 62-263 has 0 flows:
+Switch-263: 263-62 has 0 flows:
+Switch-263: 63-263 has 0 flows:
+Switch-263: 263-63 has 0 flows:
+Switch-264: 264-288 has 0 flows:
+Switch-264: 288-264 has 1 flows:, 2890
+Switch-264: 264-289 has 0 flows:
+Switch-264: 289-264 has 2 flows:, 1684, 2226
+Switch-264: 64-264 has 0 flows:
+Switch-264: 264-64 has 1 flows:, 2226
+Switch-264: 65-264 has 0 flows:
+Switch-264: 264-65 has 1 flows:, 2890
+Switch-264: 66-264 has 0 flows:
+Switch-264: 264-66 has 0 flows:
+Switch-264: 67-264 has 0 flows:
+Switch-264: 264-67 has 0 flows:
+Switch-264: 68-264 has 0 flows:
+Switch-264: 264-68 has 0 flows:
+Switch-264: 69-264 has 0 flows:
+Switch-264: 264-69 has 0 flows:
+Switch-264: 70-264 has 0 flows:
+Switch-264: 264-70 has 1 flows:, 1684
+Switch-264: 71-264 has 0 flows:
+Switch-264: 264-71 has 0 flows:
+Switch-265: 265-288 has 0 flows:
+Switch-265: 288-265 has 2 flows:, 67, 2876
+Switch-265: 265-289 has 0 flows:
+Switch-265: 289-265 has 1 flows:, 3481
+Switch-265: 72-265 has 0 flows:
+Switch-265: 265-72 has 0 flows:
+Switch-265: 73-265 has 0 flows:
+Switch-265: 265-73 has 0 flows:
+Switch-265: 74-265 has 0 flows:
+Switch-265: 265-74 has 2 flows:, 67, 2876
+Switch-265: 75-265 has 0 flows:
+Switch-265: 265-75 has 1 flows:, 3481
+Switch-265: 76-265 has 0 flows:
+Switch-265: 265-76 has 0 flows:
+Switch-265: 77-265 has 0 flows:
+Switch-265: 265-77 has 0 flows:
+Switch-265: 78-265 has 0 flows:
+Switch-265: 265-78 has 0 flows:
+Switch-265: 79-265 has 0 flows:
+Switch-265: 265-79 has 0 flows:
+Switch-266: 266-288 has 0 flows:
+Switch-266: 288-266 has 0 flows:
+Switch-266: 266-289 has 0 flows:
+Switch-266: 289-266 has 0 flows:
+Switch-266: 80-266 has 0 flows:
+Switch-266: 266-80 has 0 flows:
+Switch-266: 81-266 has 0 flows:
+Switch-266: 266-81 has 0 flows:
+Switch-266: 82-266 has 0 flows:
+Switch-266: 266-82 has 0 flows:
+Switch-266: 83-266 has 0 flows:
+Switch-266: 266-83 has 0 flows:
+Switch-266: 84-266 has 0 flows:
+Switch-266: 266-84 has 0 flows:
+Switch-266: 85-266 has 0 flows:
+Switch-266: 266-85 has 0 flows:
+Switch-266: 86-266 has 0 flows:
+Switch-266: 266-86 has 0 flows:
+Switch-266: 87-266 has 0 flows:
+Switch-266: 266-87 has 0 flows:
+Switch-267: 267-288 has 0 flows:
+Switch-267: 288-267 has 0 flows:
+Switch-267: 267-289 has 0 flows:
+Switch-267: 289-267 has 0 flows:
+Switch-267: 88-267 has 0 flows:
+Switch-267: 267-88 has 0 flows:
+Switch-267: 89-267 has 0 flows:
+Switch-267: 267-89 has 0 flows:
+Switch-267: 90-267 has 0 flows:
+Switch-267: 267-90 has 0 flows:
+Switch-267: 91-267 has 0 flows:
+Switch-267: 267-91 has 0 flows:
+Switch-267: 92-267 has 0 flows:
+Switch-267: 267-92 has 0 flows:
+Switch-267: 93-267 has 0 flows:
+Switch-267: 267-93 has 0 flows:
+Switch-267: 94-267 has 0 flows:
+Switch-267: 267-94 has 0 flows:
+Switch-267: 95-267 has 0 flows:
+Switch-267: 267-95 has 0 flows:
+Switch-268: 268-288 has 0 flows:
+Switch-268: 288-268 has 0 flows:
+Switch-268: 268-289 has 0 flows:
+Switch-268: 289-268 has 0 flows:
+Switch-268: 96-268 has 0 flows:
+Switch-268: 268-96 has 0 flows:
+Switch-268: 97-268 has 0 flows:
+Switch-268: 268-97 has 0 flows:
+Switch-268: 98-268 has 0 flows:
+Switch-268: 268-98 has 0 flows:
+Switch-268: 99-268 has 0 flows:
+Switch-268: 268-99 has 0 flows:
+Switch-268: 100-268 has 0 flows:
+Switch-268: 268-100 has 0 flows:
+Switch-268: 101-268 has 0 flows:
+Switch-268: 268-101 has 0 flows:
+Switch-268: 102-268 has 0 flows:
+Switch-268: 268-102 has 0 flows:
+Switch-268: 103-268 has 0 flows:
+Switch-268: 268-103 has 0 flows:
+Switch-269: 269-288 has 0 flows:
+Switch-269: 288-269 has 0 flows:
+Switch-269: 269-289 has 0 flows:
+Switch-269: 289-269 has 0 flows:
+Switch-269: 104-269 has 0 flows:
+Switch-269: 269-104 has 0 flows:
+Switch-269: 105-269 has 0 flows:
+Switch-269: 269-105 has 0 flows:
+Switch-269: 106-269 has 0 flows:
+Switch-269: 269-106 has 0 flows:
+Switch-269: 107-269 has 0 flows:
+Switch-269: 269-107 has 0 flows:
+Switch-269: 108-269 has 0 flows:
+Switch-269: 269-108 has 0 flows:
+Switch-269: 109-269 has 0 flows:
+Switch-269: 269-109 has 0 flows:
+Switch-269: 110-269 has 0 flows:
+Switch-269: 269-110 has 0 flows:
+Switch-269: 111-269 has 0 flows:
+Switch-269: 269-111 has 0 flows:
+Switch-270: 270-288 has 0 flows:
+Switch-270: 288-270 has 0 flows:
+Switch-270: 270-289 has 0 flows:
+Switch-270: 289-270 has 0 flows:
+Switch-270: 112-270 has 0 flows:
+Switch-270: 270-112 has 0 flows:
+Switch-270: 113-270 has 0 flows:
+Switch-270: 270-113 has 0 flows:
+Switch-270: 114-270 has 0 flows:
+Switch-270: 270-114 has 0 flows:
+Switch-270: 115-270 has 0 flows:
+Switch-270: 270-115 has 0 flows:
+Switch-270: 116-270 has 0 flows:
+Switch-270: 270-116 has 0 flows:
+Switch-270: 117-270 has 0 flows:
+Switch-270: 270-117 has 0 flows:
+Switch-270: 118-270 has 0 flows:
+Switch-270: 270-118 has 0 flows:
+Switch-270: 119-270 has 0 flows:
+Switch-270: 270-119 has 0 flows:
+Switch-271: 271-288 has 0 flows:
+Switch-271: 288-271 has 1 flows:, 807
+Switch-271: 271-289 has 0 flows:
+Switch-271: 289-271 has 2 flows:, 864, 2317
+Switch-271: 120-271 has 0 flows:
+Switch-271: 271-120 has 1 flows:, 807
+Switch-271: 121-271 has 0 flows:
+Switch-271: 271-121 has 1 flows:, 2317
+Switch-271: 122-271 has 0 flows:
+Switch-271: 271-122 has 0 flows:
+Switch-271: 123-271 has 0 flows:
+Switch-271: 271-123 has 0 flows:
+Switch-271: 124-271 has 0 flows:
+Switch-271: 271-124 has 0 flows:
+Switch-271: 125-271 has 0 flows:
+Switch-271: 271-125 has 1 flows:, 864
+Switch-271: 126-271 has 0 flows:
+Switch-271: 271-126 has 0 flows:
+Switch-271: 127-271 has 0 flows:
+Switch-271: 271-127 has 0 flows:
+Switch-272: 272-290 has 0 flows:
+Switch-272: 290-272 has 0 flows:
+Switch-272: 272-291 has 0 flows:
+Switch-272: 291-272 has 0 flows:
+Switch-272: 128-272 has 0 flows:
+Switch-272: 272-128 has 0 flows:
+Switch-272: 129-272 has 0 flows:
+Switch-272: 272-129 has 0 flows:
+Switch-272: 130-272 has 0 flows:
+Switch-272: 272-130 has 0 flows:
+Switch-272: 131-272 has 0 flows:
+Switch-272: 272-131 has 0 flows:
+Switch-272: 132-272 has 0 flows:
+Switch-272: 272-132 has 0 flows:
+Switch-272: 133-272 has 0 flows:
+Switch-272: 272-133 has 0 flows:
+Switch-272: 134-272 has 0 flows:
+Switch-272: 272-134 has 0 flows:
+Switch-272: 135-272 has 0 flows:
+Switch-272: 272-135 has 0 flows:
+Switch-273: 273-290 has 0 flows:
+Switch-273: 290-273 has 4 flows:, 566, 2797, 3082, 3121
+Switch-273: 273-291 has 0 flows:
+Switch-273: 291-273 has 5 flows:, 47, 846, 3229, 3403, 3993
+Switch-273: 136-273 has 0 flows:
+Switch-273: 273-136 has 0 flows:
+Switch-273: 137-273 has 0 flows:
+Switch-273: 273-137 has 2 flows:, 47, 2797
+Switch-273: 138-273 has 0 flows:
+Switch-273: 273-138 has 1 flows:, 3082
+Switch-273: 139-273 has 0 flows:
+Switch-273: 273-139 has 2 flows:, 846, 3121
+Switch-273: 140-273 has 0 flows:
+Switch-273: 273-140 has 1 flows:, 3403
+Switch-273: 141-273 has 0 flows:
+Switch-273: 273-141 has 1 flows:, 3229
+Switch-273: 142-273 has 0 flows:
+Switch-273: 273-142 has 1 flows:, 3993
+Switch-273: 143-273 has 0 flows:
+Switch-273: 273-143 has 1 flows:, 566
+Switch-274: 274-290 has 0 flows:
+Switch-274: 290-274 has 1 flows:, 2679
+Switch-274: 274-291 has 0 flows:
+Switch-274: 291-274 has 4 flows:, 1516, 2158, 3578, 3908
+Switch-274: 144-274 has 0 flows:
+Switch-274: 274-144 has 0 flows:
+Switch-274: 145-274 has 0 flows:
+Switch-274: 274-145 has 1 flows:, 1516
+Switch-274: 146-274 has 0 flows:
+Switch-274: 274-146 has 1 flows:, 3908
+Switch-274: 147-274 has 0 flows:
+Switch-274: 274-147 has 1 flows:, 2158
+Switch-274: 148-274 has 0 flows:
+Switch-274: 274-148 has 1 flows:, 3578
+Switch-274: 149-274 has 0 flows:
+Switch-274: 274-149 has 1 flows:, 2679
+Switch-274: 150-274 has 0 flows:
+Switch-274: 274-150 has 0 flows:
+Switch-274: 151-274 has 0 flows:
+Switch-274: 274-151 has 0 flows:
+Switch-275: 275-290 has 0 flows:
+Switch-275: 290-275 has 2 flows:, 254, 362
+Switch-275: 275-291 has 0 flows:
+Switch-275: 291-275 has 1 flows:, 3629
+Switch-275: 152-275 has 0 flows:
+Switch-275: 275-152 has 1 flows:, 254
+Switch-275: 153-275 has 0 flows:
+Switch-275: 275-153 has 0 flows:
+Switch-275: 154-275 has 0 flows:
+Switch-275: 275-154 has 0 flows:
+Switch-275: 155-275 has 0 flows:
+Switch-275: 275-155 has 1 flows:, 3629
+Switch-275: 156-275 has 0 flows:
+Switch-275: 275-156 has 0 flows:
+Switch-275: 157-275 has 0 flows:
+Switch-275: 275-157 has 0 flows:
+Switch-275: 158-275 has 0 flows:
+Switch-275: 275-158 has 0 flows:
+Switch-275: 159-275 has 0 flows:
+Switch-275: 275-159 has 1 flows:, 362
+Switch-276: 276-290 has 0 flows:
+Switch-276: 290-276 has 2 flows:, 803, 3161
+Switch-276: 276-291 has 0 flows:
+Switch-276: 291-276 has 5 flows:, 228, 1877, 2889, 4022, 4169
+Switch-276: 160-276 has 0 flows:
+Switch-276: 276-160 has 2 flows:, 803, 2889
+Switch-276: 161-276 has 0 flows:
+Switch-276: 276-161 has 2 flows:, 3161, 4169
+Switch-276: 162-276 has 0 flows:
+Switch-276: 276-162 has 1 flows:, 228
+Switch-276: 163-276 has 0 flows:
+Switch-276: 276-163 has 0 flows:
+Switch-276: 164-276 has 0 flows:
+Switch-276: 276-164 has 0 flows:
+Switch-276: 165-276 has 0 flows:
+Switch-276: 276-165 has 1 flows:, 1877
+Switch-276: 166-276 has 0 flows:
+Switch-276: 276-166 has 1 flows:, 4022
+Switch-276: 167-276 has 0 flows:
+Switch-276: 276-167 has 0 flows:
+Switch-277: 277-290 has 0 flows:
+Switch-277: 290-277 has 0 flows:
+Switch-277: 277-291 has 0 flows:
+Switch-277: 291-277 has 0 flows:
+Switch-277: 168-277 has 0 flows:
+Switch-277: 277-168 has 0 flows:
+Switch-277: 169-277 has 0 flows:
+Switch-277: 277-169 has 0 flows:
+Switch-277: 170-277 has 0 flows:
+Switch-277: 277-170 has 0 flows:
+Switch-277: 171-277 has 0 flows:
+Switch-277: 277-171 has 0 flows:
+Switch-277: 172-277 has 0 flows:
+Switch-277: 277-172 has 0 flows:
+Switch-277: 173-277 has 0 flows:
+Switch-277: 277-173 has 0 flows:
+Switch-277: 174-277 has 0 flows:
+Switch-277: 277-174 has 0 flows:
+Switch-277: 175-277 has 0 flows:
+Switch-277: 277-175 has 0 flows:
+Switch-278: 278-290 has 0 flows:
+Switch-278: 290-278 has 0 flows:
+Switch-278: 278-291 has 0 flows:
+Switch-278: 291-278 has 1 flows:, 1900
+Switch-278: 176-278 has 0 flows:
+Switch-278: 278-176 has 0 flows:
+Switch-278: 177-278 has 0 flows:
+Switch-278: 278-177 has 0 flows:
+Switch-278: 178-278 has 0 flows:
+Switch-278: 278-178 has 1 flows:, 1900
+Switch-278: 179-278 has 0 flows:
+Switch-278: 278-179 has 0 flows:
+Switch-278: 180-278 has 0 flows:
+Switch-278: 278-180 has 0 flows:
+Switch-278: 181-278 has 0 flows:
+Switch-278: 278-181 has 0 flows:
+Switch-278: 182-278 has 0 flows:
+Switch-278: 278-182 has 0 flows:
+Switch-278: 183-278 has 0 flows:
+Switch-278: 278-183 has 0 flows:
+Switch-279: 279-290 has 0 flows:
+Switch-279: 290-279 has 9 flows:, 142, 1240, 1386, 1552, 1575, 2143, 2179, 3049, 3858
+Switch-279: 279-291 has 0 flows:
+Switch-279: 291-279 has 6 flows:, 397, 1015, 2211, 3249, 3423, 4227
+Switch-279: 184-279 has 0 flows:
+Switch-279: 279-184 has 1 flows:, 2143
+Switch-279: 185-279 has 0 flows:
+Switch-279: 279-185 has 2 flows:, 1015, 3858
+Switch-279: 186-279 has 0 flows:
+Switch-279: 279-186 has 2 flows:, 142, 3049
+Switch-279: 187-279 has 0 flows:
+Switch-279: 279-187 has 4 flows:, 397, 1575, 2179, 2211
+Switch-279: 188-279 has 0 flows:
+Switch-279: 279-188 has 3 flows:, 1240, 1386, 1552
+Switch-279: 189-279 has 0 flows:
+Switch-279: 279-189 has 1 flows:, 4227
+Switch-279: 190-279 has 0 flows:
+Switch-279: 279-190 has 1 flows:, 3249
+Switch-279: 191-279 has 0 flows:
+Switch-279: 279-191 has 1 flows:, 3423
+Switch-280: 280-290 has 0 flows:
+Switch-280: 290-280 has 1 flows:, 1639
+Switch-280: 280-291 has 0 flows:
+Switch-280: 291-280 has 1 flows:, 3234
+Switch-280: 192-280 has 0 flows:
+Switch-280: 280-192 has 1 flows:, 1639
+Switch-280: 193-280 has 0 flows:
+Switch-280: 280-193 has 0 flows:
+Switch-280: 194-280 has 0 flows:
+Switch-280: 280-194 has 1 flows:, 3234
+Switch-280: 195-280 has 0 flows:
+Switch-280: 280-195 has 0 flows:
+Switch-280: 196-280 has 0 flows:
+Switch-280: 280-196 has 0 flows:
+Switch-280: 197-280 has 0 flows:
+Switch-280: 280-197 has 0 flows:
+Switch-280: 198-280 has 0 flows:
+Switch-280: 280-198 has 0 flows:
+Switch-280: 199-280 has 0 flows:
+Switch-280: 280-199 has 0 flows:
+Switch-281: 281-290 has 0 flows:
+Switch-281: 290-281 has 0 flows:
+Switch-281: 281-291 has 0 flows:
+Switch-281: 291-281 has 0 flows:
+Switch-281: 200-281 has 0 flows:
+Switch-281: 281-200 has 0 flows:
+Switch-281: 201-281 has 0 flows:
+Switch-281: 281-201 has 0 flows:
+Switch-281: 202-281 has 0 flows:
+Switch-281: 281-202 has 0 flows:
+Switch-281: 203-281 has 0 flows:
+Switch-281: 281-203 has 0 flows:
+Switch-281: 204-281 has 0 flows:
+Switch-281: 281-204 has 0 flows:
+Switch-281: 205-281 has 0 flows:
+Switch-281: 281-205 has 0 flows:
+Switch-281: 206-281 has 0 flows:
+Switch-281: 281-206 has 0 flows:
+Switch-281: 207-281 has 0 flows:
+Switch-281: 281-207 has 0 flows:
+Switch-282: 282-290 has 0 flows:
+Switch-282: 290-282 has 5 flows:, 268, 1123, 1498, 1650, 3331
+Switch-282: 282-291 has 0 flows:
+Switch-282: 291-282 has 3 flows:, 226, 3068, 3709
+Switch-282: 208-282 has 0 flows:
+Switch-282: 282-208 has 0 flows:
+Switch-282: 209-282 has 0 flows:
+Switch-282: 282-209 has 1 flows:, 3068
+Switch-282: 210-282 has 0 flows:
+Switch-282: 282-210 has 0 flows:
+Switch-282: 211-282 has 0 flows:
+Switch-282: 282-211 has 2 flows:, 1123, 1498
+Switch-282: 212-282 has 0 flows:
+Switch-282: 282-212 has 1 flows:, 226
+Switch-282: 213-282 has 0 flows:
+Switch-282: 282-213 has 1 flows:, 268
+Switch-282: 214-282 has 0 flows:
+Switch-282: 282-214 has 2 flows:, 3331, 3709
+Switch-282: 215-282 has 0 flows:
+Switch-282: 282-215 has 1 flows:, 1650
+Switch-283: 283-290 has 0 flows:
+Switch-283: 290-283 has 0 flows:
+Switch-283: 283-291 has 0 flows:
+Switch-283: 291-283 has 0 flows:
+Switch-283: 216-283 has 0 flows:
+Switch-283: 283-216 has 0 flows:
+Switch-283: 217-283 has 0 flows:
+Switch-283: 283-217 has 0 flows:
+Switch-283: 218-283 has 0 flows:
+Switch-283: 283-218 has 0 flows:
+Switch-283: 219-283 has 0 flows:
+Switch-283: 283-219 has 0 flows:
+Switch-283: 220-283 has 0 flows:
+Switch-283: 283-220 has 0 flows:
+Switch-283: 221-283 has 0 flows:
+Switch-283: 283-221 has 0 flows:
+Switch-283: 222-283 has 0 flows:
+Switch-283: 283-222 has 0 flows:
+Switch-283: 223-283 has 0 flows:
+Switch-283: 283-223 has 0 flows:
+Switch-284: 284-290 has 0 flows:
+Switch-284: 290-284 has 0 flows:
+Switch-284: 284-291 has 0 flows:
+Switch-284: 291-284 has 4 flows:, 385, 1179, 2815, 4146
+Switch-284: 224-284 has 0 flows:
+Switch-284: 284-224 has 0 flows:
+Switch-284: 225-284 has 0 flows:
+Switch-284: 284-225 has 0 flows:
+Switch-284: 226-284 has 0 flows:
+Switch-284: 284-226 has 0 flows:
+Switch-284: 227-284 has 0 flows:
+Switch-284: 284-227 has 0 flows:
+Switch-284: 228-284 has 0 flows:
+Switch-284: 284-228 has 2 flows:, 385, 1179
+Switch-284: 229-284 has 0 flows:
+Switch-284: 284-229 has 1 flows:, 4146
+Switch-284: 230-284 has 0 flows:
+Switch-284: 284-230 has 1 flows:, 2815
+Switch-284: 231-284 has 0 flows:
+Switch-284: 284-231 has 0 flows:
+Switch-285: 285-290 has 0 flows:
+Switch-285: 290-285 has 4 flows:, 1072, 2031, 3090, 3550
+Switch-285: 285-291 has 0 flows:
+Switch-285: 291-285 has 1 flows:, 1647
+Switch-285: 232-285 has 0 flows:
+Switch-285: 285-232 has 0 flows:
+Switch-285: 233-285 has 0 flows:
+Switch-285: 285-233 has 0 flows:
+Switch-285: 234-285 has 0 flows:
+Switch-285: 285-234 has 0 flows:
+Switch-285: 235-285 has 0 flows:
+Switch-285: 285-235 has 1 flows:, 3090
+Switch-285: 236-285 has 0 flows:
+Switch-285: 285-236 has 0 flows:
+Switch-285: 237-285 has 0 flows:
+Switch-285: 285-237 has 0 flows:
+Switch-285: 238-285 has 0 flows:
+Switch-285: 285-238 has 2 flows:, 1072, 1647
+Switch-285: 239-285 has 0 flows:
+Switch-285: 285-239 has 2 flows:, 2031, 3550
+Switch-286: 286-290 has 0 flows:
+Switch-286: 290-286 has 3 flows:, 2056, 2735, 3942
+Switch-286: 286-291 has 0 flows:
+Switch-286: 291-286 has 10 flows:, 221, 1167, 1606, 1662, 2883, 3350, 3674, 3925, 4105, 4278
+Switch-286: 240-286 has 0 flows:
+Switch-286: 286-240 has 2 flows:, 3674, 3942
+Switch-286: 241-286 has 0 flows:
+Switch-286: 286-241 has 2 flows:, 2056, 3350
+Switch-286: 242-286 has 0 flows:
+Switch-286: 286-242 has 0 flows:
+Switch-286: 243-286 has 0 flows:
+Switch-286: 286-243 has 1 flows:, 221
+Switch-286: 244-286 has 0 flows:
+Switch-286: 286-244 has 3 flows:, 1662, 2883, 4105
+Switch-286: 245-286 has 0 flows:
+Switch-286: 286-245 has 2 flows:, 2735, 3925
+Switch-286: 246-286 has 0 flows:
+Switch-286: 286-246 has 2 flows:, 1167, 4278
+Switch-286: 247-286 has 0 flows:
+Switch-286: 286-247 has 1 flows:, 1606
+Switch-287: 287-290 has 0 flows:
+Switch-287: 290-287 has 4 flows:, 15, 1657, 3944, 4004
+Switch-287: 287-291 has 0 flows:
+Switch-287: 291-287 has 1 flows:, 4316
+Switch-287: 248-287 has 0 flows:
+Switch-287: 287-248 has 1 flows:, 1657
+Switch-287: 249-287 has 0 flows:
+Switch-287: 287-249 has 1 flows:, 4004
+Switch-287: 250-287 has 0 flows:
+Switch-287: 287-250 has 0 flows:
+Switch-287: 251-287 has 0 flows:
+Switch-287: 287-251 has 0 flows:
+Switch-287: 252-287 has 0 flows:
+Switch-287: 287-252 has 1 flows:, 3944
+Switch-287: 253-287 has 0 flows:
+Switch-287: 287-253 has 0 flows:
+Switch-287: 254-287 has 0 flows:
+Switch-287: 287-254 has 0 flows:
+Switch-287: 255-287 has 0 flows:
+Switch-287: 287-255 has 2 flows:, 15, 4316
+Switch-288: 288-292 has 4 flows:, 362, 1552, 3121, 3944
+Switch-288: 292-288 has 0 flows:
+Switch-288: 288-293 has 4 flows:, 268, 1657, 2735, 3049
+Switch-288: 293-288 has 0 flows:
+Switch-288: 288-294 has 6 flows:, 1072, 1575, 1650, 2179, 3550, 3858
+Switch-288: 294-288 has 0 flows:
+Switch-288: 288-295 has 4 flows:, 254, 803, 1240, 2679
+Switch-288: 295-288 has 0 flows:
+Switch-288: 288-296 has 6 flows:, 142, 1639, 2031, 2056, 3082, 3942
+Switch-288: 296-288 has 0 flows:
+Switch-288: 288-297 has 4 flows:, 1123, 1498, 2797, 3331
+Switch-288: 297-288 has 0 flows:
+Switch-288: 288-298 has 3 flows:, 1386, 3161, 4004
+Switch-288: 298-288 has 0 flows:
+Switch-288: 288-299 has 4 flows:, 15, 566, 2143, 3090
+Switch-288: 299-288 has 0 flows:
+Switch-288: 256-288 has 0 flows:
+Switch-288: 288-256 has 0 flows:
+Switch-288: 257-288 has 0 flows:
+Switch-288: 288-257 has 1 flows:, 3069
+Switch-288: 258-288 has 49 flows:, 15, 67, 76, 142, 254, 268, 362, 566, 647, 740, 775, 803, 807, 1072, 1123, 1240, 1386, 1498, 1552, 1575, 1639, 1650, 1657, 1806, 1828, 2031, 2056, 2143, 2179, 2392, 2506, 2679, 2735, 2797, 2876, 2890, 3049, 3069, 3082, 3090, 3121, 3161, 3331, 3550, 3858, 3942, 3944, 3997, 4004
+Switch-288: 288-258 has 0 flows:
+Switch-288: 259-288 has 0 flows:
+Switch-288: 288-259 has 0 flows:
+Switch-288: 260-288 has 0 flows:
+Switch-288: 288-260 has 2 flows:, 647, 3997
+Switch-288: 261-288 has 0 flows:
+Switch-288: 288-261 has 7 flows:, 76, 740, 775, 1806, 1828, 2392, 2506
+Switch-288: 262-288 has 0 flows:
+Switch-288: 288-262 has 0 flows:
+Switch-288: 263-288 has 0 flows:
+Switch-288: 288-263 has 0 flows:
+Switch-288: 264-288 has 0 flows:
+Switch-288: 288-264 has 1 flows:, 2890
+Switch-288: 265-288 has 0 flows:
+Switch-288: 288-265 has 2 flows:, 67, 2876
+Switch-288: 266-288 has 0 flows:
+Switch-288: 288-266 has 0 flows:
+Switch-288: 267-288 has 0 flows:
+Switch-288: 288-267 has 0 flows:
+Switch-288: 268-288 has 0 flows:
+Switch-288: 288-268 has 0 flows:
+Switch-288: 269-288 has 0 flows:
+Switch-288: 288-269 has 0 flows:
+Switch-288: 270-288 has 0 flows:
+Switch-288: 288-270 has 0 flows:
+Switch-288: 271-288 has 0 flows:
+Switch-288: 288-271 has 1 flows:, 807
+Switch-289: 289-300 has 6 flows:, 221, 1900, 2883, 3229, 3925, 4169
+Switch-289: 300-289 has 0 flows:
+Switch-289: 289-301 has 3 flows:, 397, 1662, 3908
+Switch-289: 301-289 has 0 flows:
+Switch-289: 289-302 has 5 flows:, 47, 1606, 2889, 3629, 4316
+Switch-289: 302-289 has 0 flows:
+Switch-289: 289-303 has 4 flows:, 385, 846, 1167, 3578
+Switch-289: 303-289 has 0 flows:
+Switch-289: 289-304 has 3 flows:, 226, 3403, 4227
+Switch-289: 304-289 has 0 flows:
+Switch-289: 289-305 has 11 flows:, 228, 1516, 1647, 2815, 3249, 3350, 3423, 3674, 3709, 3993, 4146
+Switch-289: 305-289 has 0 flows:
+Switch-289: 289-306 has 5 flows:, 1877, 2158, 3234, 4022, 4105
+Switch-289: 306-289 has 0 flows:
+Switch-289: 289-307 has 5 flows:, 1015, 1179, 2211, 3068, 4278
+Switch-289: 307-289 has 0 flows:
+Switch-289: 256-289 has 0 flows:
+Switch-289: 289-256 has 1 flows:, 1582
+Switch-289: 257-289 has 0 flows:
+Switch-289: 289-257 has 0 flows:
+Switch-289: 258-289 has 51 flows:, 47, 221, 226, 228, 385, 397, 846, 864, 960, 1015, 1167, 1179, 1516, 1582, 1606, 1647, 1662, 1684, 1877, 1900, 2158, 2211, 2226, 2317, 2815, 2883, 2889, 3068, 3229, 3234, 3249, 3350, 3403, 3423, 3433, 3481, 3578, 3629, 3674, 3709, 3752, 3908, 3925, 3993, 4022, 4105, 4146, 4169, 4227, 4278, 4316
+Switch-289: 289-258 has 0 flows:
+Switch-289: 259-289 has 0 flows:
+Switch-289: 289-259 has 0 flows:
+Switch-289: 260-289 has 0 flows:
+Switch-289: 289-260 has 2 flows:, 3433, 3752
+Switch-289: 261-289 has 0 flows:
+Switch-289: 289-261 has 1 flows:, 960
+Switch-289: 262-289 has 0 flows:
+Switch-289: 289-262 has 0 flows:
+Switch-289: 263-289 has 0 flows:
+Switch-289: 289-263 has 0 flows:
+Switch-289: 264-289 has 0 flows:
+Switch-289: 289-264 has 2 flows:, 1684, 2226
+Switch-289: 265-289 has 0 flows:
+Switch-289: 289-265 has 1 flows:, 3481
+Switch-289: 266-289 has 0 flows:
+Switch-289: 289-266 has 0 flows:
+Switch-289: 267-289 has 0 flows:
+Switch-289: 289-267 has 0 flows:
+Switch-289: 268-289 has 0 flows:
+Switch-289: 289-268 has 0 flows:
+Switch-289: 269-289 has 0 flows:
+Switch-289: 289-269 has 0 flows:
+Switch-289: 270-289 has 0 flows:
+Switch-289: 289-270 has 0 flows:
+Switch-289: 271-289 has 0 flows:
+Switch-289: 289-271 has 2 flows:, 864, 2317
+Switch-290: 290-292 has 0 flows:
+Switch-290: 292-290 has 4 flows:, 362, 1552, 3121, 3944
+Switch-290: 290-293 has 0 flows:
+Switch-290: 293-290 has 4 flows:, 268, 1657, 2735, 3049
+Switch-290: 290-294 has 0 flows:
+Switch-290: 294-290 has 6 flows:, 1072, 1575, 1650, 2179, 3550, 3858
+Switch-290: 290-295 has 0 flows:
+Switch-290: 295-290 has 4 flows:, 254, 803, 1240, 2679
+Switch-290: 290-296 has 0 flows:
+Switch-290: 296-290 has 6 flows:, 142, 1639, 2031, 2056, 3082, 3942
+Switch-290: 290-297 has 0 flows:
+Switch-290: 297-290 has 4 flows:, 1123, 1498, 2797, 3331
+Switch-290: 290-298 has 0 flows:
+Switch-290: 298-290 has 3 flows:, 1386, 3161, 4004
+Switch-290: 290-299 has 0 flows:
+Switch-290: 299-290 has 4 flows:, 15, 566, 2143, 3090
+Switch-290: 272-290 has 0 flows:
+Switch-290: 290-272 has 0 flows:
+Switch-290: 273-290 has 0 flows:
+Switch-290: 290-273 has 4 flows:, 566, 2797, 3082, 3121
+Switch-290: 274-290 has 0 flows:
+Switch-290: 290-274 has 1 flows:, 2679
+Switch-290: 275-290 has 0 flows:
+Switch-290: 290-275 has 2 flows:, 254, 362
+Switch-290: 276-290 has 0 flows:
+Switch-290: 290-276 has 2 flows:, 803, 3161
+Switch-290: 277-290 has 0 flows:
+Switch-290: 290-277 has 0 flows:
+Switch-290: 278-290 has 0 flows:
+Switch-290: 290-278 has 0 flows:
+Switch-290: 279-290 has 0 flows:
+Switch-290: 290-279 has 9 flows:, 142, 1240, 1386, 1552, 1575, 2143, 2179, 3049, 3858
+Switch-290: 280-290 has 0 flows:
+Switch-290: 290-280 has 1 flows:, 1639
+Switch-290: 281-290 has 0 flows:
+Switch-290: 290-281 has 0 flows:
+Switch-290: 282-290 has 0 flows:
+Switch-290: 290-282 has 5 flows:, 268, 1123, 1498, 1650, 3331
+Switch-290: 283-290 has 0 flows:
+Switch-290: 290-283 has 0 flows:
+Switch-290: 284-290 has 0 flows:
+Switch-290: 290-284 has 0 flows:
+Switch-290: 285-290 has 0 flows:
+Switch-290: 290-285 has 4 flows:, 1072, 2031, 3090, 3550
+Switch-290: 286-290 has 0 flows:
+Switch-290: 290-286 has 3 flows:, 2056, 2735, 3942
+Switch-290: 287-290 has 0 flows:
+Switch-290: 290-287 has 4 flows:, 15, 1657, 3944, 4004
+Switch-291: 291-300 has 0 flows:
+Switch-291: 300-291 has 6 flows:, 221, 1900, 2883, 3229, 3925, 4169
+Switch-291: 291-301 has 0 flows:
+Switch-291: 301-291 has 3 flows:, 397, 1662, 3908
+Switch-291: 291-302 has 0 flows:
+Switch-291: 302-291 has 5 flows:, 47, 1606, 2889, 3629, 4316
+Switch-291: 291-303 has 0 flows:
+Switch-291: 303-291 has 4 flows:, 385, 846, 1167, 3578
+Switch-291: 291-304 has 0 flows:
+Switch-291: 304-291 has 3 flows:, 226, 3403, 4227
+Switch-291: 291-305 has 0 flows:
+Switch-291: 305-291 has 11 flows:, 228, 1516, 1647, 2815, 3249, 3350, 3423, 3674, 3709, 3993, 4146
+Switch-291: 291-306 has 0 flows:
+Switch-291: 306-291 has 5 flows:, 1877, 2158, 3234, 4022, 4105
+Switch-291: 291-307 has 0 flows:
+Switch-291: 307-291 has 5 flows:, 1015, 1179, 2211, 3068, 4278
+Switch-291: 272-291 has 0 flows:
+Switch-291: 291-272 has 0 flows:
+Switch-291: 273-291 has 0 flows:
+Switch-291: 291-273 has 5 flows:, 47, 846, 3229, 3403, 3993
+Switch-291: 274-291 has 0 flows:
+Switch-291: 291-274 has 4 flows:, 1516, 2158, 3578, 3908
+Switch-291: 275-291 has 0 flows:
+Switch-291: 291-275 has 1 flows:, 3629
+Switch-291: 276-291 has 0 flows:
+Switch-291: 291-276 has 5 flows:, 228, 1877, 2889, 4022, 4169
+Switch-291: 277-291 has 0 flows:
+Switch-291: 291-277 has 0 flows:
+Switch-291: 278-291 has 0 flows:
+Switch-291: 291-278 has 1 flows:, 1900
+Switch-291: 279-291 has 0 flows:
+Switch-291: 291-279 has 6 flows:, 397, 1015, 2211, 3249, 3423, 4227
+Switch-291: 280-291 has 0 flows:
+Switch-291: 291-280 has 1 flows:, 3234
+Switch-291: 281-291 has 0 flows:
+Switch-291: 291-281 has 0 flows:
+Switch-291: 282-291 has 0 flows:
+Switch-291: 291-282 has 3 flows:, 226, 3068, 3709
+Switch-291: 283-291 has 0 flows:
+Switch-291: 291-283 has 0 flows:
+Switch-291: 284-291 has 0 flows:
+Switch-291: 291-284 has 4 flows:, 385, 1179, 2815, 4146
+Switch-291: 285-291 has 0 flows:
+Switch-291: 291-285 has 1 flows:, 1647
+Switch-291: 286-291 has 0 flows:
+Switch-291: 291-286 has 10 flows:, 221, 1167, 1606, 1662, 2883, 3350, 3674, 3925, 4105, 4278
+Switch-291: 287-291 has 0 flows:
+Switch-291: 291-287 has 1 flows:, 4316
+Switch-292: 288-292 has 4 flows:, 362, 1552, 3121, 3944
+Switch-292: 292-288 has 0 flows:
+Switch-292: 290-292 has 0 flows:
+Switch-292: 292-290 has 4 flows:, 362, 1552, 3121, 3944
+Switch-293: 288-293 has 4 flows:, 268, 1657, 2735, 3049
+Switch-293: 293-288 has 0 flows:
+Switch-293: 290-293 has 0 flows:
+Switch-293: 293-290 has 4 flows:, 268, 1657, 2735, 3049
+Switch-294: 288-294 has 6 flows:, 1072, 1575, 1650, 2179, 3550, 3858
+Switch-294: 294-288 has 0 flows:
+Switch-294: 290-294 has 0 flows:
+Switch-294: 294-290 has 6 flows:, 1072, 1575, 1650, 2179, 3550, 3858
+Switch-295: 288-295 has 4 flows:, 254, 803, 1240, 2679
+Switch-295: 295-288 has 0 flows:
+Switch-295: 290-295 has 0 flows:
+Switch-295: 295-290 has 4 flows:, 254, 803, 1240, 2679
+Switch-296: 288-296 has 6 flows:, 142, 1639, 2031, 2056, 3082, 3942
+Switch-296: 296-288 has 0 flows:
+Switch-296: 290-296 has 0 flows:
+Switch-296: 296-290 has 6 flows:, 142, 1639, 2031, 2056, 3082, 3942
+Switch-297: 288-297 has 4 flows:, 1123, 1498, 2797, 3331
+Switch-297: 297-288 has 0 flows:
+Switch-297: 290-297 has 0 flows:
+Switch-297: 297-290 has 4 flows:, 1123, 1498, 2797, 3331
+Switch-298: 288-298 has 3 flows:, 1386, 3161, 4004
+Switch-298: 298-288 has 0 flows:
+Switch-298: 290-298 has 0 flows:
+Switch-298: 298-290 has 3 flows:, 1386, 3161, 4004
+Switch-299: 288-299 has 4 flows:, 15, 566, 2143, 3090
+Switch-299: 299-288 has 0 flows:
+Switch-299: 290-299 has 0 flows:
+Switch-299: 299-290 has 4 flows:, 15, 566, 2143, 3090
+Switch-300: 289-300 has 6 flows:, 221, 1900, 2883, 3229, 3925, 4169
+Switch-300: 300-289 has 0 flows:
+Switch-300: 291-300 has 0 flows:
+Switch-300: 300-291 has 6 flows:, 221, 1900, 2883, 3229, 3925, 4169
+Switch-301: 289-301 has 3 flows:, 397, 1662, 3908
+Switch-301: 301-289 has 0 flows:
+Switch-301: 291-301 has 0 flows:
+Switch-301: 301-291 has 3 flows:, 397, 1662, 3908
+Switch-302: 289-302 has 5 flows:, 47, 1606, 2889, 3629, 4316
+Switch-302: 302-289 has 0 flows:
+Switch-302: 291-302 has 0 flows:
+Switch-302: 302-291 has 5 flows:, 47, 1606, 2889, 3629, 4316
+Switch-303: 289-303 has 4 flows:, 385, 846, 1167, 3578
+Switch-303: 303-289 has 0 flows:
+Switch-303: 291-303 has 0 flows:
+Switch-303: 303-291 has 4 flows:, 385, 846, 1167, 3578
+Switch-304: 289-304 has 3 flows:, 226, 3403, 4227
+Switch-304: 304-289 has 0 flows:
+Switch-304: 291-304 has 0 flows:
+Switch-304: 304-291 has 3 flows:, 226, 3403, 4227
+Switch-305: 289-305 has 11 flows:, 228, 1516, 1647, 2815, 3249, 3350, 3423, 3674, 3709, 3993, 4146
+Switch-305: 305-289 has 0 flows:
+Switch-305: 291-305 has 0 flows:
+Switch-305: 305-291 has 11 flows:, 228, 1516, 1647, 2815, 3249, 3350, 3423, 3674, 3709, 3993, 4146
+Switch-306: 289-306 has 5 flows:, 1877, 2158, 3234, 4022, 4105
+Switch-306: 306-289 has 0 flows:
+Switch-306: 291-306 has 0 flows:
+Switch-306: 306-291 has 5 flows:, 1877, 2158, 3234, 4022, 4105
+Switch-307: 289-307 has 5 flows:, 1015, 1179, 2211, 3068, 4278
+Switch-307: 307-289 has 0 flows:
+Switch-307: 291-307 has 0 flows:
+Switch-307: 307-291 has 5 flows:, 1015, 1179, 2211, 3068, 4278
+10.3475
