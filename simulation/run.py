@@ -14,7 +14,7 @@ TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}_{cc}{failure}.tr
 FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}_{cc}{failure}.txt
 PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}_{cc}{failure}.txt
 
-SIMULATOR_STOP_TIME 600.00
+SIMULATOR_STOP_TIME {duration}
 
 CC_MODE {mode}
 ALPHA_RESUME_INTERVAL {t_alpha}
@@ -106,6 +106,17 @@ if __name__ == "__main__":
 	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
 	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 
+	duration=600.0
+	# with open("%s/%s.txt"%(root, trace), 'rb') as f:
+	# 	try:  # catch OSError in case of a one line file 
+	# 		f.seek(-2, os.SEEK_END)
+	# 		while f.read(1) != b'\n':
+	# 			f.seek(-2, os.SEEK_CUR)
+	# 	except OSError:
+	# 		f.seek(0)
+	# 	last_line = f.readline()
+	# 	duration=float(last_line.split()[-1])+1.0
+
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
 		hai = 50 * bw /25
@@ -138,7 +149,7 @@ if __name__ == "__main__":
 		kmax_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
 		kmin_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
 		pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
-		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt)
+		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration)
 	elif args.cc == "timely":
 		ai = 10 * bw / 10;
 		hai = 50 * bw / 10;

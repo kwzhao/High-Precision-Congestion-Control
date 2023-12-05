@@ -1060,6 +1060,40 @@ int main(int argc, char *argv[])
 	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
+
+	for (uint32_t i = 0; i < node_num; i++){
+		if (n.Get(i)->GetNodeType() == 1){ // is switch
+			Ptr<SwitchNode> node = DynamicCast<SwitchNode>(n.Get(i));
+			for (uint32_t j = 1; j < node->GetNDevices(); j++){
+				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+				std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet();
+				if (m_flowIdSet.size()>0){
+					std::cout << "Switch-"<<i<<": "<<channel->GetSource(0)->GetNode()->GetId()<<"-"<<channel->GetDestination(0)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+					for (auto flowId : m_flowIdSet){
+							std::cout << ", " << flowId;
+					}
+					std::cout << '\n';
+				}
+			}
+		}
+		else{
+			Ptr<Node> node = DynamicCast<Node>(n.Get(i));
+			for (uint32_t j = 1; j < node->GetNDevices(); j++){
+				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+				std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet();
+				if (m_flowIdSet.size()>0){
+					std::cout << "Host-"<<i<<": "<<channel->GetSource(0)->GetNode()->GetId()<<"-"<<channel->GetDestination(0)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+					for (auto flowId : m_flowIdSet){
+							std::cout << ", " << flowId;
+					}
+					std::cout << '\n';
+				}
+			}
+		}
+	}
+
 	Simulator::Destroy();
 	NS_LOG_INFO("Done.");
 	fclose(trace_output);

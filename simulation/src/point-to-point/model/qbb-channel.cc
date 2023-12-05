@@ -24,6 +24,7 @@
 #include "ns3/log.h"
 #include <iostream>
 #include <fstream>
+#include "ns3/flow-id-tag.h"
 
 NS_LOG_COMPONENT_DEFINE ("QbbChannel");
 
@@ -85,12 +86,40 @@ QbbChannel::Attach (Ptr<QbbNetDevice> device)
 
 }
 
+std::set<uint32_t> QbbChannel::GetFlowIdSet()
+{
+    // std::cout << m_flowIdSet.size()<< " flows:";
+    // for (auto flowId : m_flowIdSet)
+    //     {
+    //   std::cout << ", " << flowId;
+    //     }
+    // std::cout << '\n';
+    return m_flowIdSet;
+    // NS_LOG_UNCOND("Flow IDs in Channel " << m_channelId << ":");
+    // for (auto flowId : m_flowIdSet)
+    // {
+    //     NS_LOG_UNCOND("  " << flowId);
+    // }
+}
+
 bool
 QbbChannel::TransmitStart (
   Ptr<Packet> p,
   Ptr<QbbNetDevice> src,
   Time txTime)
 {
+  // Check if the packet has the FlowIdTag
+  FlowIdTag tag;
+  if (p->PeekPacketTag (tag))
+  {
+      // Extract the flow ID from the packet
+      // p->PeekPacketTag(tag);
+      uint32_t flowId = tag.GetFlowId();
+
+      // Add flow ID to per-channel set
+      m_flowIdSet.insert(flowId);
+  }
+
   NS_LOG_FUNCTION (this << p << src);
   NS_LOG_LOGIC ("UID is " << p->GetUid () << ")");
 
