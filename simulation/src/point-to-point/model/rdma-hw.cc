@@ -13,7 +13,7 @@
 #include "ppp-header.h"
 #include "qbb-header.h"
 #include "cn-header.h"
-#include "ns3/flow-id-tag.h"
+#include "ns3/flow-id-tag-path.h"
 
 namespace ns3{
 
@@ -594,7 +594,7 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	qp->snd_nxt += payload_size;
 	qp->m_ipid++;
 
-	FlowIdTag tag;
+	FlowIdTagPath tag;
 	// Tag the packet with the flow ID
 	if (!p->PeekPacketTag (tag))
 	{
