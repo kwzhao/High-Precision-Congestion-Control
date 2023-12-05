@@ -115,6 +115,11 @@ map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
 map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
+map<uint32_t, map<uint32_t, uint32_t>> src_dst_to_num_flows;
+uint32_t path_src = 0;
+uint32_t path_dst = 0;
+uint32_t path_num_flows = 0;
+uint32_t log_time_interval = 100; //ms
 
 std::vector<Ipv4Address> serverAddress;
 
@@ -133,6 +138,7 @@ void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
+		src_dst_to_num_flows[flow_input.src][flow_input.dst]++;
 	}
 }
 void ScheduleFlowInputs(){
@@ -750,6 +756,11 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	for (uint32_t i = 0; i < node_num; i++){
+		for (uint32_t j = 0; j < node_num; j++){
+			src_dst_to_num_flows[i][j] = 0;
+		}
+	}
 
 	NS_LOG_INFO("Create nodes.");
 
@@ -1057,9 +1068,21 @@ int main(int argc, char *argv[])
 	std::cout << "Running Simulation.\n";
 	fflush(stdout);
 	NS_LOG_INFO("Run Simulation.");
-	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
+	Simulator::Schedule(MilliSeconds(log_time_interval), &PrintProgress, MilliSeconds(log_time_interval));
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
+
+	for (uint32_t i = 0; i < node_num; i++){
+		for (uint32_t j = 0; j < node_num; j++){
+			if (src_dst_to_num_flows[i][j]>path_num_flows){
+				path_num_flows = src_dst_to_num_flows[i][j];
+				path_src=i;
+				path_dst=j;
+			}
+		}
+	}
+
+	std::cout<<"path_num_flows="<<path_num_flows<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
 
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
@@ -1097,6 +1120,18 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+	// # Get the (Src, Dst) pair that has the most flows
+
+	// Find all flows with the same (Src, Dst) pair, forming the flow set F
+
+	// Find all links traversed by flows in F, forming the link set L
+	
+	// Find all flows traversed any link in L, forming the flow set F’
+	
+	// Run the full topology simulation with flow set F’ in ns-3
+	
+	// Calculate the P99 slowdown of flows in F
+
 
 	Simulator::Destroy();
 	NS_LOG_INFO("Done.");
