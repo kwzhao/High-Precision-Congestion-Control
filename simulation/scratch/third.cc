@@ -1069,13 +1069,13 @@ int main(int argc, char *argv[])
 				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
 				for (uint32_t k = 0; k < 2; k++){
 					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					if (m_flowIdSet.size()>0){
+					// if (m_flowIdSet.size()>0){
 						std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
 						for (auto flowId : m_flowIdSet){
 								std::cout << ", " << flowId;
 						}
 						std::cout << '\n';
-					}
+					// }
 				}
 			}
 		}
@@ -1086,13 +1086,13 @@ int main(int argc, char *argv[])
 				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
 				for (uint32_t k = 0; k < 2; k++){
 					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					if (m_flowIdSet.size()>0){
+					// if (m_flowIdSet.size()>0){
 						std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
 						for (auto flowId : m_flowIdSet){
 								std::cout << ", " << flowId;
 						}
 						std::cout << '\n';
-					}
+					// }
 				}
 			}
 		}
