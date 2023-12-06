@@ -3,11 +3,12 @@ USE_DYNAMIC_PFC_THRESHOLD	Yes
 PACKET_PAYLOAD_SIZE		1000
 TOPOLOGY_FILE			mix_parsimon/topology.txt
 FLOW_FILE			mix_parsimon/flows.txt
+FLOW_ON_PATH_FILE			mix_parsimon/flows_on_path.txt
 TRACE_FILE			mix_parsimon/trace.txt
 TRACE_OUTPUT_FILE		mix_parsimon/mix_topology_flows_dctcp.tr
 FCT_OUTPUT_FILE		mix_parsimon/fct_topology_flows_dctcp.txt
 PFC_OUTPUT_FILE				mix_parsimon/pfc_topology_flows_dctcp.txt
-SIMULATOR_STOP_TIME		2.2
+SIMULATOR_STOP_TIME		16
 CC_MODE		8
 ALPHA_RESUME_INTERVAL		1
 RATE_DECREASE_INTERVAL		4
@@ -49,112 +50,20 @@ FIXED_WIN				100000
 BASE_RTT				8000
 maxRtt=12000 maxBdp=15000
 Running Simulation.
-t = 100 ms
-t = 200 ms
-t = 300 ms
-t = 400 ms
-t = 500 ms
-t = 600 ms
-t = 700 ms
-t = 800 ms
-t = 900 ms
 t = 1000 ms
-t = 1100 ms
-t = 1200 ms
-t = 1300 ms
-t = 1400 ms
-t = 1500 ms
-t = 1600 ms
-t = 1700 ms
-t = 1800 ms
-t = 1900 ms
 t = 2000 ms
-t = 2100 ms
-path_num_flows=1 path_src=0 path_dst=0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-19.2696
+t = 3000 ms
+t = 4000 ms
+t = 5000 ms
+t = 6000 ms
+t = 7000 ms
+t = 8000 ms
+t = 9000 ms
+t = 10000 ms
+t = 11000 ms
+t = 12000 ms
+t = 13000 ms
+t = 14000 ms
+t = 15000 ms
+path_num_flows_in_f=160 path_src=16 path_dst=246
+413.09
