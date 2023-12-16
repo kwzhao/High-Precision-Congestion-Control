@@ -203,9 +203,9 @@ if __name__ == "__main__":
 				f_arr_in_ns= (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,))* UNIT_G).astype("int64")
 				f_arr_in_ns_list.append(f_arr_in_ns)
 	
-		flow_src_dst=[]
-		f_arr_in_ns=[]
-		f_sizes_in_byte=[]
+		# flow_src_dst=[]
+		# f_arr_in_ns=[]
+		# f_sizes_in_byte=[]
 		# ofile.write("%d\n"%n_flows_total)
 		data=''
 		n_flows_list=[0 for _ in range(ntc)]
@@ -216,9 +216,9 @@ if __name__ == "__main__":
 			size=f_sizes_in_byte_list[host_pair_idx][flow_idx]
 			data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
 			
-			flow_src_dst.append([src,dst])
-			f_arr_in_ns.append(t)
-			f_sizes_in_byte.append(size)
+			# flow_src_dst.append([src,dst])
+			# f_arr_in_ns.append(t)
+			# f_sizes_in_byte.append(size)
 			
 			inter_t = f_arr_in_ns_list[host_pair_idx][flow_idx]
 			if flow_idx+2==n_flows_tmp:
@@ -255,9 +255,9 @@ if __name__ == "__main__":
 		}
 		np.save("%s/stats.npy"%(output_dir), stats)  # Byte
 		
-  		flow_src_dst=np.array(flow_src_dst).astype("int32")
-		f_arr_in_ns=np.array(f_arr_in_ns).astype("int64")
-		f_sizes_in_byte=np.array(f_sizes_in_byte).astype("int64")
-		np.save("%s/flow_sizes.npy"%(output_dir), f_sizes_in_byte)  # Byte
-		np.save("%s/flow_arrival_times.npy"%(output_dir), f_arr_in_ns)  # ns
-		np.save("%s/flow_src_dst.npy"%(output_dir), flow_src_dst) 
+		# flow_src_dst=np.array(flow_src_dst).astype("int32")
+		# f_arr_in_ns=np.array(f_arr_in_ns).astype("int64")
+		# f_sizes_in_byte=np.array(f_sizes_in_byte).astype("int64")
+		# np.save("%s/flow_sizes.npy"%(output_dir), f_sizes_in_byte)  # Byte
+		# np.save("%s/flow_arrival_times.npy"%(output_dir), f_arr_in_ns)  # ns
+		# np.save("%s/flow_src_dst.npy"%(output_dir), flow_src_dst) 

@@ -81,15 +81,16 @@ if __name__ == "__main__":
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)
-    file = "%s/fct_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs)
+    # file = "%s/fct_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs)
+    file = "%s/fct_%s_flows_%s.txt" % (output_dir, args.prefix, args.cc)
     # print file
     if type == 0:
         # cmd = "cat %s"%(file)+" | awk '{if ($4==100 && $6+$7<"+"%d"%time_limit+") {slow=$7/$8;print slow<1?1:slow, $5}}'"
         cmd = (
             "cat %s" % (file)
-            + " | awk '{if ($3+$4<"
+            + " | awk '{if ($5==100 && $7+$8<"
             + "%d" % time_limit
-            + ") {slow=$4/$5;print slow<1?$5:$4, $5, $2, $3, $1}}' | sort -n -k 4"
+            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3}}' | sort -n -k 4"
         )
         # print cmd
         output = subprocess.check_output(cmd, shell=True)
@@ -125,47 +126,54 @@ if __name__ == "__main__":
     i_fcts = res_np[:, 1].astype("int64")
     flow_sizes = res_np[:, 2].astype("int64")
     flow_arrival_times = res_np[:, 3].astype("int64")
-    flow_id = res_np[:, 4].astype("int64")
+    # np.save(
+    #     "%s/fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs), fcts
+    # )  # Byte
+    # np.save(
+    #     "%s/i_fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs),
+    #     i_fcts,
+    # )  # ns
     np.save(
-        "%s/fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs), fcts
+        "%s/fcts_%s_%s.npy" % (output_dir, args.prefix, args.cc), fcts
     )  # Byte
     np.save(
-        "%s/i_fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs),
+        "%s/i_fcts_%s_%s.npy" % (output_dir, args.prefix, args.cc),
         i_fcts,
     )  # ns
-    # if not os.path.exists("%s/flow_sizes.npy" % (output_dir)):
-    #     np.save("%s/flow_sizes.npy" % (output_dir), flow_sizes)  # Byte
-    #     np.save("%s/flow_arrival_times.npy" % (output_dir), flow_arrival_times)  # ns
-    #     src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
-    #     dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
-    #     res_arr = np.concatenate((src_arr, dst_arr), axis=1)
-    #     np.save("%s/flow_src_dst.npy" % (output_dir), res_arr)  # Byte
+    if not os.path.exists("%s/flow_sizes.npy" % (output_dir)):
+        np.save("%s/flow_sizes.npy" % (output_dir), flow_sizes)  # Byte
+        np.save("%s/flow_arrival_times.npy" % (output_dir), flow_arrival_times)  # ns
+        src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
+        dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
+        res_arr = np.concatenate((src_arr, dst_arr), axis=1)
+        np.save("%s/flow_src_dst.npy" % (output_dir), res_arr)  # Byte
 
-    #     ofile = open("%s/trafficfile" % (output_dir), "w")
-    #     for i in range(n):
-    #         ofile.write("%d %d\n" % (src_arr[i], dst_arr[i]))
-    #     ofile.write("-1 -1")
-    #     ofile.close()
+        ofile = open("%s/trafficfile" % (output_dir), "w")
+        for i in range(n):
+            ofile.write("%d %d\n" % (src_arr[i], dst_arr[i]))
+        ofile.write("-1 -1")
+        ofile.close()
 
         # os.system("rm %s/traffic.txt" % (output_dir))
-    os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s_%s%s.tr" % (output_dir, args.prefix, args.cc, config_specs))
-    )
-    os.system(
-        "rm %s"
-        % ("%s/pfc_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
-    )
-    os.system(
-        "rm %s"
-        % ("%s/qlen_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
-    )
+    
+    # os.system("rm %s" % (file))
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s_%s%s.tr" % (output_dir, args.prefix, args.cc, config_specs))
+    # )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/pfc_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
+    # )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/qlen_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
+    # )
 
     ofile = open("%s/trafficfile_flow" % (output_dir), "w")
     for i in range(n):
         ofile.write(
-            "%d %d %d %d %d\n" % (flow_id, fcts[i], i_fcts[i], flow_sizes[i], flow_arrival_times[i])
+            "%d %d %d %d\n" % (fcts[i], i_fcts[i], flow_sizes[i], flow_arrival_times[i])
         )
     ofile.write("-1 -1")
     ofile.close()
