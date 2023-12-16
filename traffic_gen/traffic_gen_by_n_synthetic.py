@@ -52,7 +52,6 @@ if __name__ == "__main__":
 	UNIT_G=1000000000
 	MTU=1000
 	BDP_DICT ={
-		2: 15 * MTU,
 		3: 15 * MTU,
 		4: 15 * MTU,
 		5: 15 * MTU,

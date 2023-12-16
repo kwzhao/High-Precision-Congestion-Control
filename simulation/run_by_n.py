@@ -15,9 +15,9 @@ FLOW_FILE {root}/{trace}.txt
 FLOW_ON_PATH_FILE {root}/{trace}_on_path.txt
 FLOW_PATH_MAP_FILE {root}/{trace}_path_map.txt
 TRACE_FILE {root}/../{trace_track}.txt
-TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}_{cc}{failure}.tr
-FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}_{cc}{failure}.txt
-PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}_{cc}{failure}.txt
+TRACE_OUTPUT_FILE {root}/mix_{topo}_{cc}{failure}{config_specs}.tr
+FCT_OUTPUT_FILE {root}/fct_{topo}_{cc}{failure}{config_specs}.txt
+PFC_OUTPUT_FILE {root}/pfc_{topo}_{cc}{failure}{config_specs}.txt
 
 SIMULATOR_STOP_TIME {duration}
 
@@ -62,7 +62,7 @@ KMAX_MAP {kmax_map}
 KMIN_MAP {kmin_map}
 PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
-QLEN_MON_FILE {root}/qlen_{topo}_{trace}_{cc}{failure}.txt
+QLEN_MON_FILE {root}/qlen_{topo}_{cc}{failure}{config_specs}.txt
 QLEN_MON_START 2000000000
 QLEN_MON_END 3000000000
 
@@ -73,6 +73,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='run simulation')
 	parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
+	parser.add_argument('--dctcp_k', dest='dctcp_k', type=int, default=30, help="DCTCP_K")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
@@ -95,23 +96,14 @@ if __name__ == "__main__":
 	bfsz = 16 * bw / 50
 	u_tgt=args.utgt/100.
 	mi=args.mi
+	dctcp_k=args.dctcp_k
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
 	enable_tr = args.enable_tr
 	fwin = args.fwin
 	base_rtt = args.base_rtt
 
-	failure = ''
-	if args.down != '0 0 0':
-		failure = '_down'
-
-	config_name = "%s/config_%s_%s_%s%s.txt"%(root, topo, trace, args.cc, failure)
-
-	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
-	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
-	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
-
-	# duration=600.0
+	duration=600.0
 	with open("%s/%s.txt"%(root, trace), 'rb') as f:
 		try:  # catch OSError in case of a one line file 
 			f.seek(-2, os.SEEK_END)
@@ -122,6 +114,15 @@ if __name__ == "__main__":
 		last_line = f.readline()
 		duration=float(last_line.split()[-1])+5.0
 
+	failure = ''
+	if args.down != '0 0 0':
+		failure = '_down'
+	config_specs="_k%d"%(dctcp_k)
+	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
+
+	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
+	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
+	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
 		hai = 50 * bw /25
@@ -151,10 +152,11 @@ if __name__ == "__main__":
 		ai = 10 # ai is useless for dctcp
 		hai = ai  # also useless
 		dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
-		kmax_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
-		kmin_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
+		# masking_threshold_K={dctcp_k} KB (e.g., 30KB)
+		kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
+		kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
 		pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
-		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration)
+		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
 	elif args.cc == "timely":
 		ai = 10 * bw / 10;
 		hai = 50 * bw / 10;
