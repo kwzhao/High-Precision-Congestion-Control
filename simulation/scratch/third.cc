@@ -115,12 +115,12 @@ map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
 map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
-map<uint32_t, map<uint32_t, set<uint32_t>>> src_dst_to_flows_in_f;
-uint32_t path_src = 0;
-uint32_t path_dst = 0;
-uint32_t path_num_flows_in_f = 0;
+// map<uint32_t, map<uint32_t, set<uint32_t>>> src_dst_to_flows_in_f;
+// uint32_t path_src = 0;
+// uint32_t path_dst = 0;
+// uint32_t path_num_flows_in_f = 0;
 uint32_t log_time_interval = 1000; //ms
-set<uint32_t> flows_in_f_prime;
+// set<uint32_t> flows_in_f_prime;
 
 std::vector<Ipv4Address> serverAddress;
 
@@ -139,7 +139,7 @@ void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
-		src_dst_to_flows_in_f[flow_input.src][flow_input.dst].insert(flow_input.flowId);
+		// src_dst_to_flows_in_f[flow_input.src][flow_input.dst].insert(flow_input.flowId);
 	}
 }
 void ScheduleFlowInputs(){
@@ -1091,19 +1091,20 @@ int main(int argc, char *argv[])
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
 
-	for (uint32_t i = 0; i < node_num; i++){
-		for (uint32_t j = 0; j < node_num; j++){
-			uint32_t tmp=src_dst_to_flows_in_f[i][j].size();
-			if (tmp>path_num_flows_in_f){
-				path_num_flows_in_f = tmp;
-				path_src=i;
-				path_dst=j;
-			}
-		}
-	}
+	// for (uint32_t i = 0; i < node_num; i++){
+	// 	for (uint32_t j = 0; j < node_num; j++){
+	// 		uint32_t tmp=src_dst_to_flows_in_f[i][j].size();
+	// 		if (tmp>path_num_flows_in_f){
+	// 			path_num_flows_in_f = tmp;
+	// 			path_src=i;
+	// 			path_dst=j;
+	// 		}
+	// 	}
+	// }
 
-	std::cout<<"path_num_flows_in_f="<<path_num_flows_in_f<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
-	set<uint32_t> flows_in_f=src_dst_to_flows_in_f[path_src][path_dst];
+	// std::cout<<"path_num_flows_in_f="<<path_num_flows_in_f<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
+	// set<uint32_t> flows_in_f=src_dst_to_flows_in_f[path_src][path_dst];
+
 	// for (auto flowId : src_dst_to_flows_in_f[path_src][path_dst]){
 	// 		std::cout << ", " << flowId;
 	// }
@@ -1134,14 +1135,14 @@ int main(int argc, char *argv[])
 								fprintf(outputFile, ",%d", flowId);
 							}
 							fprintf(outputFile, "\n");
-							if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
-								flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
-								// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-								// for (auto flowId : m_flowIdSet){
-								// 		std::cout << ", " << flowId;
-								// }
-								// std::cout << '\n';
-							}
+							// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+							// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+							// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+							// 	// for (auto flowId : m_flowIdSet){
+							// 	// 		std::cout << ", " << flowId;
+							// 	// }
+							// 	// std::cout << '\n';
+							// }
 						}
 					}
 				}
@@ -1162,14 +1163,14 @@ int main(int argc, char *argv[])
 								fprintf(outputFile, ",%d", flowId);
 							}
 							fprintf(outputFile, "\n");
-							if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
-								flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
-								// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-								// for (auto flowId : m_flowIdSet){
-								// 		std::cout << ", " << flowId;
-								// }
-								// std::cout << '\n';
-							}
+							// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+							// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+							// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+							// 	// for (auto flowId : m_flowIdSet){
+							// 	// 		std::cout << ", " << flowId;
+							// 	// }
+							// 	// std::cout << '\n';
+							// }
 						}
 					}
 				}
@@ -1190,7 +1191,6 @@ int main(int argc, char *argv[])
 	
 	// Calculate the P99 slowdown of flows in F
 
-
 	Simulator::Destroy();
 	NS_LOG_INFO("Done.");
 	fclose(trace_output);
@@ -1198,20 +1198,20 @@ int main(int argc, char *argv[])
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";
 
-	// Open the file for writing using fopen
-    outputFile = fopen(flow_on_path_file.c_str(), "w");
+	// // Open the file for writing using fopen
+    // outputFile = fopen(flow_on_path_file.c_str(), "w");
 
-    // Check if the file is opened successfully
-    if (!outputFile) {
-        std::cerr << "Error opening file: " << flow_on_path_file << std::endl;
-        return 1;
-    }
-	fprintf(outputFile, "%d,%d,%zu\n", path_src,path_dst,flows_in_f_prime.size());
-    // Write set elements to the file using fprintf
-    for (const auto& element : flows_in_f_prime) {
-        fprintf(outputFile, "%d\n", element);
-    }
+    // // Check if the file is opened successfully
+    // if (!outputFile) {
+    //     std::cerr << "Error opening file: " << flow_on_path_file << std::endl;
+    //     return 1;
+    // }
+	// fprintf(outputFile, "%d,%d,%zu\n", path_src,path_dst,flows_in_f_prime.size());
+    // // Write set elements to the file using fprintf
+    // for (const auto& element : flows_in_f_prime) {
+    //     fprintf(outputFile, "%d\n", element);
+    // }
 
-    // Close the file using fclose
-    fclose(outputFile);
+    // // Close the file using fclose
+    // fclose(outputFile);
 }
