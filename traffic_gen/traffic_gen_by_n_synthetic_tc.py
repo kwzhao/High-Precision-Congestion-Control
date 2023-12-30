@@ -206,13 +206,14 @@ if __name__ == "__main__":
 		flow_id_total=0
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
-		ratio=np.random.rand()*100+1.0
-		p_list=[ratio for _ in range(ntc)]
-		p_list[0]=1
-		p_list=np.array(p_list)/np.sum(p_list)
-		print("ratio: ", ratio)
+		# ratio=np.random.rand()*100+1.0
+		# p_list=[ratio for _ in range(ntc)]
+		# p_list[0]=1
+		# p_list=np.array(p_list)/np.sum(p_list)
+		# print("ratio: ", ratio)
 		while (flow_id_total<n_flows_tmp-1):
-			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+			# host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+			host_pair_idx=np.random.choice(host_pair_list_idx)
 			src,dst=host_pair_list[host_pair_idx]
 			size=f_sizes_in_byte[flow_id_total]
 			data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
