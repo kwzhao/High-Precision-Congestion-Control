@@ -3,13 +3,13 @@ USE_DYNAMIC_PFC_THRESHOLD 1
 
 PACKET_PAYLOAD_SIZE 1000
 
-TOPOLOGY_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/topology.txt
-FLOW_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/flows.txt
-FLOW_ON_PATH_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/flows_on_path.txt
-TRACE_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/trace.txt
-TRACE_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/mix_topology_flows_dctcp.tr
-FCT_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/fct_topology_flows_dctcp.txt
-PFC_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/pfc_topology_flows_dctcp.txt
+TOPOLOGY_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/topology.txt
+FLOW_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/flows.txt
+FLOW_ON_PATH_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/flows_on_path.txt
+TRACE_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/trace.txt
+TRACE_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/mix_topology_flows_dctcp.tr
+FCT_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/fct_topology_flows_dctcp.txt
+PFC_OUTPUT_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/pfc_topology_flows_dctcp.txt
 
 SIMULATOR_STOP_TIME 600.0
 
@@ -23,6 +23,7 @@ FAST_RECOVERY_TIMES 1
 RATE_AI 10Mb/s
 RATE_HAI 10Mb/s
 MIN_RATE 1000Mb/s
+MAX_RATE 10000Mb/s
 DCTCP_RATE_AI 615Mb/s
 
 ERROR_RATE_PER_LINK 0.0000
@@ -54,7 +55,7 @@ KMAX_MAP 2 10000000000 30 40000000000 120
 KMIN_MAP 2 10000000000 30 40000000000 120
 PMAX_MAP 2 10000000000 1.00 40000000000 1.00
 BUFFER_SIZE 3
-QLEN_MON_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data/25/ns3/qlen_topology_flows_dctcp.txt
+QLEN_MON_FILE /data1/lichenni/projects/flow_simulation/parsimon-eval/expts/fig_8/data_test/25/ns3/qlen_topology_flows_dctcp.txt
 QLEN_MON_START 2000000000
 QLEN_MON_END 3000000000
 
