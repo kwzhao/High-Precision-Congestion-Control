@@ -55,6 +55,7 @@ double alpha_resume_interval = 55, rp_timer, ewma_gain = 1 / 16;
 double rate_decrease_interval = 4;
 uint32_t fast_recovery_times = 5;
 std::string rate_ai, rate_hai, min_rate = "100Mb/s";
+std::string max_rate = "10000Mb/s";
 std::string dctcp_rate_ai = "1000Mb/s";
 
 bool clamp_target_rate = false, l2_back_to_zero = false;
@@ -595,6 +596,9 @@ int main(int argc, char *argv[])
 			}else if (key.compare("MIN_RATE") == 0){
 				conf >> min_rate;
 				std::cout << "MIN_RATE\t\t" << min_rate << "\n";
+			}else if (key.compare("MAX_RATE") == 0){
+				conf >> max_rate;
+				std::cout << "MAX_RATE\t\t" << max_rate << "\n";
 			}else if (key.compare("FCT_OUTPUT_FILE") == 0){
 				conf >> fct_output_file;
 				std::cout << "FCT_OUTPUT_FILE\t\t" << fct_output_file << '\n';
@@ -936,6 +940,7 @@ int main(int argc, char *argv[])
 			rdmaHw->SetAttribute("CcMode", UintegerValue(cc_mode));
 			rdmaHw->SetAttribute("RateDecreaseInterval", DoubleValue(rate_decrease_interval));
 			rdmaHw->SetAttribute("MinRate", DataRateValue(DataRate(min_rate)));
+			rdmaHw->SetAttribute("MaxRate", DataRateValue(DataRate(max_rate)));
 			rdmaHw->SetAttribute("Mtu", UintegerValue(packet_payload_size));
 			rdmaHw->SetAttribute("MiThresh", UintegerValue(mi_thresh));
 			rdmaHw->SetAttribute("VarWin", BooleanValue(var_win));
