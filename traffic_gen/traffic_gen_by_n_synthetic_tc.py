@@ -52,11 +52,9 @@ if __name__ == "__main__":
 	UNIT_G=1000000000
 	MTU=1000
 	BDP_DICT ={
-		3: 15 * MTU,
-		4: 15 * MTU,
-		5: 15 * MTU,
-		6: 15 * MTU,
-		7: 15 * MTU,
+		3: 5 * MTU,
+		5: 20 * MTU,
+		7: 40 * MTU,
 	} 
 	if not options.nhost:
 		print "please use -n to enter number of hosts"
