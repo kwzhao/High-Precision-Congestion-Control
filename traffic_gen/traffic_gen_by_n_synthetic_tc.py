@@ -52,9 +52,9 @@ if __name__ == "__main__":
 	UNIT_G=1000000000
 	MTU=1000
 	BDP_DICT ={
-		3: 5 * MTU,
-		5: 20 * MTU,
-		7: 40 * MTU,
+		3: 15 * MTU,
+		5: 15 * MTU,
+		7: 15 * MTU,
 	} 
 	if not options.nhost:
 		print "please use -n to enter number of hosts"
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 		min_size_in_bit=BYTE_TO_BIT * 50  # 50B
 		# avg_size_base_in_bit = 4000 *BYTE_TO_BIT # 8000,4000
 		BDP = BDP_DICT[nhost]
-		avg_size_base_in_bit = BDP//10*BYTE_TO_BIT # 10KB
+		avg_size_base_in_bit = BDP//5*BYTE_TO_BIT # 10KB
 	
 		host_pair_list_ori=[]
 		host_pair_to_link_dict={}
@@ -204,14 +204,13 @@ if __name__ == "__main__":
 		flow_id_total=0
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
-		# ratio=np.random.rand()*100+1.0
-		# p_list=[ratio for _ in range(ntc)]
-		# p_list[0]=1
-		# p_list=np.array(p_list)/np.sum(p_list)
-		# print("ratio: ", ratio)
+		p_list=np.random.rand(ntc)*100
+		p_list[0]=1.0
+		p_list=np.array(p_list)/np.sum(p_list)
+		print("ratio: ", p_list[0],np.mean(p_list))
 		while (flow_id_total<n_flows_tmp-1):
-			# host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
-			host_pair_idx=np.random.choice(host_pair_list_idx)
+			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+			# host_pair_idx=np.random.choice(host_pair_list_idx)
 			src,dst=host_pair_list[host_pair_idx]
 			size=f_sizes_in_byte[flow_id_total]
 			data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
