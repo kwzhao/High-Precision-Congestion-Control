@@ -52,8 +52,8 @@ if __name__ == "__main__":
 	UNIT_G=1000000000
 	MTU=1000
 	BDP_DICT ={
-		3: 15 * MTU,
-		5: 15 * MTU,
+		3: 5 * MTU,
+		5: 10 * MTU,
 		7: 15 * MTU,
 	} 
 	if not options.nhost:
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 		min_size_in_bit=BYTE_TO_BIT * 50  # 50B
 		# avg_size_base_in_bit = 4000 *BYTE_TO_BIT # 8000,4000
 		BDP = BDP_DICT[nhost]
-		avg_size_base_in_bit = BDP//5*BYTE_TO_BIT # 10KB
+		avg_size_base_in_bit = BDP//4*BYTE_TO_BIT # 10KB
 	
 		host_pair_list_ori=[]
 		host_pair_to_link_dict={}
@@ -204,7 +204,7 @@ if __name__ == "__main__":
 		flow_id_total=0
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
-		p_list=np.random.rand(ntc)*100
+		p_list=np.random.rand(ntc)*10
 		p_list[0]=1.0
 		p_list=np.array(p_list)/np.sum(p_list)
 		print("ratio: ", p_list[0],np.mean(p_list))
