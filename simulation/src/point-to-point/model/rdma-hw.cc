@@ -28,7 +28,7 @@ TypeId RdmaHw::GetTypeId (void)
 				MakeDataRateChecker())
 		.AddAttribute("MaxRate",
 				"Maximum rate of a flow",
-				DataRateValue(DataRate("100000Mb/s")),
+				DataRateValue(DataRate("10000Mb/s")),
 				MakeDataRateAccessor(&RdmaHw::m_maxRate),
 				MakeDataRateChecker())
 		.AddAttribute("Mtu",
@@ -246,8 +246,10 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 
 	// set init variables
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
-	qp->m_rate = m_bps;
-	qp->m_max_rate = m_bps;
+	// qp->m_rate = m_bps;
+	qp->m_rate = m_maxRate;
+	// qp->m_max_rate = m_bps;
+	qp->m_max_rate = m_maxRate;
 	if (m_cc_mode == 1){
 		qp->mlx.m_targetRate = m_bps;
 	}else if (m_cc_mode == 3){
@@ -617,8 +619,10 @@ void RdmaHw::PktSent(Ptr<RdmaQueuePair> qp, Ptr<Packet> pkt, Time interframeGap)
 
 void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t pkt_size){
 	Time sendingTime;
-	if (m_rateBound)
+	if (m_rateBound){
 		sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxTime(pkt_size));
+		// printf("RdmaHw: node: (%0.3lf %.3lf)\n", qp->m_rate.GetBitRate()* 1e-9,qp->m_max_rate.GetBitRate()* 1e-9);
+	}
 	else
 		sendingTime = interframeGap + Seconds(qp->m_max_rate.CalculateTxTime(pkt_size));
 	qp->m_nextAvail = Simulator::Now() + sendingTime;
@@ -693,7 +697,7 @@ void RdmaHw::CheckRateDecreaseMlx(Ptr<RdmaQueuePair> q){
 		if (clamp)
 			q->mlx.m_targetRate = q->m_rate;
 		q->m_rate = std::max(m_minRate, q->m_rate * (1 - q->mlx.m_alpha / 2));
-		q->m_rate = std::min(m_maxRate, q->m_rate);
+		// q->m_rate = std::min(m_maxRate, q->m_rate);
 		// reset rate increase related things
 		q->mlx.m_rpTimeStage = 0;
 		q->mlx.m_decrease_cnp_arrived = false;
@@ -866,8 +870,8 @@ void RdmaHw::UpdateRateHp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch
 					}
 					if (new_rate < m_minRate)
 						new_rate = m_minRate;
-					if (new_rate > m_maxRate)
-						new_rate = m_maxRate;
+					// if (new_rate > m_maxRate)
+					// 	new_rate = m_maxRate;
 					if (new_rate > qp->m_max_rate)
 						new_rate = qp->m_max_rate;
 					#if PRINT_LOG
@@ -895,8 +899,8 @@ void RdmaHw::UpdateRateHp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch
 						// bound rate
 						if (new_rate_per_hop[i] < m_minRate)
 							new_rate_per_hop[i] = m_minRate;
-						if (new_rate_per_hop[i] > m_maxRate)
-							new_rate_per_hop[i] = m_maxRate;
+						// if (new_rate_per_hop[i] > m_maxRate)
+						// 	new_rate_per_hop[i] = m_maxRate;
 						if (new_rate_per_hop[i] > qp->m_max_rate)
 							new_rate_per_hop[i] = qp->m_max_rate;
 						// find min new_rate
@@ -1003,7 +1007,7 @@ void RdmaHw::UpdateRateTimely(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader
 			}
 		}else{
 			qp->m_rate = std::max(m_minRate, qp->tmly.m_curRate * c); 
-			qp->m_rate = std::min(m_maxRate, qp->m_rate); 
+			// qp->m_rate = std::min(m_maxRate, qp->m_rate); 
 			if (!us){
 				qp->tmly.m_curRate = qp->m_rate;
 				qp->tmly.m_incStage = 0;
@@ -1070,7 +1074,7 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 		printf("%lu %s %08x %08x %u %u %.3lf->", Simulator::Now().GetTimeStep(), "rate", qp->sip.Get(), qp->dip.Get(), qp->sport, qp->dport, qp->m_rate.GetBitRate()*1e-9);
 		#endif
 		qp->m_rate = std::max(m_minRate, qp->m_rate * (1 - qp->dctcp.m_alpha / 2));
-		qp->m_rate = std::min(m_maxRate, qp->m_rate);
+		// qp->m_rate = std::min(m_maxRate, qp->m_rate);
 		#if PRINT_LOG
 		printf("%.3lf\n", qp->m_rate.GetBitRate() * 1e-9);
 		#endif
@@ -1123,8 +1127,8 @@ void RdmaHw::UpdateRateHpPint(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader
                }
                if (new_rate < m_minRate)
                        new_rate = m_minRate;
-				if (new_rate > m_maxRate)
-                       new_rate = m_maxRate;
+				// if (new_rate > m_maxRate)
+                //        new_rate = m_maxRate;
                if (new_rate > qp->m_max_rate)
                        new_rate = qp->m_max_rate;
                ChangeRate(qp, new_rate);
