@@ -57,6 +57,7 @@ uint32_t fast_recovery_times = 5;
 std::string rate_ai, rate_hai, min_rate = "100Mb/s";
 std::string max_rate = "10000Mb/s";
 std::string dctcp_rate_ai = "1000Mb/s";
+uint64_t max_rate_int = 10000000000lu;
 
 bool clamp_target_rate = false, l2_back_to_zero = false;
 double error_rate_per_link = 0.0;
@@ -287,6 +288,7 @@ void CalculateRoute(Ptr<Node> host){
 				bws[next] = bws[now];
 				bws[next].push_back(it->second.bw);
 				bw[next] = std::min(bw[now], it->second.bw);
+				bw[next] = std::min(bw[next], max_rate_int);
 				// we only enqueue switch, because we do not want packets to go through host as middle point
 				if (next->GetNodeType() == 1)
 					q.push_back(next);
