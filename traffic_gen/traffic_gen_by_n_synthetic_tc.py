@@ -52,9 +52,9 @@ if __name__ == "__main__":
 	UNIT_G=1000000000
 	MTU=1000
 	BDP_DICT ={
-		3: 5 * MTU,
+		3: 10 * MTU,
 		5: 10 * MTU,
-		7: 15 * MTU,
+		7: 10 * MTU,
 	} 
 	if not options.nhost:
 		print "please use -n to enter number of hosts"
@@ -126,8 +126,8 @@ if __name__ == "__main__":
 		ntc_in_one=1
 		size_dist_candidate=np.random.choice(size_distribution_list,size=ntc_in_one,replace=True)[0]
 		size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
-		# ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
-		ias_sigma_candidate=np.random.choice(ias_sigma_range,size=1,replace=False)[0]
+		ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
+		# ias_sigma_candidate=np.random.choice(ias_sigma_range,size=1,replace=False)[0]
 	
 		load_candidate=np.random.rand()*(load_range[1]-load_range[0])+load_range[0]
 		load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
@@ -205,12 +205,16 @@ if __name__ == "__main__":
 		flow_id_total=0
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
-		# p_list=np.random.rand(ntc)*10
-		p_list=np.ones(ntc)
-		p_list[0]=np.random.rand()
-		p_list+=0.01
+  
+		# p_list=np.ones(ntc)
+		# p_list[0]=np.random.rand()
+		# p_list+=0.01
+		
+		p_list=np.random.rand(ntc)*90+10
+		p_list[0]=1.0
+  
 		p_list=np.array(p_list)/np.sum(p_list)
-		print("ratio: ", p_list[0],np.mean(p_list))
+		print("ratio: ", p_list[0])
 		while (flow_id_total<n_flows_tmp-1):
 			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
 			# host_pair_idx=np.random.choice(host_pair_list_idx)
@@ -243,6 +247,7 @@ if __name__ == "__main__":
 		print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3), size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
 		stats={
 			"n_flows": n_flows_total,
+			"ratio": p_list[0],
 			"load_bottleneck_target":load_bottleneck_target,
 			"host_pair_list":host_pair_list,
 			"load_candidate":load_candidate,
