@@ -210,7 +210,7 @@ if __name__ == "__main__":
 		# p_list[0]=np.random.rand()
 		# p_list+=0.01
 		
-		p_list=np.random.rand(ntc)*90+10
+		p_list=np.random.rand(ntc)*1000/ntc+10
 		p_list[0]=1.0
   
 		p_list=np.array(p_list)/np.sum(p_list)
