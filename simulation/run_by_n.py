@@ -104,6 +104,19 @@ if __name__ == "__main__":
 	fwin = args.fwin
 	base_rtt = args.base_rtt
 
+	failure = ''
+	if args.down != '0 0 0':
+		failure = '_down'
+	if args.cc=="dctcp":
+		config_specs="_k%d"%(dctcp_k)
+	else:
+		config_specs=""
+	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
+
+	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
+	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
+	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
+
 	duration=600.0
 	with open("%s/%s.txt"%(root, trace), 'rb') as f:
 		try:  # catch OSError in case of a one line file 
@@ -113,17 +126,8 @@ if __name__ == "__main__":
 		except OSError:
 			f.seek(0)
 		last_line = f.readline()
-		duration=float(last_line.split()[-1])+5.0
+		duration=float(last_line.split()[-1])+10.0
 
-	failure = ''
-	if args.down != '0 0 0':
-		failure = '_down'
-	config_specs="_k%d"%(dctcp_k)
-	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
-
-	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
-	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
-	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
 		hai = 50 * bw /25
