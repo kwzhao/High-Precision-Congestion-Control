@@ -73,7 +73,6 @@ parser.add_argument(
     help="0: normal, 1: incast, 2: all",
 )
 # parser.add_argument('-T', dest='time_limit', action='store', type=int, default=20000000000, help="only consider flows that finish before T")
-parser.add_argument("--cc", dest="cc", action="store", default="dctcp", help="")
 parser.add_argument(
     "--nhost", dest="nhost", type=int, default=6, help="number of hosts"
 )
