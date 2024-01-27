@@ -22,7 +22,7 @@ if __name__ == "__main__":
         "--shard", dest="shard", type=int, default=0, help="random seed"
     )
     parser.add_argument(
-        "--dctcp_k", dest="dctcp_k", type=int, default=30, help="DCTCP_K"
+        "--fwin", dest="fwin", type=int, default=30, help="fwin"
     )
     parser.add_argument(
         "-t",
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     time_limit = int(3000 * 1e9)
     # step = int(args.step)
     # res = [[i/100.] for i in range(0, 100, step)]
-    dctcp_k = args.dctcp_k
-    config_specs = "_k%d" % (dctcp_k)
+    fwin = args.fwin
+    config_specs = "_k%d" % (fwin)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)
