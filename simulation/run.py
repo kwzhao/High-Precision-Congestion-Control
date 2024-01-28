@@ -103,7 +103,8 @@ if __name__ == "__main__":
 	failure = ''
 	if args.down != '0 0 0':
 		failure = '_down'
-	config_specs="_k%d"%(dctcp_k)
+	# config_specs="_k%d"%(dctcp_k)
+	config_specs="_k%d"%(fwin)
 	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
 
 	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
