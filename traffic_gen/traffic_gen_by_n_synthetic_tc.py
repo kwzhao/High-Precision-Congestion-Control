@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	port = 80
 	parser = OptionParser()
 	parser.add_option("--shard", dest = "shard",type=int, default=0, help="random seed")
-	parser.add_option("--switch_to_host", dest = "shard",type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
+	parser.add_option("--switchtohost", dest = "switch_to_host",type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
 	parser.add_option("-f", "--nflows", dest = "nflows", help = "the total number of flows, by default 10000", default = "10000")
 	parser.add_option("-n", "--nhost", dest = "nhost", help = "number of hosts")
 	parser.add_option("-b", "--bandwidth", dest = "bandwidth", help = "the bandwidth of host link (G/M/K), by default 10G", default = "10G")
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 	n_flows = int(options.nflows)
 	nhost = int(options.nhost)
-	switch_to_host = int (options.switch_to_host)
+	switch_to_host = int(options.switch_to_host)
  
 	bandwidth_base = translate_bandwidth(options.bandwidth)
 	if bandwidth_base == None:
@@ -203,8 +203,11 @@ if __name__ == "__main__":
   
 		p_list=np.array(p_list)/np.sum(p_list)
 		print("ratio: ", p_list[0])
+		n_flows_foreground=0
 		while (flow_id_total<n_flows_tmp-1):
 			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+			if host_pair_idx==0:
+				n_flows_foreground+=1
 			# host_pair_idx=np.random.choice(host_pair_list_idx)
 			src,dst=host_pair_list[host_pair_idx]
 			size=f_sizes_in_byte[flow_id_total]
@@ -236,6 +239,7 @@ if __name__ == "__main__":
 		stats={
 			"n_flows": n_flows_total,
 			"ratio": p_list[0],
+			"n_flows_foreground":n_flows_foreground,
 			"load_bottleneck_target":load_bottleneck_target,
 			"host_pair_list":host_pair_list,
 			"load_candidate":load_candidate,
