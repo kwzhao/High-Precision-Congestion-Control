@@ -5,6 +5,7 @@ import heapq
 from optparse import OptionParser
 import numpy as np
 import os
+from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT
 from custom_rand import CustomRand
 dir_path_cur = os.path.dirname(os.path.realpath(__file__))+'/'
 def fix_seed(seed):
@@ -38,6 +39,7 @@ if __name__ == "__main__":
 	port = 80
 	parser = OptionParser()
 	parser.add_option("--shard", dest = "shard",type=int, default=0, help="random seed")
+	parser.add_option("--switchtohost", dest = "switch_to_host",type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
 	parser.add_option("-f", "--nflows", dest = "nflows", help = "the total number of flows, by default 10000", default = "10000")
 	parser.add_option("-n", "--nhost", dest = "nhost", help = "number of hosts")
 	parser.add_option("-b", "--bandwidth", dest = "bandwidth", help = "the bandwidth of host link (G/M/K), by default 10G", default = "10G")
@@ -46,18 +48,14 @@ if __name__ == "__main__":
 
 	fix_seed(options.shard)
  
-	base_t = 1000000000
-	BYTE_TO_BIT=8
-	UNIT_G=1000000000
-	MTU=1000
-	BDP_DICT ={
-		2: 10 * MTU,
-	} 
+	base_t = 1*UNIT_G
+ 
 	if not options.nhost:
 		print "please use -n to enter number of hosts"
 		sys.exit(0)
 	n_flows = int(options.nflows)
 	nhost = int(options.nhost)
+	switch_to_host = int(options.switch_to_host)
 	
 	bandwidth_base = translate_bandwidth(options.bandwidth)
 	if bandwidth_base == None:
@@ -68,7 +66,7 @@ if __name__ == "__main__":
 		if link_id==0 or link_id==nhost-2:
 			bandwidth_list_scale.append(1)
 		else:
-			bandwidth_list_scale.append(4)
+			bandwidth_list_scale.append(switch_to_host)
 	
 	output_dir = options.output
 	if not os.path.exists("%s/stats.npy"%(output_dir)):
@@ -79,14 +77,10 @@ if __name__ == "__main__":
 		bandwidth_list=[]
 		for link_id in range(nhost-1):
 			bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
-		# min_size_in_bit=BYTE_TO_BIT * 50  # 50B
-		# # avg_size_base_in_bit = 4000 *BYTE_TO_BIT # 8000,4000
-		# BDP = BDP_DICT[nhost]
-		# avg_size_base_in_bit = BDP//4*BYTE_TO_BIT # 10KB
+		
 	
 		host_pair_list_ori=[]
 		host_pair_to_link_dict={}
-		host_pair_to_bandwidth_bottleneck_dict={}
 		for i in range(nhost-1):
 			for j in range(i+1,nhost):
 				src_dst_pair=(i,j)
@@ -95,7 +89,6 @@ if __name__ == "__main__":
 				host_pair_to_link_dict[src_dst_pair]=[]
 				for link_id in range(i,j):
 					host_pair_to_link_dict[src_dst_pair].append(link_id)
-				host_pair_to_bandwidth_bottleneck_dict[src_dst_pair]=np.min([bandwidth_list[link_id] for link_id in host_pair_to_link_dict[src_dst_pair]])
 		host_pair_list=[(0,nhost-1)]
 		if nhost==2:
 			ntc=1
@@ -129,7 +122,6 @@ if __name__ == "__main__":
 				print "Error: Not valid cdf"
 				sys.exit(0)
 			customRand_dict[cdf_file_name]=customRand
-		ia_distribution="lognorm"
 		ias_sigma_range=[1.0,1.5,2.0]
 		load_range=[0.2,0.5,0.8]
 		load_bottleneck_range=[0.2,0.5,0.8]
@@ -147,10 +139,9 @@ if __name__ == "__main__":
 		for i in range(ntc):
 			load_tmp=load_candidate
 			src_dst_pair=host_pair_list[i]
-			bandwidth_scale_bottleneck=np.min([bandwidth_list_scale[link_id] for link_id in host_pair_to_link_dict[src_dst_pair]])
 			
 			for link_id in host_pair_to_link_dict[src_dst_pair]:
-				load_per_link[link_id]+=load_tmp*bandwidth_scale_bottleneck/bandwidth_list_scale[link_id]
+				load_per_link[link_id]+=load_tmp/bandwidth_list_scale[link_id]
 		tmp=list(load_per_link.values())
 		load_bottleneck_cur=np.max(tmp)
 		load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
@@ -195,8 +186,11 @@ if __name__ == "__main__":
   
 		p_list=np.array(p_list)/np.sum(p_list)
 		print("ratio: ", p_list[0])
+		n_flows_foreground=0
 		while (flow_id_total<n_flows_tmp-1):
 			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+			if host_pair_idx==0:
+				n_flows_foreground+=1
 			# host_pair_idx=np.random.choice(host_pair_list_idx)
 			src,dst=host_pair_list[host_pair_idx]
 			size=f_sizes_in_byte[flow_id_total]
@@ -228,6 +222,7 @@ if __name__ == "__main__":
 		stats={
 			"n_flows": n_flows_total,
 			"ratio": p_list[0],
+			"n_flows_foreground":n_flows_foreground,
 			"load_bottleneck_target":load_bottleneck_target,
 			"host_pair_list":host_pair_list,
 			"load_candidate":load_candidate,
