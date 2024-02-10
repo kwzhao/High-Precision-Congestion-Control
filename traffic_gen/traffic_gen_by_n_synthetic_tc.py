@@ -7,7 +7,9 @@ import numpy as np
 import os
 from scipy.stats import genpareto
 from scipy.optimize import fsolve
-  
+from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT, size_distribution_list, size_sigma_range, ia_distribution, ias_sigma_range, load_range, load_bottleneck_range, min_size_in_bit, avg_size_base_in_bit
+
+
 def fix_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
@@ -39,6 +41,7 @@ if __name__ == "__main__":
 	port = 80
 	parser = OptionParser()
 	parser.add_option("--shard", dest = "shard",type=int, default=0, help="random seed")
+	parser.add_option("--switch_to_host", dest = "shard",type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
 	parser.add_option("-f", "--nflows", dest = "nflows", help = "the total number of flows, by default 10000", default = "10000")
 	parser.add_option("-n", "--nhost", dest = "nhost", help = "number of hosts")
 	parser.add_option("-b", "--bandwidth", dest = "bandwidth", help = "the bandwidth of host link (G/M/K), by default 10G", default = "10G")
@@ -46,22 +49,16 @@ if __name__ == "__main__":
 	options,args = parser.parse_args()
 
 	fix_seed(options.shard)
+	
+	base_t = 1*UNIT_G
  
-	base_t = 1000000000
-	BYTE_TO_BIT=8
-	UNIT_G=1000000000
-	MTU=1000
-	BDP_DICT ={
-		3: 10 * MTU,
-		5: 10 * MTU,
-		7: 10 * MTU,
-	} 
 	if not options.nhost:
 		print "please use -n to enter number of hosts"
 		sys.exit(0)
 	n_flows = int(options.nflows)
 	nhost = int(options.nhost)
-	
+	switch_to_host = int (options.switch_to_host)
+ 
 	bandwidth_base = translate_bandwidth(options.bandwidth)
 	if bandwidth_base == None:
 		print "bandwidth format incorrect"
@@ -71,7 +68,7 @@ if __name__ == "__main__":
 		if link_id==0 or link_id==nhost-2:
 			bandwidth_list_scale.append(1)
 		else:
-			bandwidth_list_scale.append(4)
+			bandwidth_list_scale.append(switch_to_host)
 	
 	output_dir = options.output
 	if not os.path.exists("%s/stats.npy"%(output_dir)):
@@ -82,14 +79,11 @@ if __name__ == "__main__":
 		bandwidth_list=[]
 		for link_id in range(nhost-1):
 			bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
-		min_size_in_bit=BYTE_TO_BIT * 50  # 50B
-		# avg_size_base_in_bit = 4000 *BYTE_TO_BIT # 8000,4000
+		
 		BDP = BDP_DICT[nhost]
-		avg_size_base_in_bit = BDP//4*BYTE_TO_BIT # 10KB
 	
 		host_pair_list_ori=[]
 		host_pair_to_link_dict={}
-		host_pair_to_bandwidth_bottleneck_dict={}
 		for i in range(nhost-1):
 			for j in range(i+1,nhost):
 				src_dst_pair=(i,j)
@@ -98,7 +92,6 @@ if __name__ == "__main__":
 				host_pair_to_link_dict[src_dst_pair]=[]
 				for link_id in range(i,j):
 					host_pair_to_link_dict[src_dst_pair].append(link_id)
-				host_pair_to_bandwidth_bottleneck_dict[src_dst_pair]=np.min([bandwidth_list[link_id] for link_id in host_pair_to_link_dict[src_dst_pair]])
 		host_pair_list=[(0,nhost-1)]
 		if nhost==2:
 			ntc=1
@@ -116,15 +109,7 @@ if __name__ == "__main__":
 			host_list.append((base_t, i))
 		heapq.heapify(host_list)
 	
-		size_distribution_list=["exp","gaussian","lognorm","pareto"]
-		size_sigma_range=[5000,50000]
-		ia_distribution="lognorm"
-		ias_sigma_range=[1.0,2.0]
-		load_range=[0.1,0.8]
-		load_bottleneck_range=[0.1,0.8]
-		
-		ntc_in_one=1
-		size_dist_candidate=np.random.choice(size_distribution_list,size=ntc_in_one,replace=True)[0]
+		size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
 		size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
 		ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
 		# ias_sigma_candidate=np.random.choice(ias_sigma_range,size=1,replace=False)[0]
@@ -138,10 +123,9 @@ if __name__ == "__main__":
 		for i in range(ntc):
 			load_tmp=load_candidate
 			src_dst_pair=host_pair_list[i]
-			bandwidth_scale_bottleneck=np.min([bandwidth_list_scale[link_id] for link_id in host_pair_to_link_dict[src_dst_pair]])
 			
 			for link_id in host_pair_to_link_dict[src_dst_pair]:
-				load_per_link[link_id]+=load_tmp*bandwidth_scale_bottleneck/bandwidth_list_scale[link_id]
+				load_per_link[link_id]+=load_tmp/bandwidth_list_scale[link_id]
 		tmp=list(load_per_link.values())
 		load_bottleneck_cur=np.max(tmp)
 		load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
@@ -154,10 +138,10 @@ if __name__ == "__main__":
 		ias_sigma_ori = ias_sigma_candidate
 		load = load_candidate
 		if size_distribution=="exp":
-			mu = avg_size_base_in_bit * (float(size_sigma_ori) / 3000.0)**1.1- min_size_in_bit
+			mu = avg_size_base_in_bit * (float(size_sigma_ori) / 5000.0)**2- min_size_in_bit
 			f_sizes_in_byte = ((min_size_in_bit + np.random.exponential(scale=mu, size=(n_flows_tmp,))) / BYTE_TO_BIT).astype("int64") # Byte
 		elif size_distribution=="gaussian":
-			size_sigma=(float(size_sigma_ori)/4000.0)**1.1
+			size_sigma=(float(size_sigma_ori)/5000.0)**2
 			mu=avg_size_base_in_bit*size_sigma - min_size_in_bit
 	
 			tmp=np.array([PosNormal(mu, avg_size_base_in_bit*size_sigma) for _ in range(n_flows_tmp)]).squeeze()
@@ -169,8 +153,8 @@ if __name__ == "__main__":
 				/ BYTE_TO_BIT  # Byte
 			).astype("int64")
 		elif size_distribution=="lognorm":
-			avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_ori) / 3000.0)**1.3  # 10KB
-			size_sigma=(float(size_sigma_ori)-5000.0) / 45000.0+1.2
+			avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_ori) / 5000.0)**2
+			size_sigma=(float(size_sigma_ori)) / 50000+1
 			# flow size
 			mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
 			f_sizes_in_byte = (
@@ -178,7 +162,7 @@ if __name__ == "__main__":
 				/ BYTE_TO_BIT  # Byte
 			).astype("int64")
 		elif size_distribution=="pareto":
-			avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_ori)/3000.0)**1.2
+			avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_ori)/5000.0)**2
 			size_sigma=avg_size_in_bit//2.0
 			func = lambda x: 5 - np.power(1 + x * (avg_size_in_bit - min_size_in_bit) / size_sigma, 1 / x)
 			psi = fsolve(func, 0.5)[0]
