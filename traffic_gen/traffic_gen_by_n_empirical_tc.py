@@ -5,7 +5,7 @@ import heapq
 from optparse import OptionParser
 import numpy as np
 import os
-from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT
+from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT,ia_distribution
 from custom_rand import CustomRand
 dir_path_cur = os.path.dirname(os.path.realpath(__file__))+'/'
 def fix_seed(seed):

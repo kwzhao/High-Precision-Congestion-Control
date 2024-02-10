@@ -28,6 +28,7 @@ FAST_RECOVERY_TIMES 1
 RATE_AI {ai}Mb/s
 RATE_HAI {hai}Mb/s
 MIN_RATE 1000Mb/s
+MAX_RATE 10000Mb/s
 DCTCP_RATE_AI {dctcp_ai}Mb/s
 
 ERROR_RATE_PER_LINK 0.0000
@@ -145,7 +146,7 @@ if __name__ == "__main__":
 			cc += "mi%d"%mi
 		if args.hpai > 0:
 			cc += "ai%d"%ai
-		config_name = "%s/config_%s_%s_%s%s.txt"%(root, topo, trace, cc, failure)
+		config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
 		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, cc=cc, mode=3, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
 	elif args.cc == "dctcp":
 		ai = 10 # ai is useless for dctcp
@@ -177,7 +178,7 @@ if __name__ == "__main__":
 			cc += "ai%d"%ai
 		cc += "log%.3f"%pint_log_base
 		cc += "p%.3f"%pint_prob
-		config_name = "%s/config_%s_%s_%s%s.txt"%(root, topo, trace, cc, failure)
+		config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
 		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, cc=cc, mode=10, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
 	else:
 		print "unknown cc:", args.cc
