@@ -64,7 +64,7 @@ KMIN_MAP {kmin_map}
 PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
 QLEN_MON_FILE {root}/qlen_{topo}_{cc}{failure}{config_specs}.txt
-QLEN_MON_START 2000000000
+QLEN_MON_START 1000000000
 QLEN_MON_END 3000000000
 
 FIXED_WIN {fwin}
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 	kmin_map = "2 %d %d %d %d"%(bw*1000000000, 100*bw/25, bw*4*1000000000, 100*bw*4/25)
 	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 
-	duration=600.0
+	duration=600
 	with open("%s/%s.txt"%(root, trace), 'rb') as f:
 		try:  # catch OSError in case of a one line file 
 			f.seek(-2, os.SEEK_END)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 		except OSError:
 			f.seek(0)
 		last_line = f.readline()
-		duration=float(last_line.split()[-1])+10.0
+		duration=int(float(last_line.split()[-1])+10)
 
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
