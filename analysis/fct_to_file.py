@@ -79,7 +79,7 @@ if __name__ == "__main__":
     # step = int(args.step)
     # res = [[i/100.] for i in range(0, 100, step)]
     fwin = args.fwin
-    config_specs = "_k%d_b%f"%(fwin, bfsz_factor)
+    config_specs = "_k%d_b%.1f"%(fwin, bfsz_factor)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)

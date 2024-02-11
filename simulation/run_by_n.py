@@ -96,7 +96,8 @@ if __name__ == "__main__":
 	trace = args.trace
 	#bfsz = 16 if bw==50 else 32
 	bfsz_factor = float(args.bfsz_factor)
-	bfsz = 16 * bw / 50 * bfsz_factor
+	# bfsz = 16 * bw / 50 * bfsz_factor
+	bfsz = int(2* bw * bfsz_factor)
 	u_tgt=args.utgt/100.
 	mi=args.mi
  
@@ -116,7 +117,7 @@ if __name__ == "__main__":
 	if args.down != '0 0 0':
 		failure = '_down'
 	# config_specs="_k%d"%(dctcp_k)
-	config_specs="_k%d_b%f"%(fwin, bfsz_factor)
+	config_specs="_k%d_b%.1f"%(fwin, bfsz_factor)
 	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
 
 	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)

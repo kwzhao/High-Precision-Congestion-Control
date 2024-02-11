@@ -7,23 +7,11 @@ struct Parameters {
     n_hosts: Vec<u32>,
     window: Vec<u32>,
     cc: Vec<String>,
-    cc_param: Vec<u32>,
-    bfsz_factor: Vec<String>,
+    cc_param_factor: Vec<f32>,
+    bfsz_factor: Vec<f32>,
 }
 
 fn main() -> anyhow::Result<()> {
-    cc_param_map= {
-        // dctcp_k
-        "dctcp": vec![5, 30, 72],
-        // timely
-        "timely_vwin": vec![5, 30, 72],
-        // dcqcn
-        "dcqcn_paper_vwin": vec![5, 30, 72],
-        // hp
-        "hp": vec![5, 30, 72],
-        // hpccPint
-        "hpccPint": vec![5, 30, 72],
-    };
     let base_rtt = 14400;
     // let window = 18000;
     let keynote = "_path_tc";
@@ -43,19 +31,20 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        // shard: vec![0],
-        shard: (0..2000).collect(),
+        shard: vec![0],
+        // shard: (0..2000).collect(),
         // n_flows: vec![20],
         n_flows: vec![20000],
-        // n_hosts: vec![3,7],
-        n_hosts: vec![3, 5, 7],
+        n_hosts: vec![3,7],
+        // n_hosts: vec![3, 5, 7],
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
         // dctcp_k: vec![5, 30, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        // cc: vec!["dctcp".to_string()],
-        cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
-        bfsz_factor: vec![1.0],
+        cc: vec!["dctcp".to_string()],
+        // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
+        cc_param_factor: vec![1.0],
+        bfsz_factor: vec![0.5, 1.0, 2.0],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
