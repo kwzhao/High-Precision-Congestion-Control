@@ -191,4 +191,5 @@ if __name__ == "__main__":
 
 	with open(config_name, "w") as file:
 		file.write(config)
+
 	os.system("./waf --run 'scratch/third %s'"%(config_name))
