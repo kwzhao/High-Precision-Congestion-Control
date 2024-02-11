@@ -966,6 +966,7 @@ void RdmaHw::HandleAckTimely(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader 
 	}
 }
 void RdmaHw::UpdateRateTimely(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch, bool us){
+	// printf("m_tmly_THigh:%lu, m_tmly_TLow:%lu\n", m_tmly_THigh, m_tmly_TLow);
 	uint32_t next_seq = qp->snd_nxt;
 	uint64_t rtt = Simulator::Now().GetTimeStep() - ch.ack.ih.ts;
 	bool print = !us;
