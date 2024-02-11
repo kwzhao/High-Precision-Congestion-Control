@@ -113,15 +113,15 @@ if __name__ == "__main__":
 	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 
 	duration=600.0
-	# with open("%s/%s.txt"%(root, trace), 'rb') as f:
-	# 	try:  # catch OSError in case of a one line file 
-	# 		f.seek(-2, os.SEEK_END)
-	# 		while f.read(1) != b'\n':
-	# 			f.seek(-2, os.SEEK_CUR)
-	# 	except OSError:
-	# 		f.seek(0)
-	# 	last_line = f.readline()
-	# 	duration=float(last_line.split()[-1])+10.0
+	with open("%s/%s.txt"%(root, trace), 'rb') as f:
+		try:  # catch OSError in case of a one line file 
+			f.seek(-2, os.SEEK_END)
+			while f.read(1) != b'\n':
+				f.seek(-2, os.SEEK_CUR)
+		except OSError:
+			f.seek(0)
+		last_line = f.readline()
+		duration=float(last_line.split()[-1])+10.0
 
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 		if args.hpai > 0:
 			ai = args.hpai
 		hai = ai # useless
-		int_multi = bw / 25;
+		int_multi = max(bw / 25, 1);
 		cc = "%s%d"%(args.cc, args.utgt)
 		if (mi > 0):
 			cc += "mi%d"%mi
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 		if args.hpai > 0:
 			ai = args.hpai
 		hai = ai # useless
-		int_multi = bw / 25;
+		int_multi = max(bw / 25, 1);
 		cc = "%s%d"%(args.cc, args.utgt)
 		if (mi > 0):
 			cc += "mi%d"%mi
