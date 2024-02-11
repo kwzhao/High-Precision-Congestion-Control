@@ -7,11 +7,23 @@ struct Parameters {
     n_hosts: Vec<u32>,
     window: Vec<u32>,
     cc: Vec<String>,
-    // dctcp_k: Vec<u32>,
-    // buff_size_factor: Vec<String>,
+    cc_param: Vec<u32>,
+    bfsz_factor: Vec<String>,
 }
 
 fn main() -> anyhow::Result<()> {
+    cc_param_map= {
+        // dctcp_k
+        "dctcp": vec![5, 30, 72],
+        // timely
+        "timely_vwin": vec![5, 30, 72],
+        // dcqcn
+        "dcqcn_paper_vwin": vec![5, 30, 72],
+        // hp
+        "hp": vec![5, 30, 72],
+        // hpccPint
+        "hpccPint": vec![5, 30, 72],
+    };
     let base_rtt = 14400;
     // let window = 18000;
     let keynote = "_path_tc";

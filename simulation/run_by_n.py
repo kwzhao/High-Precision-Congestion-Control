@@ -74,7 +74,8 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='run simulation')
 	parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
-	parser.add_argument('--dctcp_k', dest='dctcp_k', type=int, default=30, help="DCTCP_K")
+	parser.add_argument('--cc_param', dest='cc_param', type=int, default=30, help="cc_param")
+	parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
@@ -94,10 +95,17 @@ if __name__ == "__main__":
 	bw = int(args.bw)
 	trace = args.trace
 	#bfsz = 16 if bw==50 else 32
-	bfsz = 16 * bw / 50
+	bfsz_factor = float(args.bfsz_factor)
+	bfsz = 16 * bw / 50 * bfsz_factor
 	u_tgt=args.utgt/100.
 	mi=args.mi
-	dctcp_k=args.dctcp_k
+ 
+	# cc parameters
+	# dctcp_k=30
+	# if args.cc=="dctcp":
+	# 	dctcp_k=args.cc_param
+	# elif args.cc=="hpccPint":
+		
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
 	enable_tr = args.enable_tr
