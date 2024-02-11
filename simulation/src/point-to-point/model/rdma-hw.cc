@@ -28,7 +28,7 @@ TypeId RdmaHw::GetTypeId (void)
 				MakeDataRateChecker())
 		.AddAttribute("MaxRate",
 				"Maximum rate of a flow",
-				DataRateValue(DataRate("10000Mb/s")),
+				DataRateValue(DataRate("100000Mb/s")),
 				MakeDataRateAccessor(&RdmaHw::m_maxRate),
 				MakeDataRateChecker())
 		.AddAttribute("Mtu",
@@ -247,9 +247,9 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 	// set init variables
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
 	// qp->m_rate = m_bps;
-	qp->m_rate = m_maxRate;
+	qp->m_rate = std::min(m_bps,m_maxRate);
 	// qp->m_max_rate = m_bps;
-	qp->m_max_rate = m_maxRate;
+	qp->m_max_rate = std::min(m_bps,m_maxRate);
 	if (m_cc_mode == 1){
 		qp->mlx.m_targetRate = m_bps;
 	}else if (m_cc_mode == 3){
