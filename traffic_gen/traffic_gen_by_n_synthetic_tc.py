@@ -130,7 +130,6 @@ if __name__ == "__main__":
 		load_bottleneck_cur=np.max(tmp)
 		load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
 		load_candidate=load_candidate*load_bottleneck_target/load_bottleneck_cur
-		print("load_bottleneck: ", load_bottleneck_cur,load_bottleneck_target)
 		
 		n_flows_tmp=n_flows*ntc+1
 		size_distribution=size_dist_candidate
@@ -202,7 +201,6 @@ if __name__ == "__main__":
 		p_list[0]=1.0
   
 		p_list=np.array(p_list)/np.sum(p_list)
-		print("ratio: ", p_list[0])
 		n_flows_foreground=0
 		while (flow_id_total<n_flows_tmp-1):
 			host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
@@ -230,12 +228,12 @@ if __name__ == "__main__":
 		ofile.write(data)
 		ofile.close()
 	
-		print("time %f s"%((t)/1e9),"n_flows %d"%(n_flows_total))
-
 		n_flows_done= min(n_flows_total,n_flows_tmp-1)
 		end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
 		utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
-		print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3), size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
+		print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
+		print("load:", load_bottleneck_target,load_candidate)
+		print("stats:", n_flows_total,p_list[0],n_flows_foreground,size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
 		stats={
 			"n_flows": n_flows_total,
 			"ratio": p_list[0],
