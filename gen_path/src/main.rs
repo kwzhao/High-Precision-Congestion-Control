@@ -7,6 +7,7 @@ struct Parameters {
     n_hosts: Vec<u32>,
     window: Vec<u32>,
     cc: Vec<String>,
+    // dctcp_k: Vec<u32>,
     // buff_size_factor: Vec<String>,
 }
 
@@ -32,14 +33,15 @@ fn main() -> anyhow::Result<()> {
     let params = Parameters {
         shard: vec![0],
         // shard: (0..2000).collect(),
-        n_flows: vec![20],
-        // n_flows: vec![20000],
-        n_hosts: vec![7],
+        // n_flows: vec![20],
+        n_flows: vec![20000],
+        n_hosts: vec![3,7],
         // n_hosts: vec![3, 5, 7],
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
+        // dctcp_k: vec![5, 30, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        cc: vec!["hp".to_string()],
+        cc: vec!["dctcp".to_string()],
         // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
     };
     // println!("{:?}", Parameters::field_names());
