@@ -41,8 +41,8 @@ fn main() -> anyhow::Result<()> {
         // dctcp_k: vec![5, 30, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        cc: vec!["dctcp".to_string()],
-        // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
+        // cc: vec!["dctcp".to_string()],
+        cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
