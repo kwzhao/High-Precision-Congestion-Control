@@ -126,5 +126,6 @@ namespace ns3 {
 	}
 	void SwitchMmu::ConfigBufferSize(uint32_t size){
 		buffer_size = size;
+		printf("Buffer size: %u\n", buffer_size);
 	}
 }

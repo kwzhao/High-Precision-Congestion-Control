@@ -35,7 +35,7 @@ fn main() -> anyhow::Result<()> {
         // shard: (0..2000).collect(),
         // n_flows: vec![20],
         n_flows: vec![20000],
-        n_hosts: vec![3,7],
+        n_hosts: vec![7],
         // n_hosts: vec![3, 5, 7],
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
         // dctcp_k: vec![5, 30, 72],
@@ -45,6 +45,7 @@ fn main() -> anyhow::Result<()> {
         // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
         cc_param_factor: vec![1.0],
         bfsz_factor: vec![0.5, 1.0, 2.0],
+        // bfsz_factor: vec![1.0],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
