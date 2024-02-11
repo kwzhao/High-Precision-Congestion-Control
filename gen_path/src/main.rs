@@ -16,7 +16,7 @@ fn main() -> anyhow::Result<()> {
     let keynote = "_path_tc";
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let root_path = format!(
-        "..",
+        "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
     );
     let output_dir = "/data2/lichenni/path_tc";
     let log_dir = format!("./log{}", keynote);
@@ -39,8 +39,8 @@ fn main() -> anyhow::Result<()> {
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        // cc: vec!["dctcp".to_string()],
-        cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
+        cc: vec!["hp".to_string()],
+        // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
@@ -59,7 +59,7 @@ fn main() -> anyhow::Result<()> {
 
             // gen traffic
             let command_args = format!(
-                "--shard {} -f {} -n {} -b 10G -o {} --switch_to_host 4",
+                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 4",
                 shard, n_flows, n_hosts, output_path,
             );
             let log_path = format!("{}/nhosts{}_traffic.log", log_dir, n_hosts);

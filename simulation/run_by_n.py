@@ -80,8 +80,8 @@ if __name__ == "__main__":
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
 	parser.add_argument('--utgt', dest='utgt', action='store', type=int, default=95, help="eta of HPCC")
 	parser.add_argument('--mi', dest='mi', action='store', type=int, default=0, help="MI_THRESH")
-	parser.add_argument('--hpai', dest='hpai', action='store', type=int, default=0, help="AI for HPCC")
-	parser.add_argument('--pint_log_base', dest='pint_log_base', action = 'store', type=float, default=1.01, help="PINT's log_base")
+	parser.add_argument('--hpai', dest='hpai', action='store', type=int, default=50, help="AI for HPCC")
+	parser.add_argument('--pint_log_base', dest='pint_log_base', action = 'store', type=float, default=1.05, help="PINT's log_base")
 	parser.add_argument('--pint_prob', dest='pint_prob', action = 'store', type=float, default=1.0, help="PINT's sampling probability")
 	parser.add_argument('--enable_tr', dest='enable_tr', action = 'store', type=int, default=0, help="enable packet-level events dump")
 	parser.add_argument('--root', dest='root', action='store', default='mix', help="the root directory for configs and results")
@@ -143,14 +143,15 @@ if __name__ == "__main__":
 		if args.hpai > 0:
 			ai = args.hpai
 		hai = ai # useless
-		int_multi = bw / 25;
+		int_multi = max(bw / 25, 1);
 		cc = "%s%d"%(args.cc, args.utgt)
 		if (mi > 0):
 			cc += "mi%d"%mi
 		if args.hpai > 0:
 			cc += "ai%d"%ai
-		config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
-		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=cc, mode=3, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
+		# config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
+		print "cc:", cc
+		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=3, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
 	elif args.cc == "dctcp":
 		ai = 10 # ai is useless for dctcp
 		hai = ai  # also useless
@@ -173,7 +174,7 @@ if __name__ == "__main__":
 		if args.hpai > 0:
 			ai = args.hpai
 		hai = ai # useless
-		int_multi = bw / 25;
+		int_multi = max(bw / 25, 1);
 		cc = "%s%d"%(args.cc, args.utgt)
 		if (mi > 0):
 			cc += "mi%d"%mi
@@ -181,13 +182,14 @@ if __name__ == "__main__":
 			cc += "ai%d"%ai
 		cc += "log%.3f"%pint_log_base
 		cc += "p%.3f"%pint_prob
-		config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
-		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=cc, mode=10, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
+		# config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
+		print "cc:", cc
+		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=10, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs)
 	else:
 		print "unknown cc:", args.cc
 		sys.exit(1)
 
 	with open(config_name, "w") as file:
 		file.write(config)
-	
+	print config_name
 	os.system("./waf --run 'scratch/third %s'"%(config_name))

@@ -77,8 +77,8 @@ if __name__ == "__main__":
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
 	parser.add_argument('--utgt', dest='utgt', action='store', type=int, default=95, help="eta of HPCC")
 	parser.add_argument('--mi', dest='mi', action='store', type=int, default=0, help="MI_THRESH")
-	parser.add_argument('--hpai', dest='hpai', action='store', type=int, default=0, help="AI for HPCC")
-	parser.add_argument('--pint_log_base', dest='pint_log_base', action = 'store', type=float, default=1.01, help="PINT's log_base")
+	parser.add_argument('--hpai', dest='hpai', action='store', type=int, default=50, help="AI for HPCC")
+	parser.add_argument('--pint_log_base', dest='pint_log_base', action = 'store', type=float, default=1.05, help="PINT's log_base")
 	parser.add_argument('--pint_prob', dest='pint_prob', action = 'store', type=float, default=1.0, help="PINT's sampling probability")
 	parser.add_argument('--enable_tr', dest='enable_tr', action = 'store', type=int, default=0, help="enable packet-level events dump")
 	parser.add_argument('--root', dest='root', action='store', default='mix', help="the root directory for configs and results")
@@ -113,15 +113,15 @@ if __name__ == "__main__":
 	pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
 
 	duration=600.0
-	with open("%s/%s.txt"%(root, trace), 'rb') as f:
-		try:  # catch OSError in case of a one line file 
-			f.seek(-2, os.SEEK_END)
-			while f.read(1) != b'\n':
-				f.seek(-2, os.SEEK_CUR)
-		except OSError:
-			f.seek(0)
-		last_line = f.readline()
-		duration=float(last_line.split()[-1])+10.0
+	# with open("%s/%s.txt"%(root, trace), 'rb') as f:
+	# 	try:  # catch OSError in case of a one line file 
+	# 		f.seek(-2, os.SEEK_END)
+	# 		while f.read(1) != b'\n':
+	# 			f.seek(-2, os.SEEK_CUR)
+	# 	except OSError:
+	# 		f.seek(0)
+	# 	last_line = f.readline()
+	# 	duration=float(last_line.split()[-1])+10.0
 
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25

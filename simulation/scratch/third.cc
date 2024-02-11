@@ -899,9 +899,10 @@ int main(int argc, char *argv[])
 				NS_ASSERT_MSG(rate2kmin.find(rate) != rate2kmin.end(), "must set kmin for each link speed");
 				NS_ASSERT_MSG(rate2kmax.find(rate) != rate2kmax.end(), "must set kmax for each link speed");
 				NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
-				uint32_t kmin_kb, kmax_kb;
-				kmin_kb = kmax_kb = rate * 3 / 1000000000;
-				sw->m_mmu->ConfigEcn(j, kmin_kb, kmax_kb, rate2pmax[rate]);
+				// uint32_t kmin_kb, kmax_kb;
+				// kmin_kb = kmax_kb = rate * 3 / 1000000000;
+				// sw->m_mmu->ConfigEcn(j, kmin_kb, kmax_kb, rate2pmax[rate]);
+				sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
 				// set pfc
 				uint64_t delay = DynamicCast<QbbChannel>(dev->GetChannel())->GetDelay().GetTimeStep();
 				uint32_t headroom = rate * delay / 8 / 1000000000 * 3;
