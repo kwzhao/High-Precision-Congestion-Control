@@ -55,6 +55,7 @@ fn main() -> anyhow::Result<()> {
         window: vec![18].iter().map(|x| x * 1000).collect(),
         // cc: vec!["dctcp".to_string()],
         cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
+        bfsz_factor: vec![1.0],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
@@ -93,7 +94,8 @@ fn main() -> anyhow::Result<()> {
         &params.shard,
         &params.n_flows,
         &params.n_hosts,
-        &params.cc
+        &params.cc,
+        &params.bfsz_factor
     )
     .par_bridge()
     .for_each(|combination| {
@@ -102,6 +104,7 @@ fn main() -> anyhow::Result<()> {
         let n_flows = combination.2;
         let n_hosts = combination.3;
         let cc= combination.4;
+        let bfsz_factor = combination.5;
 
         println!("{:?}", combination);
         let scenario_dir = format!(
@@ -112,8 +115,8 @@ fn main() -> anyhow::Result<()> {
         // ns3 sim
         let mut command_args = format!(
             "--cc {} --trace flows --bw 10 --fwin {} --base_rtt {} \
-            --topo {}-{}  --root {}/{}",cc,
-            window, base_rtt, type_topo, n_hosts, output_dir, scenario_dir
+            --topo {}-{}  --root {}/{} --bfsz_factor {}",cc,
+            window, base_rtt, type_topo, n_hosts, output_dir, scenario_dir, bfsz_factor
         );
         let mut log_path = format!("{}/nhosts{}_sim.log", log_dir, n_hosts,);
         let mut py_command = format!("{} {} {}", python_path, file_sim, command_args,);
@@ -127,8 +130,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} --cc {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --fwin {}",
-            shard, cc, type_topo, n_hosts, output_dir, scenario_dir, window
+            "--shard {} --cc {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --fwin {} --bfsz_factor {}",
+            shard, cc, type_topo, n_hosts, output_dir, scenario_dir, window, bfsz_factor
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);
