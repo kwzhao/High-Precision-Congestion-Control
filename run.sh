@@ -21,3 +21,5 @@ export NS_LOG=PacketPathExample=info
 /data2/lichenni/path_tc/shard0_nflows20_nhosts7_lr10Gbps/config_topo-pl-7_flows_hp_k18000.txt
 
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/9f4be2a9ead8a90e8bf732c66bd758c00e58e5be...13958423c9b7e666b8b51bdb889816ec3f52d79a
+
+https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...a69f1a6d8157fb70190db6dd74ee8cdeb90425b5
