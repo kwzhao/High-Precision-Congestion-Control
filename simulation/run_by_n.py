@@ -101,7 +101,7 @@ if __name__ == "__main__":
 	mi=args.mi
  
 	# cc parameters
-	# dctcp_k=30
+	dctcp_k=30
 	# if args.cc=="dctcp":
 	# 	dctcp_k=args.cc_param
 	# elif args.cc=="hpccPint":
@@ -116,7 +116,7 @@ if __name__ == "__main__":
 	if args.down != '0 0 0':
 		failure = '_down'
 	# config_specs="_k%d"%(dctcp_k)
-	config_specs="_k%d"%(fwin)
+	config_specs="_k%d_b%f"%(fwin, bfsz_factor)
 	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
 
 	kmax_map = "2 %d %d %d %d"%(bw*1000000000, 400*bw/25, bw*4*1000000000, 400*bw*4/25)
