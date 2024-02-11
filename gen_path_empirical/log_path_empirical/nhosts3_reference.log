@@ -1,0 +1,200 @@
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 11 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard11_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 21 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard21_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 23 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard23_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 2 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard2_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 7 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard7_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 35 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard35_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 28 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard28_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 9 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard9_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 33 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard33_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 39 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard39_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 13 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard13_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 44 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard44_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 19 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard19_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 5 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard5_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 3 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard3_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 46 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard46_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 6 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard6_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 20 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard20_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 49 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard49_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 12 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard12_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 27 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard27_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 31 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard31_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 40 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard40_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 38 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard38_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 41 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard41_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 22 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard22_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 8 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard8_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 34 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard34_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 1 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard1_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 25 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard25_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 4 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard4_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 14 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard14_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 32 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard32_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 10 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard10_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 26 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard26_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 30 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard30_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 18 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard18_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 16 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard16_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 47 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard47_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 17 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard17_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 45 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard45_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 42 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard42_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 24 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard24_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 43 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard43_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 15 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard15_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 37 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard37_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 29 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard29_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 48 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard48_nflows20000_nhosts3_lr10Gbps --nhost 3
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/analysis/main_flowsim_mmf.py --shard 36 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_empirical --scenario_dir shard36_nflows20000_nhosts3_lr10Gbps --nhost 3
+c_sim:0.038835
+estimated_fcts:2540751.717718
+
+c_sim:0.050497
+estimated_fcts:5961549.888599
+c_sim:0.045432
+estimated_fcts:2883243.891160
+
+
+c_sim:0.039982
+estimated_fcts:1692891.047780
+
+c_sim:0.044335
+estimated_fcts:99770.069764
+
+c_sim:0.050175
+estimated_fcts:779993.391091
+
+c_sim:0.050095
+estimated_fcts:806231.473201
+
+c_sim:0.044986
+estimated_fcts:617512.782276
+c_sim:0.052679
+estimated_fcts:164255.386334
+
+
+c_sim:0.042052
+estimated_fcts:1228723.346166
+c_sim:0.040317
+estimated_fcts:579025.688153
+
+
+c_sim:0.042160
+estimated_fcts:1092839.772503
+
+c_sim:0.045145
+estimated_fcts:660609.887018
+c_sim:0.047087
+estimated_fcts:1169189.281261
+
+c_sim:0.066879
+estimated_fcts:12218368.752199
+
+c_sim:0.041143
+estimated_fcts:675661.813032
+
+
+c_sim:0.053455
+estimated_fcts:1830568.153458
+c_sim:0.067736
+estimated_fcts:17287912.455540
+c_sim:0.076017
+estimated_fcts:1621593.407649
+
+
+
+c_sim:0.042982
+estimated_fcts:126813.454440
+
+c_sim:0.085053
+estimated_fcts:651822.392866
+
+c_sim:0.051990
+estimated_fcts:374649.486935
+c_sim:0.044089
+estimated_fcts:703343.297728
+
+c_sim:0.040533
+estimated_fcts:98768.091757
+
+c_sim:0.071995
+estimated_fcts:4946698.728261
+
+
+c_sim:0.049590
+estimated_fcts:636537.061968
+
+c_sim:0.043931
+estimated_fcts:188939.946310
+c_sim:0.052177
+estimated_fcts:3594966.362632
+c_sim:0.040918
+estimated_fcts:648162.922163
+c_sim:0.036666
+estimated_fcts:209492.888257
+c_sim:0.049211
+estimated_fcts:1121412.383354
+
+
+
+
+c_sim:0.051113
+estimated_fcts:166044.515738
+c_sim:0.075121
+estimated_fcts:1119152.486657
+
+c_sim:0.050066
+estimated_fcts:320202.753310
+
+c_sim:0.048814
+estimated_fcts:1650399.407674
+
+
+c_sim:0.045503
+estimated_fcts:1078164.030985
+
+c_sim:0.046299
+estimated_fcts:1171440.584292
+
+c_sim:0.041960
+estimated_fcts:602444.627166
+
+
+c_sim:0.047427
+estimated_fcts:579797.776833
+c_sim:0.043810
+estimated_fcts:1279334.051104
+c_sim:0.042669
+estimated_fcts:2395059.844774
+
+
+
+c_sim:0.046219
+estimated_fcts:409869.311317
+
+c_sim:0.052505
+estimated_fcts:187798.320310
+c_sim:0.048837
+estimated_fcts:101206.463379
+c_sim:0.043317
+estimated_fcts:138616.515730
+c_sim:0.046603
+estimated_fcts:3265089.273051
+
+
+
+
+c_sim:0.067599
+estimated_fcts:12941908.258848
+c_sim:0.049514
+estimated_fcts:1610244.210120
+
+
+c_sim:0.053593
+estimated_fcts:6384411.021709
+c_sim:0.048897
+estimated_fcts:600857.729201
+
+
