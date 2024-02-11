@@ -91,8 +91,8 @@ if __name__ == "__main__":
 	parser.add_argument('--base_rtt', dest='base_rtt', action='store', type=int, default=8000, help="the base RTT")
 	args = parser.parse_args()
 
-	cc_param_factor=float(args.cc_param_factor)
 	bfsz_factor = float(args.bfsz_factor)
+	cc_param_factor=float(args.cc_param_factor)
  
 	root = args.root
 	topo=args.topo
