@@ -113,9 +113,9 @@ if __name__ == "__main__":
 	dcqcn_k_min=50
 	dcqcn_k_max=200
 	timely_t_high=500000
-	timely_t_low=50000
+	timely_t_low=400000
 	timely_beta=0.8
-	hpai=1000
+	hpai=500
 	if args.cc=="dctcp":
 		dctcp_k=dctcp_k*cc_param_factor
 	elif args.cc.startswith("dcqcn"):
