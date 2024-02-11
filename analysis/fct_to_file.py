@@ -24,6 +24,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--fwin", dest="fwin", type=int, default=30, help="fwin"
     )
+    parser.add_argument('--cc_param_factor', dest='cc_param_factor', type=float, default=1.0, help="cc_param_factor")
     parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
     parser.add_argument(
         "-t",
@@ -74,12 +75,13 @@ if __name__ == "__main__":
     # 	args.cc,
     # ]
     # time_limit = int(float(args.file.split("_")[-1])*1e9)
-    time_limit = int(3000 * 1e9)
+    time_limit = int(30000 * 1e9)
     bfsz_factor = float(args.bfsz_factor)
+    cc_param_factor=float(args.cc_param_factor)
     # step = int(args.step)
     # res = [[i/100.] for i in range(0, 100, step)]
     fwin = args.fwin
-    config_specs = "_k%d_b%.1f"%(fwin, bfsz_factor)
+    config_specs = "_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)
