@@ -81,6 +81,8 @@ uint32_t enable_trace = 1;
 
 uint32_t buffer_size = 16;
 
+uint32_t timely_t_high = 500000; //ns
+
 uint32_t qlen_dump_interval = 100000000, qlen_mon_interval = 100;
 uint64_t qlen_mon_start = 2000000000, qlen_mon_end = 2100000000;
 string qlen_mon_file;
@@ -640,6 +642,9 @@ int main(int argc, char *argv[])
 			}else if (key.compare("DCTCP_RATE_AI") == 0){
 				conf >> dctcp_rate_ai;
 				std::cout << "DCTCP_RATE_AI\t\t\t\t" << dctcp_rate_ai << "\n";
+			}else if (key.compare("TIMELY_T_HIGH") == 0){
+				conf >> timely_t_high;
+				std::cout << "TIMELY_T_HIGH\t\t\t\t" << timely_t_high << "\n";
 			}else if (key.compare("PFC_OUTPUT_FILE") == 0){
 				conf >> pfc_output_file;
 				std::cout << "PFC_OUTPUT_FILE\t\t\t\t" << pfc_output_file << '\n';
@@ -916,8 +921,7 @@ int main(int argc, char *argv[])
 				}
 			}
 			sw->m_mmu->ConfigNPort(sw->GetNDevices()-1);
-			// sw->m_mmu->ConfigBufferSize(buffer_size* 1024 * 1024);
-			sw->m_mmu->ConfigBufferSize(buffer_size * 1024);
+			sw->m_mmu->ConfigBufferSize(buffer_size* 1024 * 1024);
 			sw->m_mmu->node_id = sw->GetId();
 		}
 	}
@@ -954,6 +958,7 @@ int main(int argc, char *argv[])
 			rdmaHw->SetAttribute("TargetUtil", DoubleValue(u_target));
 			rdmaHw->SetAttribute("RateBound", BooleanValue(rate_bound));
 			rdmaHw->SetAttribute("DctcpRateAI", DataRateValue(DataRate(dctcp_rate_ai)));
+			rdmaHw->SetAttribute("TimelyTHigh", DataRateValue(DataRate(timely_t_high)));
 			rdmaHw->SetPintSmplThresh(pint_prob);
 			// create and install RdmaDriver
 			Ptr<RdmaDriver> rdma = CreateObject<RdmaDriver>();
