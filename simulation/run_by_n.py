@@ -110,23 +110,24 @@ if __name__ == "__main__":
 	dctcp_k=30
 	# dcqcn_k_min=100
 	# dcqcn_k_max=400
-	dcqcn_k_min=10
-	dcqcn_k_max=40
-	timely_t_high=500000
-	timely_t_low=50000
+	dcqcn_k_min=50
+	dcqcn_k_max=200
+	timely_t_high=100000
+	timely_t_low=10000
 	timely_beta=0.8
-	hpai=5
+	hpai=500
 	if args.cc=="dctcp":
 		dctcp_k=dctcp_k*cc_param_factor
 	elif args.cc.startswith("dcqcn"):
 		dcqcn_k_min=dcqcn_k_min*cc_param_factor
 		dcqcn_k_max=dcqcn_k_max*cc_param_factor
 	elif args.cc.startswith("timely"):
-		# timely_t_high=int(timely_t_high*cc_param_factor)
-		# timely_t_low=int(timely_t_low*cc_param_factor)
-		timely_beta=timely_beta*cc_param_factor
+		timely_t_high=int(timely_t_high*cc_param_factor)
+		timely_t_low=int(timely_t_low*cc_param_factor)
+		# timely_beta=timely_beta*cc_param_factor
 	elif args.cc.startswith("hp"):
 		hpai=hpai*cc_param_factor
+		# u_tgt=0.18*cc_param_factor+0.8
 		
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
