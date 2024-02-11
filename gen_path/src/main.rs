@@ -41,9 +41,10 @@ fn main() -> anyhow::Result<()> {
         // dctcp_k: vec![5, 30, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        cc: vec!["dctcp".to_string()],
-        // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
-        cc_param_factor: vec![0.5, 1.0, 2.0],
+        // cc: vec!["timely_vwin".to_string()],
+        cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string(), "hpccPint".to_string()],
+        cc_param_factor: vec![0.1, 0.5, 1.0],
+        // cc_param_factor: vec![1.0],
         // bfsz_factor: vec![0.5, 1.0, 2.0],
         bfsz_factor: vec![1.0],
     };
