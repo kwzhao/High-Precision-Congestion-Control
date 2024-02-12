@@ -31,8 +31,9 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        shard: vec![0],
+        // shard: vec![0],
         // shard: (0..2000).collect(),
+        shard: (0..200).collect(),
         // n_flows: vec![20],
         n_flows: vec![20000],
         n_hosts: vec![3,5,7],
@@ -43,7 +44,7 @@ fn main() -> anyhow::Result<()> {
         window: vec![18].iter().map(|x| x * 1000).collect(),
         // cc: vec!["timely_vwin".to_string()],
         cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string()],
-        cc_param_factor: vec![0.1, 1.0, 2.0],
+        cc_param_factor: vec![0.1, 0.5, 1.0, 1.5, 2.0],
         // cc_param_factor: vec![1.0],
         // bfsz_factor: vec![0.5, 1.0, 2.0],
         bfsz_factor: vec![1.0],
