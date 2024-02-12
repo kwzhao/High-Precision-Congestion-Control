@@ -110,12 +110,12 @@ if __name__ == "__main__":
 	dctcp_k=30
 	# dcqcn_k_min=100
 	# dcqcn_k_max=400
-	dcqcn_k_min=50
-	dcqcn_k_max=200
+	dcqcn_k_min=10
+	dcqcn_k_max=40
 	timely_t_high=500000
-	timely_t_low=400000
+	timely_t_low=25000
 	timely_beta=0.8
-	hpai=500
+	hpai=2500
 	if args.cc=="dctcp":
 		dctcp_k=dctcp_k*cc_param_factor
 	elif args.cc.startswith("dcqcn"):
