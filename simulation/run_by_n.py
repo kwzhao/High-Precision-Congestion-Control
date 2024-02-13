@@ -155,7 +155,7 @@ if __name__ == "__main__":
 		except OSError:
 			f.seek(0)
 		last_line = f.readline()
-		duration=int(float(last_line.split()[-1])+10)
+		duration=int(float(last_line.split()[-1])+5)
 
 	if (args.cc.startswith("dcqcn")):
 		ai = 5 * bw / 25
