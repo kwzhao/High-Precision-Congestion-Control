@@ -14,12 +14,12 @@ struct Parameters {
 fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     // let window = 18000;
-    let keynote = "_path_tc";
+    let keynote = "_path_tc_test";
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let root_path = format!(
         "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
     );
-    let output_dir = "/data2/lichenni/path_tc";
+    let output_dir = "/data2/lichenni/path_tc_test";
     let log_dir = format!("./log{}", keynote);
 
     // let file_traffic = format!("{}/traffic_gen/traffic_gen_by_n_synthetic.py", root_path);
@@ -31,23 +31,22 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        // shard: vec![0],
+        shard: vec![2000],
         // shard: (0..2000).collect(),
-        shard: (200..1000).collect(),
         // n_flows: vec![20],
         n_flows: vec![20000],
-        n_hosts: vec![3,5,7],
+        n_hosts: vec![3,7],
         // n_hosts: vec![3, 5, 7],
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
         // dctcp_k: vec![5, 30, 72],
         // window: vec![5, 9, 15, 18, 22, 27, 30, 36, 45, 50].iter().map(|x| x * 1000).collect(),
         window: vec![18].iter().map(|x| x * 1000).collect(),
-        // cc: vec!["timely_vwin".to_string()],
-        cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string()],
-        cc_param_factor: vec![0.1, 0.5, 1.0, 1.5, 2.0],
-        // cc_param_factor: vec![1.0],
-        // bfsz_factor: vec![0.5, 1.0, 2.0],
-        bfsz_factor: vec![1.0],
+        cc: vec!["dctcp".to_string()],
+        // cc: vec!["dctcp".to_string(),"timely_vwin".to_string(),"dcqcn_paper_vwin".to_string(), "hp".to_string()],
+        // cc_param_factor: vec![0.1, 0.5, 1.0, 1.5, 2.0],
+        cc_param_factor: vec![1.0],
+        bfsz_factor: vec![1.0, 5.0, 50.0],
+        // bfsz_factor: vec![1.0],
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
