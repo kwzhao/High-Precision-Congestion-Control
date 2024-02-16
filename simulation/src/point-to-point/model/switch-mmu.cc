@@ -88,7 +88,7 @@ namespace ns3 {
 	void SwitchMmu::SetResume(uint32_t port, uint32_t qIndex){
 		paused[port][qIndex] = false;
 	}
-
+	//TODO by cl
 	uint32_t SwitchMmu::GetPfcThreshold(uint32_t port){
 		return (buffer_size - total_hdrm - total_rsrv - shared_used_bytes) >> pfc_a_shift[port];
 	}
