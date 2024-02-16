@@ -23,3 +23,14 @@ export NS_LOG=PacketPathExample=info
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/9f4be2a9ead8a90e8bf732c66bd758c00e58e5be...13958423c9b7e666b8b51bdb889816ec3f52d79a
 
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...a69f1a6d8157fb70190db6dd74ee8cdeb90425b5
+
+
+
+I think you can capture the packet trace, and then calculate the throughput yourself. That's what I did :)
+
+To capture packet trace, you can check https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/simulation/run.py#L76
+With this option set, the simulation also output a trace file to: https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/simulation/run.py#L13
+
+Then you can use https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/analysis/trace_reader.cpp to read the trace file.
+
+Please do the `make trace_reader` under analysis/
