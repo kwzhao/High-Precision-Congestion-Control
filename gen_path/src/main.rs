@@ -31,11 +31,11 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        shard: vec![2000],
+        shard: vec![0],
         // shard: (0..2000).collect(),
-        // n_flows: vec![20],
-        n_flows: vec![20000],
-        n_hosts: vec![3,7],
+        n_flows: vec![20],
+        // n_flows: vec![20000],
+        n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
         // dctcp_k: vec![5, 12, 15, 19, 22, 27, 30, 36, 43, 46, 52, 57, 62, 68, 72],
         // dctcp_k: vec![5, 30, 72],
