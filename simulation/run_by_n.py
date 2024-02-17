@@ -1,6 +1,13 @@
 import argparse
 import sys
 import os
+from consts import CC_LIST, PARAM_LIST, CONFIG_TO_PARAM_DICT, DEFAULT_PARAM_VEC
+import numpy as np
+import random
+def fix_seed(seed):
+    np.random.seed(seed)
+    random.seed(seed)
+    
 from os.path import abspath, dirname
 cur_dir=dirname(abspath(__file__))
 os.chdir(cur_dir)
@@ -75,10 +82,9 @@ BASE_RTT {base_rtt}
 """
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='run simulation')
-	parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
+	# parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
+	parser.add_option("--shard", dest = "shard",type=int, default=0, help="random seed")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
-	parser.add_argument('--cc_param_factor', dest='cc_param_factor', type=float, default=1.0, help="cc_param_factor")
-	parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
@@ -89,57 +95,82 @@ if __name__ == "__main__":
 	parser.add_argument('--pint_prob', dest='pint_prob', action = 'store', type=float, default=1.0, help="PINT's sampling probability")
 	parser.add_argument('--enable_tr', dest='enable_tr', action = 'store', type=int, default=0, help="enable packet-level events dump")
 	parser.add_argument('--root', dest='root', action='store', default='mix', help="the root directory for configs and results")
-	parser.add_argument('--fwin', dest='fwin', action='store', type=int, default=100000, help="the fixed window")
 	parser.add_argument('--base_rtt', dest='base_rtt', action='store', type=int, default=8000, help="the base RTT")
 	args = parser.parse_args()
+	seed=int(args.shard)
+	fix_seed(seed)
 
-	bfsz_factor = float(args.bfsz_factor)
-	cc_param_factor=float(args.cc_param_factor)
- 
 	root = args.root
 	topo=args.topo
 	bw = int(args.bw)
 	trace = args.trace
 	#bfsz = 16 if bw==50 else 32
-	bfsz = int(16 * bw / 50 * bfsz_factor)
+	bfsz = int(16 * bw / 50)
+	# bfsz = int(16 * bw / 50 * bfsz_factor)
 	# bfsz = int(2* bw * bfsz_factor)
 	u_tgt=args.utgt/100.
 	mi=args.mi
- 
-	# cc parameters
-	dctcp_k=30
-	# dcqcn_k_min=100
-	# dcqcn_k_max=400
-	dcqcn_k_min=10
-	dcqcn_k_max=40
-	timely_t_high=500000
-	timely_t_low=25000
 	timely_beta=0.8
-	hpai=2500
-	if args.cc=="dctcp":
-		dctcp_k=dctcp_k*cc_param_factor
-	elif args.cc.startswith("dcqcn"):
-		dcqcn_k_min=dcqcn_k_min*cc_param_factor
-		dcqcn_k_max=dcqcn_k_max*cc_param_factor
-	elif args.cc.startswith("timely"):
-		# timely_t_high=int(timely_t_high*cc_param_factor)
-		timely_t_low=int(timely_t_low*cc_param_factor)
-		# timely_beta=timely_beta*cc_param_factor
-	elif args.cc.startswith("hp"):
-		hpai=hpai*cc_param_factor
-		# u_tgt=0.18*cc_param_factor+0.8
-		
+ 
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
 	enable_tr = args.enable_tr
-	fwin = args.fwin
+	# fwin = args.fwin
 	base_rtt = args.base_rtt
 
 	failure = ''
 	if args.down != '0 0 0':
 		failure = '_down'
+  
+	bfsz_idx=CONFIG_TO_PARAM_DICT['bfsz']
+	fwin_idx=CONFIG_TO_PARAM_DICT['fwin']
+	pfc_idx=CONFIG_TO_PARAM_DICT['pfc']
+
+	bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
+	fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
+	enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
+	if enable_pfc==0:
+		DEFAULT_PARAM_VEC[bfsz_idx]=bfsz/PARAM_LIST[bfsz_idx][2]
+	DEFAULT_PARAM_VEC[fwin_idx]=fwin/PARAM_LIST[fwin_idx][2]
+	DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc
+
+	cc=np.random.choice(CC_LIST,1)[0]
+	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
+	DEFAULT_PARAM_VEC[cc_idx]=1
+	args.cc=cc
+	if cc=="dctcp":
+		cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
+		dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=dctcp_k/PARAM_LIST[cc_idx][2]
+	elif cc.startswith("timely"):
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_tlow']
+		timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=timely_t_low/PARAM_LIST[cc_idx][2]
+  
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_thigh']
+		timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=timely_t_high/PARAM_LIST[cc_idx][2]
+	elif cc.startswith("dcqcn"):
+		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
+		dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_min/PARAM_LIST[cc_idx][2]
+  
+		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
+		dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_max/PARAM_LIST[cc_idx][2]
+  
+	elif cc.startswith("hp"):
+		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
+		hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=hpai/PARAM_LIST[cc_idx][2]
+
+		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
+		u_tgt=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=u_tgt/PARAM_LIST[cc_idx][2]
+  
 	# config_specs="_k%d"%(dctcp_k)
-	config_specs="_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
+	# config_specs="_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
+	config_specs="_s%d"%(seed)
 	config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, args.cc, failure, config_specs)
 
 	kmax_map = "2 %d %d %d %d"%(bw*1000000000, dcqcn_k_max*bw/25, bw*4*1000000000, dcqcn_k_max*bw*4/25)
