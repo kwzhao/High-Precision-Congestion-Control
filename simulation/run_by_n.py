@@ -146,32 +146,32 @@ if __name__ == "__main__":
 	args.cc=cc
 	if cc=="dctcp":
 		cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
-		dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		dctcp_k=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=dctcp_k/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_tlow']
-		timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		timely_t_low=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=timely_t_low/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_thigh']
-		timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		timely_t_high=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=timely_t_high/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
-		dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		dcqcn_k_min=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_min/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
-		dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		dcqcn_k_max=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_max/PARAM_LIST[cc_idx][2]
   
 	elif cc.startswith("hp"):
 		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
-		hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		hpai=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=hpai/PARAM_LIST[cc_idx][2]
 
 		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
-		u_tgt=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		u_tgt=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
 		DEFAULT_PARAM_VEC[cc_idx]=u_tgt/PARAM_LIST[cc_idx][2]
   
 	# config_specs="_k%d"%(dctcp_k)
@@ -267,6 +267,8 @@ if __name__ == "__main__":
 
 	with open(config_name, "w") as file:
 		file.write(config)
-	np.save("%s/param_%s_%s%s%s.npy"%(root, topo, trace, failure, config_specs), DEFAULT_PARAM_VEC)
 	print "DEFAULT_PARAM_VEC:", DEFAULT_PARAM_VEC
+	print "DEFAULT_PARAM_VEC:", 1, bfsz, fwin, enable_pfc, cc, dctcp_k, timely_t_low, timely_t_high,dcqcn_k_min, dcqcn_k_max, u_tgt, hpai
+	np.save("%s/param_%s_%s%s%s.npy"%(root, topo, trace, failure, config_specs), DEFAULT_PARAM_VEC)
+	
 	os.system("./waf --run 'scratch/third %s'"%(config_name))

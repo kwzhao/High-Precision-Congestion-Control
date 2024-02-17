@@ -1,10 +1,8 @@
 import numpy as np
 
-
-
 # extra params, bdp, init_window,buffer_size, enable_pfc
-bfsz=[5,100,1]
-fwin=[5, 60,1000]
+bfsz=[1,5,15]
+fwin=[1, 5,10000]
 enable_pfc=[0,1]
 # cc
 CC_IDX_BASE=4
@@ -12,13 +10,13 @@ CC_LIST=["dctcp", "timely", "dcqcn", "hp"]
 
 # cc params
 CC_PARAM_IDX_BASE=CC_IDX_BASE+len(CC_LIST)
-dctcp_k=[1,6,10]
+dctcp_k=[1,5,15]
 timely_t_low=[1,5,10000]
-timely_t_high=[5,25,10000]
+timely_t_high=[1,5,50000]
 dcqcn_k_min=[1, 5,10]
-dcqcn_k_max=[5, 25,10]
-u_tgt=[0.7,0.95,1]
-hpai=[5, 50,100]
+dcqcn_k_max=[1, 5,50]
+u_tgt=[7,9.5,0.1]
+hpai=[1, 10,500]
 
 # bdp, init_window,buffer_size, enable_pfc
 PARAM_LIST=[

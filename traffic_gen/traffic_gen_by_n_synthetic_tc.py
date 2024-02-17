@@ -105,7 +105,7 @@ if __name__ == "__main__":
 		assert len(host_pair_list)==ntc
 		print("lr: ", bandwidth_list, "ntc: ", ntc)
 	
-		# print("host_pair_list: ", len(host_pair_list), host_pair_list)
+		print("host_pair_list: ", len(host_pair_list), host_pair_list)
 		# print("host_pair_to_link_dict: ",len(host_pair_to_link_dict), host_pair_to_link_dict)
 		host_list = []
 		for i in range(ntc):
