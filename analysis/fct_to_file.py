@@ -21,11 +21,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--shard", dest="shard", type=int, default=0, help="random seed"
     )
-    parser.add_argument(
-        "--fwin", dest="fwin", type=int, default=30, help="fwin"
-    )
-    parser.add_argument('--cc_param_factor', dest='cc_param_factor', type=float, default=1.0, help="cc_param_factor")
-    parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
+    parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
+    # parser.add_argument(
+    #     "--fwin", dest="fwin", type=int, default=30, help="fwin"
+    # )
+    # parser.add_argument('--cc_param_factor', dest='cc_param_factor', type=float, default=1.0, help="cc_param_factor")
+    # parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
     parser.add_argument(
         "-t",
         dest="type",
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         help="0: normal, 1: incast, 2: all",
     )
     # parser.add_argument('-T', dest='time_limit', action='store', type=int, default=20000000000, help="only consider flows that finish before T")
-    parser.add_argument("--cc", dest="cc", action="store", default="dctcp", help="")
+    # parser.add_argument("--cc", dest="cc", action="store", default="dctcp", help="")
     parser.add_argument(
         "-b",
         dest="bw",
@@ -76,16 +77,17 @@ if __name__ == "__main__":
     # ]
     # time_limit = int(float(args.file.split("_")[-1])*1e9)
     time_limit = int(30000 * 1e9)
-    bfsz_factor = float(args.bfsz_factor)
-    cc_param_factor=float(args.cc_param_factor)
+    # bfsz_factor = float(args.bfsz_factor)
+    # cc_param_factor=float(args.cc_param_factor)
+    shard_cc=args.shard_cc
     # step = int(args.step)
     # res = [[i/100.] for i in range(0, 100, step)]
-    fwin = args.fwin
-    config_specs = "_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
+    # fwin = args.fwin
+    config_specs = "_s%d"%(shard_cc)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)
-    file = "%s/fct_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs)
+    file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     # print file
     if type == 0:
         # cmd = "cat %s"%(file)+" | awk '{if ($4==100 && $6+$7<"+"%d"%time_limit+") {slow=$7/$8;print slow<1?1:slow, $5}}'"
@@ -130,10 +132,10 @@ if __name__ == "__main__":
     flow_sizes = res_np[:, 2].astype("int64")
     flow_arrival_times = res_np[:, 3].astype("int64")
     np.save(
-        "%s/fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs), fcts
+        "%s/fcts_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
     )  # Byte
     np.save(
-        "%s/i_fcts_%s_%s%s.npy" % (output_dir, args.prefix, args.cc, config_specs),
+        "%s/i_fcts_%s%s.npy" % (output_dir, args.prefix, config_specs),
         i_fcts,
     )  # ns
     
@@ -154,18 +156,18 @@ if __name__ == "__main__":
         # os.system("rm %s/flows.txt" % (output_dir))
     
     os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s_%s%s.tr" % (output_dir, args.prefix, args.cc, config_specs))
-    )
-    os.system(
-        "rm %s"
-        % ("%s/pfc_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs))
+    # )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
+    # )
     
     # os.system(
     #     "rm %s"
-    #     % ("%s/qlen_%s_%s%s.txt" % (output_dir, args.prefix, args.cc, config_specs))
+    #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
     # )
 
     # ofile = open("%s/trafficfile_flow" % (output_dir), "w")
