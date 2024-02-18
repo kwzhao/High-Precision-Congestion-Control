@@ -91,7 +91,7 @@ namespace ns3 {
 	//TODO by cl
 	uint32_t SwitchMmu::GetPfcThreshold(uint32_t port){
 		uint32_t res=(buffer_size - total_hdrm - total_rsrv - shared_used_bytes) >> pfc_a_shift[port];
-		printf("PFC threshold: %u, buffer_size:%u, total_hdrm:%u, total_rsrv:%u, shared_used_bytes:%u, pfc_a_shift[port]:%u \n", res, buffer_size, total_hdrm, total_rsrv, shared_used_bytes, pfc_a_shift[port]);
+		// printf("PFC threshold: %u, buffer_size:%u, total_hdrm:%u, total_rsrv:%u,reserve:%u, shared_used_bytes:%u, pfc_a_shift[port]:%u \n", res, buffer_size, total_hdrm, total_rsrv,reserve, shared_used_bytes, pfc_a_shift[port]);
 		return res;
 	}
 	uint32_t SwitchMmu::GetSharedUsed(uint32_t port, uint32_t qIndex){
