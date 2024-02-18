@@ -40,6 +40,7 @@ public:
 	void ConfigHdrm(uint32_t port, uint32_t size);
 	void ConfigNPort(uint32_t n_port);
 	void ConfigBufferSize(uint32_t size);
+	void ConfigReserve(uint32_t size);
 
 	// config
 	uint32_t node_id;
