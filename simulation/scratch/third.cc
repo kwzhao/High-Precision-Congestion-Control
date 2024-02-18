@@ -944,10 +944,10 @@ int main(int argc, char *argv[])
 					rate /= 2;
 				}
 			}
+			sw->m_mmu->ConfigReserve(4 * 1024 / bfsz_factor);
 			sw->m_mmu->ConfigNPort(sw->GetNDevices()-1);
 			// sw->m_mmu->ConfigBufferSize(buffer_size* 1024 * 1024);
 			sw->m_mmu->ConfigBufferSize(buffer_size * 1024);
-			sw->m_mmu->ConfigReserve(4 * 1024 / bfsz_factor);
 			sw->m_mmu->node_id = sw->GetId();
 		}
 	}
