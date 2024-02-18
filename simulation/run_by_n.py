@@ -126,9 +126,9 @@ if __name__ == "__main__":
 	bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
 	fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
 	enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
-	if enable_pfc==0:
-		DEFAULT_PARAM_VEC[bfsz_idx]=bfsz/PARAM_LIST[bfsz_idx][2]
-	DEFAULT_PARAM_VEC[fwin_idx]=fwin/PARAM_LIST[fwin_idx][2]
+	# if enable_pfc==0:
+	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
+	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
 	DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc
 
 	timely_beta=0.8
@@ -142,37 +142,37 @@ if __name__ == "__main__":
  
 	cc=np.random.choice(CC_LIST,1)[0]
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
-	DEFAULT_PARAM_VEC[cc_idx]=1
+	DEFAULT_PARAM_VEC[cc_idx]=1.0
 	args.cc=cc
 	if cc=="dctcp":
 		cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
-		dctcp_k=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=dctcp_k/PARAM_LIST[cc_idx][2]
+		dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_tlow']
-		timely_t_low=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=timely_t_low/PARAM_LIST[cc_idx][2]
+		timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_thigh']
-		timely_t_high=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=timely_t_high/PARAM_LIST[cc_idx][2]
+		timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
-		dcqcn_k_min=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_min/PARAM_LIST[cc_idx][2]
+		dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_min)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
-		dcqcn_k_max=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=dcqcn_k_max/PARAM_LIST[cc_idx][2]
+		dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
   
 	elif cc.startswith("hp"):
 		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
-		hpai=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=hpai/PARAM_LIST[cc_idx][2]
+		hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
 
 		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
-		u_tgt=np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2]
-		DEFAULT_PARAM_VEC[cc_idx]=u_tgt/PARAM_LIST[cc_idx][2]
+		u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
   
 	# config_specs="_k%d"%(dctcp_k)
 	# config_specs="_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)

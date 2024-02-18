@@ -754,7 +754,8 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-
+	printf("fwin: %d, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %d, rate2kmax: %d, timely_t_low: %d, timely_t_high: %d, rate2kmin: %d, rate2kmax: %d, u_target: %f, ai: %s\n", fwin, buffer_size, enable_pfc, cc_mode, rate2kmin[10000000000], rate2kmax[10000000000], timely_t_low,timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target,rate_ai);
+	
 	bool dynamicth = use_dynamic_pfc_threshold;
 
 	Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));

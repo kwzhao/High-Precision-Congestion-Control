@@ -32,5 +32,5 @@ PARAM_LIST=[
 ]
 CONFIG_TO_PARAM_DICT={"bfsz":1, "fwin":2, "pfc":3,"cc":CC_IDX_BASE,"dctcp_k":CC_PARAM_IDX_BASE,"timely_t_low":CC_PARAM_IDX_BASE+1,"timely_t_high":CC_PARAM_IDX_BASE+2,"dcqcn_k_min":CC_PARAM_IDX_BASE+3,"dcqcn_k_max":CC_PARAM_IDX_BASE+4,"u_tgt":CC_PARAM_IDX_BASE+5,"hpai":CC_PARAM_IDX_BASE+6}
 
-DEFAULT_PARAM_VEC=np.ones(len(PARAM_LIST))
+DEFAULT_PARAM_VEC=np.zeros(len(PARAM_LIST))
 
