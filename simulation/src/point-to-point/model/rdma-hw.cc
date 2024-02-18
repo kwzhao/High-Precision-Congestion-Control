@@ -1071,6 +1071,7 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 
 	// check if need to reduce rate: ECN and not in CWR
 	if (cnp && qp->dctcp.m_caState == 0){
+		printf("DCTCP!\n");
 		#if PRINT_LOG
 		printf("%lu %s %08x %08x %u %u %.3lf->", Simulator::Now().GetTimeStep(), "rate", qp->sip.Get(), qp->dip.Get(), qp->sport, qp->dport, qp->m_rate.GetBitRate()*1e-9);
 		#endif

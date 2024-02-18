@@ -43,7 +43,7 @@ using namespace std;
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
-bool enable_qcn = true,enable_pfc = true, use_dynamic_pfc_threshold = true;
+bool enable_qcn = true,enable_pfc = true, use_dynamic_pfc_threshold = true, enable_ecn=true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
 uint32_t bfsz_factor = 3;
@@ -811,7 +811,7 @@ int main(int argc, char *argv[])
 		else{
 			Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
 			n.Add(sw);
-			sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+			sw->SetAttribute("EcnEnabled", BooleanValue(enable_ecn));
 		}
 	}
 

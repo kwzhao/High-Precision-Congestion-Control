@@ -25,7 +25,7 @@ https://github.com/kwzhao/High-Precision-Congestion-Control/compare/9f4be2a9ead8
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...a69f1a6d8157fb70190db6dd74ee8cdeb90425b5
 
 # parse the result, which can be used to calcualte the flow rate, queue length, etc.
-./trace_reader /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.tr > tr.log
+./trace_reader /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.tr > /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/tr_s0.log
 
 # parse qlen.txt
 3 3 859528 2021 2259 4300 2682 1888 27959 39265 11275 2668 2599 2753 2742 15486 16367 6119 90
