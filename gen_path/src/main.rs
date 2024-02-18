@@ -31,11 +31,12 @@ fn main() -> anyhow::Result<()> {
     let params = Parameters {
         shard: vec![0],
         // shard: (0..2000).collect(),
-        n_flows: vec![20],
-        // n_flows: vec![20000],
+        // n_flows: vec![20],
+        n_flows: vec![1000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0],
+        shard_cc: vec![0,1],
+        // shard_cc: (0..100).collect(),
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)

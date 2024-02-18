@@ -24,13 +24,17 @@ https://github.com/kwzhao/High-Precision-Congestion-Control/compare/9f4be2a9ead8
 
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...a69f1a6d8157fb70190db6dd74ee8cdeb90425b5
 
+# parse the result, which can be used to calcualte the flow rate, queue length, etc.
+./trace_reader /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.tr > tr.log
 
+# parse qlen.txt
+3 3 859528 2021 2259 4300 2682 1888 27959 39265 11275 2668 2599 2753 2742 15486 16367 6119 90
+3 3: The first two numbers indicate the switch ID and the port ID, respectively. In this case, both the switch ID and the port ID are 3, which means this entry is for port 3 on switch 3.
 
-I think you can capture the packet trace, and then calculate the throughput yourself. That's what I did :)
+859528: This number represents the total queue length in bytes at the moment of logging for port 3 on switch 3. This is the sum of the queue lengths across all priority queues within the port.
 
-To capture packet trace, you can check https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/simulation/run.py#L76
-With this option set, the simulation also output a trace file to: https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/simulation/run.py#L13
+2021 2259 4300 2682 1888 27959 39265 11275 2668 2599 2753 2742 15486 16367 6119 90: The series of numbers following the total queue length are the counts of occurrences where the queue length fell within certain ranges, as managed by the QlenDistribution class. Each number corresponds to a specific "bucket" or range of queue lengths, measured in kilobytes (KB), indicating how often the queue length was observed to be within that range during the monitoring period.
 
-Then you can use https://github.com/alibaba-edu/High-Precision-Congestion-Control/blob/master/analysis/trace_reader.cpp to read the trace file.
-
-Please do the `make trace_reader` under analysis/
+The first number (2021) could represent the count of times the queue length was within the range of 0-1 KB,
+The second number (2259) could represent the count of times the queue length was within the range of 1-2 KB,
+And so on, with each subsequent number representing the count of times the queue length fell within progressively higher KB ranges.
