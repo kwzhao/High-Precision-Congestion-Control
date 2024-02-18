@@ -125,7 +125,8 @@ if __name__ == "__main__":
 
 	bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
 	fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
-	enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
+	# enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
+	enable_pfc=int(PARAM_LIST[pfc_idx][seed%2])
 	# if enable_pfc==0:
 	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
 	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
@@ -149,11 +150,11 @@ if __name__ == "__main__":
 		dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("timely"):
-		cc_idx=CONFIG_TO_PARAM_DICT['timely_tlow']
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
 		timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
   
-		cc_idx=CONFIG_TO_PARAM_DICT['timely_thigh']
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
 		timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("dcqcn"):
