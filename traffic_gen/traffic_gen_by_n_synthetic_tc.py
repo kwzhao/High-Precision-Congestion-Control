@@ -197,7 +197,8 @@ if __name__ == "__main__":
 		# p_list[0]=np.random.rand()
 		# p_list+=0.01
 
-		p_candidate_list=[ntc, 10, 20, 50, 100]
+		# p_candidate_list=[ntc, 10, 20, 50, 100]
+		p_candidate_list=[10]
 		p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
 		p_list=np.random.rand(ntc)*p_candidate/ntc
 		# p_list=np.random.rand(ntc)*p_candidate
