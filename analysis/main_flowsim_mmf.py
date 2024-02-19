@@ -110,12 +110,12 @@ output_dir = dir_input
 # output_dir = "/data1/lichenni/projects/flow_simulation/High-Precision-Congestion-Control/gc"
 # os.makedirs(output_dir, exist_ok=True)
 
-if not os.path.exists("%s/fcts_flowsim.npy" % output_dir) and os.path.exists(
-    "%s/flow_sizes.npy" % output_dir
+if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
+    "%s/fsize.npy" % output_dir
 ):
-    sizes = np.load("%s/flow_sizes.npy" % (dir_input))
-    fats = np.load("%s/flow_arrival_times.npy" % (dir_input))
-    flow_src_dst = np.load("%s/flow_src_dst.npy" % (dir_input))
+    sizes = np.load("%s/fsize.npy" % (dir_input))
+    fats = np.load("%s/fat.npy" % (dir_input))
+    flow_src_dst = np.load("%s/fsd.npy" % (dir_input))
 
     n_flows = len(sizes)
 
@@ -154,7 +154,7 @@ if not os.path.exists("%s/fcts_flowsim.npy" % output_dir) and os.path.exists(
     # print(f"num_flows-{len(num_flows)}: {np.mean(num_flows)}")
     # print(f"num_flows_enq-{len(num_flows_enq)}: {np.mean(num_flows_enq)}")
 
-    np.save("%s/fcts_flowsim.npy" % output_dir, estimated_fcts)
+    np.save("%s/fct_flowsim.npy" % output_dir, estimated_fcts)
     os.system("rm %s/flows.txt" % (output_dir))
     os.system("rm %s/flows_path_map.txt" % (output_dir))
     

@@ -10,11 +10,10 @@ struct Parameters {
 
 fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
-    // let base_rtt = 4000;
-    let enable_tr = 1;
-    let enable_debug = 1;
-    // let window = 18000;
-    let keynote = "path_tc_test";
+    let enable_tr = 0;
+    let enable_debug = 0;
+    // let keynote = "path_tc_test";
+    let keynote = "path_tc";
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let root_path = format!(
         "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
@@ -33,11 +32,11 @@ fn main() -> anyhow::Result<()> {
     let params = Parameters {
         shard: vec![0],
         // shard: (0..2000).collect(),
-        // n_flows: vec![20],
-        n_flows: vec![4000],
+        n_flows: vec![20000],
+        // n_flows: vec![4000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0,1],
+        shard_cc: vec![0,1,2,3],
         // shard_cc: (0..100).collect(),
     };
     // println!("{:?}", Parameters::field_names());
@@ -112,8 +111,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {}",
-            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,
+            "--shard {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {}",
+            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);
