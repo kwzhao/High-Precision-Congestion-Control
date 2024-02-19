@@ -1,8 +1,8 @@
 import numpy as np
 
 # extra params, bdp, init_window,buffer_size, enable_pfc
-bfsz=[10,30,10]
-# bfsz=[20,20,10]
+# bfsz=[10,30,10]
+bfsz=[20,20,10]
 # PFC threshold: [15, 45, 65]
 # fwin=[10, 60,1000]
 fwin=[30, 30, 1000]
@@ -14,8 +14,8 @@ CC_LIST=["dctcp"]
 
 # cc params
 CC_PARAM_IDX_BASE=CC_IDX_BASE+4
-# dctcp_k=[10,60,1]
-dctcp_k=[30,30,1]
+dctcp_k=[10,60,1]
+# dctcp_k=[30,30,1]
 timely_t_low=[5,20,1000]
 timely_t_high=[20,50,1000]
 dcqcn_k_min=[10, 40,1]

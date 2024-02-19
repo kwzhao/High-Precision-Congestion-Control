@@ -34,7 +34,7 @@ fn main() -> anyhow::Result<()> {
         shard: vec![0],
         // shard: (0..2000).collect(),
         // n_flows: vec![20],
-        n_flows: vec![2000],
+        n_flows: vec![4000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
         shard_cc: vec![0,1],
