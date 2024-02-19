@@ -10,6 +10,7 @@ struct Parameters {
 
 fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
+    // let base_rtt = 4000;
     let enable_tr = 1;
     // let window = 18000;
     let keynote = "path_tc_test";
@@ -29,13 +30,13 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        shard: vec![2],
+        shard: vec![0],
         // shard: (0..2000).collect(),
         // n_flows: vec![20],
-        n_flows: vec![10000],
+        n_flows: vec![2000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0,1,2,3],
+        shard_cc: vec![0,1],
         // shard_cc: (0..100).collect(),
     };
     // println!("{:?}", Parameters::field_names());

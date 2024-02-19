@@ -101,6 +101,7 @@ if __name__ == "__main__":
 	seed=int(args.shard_cc)
 	fix_seed(seed)
 
+	enable_debug=True
 	root = args.root
 	topo=args.topo
 	bw = int(args.bw)
@@ -122,12 +123,14 @@ if __name__ == "__main__":
 	bfsz_idx=CONFIG_TO_PARAM_DICT['bfsz']
 	fwin_idx=CONFIG_TO_PARAM_DICT['fwin']
 	pfc_idx=CONFIG_TO_PARAM_DICT['pfc']
-
-	# bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
-	bfsz=int(PARAM_LIST[bfsz_idx][seed//2])
-	fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
-	# enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
-	enable_pfc=int(PARAM_LIST[pfc_idx][seed%2])
+	if enable_debug:
+		bfsz=int(PARAM_LIST[bfsz_idx][seed%2]*PARAM_LIST[bfsz_idx][2])
+		fwin=int(PARAM_LIST[fwin_idx][seed%2]*PARAM_LIST[fwin_idx][2])
+		enable_pfc=int(PARAM_LIST[pfc_idx][seed%2])
+	else:
+		bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
+		fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
+		enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
 	# if enable_pfc==0:
 	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
 	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
@@ -148,35 +151,55 @@ if __name__ == "__main__":
 	args.cc=cc
 	if cc=="dctcp":
 		cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
-		# dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-		dctcp_k=int(PARAM_LIST[cc_idx][seed//2])
+		if enable_debug:
+			dctcp_k=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
-		enable_qcn=1
+		enable_qcn=0
 	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
-		timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
-		timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			timely_t_high=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
 		enable_qcn=0
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
-		dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			dcqcn_k_min=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_min)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
-		dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			dcqcn_k_max=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
 		enable_qcn=0
 	elif cc.startswith("hp"):
 		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
-		hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			hpai=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
 
 		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
-		u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		if enable_debug:
+			u_tgt=(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
 		enable_qcn=0
 	# config_specs="_k%d"%(dctcp_k)
