@@ -91,7 +91,7 @@ namespace ns3 {
 	//TODO by cl
 	uint32_t SwitchMmu::GetPfcThreshold(uint32_t port){
 		uint32_t res=(buffer_size - total_hdrm - total_rsrv - shared_used_bytes) >> pfc_a_shift[port];
-		printf("PFC threshold: %u, buffer_size:%u, total_hdrm:%u, total_rsrv:%u,reserve:%u, shared_used_bytes:%u, pfc_a_shift[port]:%u \n", res, buffer_size, total_hdrm, total_rsrv,reserve, shared_used_bytes, pfc_a_shift[port]);
+		// printf("PFC threshold: %u, buffer_size:%u, total_hdrm:%u, total_rsrv:%u,reserve:%u, shared_used_bytes:%u, pfc_a_shift[port]:%u \n", res, buffer_size, total_hdrm, total_rsrv,reserve, shared_used_bytes, pfc_a_shift[port]);
 		return res;
 	}
 	uint32_t SwitchMmu::GetSharedUsed(uint32_t port, uint32_t qIndex){
@@ -99,7 +99,7 @@ namespace ns3 {
 		return used > reserve ? used - reserve : 0;
 	}
 	bool SwitchMmu::ShouldSendCN(uint32_t ifindex, uint32_t qIndex){
-		printf("ShouldSendCN: %u, %u, %u, %u, %u\n", ifindex, qIndex,egress_bytes[ifindex][qIndex], kmax[ifindex], kmin[ifindex]);
+		// printf("ShouldSendCN: %u, %u, %u, %u, %u\n", ifindex, qIndex,egress_bytes[ifindex][qIndex], kmax[ifindex], kmin[ifindex]);
 		if (qIndex == 0)
 			return false;
 		if (egress_bytes[ifindex][qIndex] > kmax[ifindex])
@@ -115,7 +115,7 @@ namespace ns3 {
 		kmin[port] = _kmin * 1000;
 		kmax[port] = _kmax * 1000;
 		pmax[port] = _pmax;
-		printf("ECN: %u, %u, %u, %f\n",port, kmin[port], kmax[port], pmax[port]);
+		// printf("ECN: %u, %u, %u, %f\n",port, kmin[port], kmax[port], pmax[port]);
 	}
 	void SwitchMmu::ConfigHdrm(uint32_t port, uint32_t size){
 		headroom[port] = size;
