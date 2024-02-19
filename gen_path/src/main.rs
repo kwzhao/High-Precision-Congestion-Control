@@ -12,6 +12,7 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     // let base_rtt = 4000;
     let enable_tr = 1;
+    let enable_debug = 1;
     // let window = 18000;
     let keynote = "path_tc_test";
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
@@ -36,7 +37,7 @@ fn main() -> anyhow::Result<()> {
         n_flows: vec![2000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0,1],
+        shard_cc: vec![0],
         // shard_cc: (0..100).collect(),
     };
     // println!("{:?}", Parameters::field_names());
@@ -93,14 +94,18 @@ fn main() -> anyhow::Result<()> {
         // ns3 sim
         let mut command_args = format!(
             "--trace flows --bw 10 --base_rtt {} \
-            --topo {}-{}  --root {}/{} --shard_cc {} --enable_tr {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr
+            --topo {}-{}  --root {}/{} --shard_cc {} --enable_tr {} --enable_debug {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr, enable_debug,
         );
         let mut log_path = format!("{}/nhosts{}_sim.log", log_dir, n_hosts,);
         let mut py_command = format!("{} {} {}", python_path, file_sim, command_args,);
         let mut cmd = format!(
-            "echo {} >> {}; {} >> {}; echo \"\">>{}",
-            py_command, log_path, py_command, log_path, log_path
+            "echo {} >> {}; {} >> {}/{}/pdrop_{}-{}_s{}.txt",
+            py_command, log_path, py_command, output_dir, scenario_dir,type_topo, n_hosts, shard_cc
         );
+        // let mut cmd = format!(
+        //     "echo {} >> {}; {} >> {}; echo \"\">>{}",
+        //     py_command, log_path, py_command, log_path, log_path
+        // );
         // println!("{}", cmd);
         let mut child = Command::new("sh").arg("-c").arg(cmd).spawn().unwrap();
         let mut _result = child.wait().unwrap();

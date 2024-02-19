@@ -95,13 +95,16 @@ if __name__ == "__main__":
 	parser.add_argument('--pint_log_base', dest='pint_log_base', action = 'store', type=float, default=1.05, help="PINT's log_base")
 	parser.add_argument('--pint_prob', dest='pint_prob', action = 'store', type=float, default=1.0, help="PINT's sampling probability")
 	parser.add_argument('--enable_tr', dest='enable_tr', action = 'store', type=int, default=0, help="enable packet-level events dump")
+	parser.add_argument('--enable_debug', dest='enable_debug', action = 'store', type=int, default=0, help="enable debug for parameter sample space")
 	parser.add_argument('--root', dest='root', action='store', default='mix', help="the root directory for configs and results")
 	parser.add_argument('--base_rtt', dest='base_rtt', action='store', type=int, default=8000, help="the base RTT")
 	args = parser.parse_args()
 	seed=int(args.shard_cc)
 	fix_seed(seed)
 
-	enable_debug=True
+	enable_debug=args.enable_debug
+	enable_tr = args.enable_tr
+ 
 	root = args.root
 	topo=args.topo
 	bw = int(args.bw)
@@ -109,10 +112,9 @@ if __name__ == "__main__":
 	#bfsz = 16 if bw==50 else 32
 	# bfsz = int(16 * bw / 50)
 	mi=args.mi
- 
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
-	enable_tr = args.enable_tr
+	
 	# fwin = args.fwin
 	base_rtt = args.base_rtt
 
@@ -131,24 +133,23 @@ if __name__ == "__main__":
 		bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
 		fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
 		enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
-	# if enable_pfc==0:
-	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
-	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
-	DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc
+	
 
-	timely_beta=0.8
+	
 	dctcp_k=30
+	timely_t_low=10000
+	timely_t_high=50000
+	timely_beta=0.8
 	dcqcn_k_min=10
 	dcqcn_k_max=40
-	timely_t_low=50000
-	timely_t_high=500000
-	hpai=50
+	hpai=25
 	u_tgt=args.utgt/100.
  
 	cc=np.random.choice(CC_LIST,1)[0]
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0
 	args.cc=cc
+	enable_qcn=1
 	if cc=="dctcp":
 		cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
 		if enable_debug:
@@ -156,7 +157,6 @@ if __name__ == "__main__":
 		else:
 			dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
-		enable_qcn=0
 	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
 		if enable_debug:
@@ -171,7 +171,6 @@ if __name__ == "__main__":
 		else:
 			timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
-		enable_qcn=0
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
 		if enable_debug:
@@ -186,7 +185,7 @@ if __name__ == "__main__":
 		else:
 			dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
-		enable_qcn=0
+		enable_pfc=1
 	elif cc.startswith("hp"):
 		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
 		if enable_debug:
@@ -201,7 +200,11 @@ if __name__ == "__main__":
 		else:
 			u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
-		enable_qcn=0
+		
+	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
+	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
+	DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc
+
 	# config_specs="_k%d"%(dctcp_k)
 	# config_specs="_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
 	config_specs="_s%d"%(seed)

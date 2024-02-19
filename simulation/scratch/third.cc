@@ -46,7 +46,7 @@ uint32_t cc_mode = 1;
 bool enable_qcn = true,enable_pfc = true, use_dynamic_pfc_threshold = true, enable_ecn=true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
-uint32_t bfsz_factor = 3;
+uint32_t bfsz_factor = 1;
 double pause_time = 5, simulator_stop_time = 3.01;
 std::string data_rate, link_delay, topology_file, flow_file,flow_on_path_file, flow_path_map_file, trace_file, trace_output_file;
 std::string fct_output_file = "fct.txt";
@@ -755,10 +755,10 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s\n",
+	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d\n",
        fwin, buffer_size, enable_pfc, cc_mode,
        rate2kmin[10000000000], rate2kmax[10000000000],
-       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str());
+       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn);
 	
 	bool dynamicth = use_dynamic_pfc_threshold;
 
@@ -921,7 +921,7 @@ int main(int argc, char *argv[])
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
 			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
 			// uint32_t shift = 3; // by default 1/8
-			uint32_t shift = 2; // by default 1/8
+			uint32_t shift = 2; // by default 1/4
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
 				// set ecn
