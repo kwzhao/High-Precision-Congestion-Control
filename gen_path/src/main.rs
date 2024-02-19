@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<()> {
         n_flows: vec![2000],
         n_hosts: vec![3],
         // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0],
+        shard_cc: vec![0,1],
         // shard_cc: (0..100).collect(),
     };
     // println!("{:?}", Parameters::field_names());
