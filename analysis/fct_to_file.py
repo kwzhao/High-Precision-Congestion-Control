@@ -132,28 +132,27 @@ if __name__ == "__main__":
     flow_sizes = res_np[:, 2].astype("int64")
     flow_arrival_times = res_np[:, 3].astype("int64")
     np.save(
-        "%s/fcts_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
+        "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
     )  # Byte
     np.save(
-        "%s/i_fcts_%s%s.npy" % (output_dir, args.prefix, config_specs),
+        "%s/fct_i_%s%s.npy" % (output_dir, args.prefix, config_specs),
         i_fcts,
     )  # ns
     
-    if not os.path.exists("%s/flow_sizes.npy" % (output_dir)):
-        np.save("%s/flow_sizes.npy" % (output_dir), flow_sizes)  # Byte
-        np.save("%s/flow_arrival_times.npy" % (output_dir), flow_arrival_times)  # ns
-        src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
-        dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
-        res_arr = np.concatenate((src_arr, dst_arr), axis=1)
-        np.save("%s/flow_src_dst.npy" % (output_dir), res_arr)  # Byte
+    np.save("%s/fsize_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_sizes)  # Byte
+    np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_arrival_times)  # ns
+    src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
+    dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
+    res_arr = np.concatenate((src_arr, dst_arr), axis=1)
+    np.save("%s/fsd_%s%s.npy" % (output_dir, args.prefix, config_specs), res_arr)  # Byte
 
-        # ofile = open("%s/trafficfile" % (output_dir), "w")
-        # for i in range(n):
-        #     ofile.write("%d %d\n" % (src_arr[i], dst_arr[i]))
-        # ofile.write("-1 -1")
-        # ofile.close()
+    # ofile = open("%s/trafficfile" % (output_dir), "w")
+    # for i in range(n):
+    #     ofile.write("%d %d\n" % (src_arr[i], dst_arr[i]))
+    # ofile.write("-1 -1")
+    # ofile.close()
 
-        # os.system("rm %s/flows.txt" % (output_dir))
+    # os.system("rm %s/flows.txt" % (output_dir))
     
     os.system("rm %s" % (file))
     # os.system(
