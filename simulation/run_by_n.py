@@ -76,7 +76,7 @@ PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
 QLEN_MON_FILE {root}/qlen_{topo}{failure}{config_specs}.txt
 QLEN_MON_START 1000000000
-QLEN_MON_END {duration}000000000
+QLEN_MON_END 3000000000
 
 FIXED_WIN {fwin}
 BASE_RTT {base_rtt}
@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
 	enable_debug=args.enable_debug
 	enable_tr = args.enable_tr
- 
+
 	root = args.root
 	topo=args.topo
 	bw = int(args.bw)
@@ -114,14 +114,14 @@ if __name__ == "__main__":
 	mi=args.mi
 	pint_log_base=args.pint_log_base
 	pint_prob = args.pint_prob
-	
+
 	# fwin = args.fwin
 	base_rtt = args.base_rtt
 
 	failure = ''
 	if args.down != '0 0 0':
 		failure = '_down'
-  
+
 	bfsz_idx=CONFIG_TO_PARAM_DICT['bfsz']
 	fwin_idx=CONFIG_TO_PARAM_DICT['fwin']
 	pfc_idx=CONFIG_TO_PARAM_DICT['pfc']
@@ -133,8 +133,6 @@ if __name__ == "__main__":
 		bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
 		fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
 		enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
-	
-
 	
 	dctcp_k=30
 	timely_t_low=10000
@@ -298,8 +296,9 @@ if __name__ == "__main__":
 
 	with open(config_name, "w") as file:
 		file.write(config)
-	print "DEFAULT_PARAM_VEC:", DEFAULT_PARAM_VEC
-	print "DEFAULT_PARAM_VEC:", 0, bfsz, fwin, enable_pfc, cc, dctcp_k, dcqcn_k_min, dcqcn_k_max, u_tgt, hpai, timely_t_low, timely_t_high
+	with open("%s/param_%s%s%s.txt"%(root, topo, failure, config_specs), "w") as file:
+		file.write(" ".join(map(str, DEFAULT_PARAM_VEC)) + "\n")
+		file.write("0 {} {} {} {} {} {} {} {} {} {} {}\n".format(bfsz, fwin, enable_pfc, cc, dctcp_k, dcqcn_k_min, dcqcn_k_max, u_tgt, hpai, timely_t_low, timely_t_high))
 	np.save("%s/param_%s%s%s.npy"%(root, topo, failure, config_specs), DEFAULT_PARAM_VEC)
 	
 	os.system("./waf --run 'scratch/third %s'"%(config_name))

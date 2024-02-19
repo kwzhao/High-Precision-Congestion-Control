@@ -22,11 +22,6 @@ if __name__ == "__main__":
         "--shard", dest="shard", type=int, default=0, help="random seed"
     )
     parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
-    # parser.add_argument(
-    #     "--fwin", dest="fwin", type=int, default=30, help="fwin"
-    # )
-    # parser.add_argument('--cc_param_factor', dest='cc_param_factor', type=float, default=1.0, help="cc_param_factor")
-    # parser.add_argument('--bfsz_factor', dest='bfsz_factor', action = 'store', type=float, default=1.0, help="buffer size factor")
     parser.add_argument(
         "-t",
         dest="type",
