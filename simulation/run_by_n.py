@@ -299,7 +299,7 @@ if __name__ == "__main__":
 	with open(config_name, "w") as file:
 		file.write(config)
 	print "DEFAULT_PARAM_VEC:", DEFAULT_PARAM_VEC
-	print "DEFAULT_PARAM_VEC:", 1, bfsz, fwin, enable_pfc, cc, dctcp_k, timely_t_low, timely_t_high,dcqcn_k_min, dcqcn_k_max, u_tgt, hpai
-	np.save("%s/param_%s_%s%s%s.npy"%(root, topo, trace, failure, config_specs), DEFAULT_PARAM_VEC)
+	print "DEFAULT_PARAM_VEC:", 0, bfsz, fwin, enable_pfc, cc, dctcp_k, dcqcn_k_min, dcqcn_k_max, u_tgt, hpai, timely_t_low, timely_t_high
+	np.save("%s/param_%s%s%s.npy"%(root, topo, failure, config_specs), DEFAULT_PARAM_VEC)
 	
 	os.system("./waf --run 'scratch/third %s'"%(config_name))

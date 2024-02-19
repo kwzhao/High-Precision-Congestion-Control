@@ -71,7 +71,7 @@ if __name__ == "__main__":
 			bandwidth_list_scale.append(switch_to_host)
 	
 	output_dir = options.output
-	if not os.path.exists("%s/flows.txt"%(output_dir)):
+	if not os.path.exists("%s/stats.npy"%(output_dir)):
 		if not os.path.exists(output_dir):
 			os.makedirs(output_dir)
 		
@@ -86,7 +86,6 @@ if __name__ == "__main__":
 		host_pair_to_link_dict={}
 		for i in range(nhost-1):
 			for j in range(i+1,nhost):
-			# for j in [nhost-1]:
 				src_dst_pair=(i,j)
 				if (j-i)!=nhost-1:
 					host_pair_list_ori.append(src_dst_pair)
@@ -98,7 +97,6 @@ if __name__ == "__main__":
 			ntc=1
 		else:
 			ntc=random.randint(2, nhost*(nhost-1)//2)
-			# ntc=2
 			host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
 			host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
 		assert len(host_pair_list)==ntc
@@ -182,20 +180,25 @@ if __name__ == "__main__":
 			mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
 			f_arr_in_ns= (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,))* UNIT_G).astype("int64")
 	
-		flow_src_dst_save=[]
-		f_arr_in_ns_save=[]
-		f_sizes_in_byte_save=[]
+		# flow_src_dst=[]
+		# f_arr_in_ns=[]
+		# f_sizes_in_byte=[]
 		# ofile.write("%d\n"%n_flows_total)
 		data=''
 		flow_id_total=0
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
   
-		p_candidate_list=[1, 10, 20, 50]
-		# p_candidate_list=[10]
+		# p_list=np.ones(ntc)
+  
+		# p_list[0]=np.random.rand()
+		# p_list+=0.01
+
+		p_candidate_list=[ntc, 10, 20, 50, 100]
 		p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
-		p_list=np.random.rand(ntc)
-		p_list[0]=0.5/p_candidate
+		p_list=np.random.rand(ntc)*p_candidate/ntc
+		# p_list=np.random.rand(ntc)*p_candidate
+		p_list[0]=1.0
   
 		p_list=np.array(p_list)/np.sum(p_list)
 		n_flows_foreground=0
@@ -208,9 +211,9 @@ if __name__ == "__main__":
 			size=f_sizes_in_byte[flow_id_total]
 			data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
 			
-			flow_src_dst_save.append([src,dst])
-			f_arr_in_ns_save.append(t)
-			f_sizes_in_byte_save.append(size)
+			# flow_src_dst.append([src,dst])
+			# f_arr_in_ns.append(t)
+			# f_sizes_in_byte.append(size)
 			
 			inter_t = f_arr_in_ns[flow_id_total]
 			t+=inter_t
@@ -244,9 +247,9 @@ if __name__ == "__main__":
 		}
 		np.save("%s/stats.npy"%(output_dir), stats)  # Byte
 		
-		flow_src_dst=np.array(flow_src_dst_save).astype("int32")
-		f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
-		f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
-		np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
-		np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
-		np.save("%s/fsd.npy"%(output_dir), flow_src_dst) 
+		# flow_src_dst=np.array(flow_src_dst).astype("int32")
+		# f_arr_in_ns=np.array(f_arr_in_ns).astype("int64")
+		# f_sizes_in_byte=np.array(f_sizes_in_byte).astype("int64")
+		# np.save("%s/flow_sizes.npy"%(output_dir), f_sizes_in_byte)  # Byte
+		# np.save("%s/flow_arrival_times.npy"%(output_dir), f_arr_in_ns)  # ns
+		# np.save("%s/flow_src_dst.npy"%(output_dir), flow_src_dst) 

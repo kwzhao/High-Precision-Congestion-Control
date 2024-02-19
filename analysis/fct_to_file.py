@@ -35,6 +35,7 @@ if __name__ == "__main__":
         default=0,
         help="0: normal, 1: incast, 2: all",
     )
+    parser.add_argument('--enable_debug', dest='enable_debug', action = 'store', type=int, default=0, help="enable debug for parameter sample space")
     # parser.add_argument('-T', dest='time_limit', action='store', type=int, default=20000000000, help="only consider flows that finish before T")
     # parser.add_argument("--cc", dest="cc", action="store", default="dctcp", help="")
     parser.add_argument(
@@ -60,7 +61,8 @@ if __name__ == "__main__":
         help="the name of the flow file",
     )
     args = parser.parse_args()
-
+    enable_debug=args.enable_debug
+    
     fix_seed(args.shard)
     type = args.type
     # time_limit = args.time_limit
@@ -153,21 +155,21 @@ if __name__ == "__main__":
     # ofile.close()
 
     # os.system("rm %s/flows.txt" % (output_dir))
+    if not enable_debug:
+        os.system("rm %s" % (file))
+        os.system(
+            "rm %s"
+            % ("%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs))
+        )
+        os.system(
+            "rm %s"
+            % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
+        )
     
-    os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs))
-    # )
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
-    # )
-    
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-    # )
+        os.system(
+            "rm %s"
+            % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        )
 
     # ofile = open("%s/trafficfile_flow" % (output_dir), "w")
     # for i in range(n):
