@@ -92,7 +92,7 @@ if __name__ == "__main__":
             "cat %s" % (file)
             + " | awk '{if ($5==100 && $7+$8<"
             + "%d" % time_limit
-            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3}}' | sort -n -k 4"
+            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4"
         )
         # print cmd
         output = subprocess.check_output(cmd, shell=True)
@@ -126,8 +126,9 @@ if __name__ == "__main__":
     # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
     fcts = res_np[:, 0].astype("int64")
     i_fcts = res_np[:, 1].astype("int64")
-    flow_sizes = res_np[:, 2].astype("int64")
-    flow_arrival_times = res_np[:, 3].astype("int64")
+    fid=res_np[:, 6].astype("int64")
+    # flow_sizes = res_np[:, 2].astype("int64")
+    # flow_arrival_times = res_np[:, 3].astype("int64")
     np.save(
         "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
     )  # Byte
@@ -135,13 +136,13 @@ if __name__ == "__main__":
         "%s/fct_i_%s%s.npy" % (output_dir, args.prefix, config_specs),
         i_fcts,
     )  # ns
-    
-    np.save("%s/fsize_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_sizes)  # Byte
-    np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_arrival_times)  # ns
-    src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
-    dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
-    res_arr = np.concatenate((src_arr, dst_arr), axis=1)
-    np.save("%s/fsd_%s%s.npy" % (output_dir, args.prefix, config_specs), res_arr)  # Byte
+    np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
+    # np.save("%s/fsize_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_sizes)  # Byte
+    # np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_arrival_times)  # ns
+    # src_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 4])).astype("int32")
+    # dst_arr = np.array(map(lambda x: x[-3].split(), res_np[:, 5])).astype("int32")
+    # res_arr = np.concatenate((src_arr, dst_arr), axis=1)
+    # np.save("%s/fsd_%s%s.npy" % (output_dir, args.prefix, config_specs), res_arr)  # Byte
 
     # ofile = open("%s/trafficfile" % (output_dir), "w")
     # for i in range(n):
