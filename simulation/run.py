@@ -79,8 +79,13 @@ BASE_RTT {base_rtt}
 """
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='run simulation')
-	# parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
-	parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
+	parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
+	parser.add_argument('--param_1', dest='param_1', action = 'store', type=float, default=30.0, help="CC param 1")
+	parser.add_argument('--param_2', dest='param_2', action = 'store', type=float, default=0.0, help="CC param 2")
+	parser.add_argument('--bfsz', dest='bfsz', action = 'store', type=float, default=300.0, help="buffer size")
+	parser.add_argument('--fwin', dest='fwin', action = 'store', type=float, default=18000.0, help="fixed window size")
+	parser.add_argument('--enable_pfc', dest='enable_pfc', action = 'store', type=float, default=1.0, help="enabel PFC")
+	# parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
@@ -126,9 +131,9 @@ if __name__ == "__main__":
 		fwin=int(PARAM_LIST[fwin_idx][seed%2]*PARAM_LIST[fwin_idx][2])
 		enable_pfc=int(PARAM_LIST[pfc_idx][seed%2])
 	else:
-		bfsz=int(np.random.uniform(PARAM_LIST[bfsz_idx][0],PARAM_LIST[bfsz_idx][1])*PARAM_LIST[bfsz_idx][2])
-		fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
-		enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
+		bfsz=int(args.bfsz*PARAM_LIST[bfsz_idx][2])
+		fwin=int(args.fwin*PARAM_LIST[fwin_idx][2])
+		enable_pfc=int(args.enable_pfc)
 	
 	dctcp_k=30
 	timely_t_low=10000
@@ -139,7 +144,7 @@ if __name__ == "__main__":
 	hpai=25
 	u_tgt=args.utgt/100.
  
-	cc=np.random.choice(CC_LIST,1)[0]
+	cc=args.cc
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0
 	args.cc=cc
@@ -149,35 +154,35 @@ if __name__ == "__main__":
 		if enable_debug:
 			dctcp_k=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			dctcp_k=int(args.param_1*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
 		if enable_debug:
 			timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			timely_t_low=int(args.param_1*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
 		if enable_debug:
 			timely_t_high=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			timely_t_high=int(args.param_2*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
 		if enable_debug:
 			dcqcn_k_min=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			dcqcn_k_min=int(args.param_1*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_min)/PARAM_LIST[cc_idx][2]
   
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
 		if enable_debug:
 			dcqcn_k_max=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			dcqcn_k_max=int(args.param_2*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
 		enable_pfc=1
 	elif cc.startswith("hp"):
@@ -185,14 +190,14 @@ if __name__ == "__main__":
 		if enable_debug:
 			hpai=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			hpai=int(args.param_1*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
 
 		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
 		if enable_debug:
 			u_tgt=(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
-			u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+			u_tgt=(args.param_2*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
 		
 	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
