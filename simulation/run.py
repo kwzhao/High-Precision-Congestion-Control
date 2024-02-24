@@ -82,10 +82,10 @@ if __name__ == "__main__":
 	parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
 	parser.add_argument('--param_1', dest='param_1', action = 'store', type=float, default=30.0, help="CC param 1")
 	parser.add_argument('--param_2', dest='param_2', action = 'store', type=float, default=0.0, help="CC param 2")
-	parser.add_argument('--bfsz', dest='bfsz', action = 'store', type=float, default=300.0, help="buffer size")
+	parser.add_argument('--bfsz', dest='bfsz', action = 'store', type=float, default=30.0, help="buffer size")
 	parser.add_argument('--fwin', dest='fwin', action = 'store', type=float, default=18000.0, help="fixed window size")
 	parser.add_argument('--enable_pfc', dest='enable_pfc', action = 'store', type=float, default=1.0, help="enabel PFC")
-	# parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
+	parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
@@ -107,6 +107,7 @@ if __name__ == "__main__":
 	enable_tr = args.enable_tr
 
 	root = args.root
+	print("root: ",root)
 	topo=args.topo
 	bw = int(args.bw)
 	trace = args.trace
@@ -131,8 +132,10 @@ if __name__ == "__main__":
 		fwin=int(PARAM_LIST[fwin_idx][seed%2]*PARAM_LIST[fwin_idx][2])
 		enable_pfc=int(PARAM_LIST[pfc_idx][seed%2])
 	else:
+		assert args.bfsz >= PARAM_LIST[bfsz_idx][0] and args.bfsz <= PARAM_LIST[bfsz_idx][1]
+		assert args.enable_pfc == 0 or args.enable_pfc == 1
 		bfsz=int(args.bfsz*PARAM_LIST[bfsz_idx][2])
-		fwin=int(args.fwin*PARAM_LIST[fwin_idx][2])
+		fwin=int(args.fwin)
 		enable_pfc=int(args.enable_pfc)
 	
 	dctcp_k=30
@@ -206,7 +209,8 @@ if __name__ == "__main__":
 
 	# config_specs="_k%d"%(dctcp_k)
 	# config_specs="_k%d_b%.1f_p%.1f"%(fwin, bfsz_factor,cc_param_factor)
-	config_specs="_s%d"%(seed)
+	# config_specs="_s%d"%(seed)
+	config_specs=""
 	config_name = "%s/config_%s_%s%s%s.txt"%(root, topo, trace, failure, config_specs)
 
 	kmax_map = "2 %d %d %d %d"%(bw*1000000000, dcqcn_k_max*bw/25, bw*4*1000000000, dcqcn_k_max*bw*4/25)
