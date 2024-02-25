@@ -1152,76 +1152,78 @@ int main(int argc, char *argv[])
 	// 		std::cout << ", " << flowId;
 	// }
 	// std::cout << '\n';
+	bool enable_debug = false;
+	if (enable_debug){
+		// Open the file for writing using fopen
+		FILE* outputFile = fopen(flow_path_map_file.c_str(), "w");
 
-	// Open the file for writing using fopen
-    FILE* outputFile = fopen(flow_path_map_file.c_str(), "w");
+		// Check if the file is opened successfully
+		if (!outputFile) {
+			std::cerr << "Error opening file: " << flow_path_map_file << std::endl;
+			return 1;
+		}
 
-    // Check if the file is opened successfully
-    if (!outputFile) {
-        std::cerr << "Error opening file: " << flow_path_map_file << std::endl;
-        return 1;
-    }
-
-	for (uint32_t i = 0; i < node_num; i++){
-		if (n.Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNode> node = DynamicCast<SwitchNode>(n.Get(i));
-			for (uint32_t j = 1; j < node->GetNDevices(); j++){
-				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
-				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
-				for (uint32_t k = 0; k < 2; k++){
-					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					if (m_flowIdSet.size()>0){
-						uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
-						if (src_node_id==i){
-							fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
-							for (auto flowId : m_flowIdSet){
-								fprintf(outputFile, ",%d", flowId);
+		for (uint32_t i = 0; i < node_num; i++){
+			if (n.Get(i)->GetNodeType() == 1){ // is switch
+				Ptr<SwitchNode> node = DynamicCast<SwitchNode>(n.Get(i));
+				for (uint32_t j = 1; j < node->GetNDevices(); j++){
+					Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+					Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+					for (uint32_t k = 0; k < 2; k++){
+						std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
+						if (m_flowIdSet.size()>0){
+							uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
+							if (src_node_id==i){
+								fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
+								for (auto flowId : m_flowIdSet){
+									fprintf(outputFile, ",%d", flowId);
+								}
+								fprintf(outputFile, "\n");
+								// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+								// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+								// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+								// 	// for (auto flowId : m_flowIdSet){
+								// 	// 		std::cout << ", " << flowId;
+								// 	// }
+								// 	// std::cout << '\n';
+								// }
 							}
-							fprintf(outputFile, "\n");
-							// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
-							// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
-							// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-							// 	// for (auto flowId : m_flowIdSet){
-							// 	// 		std::cout << ", " << flowId;
-							// 	// }
-							// 	// std::cout << '\n';
-							// }
+						}
+					}
+				}
+			}
+			else{
+				Ptr<Node> node = DynamicCast<Node>(n.Get(i));
+				for (uint32_t j = 1; j < node->GetNDevices(); j++){
+					Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+					Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+					for (uint32_t k = 0; k < 2; k++){
+						std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
+						if (m_flowIdSet.size()>0){
+							uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
+							if (src_node_id==i){
+								fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
+								for (auto flowId : m_flowIdSet){
+									fprintf(outputFile, ",%d", flowId);
+								}
+								fprintf(outputFile, "\n");
+								// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+								// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+								// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+								// 	// for (auto flowId : m_flowIdSet){
+								// 	// 		std::cout << ", " << flowId;
+								// 	// }
+								// 	// std::cout << '\n';
+								// }
+							}
 						}
 					}
 				}
 			}
 		}
-		else{
-			Ptr<Node> node = DynamicCast<Node>(n.Get(i));
-			for (uint32_t j = 1; j < node->GetNDevices(); j++){
-				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
-				Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
-				for (uint32_t k = 0; k < 2; k++){
-					std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
-					if (m_flowIdSet.size()>0){
-						uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
-						if (src_node_id==i){
-							fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
-							for (auto flowId : m_flowIdSet){
-								fprintf(outputFile, ",%d", flowId);
-							}
-							fprintf(outputFile, "\n");
-							// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
-							// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
-							// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
-							// 	// for (auto flowId : m_flowIdSet){
-							// 	// 		std::cout << ", " << flowId;
-							// 	// }
-							// 	// std::cout << '\n';
-							// }
-						}
-					}
-				}
-			}
-		}
+		// Close the file using fclose
+		fclose(outputFile);
 	}
-	// Close the file using fclose
-    fclose(outputFile);
 	// # Get the (Src, Dst) pair that has the most flows
 
 	// Find all flows with the same (Src, Dst) pair, forming the flow set F
