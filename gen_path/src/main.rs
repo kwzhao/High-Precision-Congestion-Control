@@ -12,8 +12,8 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     let enable_tr = 0;
     let enable_debug = 0;
-    let keynote = "path_tc_test";
-    // let keynote = "path_tc";
+    // let keynote = "path_tc_test";
+    let keynote = "path_tc";
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let root_path = format!(
         "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
@@ -30,14 +30,14 @@ fn main() -> anyhow::Result<()> {
     let type_topo = "topo-pl";
 
     let params = Parameters {
-        shard: vec![0,1,2,3],
-        // shard: (1000..2000).collect(),
+        // shard: vec![5,6,7,8,9],
+        shard: (0..2000).collect(),
         n_flows: vec![20000],
         // n_flows: vec![4000],
-        n_hosts: vec![3,7],
-        // n_hosts: vec![3, 5, 7],
-        shard_cc: vec![0],
-        // shard_cc: (0..20).collect(),
+        // n_hosts: vec![3,7],
+        n_hosts: vec![3, 5, 7],
+        // shard_cc: vec![0],
+        shard_cc: (0..20).collect(),
     };
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
