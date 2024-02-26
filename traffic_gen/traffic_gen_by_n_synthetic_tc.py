@@ -48,8 +48,7 @@ if __name__ == "__main__":
 	parser.add_option("-o", "--output", dest = "output", help = "the output file", default = "../simulation/mix/")
 	options,args = parser.parse_args()
 
-	# fix_seed(options.shard)
-	fix_seed(0)
+	fix_seed(options.shard)
 	
 	base_t = 1*UNIT_G
  
@@ -192,17 +191,17 @@ if __name__ == "__main__":
 		t=base_t
 		host_pair_list_idx=np.arange(len(host_pair_list))
   
-		p_candidate_list=[1, 10, 20, 50]
-		# p_candidate_list=[10]
-		# p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
-		p_candidate=p_candidate_list[options.shard]
-		p_list=np.random.rand(ntc)
-		p_list[0]=0.5/p_candidate
-		# p_candidate_list=[ntc, 10, 20, 50, 100]
-		# p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
-		# p_list=np.random.rand(ntc)*p_candidate/ntc
-		# # p_list=np.random.rand(ntc)*p_candidate
-		# p_list[0]=1.0
+		# p_candidate_list=[1, 10, 20, 50]
+		# # p_candidate_list=[10]
+		# # p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
+		# p_candidate=p_candidate_list[options.shard]
+		# p_list=np.random.rand(ntc)
+		# p_list[0]=0.5/p_candidate
+  
+		p_candidate_list=[ntc, 10, 50, 100]
+		p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
+		p_list=np.random.rand(ntc)*p_candidate/ntc
+		p_list[0]=1.0
   
 		p_list=np.array(p_list)/np.sum(p_list)
 		n_flows_foreground=0
