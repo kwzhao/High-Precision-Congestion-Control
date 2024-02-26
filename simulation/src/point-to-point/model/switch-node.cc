@@ -77,14 +77,12 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch){
 	} buf;
 	buf.u32[0] = ch.sip;
 	buf.u32[1] = ch.dip;
-	
 	if (ch.l3Prot == 0x6)
 		buf.u32[2] = ch.tcp.sport | ((uint32_t)ch.tcp.dport << 16);
 	else if (ch.l3Prot == 0x11)
 		buf.u32[2] = ch.udp.sport | ((uint32_t)ch.udp.dport << 16);
 	else if (ch.l3Prot == 0xFC || ch.l3Prot == 0xFD)
 		buf.u32[2] = ch.ack.sport | ((uint32_t)ch.ack.dport << 16);
-	
 	uint32_t idx = EcmpHash(buf.u8, 12, m_ecmpSeed) % nexthops.size();
 	// TODO: CL, Print input parameters
 	// if (!((ch.l3Prot == 0xFC) || (ch.l3Prot == 0xFD))) {
