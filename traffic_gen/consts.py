@@ -17,8 +17,8 @@ size_distribution_list=["exp","gaussian","lognorm","pareto"]
 size_sigma_range=[5000,50000]
 ia_distribution="lognorm"
 ias_sigma_range=[1.0,2.0]
-load_range=[0.10,0.80]
-load_bottleneck_range=[0.10,0.80]
+load_range=[0.20,0.80]
+load_bottleneck_range=[0.20,0.80]
 color_list = [
     "cornflowerblue",
     "orange",
