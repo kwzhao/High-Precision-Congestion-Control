@@ -300,5 +300,5 @@ if __name__ == "__main__":
 		file.write(" ".join(map(str, DEFAULT_PARAM_VEC)) + "\n")
 		file.write("0 {} {} {} {} {} {} {} {} {} {} {}\n".format(bfsz, fwin, enable_pfc, cc, dctcp_k, dcqcn_k_min, dcqcn_k_max, u_tgt, hpai, timely_t_low, timely_t_high))
 	np.save("%s/param_%s%s%s.npy"%(root, topo, failure, config_specs), DEFAULT_PARAM_VEC)
-	
+	print "config_name:", config_name
 	os.system("./waf --run 'scratch/third %s'"%(config_name))
