@@ -77,14 +77,33 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch){
 	} buf;
 	buf.u32[0] = ch.sip;
 	buf.u32[1] = ch.dip;
-	printf("%u, %u, %u\n", ch.l3Prot,ch.sip, ch.dip);
+	
 	if (ch.l3Prot == 0x6)
 		buf.u32[2] = ch.tcp.sport | ((uint32_t)ch.tcp.dport << 16);
 	else if (ch.l3Prot == 0x11)
 		buf.u32[2] = ch.udp.sport | ((uint32_t)ch.udp.dport << 16);
 	else if (ch.l3Prot == 0xFC || ch.l3Prot == 0xFD)
 		buf.u32[2] = ch.ack.sport | ((uint32_t)ch.ack.dport << 16);
+	
 	uint32_t idx = EcmpHash(buf.u8, 12, m_ecmpSeed) % nexthops.size();
+	// TODO: CL, Print input parameters
+	// if (!((ch.l3Prot == 0xFC) || (ch.l3Prot == 0xFD))) {
+	// 	printf("nexthops: [");
+	// 	for (auto &nh : nexthops){
+	// 		printf("%u, ", nh);
+	// 	}
+	// 	printf("]\n");
+		
+	// 	printf("Key: [");
+	// 	for (size_t i = 0; i < 12; ++i) {
+	// 		printf("%u, ", buf.u8[i]);
+	// 	}
+	// 	printf("]\n");
+	// 	printf("Length of key: %zu\n", 12);
+	// 	printf("Seed value: %u\n", m_ecmpSeed);
+		
+	// 	printf("Index: %u\n", idx);
+	// }
 	return nexthops[idx];
 }
 
@@ -136,14 +155,6 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 }
 
 uint32_t SwitchNode::EcmpHash(const uint8_t* key, size_t len, uint32_t seed) {
-  // TODO: CL, Print input parameters
-	printf("Key: ");
-	for (size_t i = 0; i < len; ++i) {
-		printf("%u ", key[i]);
-	}
-	printf("\n");
-	printf("Length of key: %zu\n", len);
-	printf("Seed value: %u\n", seed);
   uint32_t h = seed;
   if (len > 3) {
     const uint32_t* key_x4 = (const uint32_t*) key;
