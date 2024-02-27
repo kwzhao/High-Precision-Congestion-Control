@@ -155,20 +155,6 @@ if __name__ == "__main__":
 		else:
 			dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
-	elif cc.startswith("timely"):
-		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
-		if enable_debug:
-			timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
-		else:
-			timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
-  
-		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
-		if enable_debug:
-			timely_t_high=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
-		else:
-			timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
 	elif cc.startswith("dcqcn"):
 		cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
 		if enable_debug:
@@ -185,20 +171,34 @@ if __name__ == "__main__":
 		DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
 		enable_pfc=1
 	elif cc.startswith("hp"):
-		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
-		if enable_debug:
-			hpai=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
-		else:
-			hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
-
 		cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
 		if enable_debug:
 			u_tgt=(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
 		else:
 			u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
-		
+
+		cc_idx=CONFIG_TO_PARAM_DICT['hpai']
+		if enable_debug:
+			hpai=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
+ 	elif cc.startswith("timely"):
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
+		if enable_debug:
+			timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
+  
+		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
+		if enable_debug:
+			timely_t_high=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
+		else:
+			timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
+		DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
+  	
 	DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
 	DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
 	DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc

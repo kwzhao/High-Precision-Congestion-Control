@@ -1152,7 +1152,7 @@ int main(int argc, char *argv[])
 	// 		std::cout << ", " << flowId;
 	// }
 	// std::cout << '\n';
-	bool enable_debug = true;
+	bool enable_debug = false;
 	if (enable_debug){
 		// Open the file for writing using fopen
 		FILE* outputFile = fopen(flow_path_map_file.c_str(), "w");
