@@ -71,7 +71,7 @@ KMIN_MAP {kmin_map}
 PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
 QLEN_MON_FILE {root}/qlen_{topo}_{trace}_{cc}{failure}{config_specs}.txt
-QLEN_MON_START 1000000000
+QLEN_MON_START 2000000000
 QLEN_MON_END 3000000000
 
 FIXED_WIN {fwin}
