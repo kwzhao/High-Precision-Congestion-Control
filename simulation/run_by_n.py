@@ -184,7 +184,7 @@ if __name__ == "__main__":
 		else:
 			hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
 		DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
- 	elif cc.startswith("timely"):
+	elif cc.startswith("timely"):
 		cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
 		if enable_debug:
 			timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])

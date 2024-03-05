@@ -14,11 +14,13 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
     // let keynote = "path_tc_test";
     let keynote = "path_tc";
+    
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let root_path = format!(
         "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
     );
     let output_dir = format!("/data2/lichenni/{}", keynote);
+
     let log_dir = format!("./log_{}", keynote);
 
     // let file_traffic = format!("{}/traffic_gen/traffic_gen_by_n_synthetic.py", root_path);
