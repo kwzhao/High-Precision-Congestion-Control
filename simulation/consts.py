@@ -1,10 +1,10 @@
 import numpy as np
 
 # extra params, bdp, init_window,buffer_size, enable_pfc
-bfsz=[15,300,10]
+bfsz=[20,50,10]
 # bfsz=[20,20,10]
 # PFC threshold: [15, 45, 65]
-fwin=[10, 30,1000]
+fwin=[5, 30,1000]
 # fwin=[30, 30, 1000]
 enable_pfc=[0,1]
 # enable_pfc=[1,1]
@@ -15,16 +15,16 @@ CC_LIST=["dctcp", "dcqcn_paper_vwin", "hp","timely_vwin"]
 
 # cc params
 CC_PARAM_IDX_BASE=CC_IDX_BASE+4
-dctcp_k=[10,60,1]
+dctcp_k=[5,30,1]
 # dctcp_k=[30,30,1]
 dcqcn_k_min=[20, 50,1]
 dcqcn_k_max=[50, 100,1]
 u_tgt=[70,95,0.01]
 # u_tgt=[95,95,0.01]
-hpai=[10, 50,50]
+hpai=[10, 100,10]
 # hpai=[25, 25,50]
-timely_t_low=[20,50,1000]
-timely_t_high=[50,100,1000]
+timely_t_low=[15,30,1000]
+timely_t_high=[30,60,1000]
 
 # bdp, init_window,buffer_size, enable_pfc
 PARAM_LIST=[
