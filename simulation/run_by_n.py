@@ -144,6 +144,8 @@ if __name__ == "__main__":
 	u_tgt=args.utgt/100.
  
 	cc=np.random.choice(CC_LIST,1)[0]
+	if not cc.startswith("timely"):
+		exit(0)
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0
 	args.cc=cc

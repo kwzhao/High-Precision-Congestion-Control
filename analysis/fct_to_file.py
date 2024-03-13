@@ -85,6 +85,8 @@ if __name__ == "__main__":
     # for cc in CCs:
     # file = "%s_%s.txt"%(args.prefix, cc)
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
+    if not os.path.exists(file):
+        exit(0)
     # print file
     if type == 0:
         # cmd = "cat %s"%(file)+" | awk '{if ($4==100 && $6+$7<"+"%d"%time_limit+") {slow=$7/$8;print slow<1?1:slow, $5}}'"
