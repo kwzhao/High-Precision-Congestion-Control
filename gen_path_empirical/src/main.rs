@@ -12,13 +12,12 @@ struct Parameters {
 fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     let window = 18000;
-    let keynote = "_path_tc_empirical";
+
+    // use your own paths
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
-    let root_path = format!(
-        "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
-    );
+    let root_path = format!("..");
     let output_dir = "/data2/lichenni/path_tc_empirical";
-    let log_dir = format!("./log{}", keynote);
+    let log_dir = format!("./logs");
 
     let file_traffic = format!("{}/traffic_gen/traffic_gen_by_n_empirical_tc.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);

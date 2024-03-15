@@ -3,7 +3,6 @@ import argparse
 import numpy as np
 import os
 
-
 def fix_seed(seed):
     np.random.seed(seed)
 

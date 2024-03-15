@@ -110,8 +110,6 @@ dir_input = "%s/%s" % (args.output_dir, args.scenario_dir)
 nhost = int(args.nhost)
 bw = int(args.bw)
 output_dir = dir_input
-# output_dir = "/data1/lichenni/projects/flow_simulation/High-Precision-Congestion-Control/gc"
-# os.makedirs(output_dir, exist_ok=True)
 
 if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     "%s/fsize.npy" % output_dir
@@ -125,17 +123,8 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     start = time()
     fats_pt = make_array(c_double, fats)
     sizes_pt = make_array(c_double, sizes)
-    # n_links_passed = abs(flow_src_dst[:, 0] - flow_src_dst[:, 1]) + 2
-    # pkt_head = np.clip(sizes, a_min=0, a_max=MTU)
-    # pkt_rest = sizes - pkt_head
-    # size_byte = (
-    #     (pkt_head + HEADER_SIZE) * n_links_passed
-    #     + (pkt_rest + np.ceil(pkt_rest / MTU) * HEADER_SIZE)
-    # ).astype("int64")
-    # sizes_pt = make_array(c_double, size_byte)
     src_pt = make_array(c_int, flow_src_dst[:, 0])
     dst_pt = make_array(c_int, flow_src_dst[:, 1])
-    # topo_pt=make_array(c_int, np.array([2,2,1,2,1,1]))
     topo_pt = make_array(c_int, np.array([1, 4]))
     res = C_LIB.get_fct_mmf(
         n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 2, 8, 2, bw

@@ -12,23 +12,17 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     let enable_tr = 0;
     let enable_debug = 0;
-    // let keynote = "path_tc_test";
-    let keynote = "path_tc";
     
+    // use your own paths
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
-    let root_path = format!(
-        "/data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control",
-    );
-    let output_dir = format!("/data2/lichenni/{}", keynote);
-
-    let log_dir = format!("./log_{}", keynote);
-
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_by_n_synthetic.py", root_path);
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_by_n_synthetic_tc.py", root_path);
+    let output_dir = format!("/data2/lichenni/path_tc");
+    
+    let root_path = format!("..");
+    let log_dir = format!("./logs");
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
     let file_sim = format!("{}/simulation/run_by_n.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
-    // let file_reference_link = format!("{}/analysis/main_flowsim_mmf_link.py", root_path);
     let type_topo = "topo-pl";
 
     let params = Parameters {
