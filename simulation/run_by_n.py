@@ -145,6 +145,7 @@ if __name__ == "__main__":
  
 	cc=np.random.choice(CC_LIST,1)[0]
 	if not cc.startswith("timely"):
+		print "not timely!", cc
 		exit(0)
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0
