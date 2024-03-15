@@ -20,7 +20,7 @@ fn main() -> anyhow::Result<()> {
     let root_path = format!("..");
     let log_dir = format!("./logs");
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_sim = format!("{}/simulation/run_by_n.py", root_path);
+    let file_sim = format!("{}/simulation/run_m3.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
