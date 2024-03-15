@@ -4,7 +4,7 @@ python run.py --root /data1/lichenni/projects/flow_simulation/parsimon-eval/expt
 
 python2 run.py --root mix --cc dctcp --trace flow_parsimon --bw 10 --topo fat_parsimon
 
-/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/simulation/run_by_n.py --cc hp --trace flows --bw 10 --fwin 18000 --base_rtt 14400 --topo topo-pl-7 --root /data2/lichenni/path_tc/shard0_nflows20_nhosts7_lr10Gbps --hpai 50
+/data1/lichenni/software/anaconda3/envs/py27/bin/python /data1/lichenni/projects/flow_simulation/parsimon/backends/High-Precision-Congestion-Control/simulation/run_m3.py --cc hp --trace flows --bw 10 --fwin 18000 --base_rtt 14400 --topo topo-pl-7 --root /data2/lichenni/path_tc/shard0_nflows20_nhosts7_lr10Gbps --hpai 50
 
 CC='gcc-5' CXX='g++-5' ./waf configure --build-profile=optimized
 
