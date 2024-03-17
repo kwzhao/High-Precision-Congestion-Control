@@ -134,7 +134,7 @@ if __name__ == "__main__":
 		fwin=int(np.random.uniform(PARAM_LIST[fwin_idx][0],PARAM_LIST[fwin_idx][1])*PARAM_LIST[fwin_idx][2])
 		enable_pfc=int(np.random.choice(PARAM_LIST[pfc_idx],1)[0])
 	
-	dctcp_k=30
+	dctcp_k=20
 	timely_t_low=10000
 	timely_t_high=50000
 	timely_beta=0.8
@@ -144,8 +144,8 @@ if __name__ == "__main__":
 	u_tgt=args.utgt/100.
  
 	cc=np.random.choice(CC_LIST,1)[0]
-	if not cc.startswith("timely"):
-		print "not timely!", cc
+	if not cc.startswith("dctcp"):
+		print "not dctcp!", cc
 		exit(0)
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0

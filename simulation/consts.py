@@ -15,7 +15,7 @@ CC_LIST=["dctcp", "dcqcn_paper_vwin", "hp","timely_vwin"]
 
 # cc params
 CC_PARAM_IDX_BASE=CC_IDX_BASE+4
-dctcp_k=[5,30,1]
+dctcp_k=[5,20,1]
 # dctcp_k=[30,30,1]
 dcqcn_k_min=[20, 50,1]
 dcqcn_k_max=[50, 100,1]

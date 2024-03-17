@@ -29,7 +29,7 @@ def make_array(ctype, arr):
     return (ctype * len(arr))(*arr)
 
 
-C_LIB_PATH = "../../../../fast-mmf-fattree/get_fct_mmf.so"
+C_LIB_PATH = "../../../../clibs/get_fct_mmf.so"
 
 C_LIB = CDLL(C_LIB_PATH)
 C_LIB.get_fct_mmf = C_LIB.get_fct_mmf
@@ -147,10 +147,11 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     # print(f"num_flows_enq-{len(num_flows_enq)}: {np.mean(num_flows_enq)}")
 
     np.save("%s/fct_flowsim.npy" % output_dir, estimated_fcts)
-    os.system("rm %s/flows.txt" % (output_dir))
     # os.system("rm %s/flows_path_map.txt" % (output_dir))
     
     # np.save(f"{output_dir}/t_flows_flowsim.npy", np.array(t_flows))
     # np.save(f"{output_dir}/num_flows_flowsim.npy", np.array(num_flows))
     # np.save(f"{output_dir}/num_flows_enq_flowsim.npy", num_flows_enq)
     C_LIB.free_fctstruct(res)
+if os.path.exists("%s/flows.txt" % output_dir):
+    os.system("rm %s/flows.txt" % (output_dir))
