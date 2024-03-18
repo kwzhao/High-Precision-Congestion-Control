@@ -13,18 +13,9 @@ fn main() -> anyhow::Result<()> {
     let enable_tr = 0;
     let enable_debug = 0;
     
-    // use your own paths
+    // setup the configurations
     let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
     let output_dir = format!("/data2/lichenni/path_tc");
-    
-    let root_path = format!("..");
-    let log_dir = format!("./logs");
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_sim = format!("{}/simulation/run_m3.py", root_path);
-    let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
-    let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
-    let type_topo = "topo-pl";
-
     let params = Parameters {
         // shard: vec![0],
         shard: (0..2000).collect(),
@@ -35,6 +26,16 @@ fn main() -> anyhow::Result<()> {
         // shard_cc: vec![0],
         shard_cc: (0..20).collect(),
     };
+
+    // no need to change
+    let root_path = format!("..");
+    let log_dir = format!("./logs");
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    let file_sim = format!("{}/simulation/run_m3.py", root_path);
+    let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
+    let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
+    let type_topo = "topo-pl";
+
     // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
         .par_bridge()
