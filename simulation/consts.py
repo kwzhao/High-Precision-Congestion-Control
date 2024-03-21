@@ -23,7 +23,7 @@ u_tgt=[70,95,0.01]
 # u_tgt=[95,95,0.01]
 hpai=[50, 100,10]
 # hpai=[25, 25,50]
-timely_t_low=[40,70,1000]
+timely_t_low=[40,60,1000]
 timely_t_high=[100,150,1000]
 
 # bdp, init_window,buffer_size, enable_pfc
