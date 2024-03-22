@@ -15,7 +15,6 @@ DELAY_PROPAGATION_BASE = 1000
 BYTE_TO_BIT = 8
 UNIT_G = 1000000000
 
-
 class FCTStruct(Structure):
     _fields_ = [
         ("estimated_fcts", POINTER(c_double)),
@@ -132,26 +131,12 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
 
     estimated_fcts = np.fromiter(res.estimated_fcts, dtype=np.float64, count=n_flows)
 
-    # t_flows = np.fromiter(res.t_flows, dtype=np.float64, count=2 * n_flows)
-    # num_flows = np.fromiter(res.num_flows, dtype=np.uint, count=2 * n_flows).astype(
-    # np.int64
-    # )
-    # num_flows_enq = np.fromiter(res.num_flows_enq, dtype=np.uint, count=n_flows).astype(
-    #     np.int64
-    # )
     end = time()
     print("c_sim:%f" % (end - start))
     print("estimated_fcts:%f" % (np.mean(estimated_fcts)))
-    # print(f"t_flows-{len(t_flows)}: {np.mean(t_flows)}")
-    # print(f"num_flows-{len(num_flows)}: {np.mean(num_flows)}")
-    # print(f"num_flows_enq-{len(num_flows_enq)}: {np.mean(num_flows_enq)}")
 
     np.save("%s/fct_flowsim.npy" % output_dir, estimated_fcts)
-    # os.system("rm %s/flows_path_map.txt" % (output_dir))
-    
-    # np.save(f"{output_dir}/t_flows_flowsim.npy", np.array(t_flows))
-    # np.save(f"{output_dir}/num_flows_flowsim.npy", np.array(num_flows))
-    # np.save(f"{output_dir}/num_flows_enq_flowsim.npy", num_flows_enq)
     C_LIB.free_fctstruct(res)
+    
 if os.path.exists("%s/flows.txt" % output_dir):
     os.system("rm %s/flows.txt" % (output_dir))

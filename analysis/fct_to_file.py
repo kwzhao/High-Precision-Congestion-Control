@@ -30,8 +30,6 @@ if __name__ == "__main__":
         help="0: normal, 1: incast, 2: all",
     )
     parser.add_argument('--enable_debug', dest='enable_debug', action = 'store', type=int, default=0, help="enable debug for parameter sample space")
-    # parser.add_argument('-T', dest='time_limit', action='store', type=int, default=20000000000, help="only consider flows that finish before T")
-    # parser.add_argument("--cc", dest="cc", action="store", default="dctcp", help="")
     parser.add_argument(
         "-b",
         dest="bw",
@@ -59,36 +57,16 @@ if __name__ == "__main__":
     
     fix_seed(args.shard)
     type = args.type
-    # time_limit = args.time_limit
 
-    # Please list all the cc (together with parameters) that you want to compare.
-    # For example, here we list two CC: 1. HPCC-PINT with utgt=95,AI=50Mbps,pint_log_base=1.05,pint_prob=1; 2. HPCC with utgt=95,ai=50Mbps.
-    # For the exact naming, please check ../simulation/mix/fct_*.txt output by the simulation.
-    # CCs = [
-    # 	'hpccPint95ai50log1.05p1.000',
-    # 	'hp95ai50',
-    # ]
-    # CCs = [
-    # 	args.cc,
-    # ]
-    # time_limit = int(float(args.file.split("_")[-1])*1e9)
     time_limit = int(30000 * 1e9)
-    # bfsz_factor = float(args.bfsz_factor)
-    # cc_param_factor=float(args.cc_param_factor)
     shard_cc=args.shard_cc
-    # step = int(args.step)
-    # res = [[i/100.] for i in range(0, 100, step)]
-    # fwin = args.fwin
     config_specs = "_s%d"%(shard_cc)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
-    # for cc in CCs:
-    # file = "%s_%s.txt"%(args.prefix, cc)
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
         exit(0)
     # print file
     if type == 0:
-        # cmd = "cat %s"%(file)+" | awk '{if ($4==100 && $6+$7<"+"%d"%time_limit+") {slow=$7/$8;print slow<1?1:slow, $5}}'"
         cmd = (
             "cat %s" % (file)
             + " | awk '{if ($5==100 && $7+$8<"
@@ -117,7 +95,6 @@ if __name__ == "__main__":
     #     output = subprocess.check_output(cmd, shell=True)
 
     # up to here, `output` should be a string of multiple lines, each line is: fct, size
-    # a = output.split('\n')[:-2]
     a = output.split("\n")[:-1]
     n = len(a)
     res_np = np.array(map(lambda x: x.split(), a))
@@ -128,8 +105,6 @@ if __name__ == "__main__":
     fcts = res_np[:, 0].astype("int64")
     i_fcts = res_np[:, 1].astype("int64")
     fid=res_np[:, 6].astype("int64")
-    # flow_sizes = res_np[:, 2].astype("int64")
-    # flow_arrival_times = res_np[:, 3].astype("int64")
     np.save(
         "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
     )  # Byte
@@ -151,7 +126,6 @@ if __name__ == "__main__":
     # ofile.write("-1 -1")
     # ofile.close()
 
-    # os.system("rm %s/flows.txt" % (output_dir))
     if not enable_debug:
         os.system("rm %s" % (file))
         os.system(
