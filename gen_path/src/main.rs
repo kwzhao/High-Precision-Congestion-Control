@@ -1,6 +1,8 @@
 use rayon::prelude::*;
 use std::process::Command;
-
+use clap::Parser;
+use std::path::PathBuf;
+use std::fs;
 struct Parameters {
     shard: Vec<u32>,
     n_flows: Vec<u32>,
@@ -8,28 +10,50 @@ struct Parameters {
     shard_cc: Vec<u32>
 }
 
+#[derive(Debug, Parser)]
+pub struct Main {
+    #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py27/bin/python")]
+    python_path: PathBuf,
+    #[clap(long, default_value = "/data2/lichenni/test")]
+    output_dir: PathBuf,
+}
+
 fn main() -> anyhow::Result<()> {
+    let args = Main::parse();
+    let python_path = args.python_path.display().to_string();
+    let output_dir = args.output_dir.display().to_string();
+
+    println!("python_path: {:?}, output_dir: {:?}", python_path,output_dir);
+
     let base_rtt = 14400;
     let enable_tr = 0;
     let enable_debug = 0;
-    
+
     // setup the configurations
-    let python_path = format!("/data1/lichenni/software/anaconda3/envs/py27/bin/python");
-    let output_dir = format!("/data2/lichenni/path_tc");
     let params = Parameters {
-        // shard: vec![0],
         shard: (0..2000).collect(),
         n_flows: vec![20000],
-        // n_flows: vec![1000],
-        // n_hosts: vec![3],
         n_hosts: vec![3, 5, 7],
-        // shard_cc: vec![0],
         shard_cc: (0..20).collect(),
     };
 
+    // config for debugging
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     n_flows: vec![1000],
+    //     n_hosts: vec![3],
+    //     shard_cc: vec![0],
+    // };
+
     // no need to change
     let root_path = format!("..");
-    let log_dir = format!("./logs");
+    let log_dir = "./logs";
+    if let Err(err) = fs::create_dir_all(log_dir) {
+        eprintln!("Error creating directory '{}': {}", log_dir, err);
+    } else {
+        println!("Directory '{}' created successfully.", log_dir);
+    }
+
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
     let file_sim = format!("{}/simulation/run_m3.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
