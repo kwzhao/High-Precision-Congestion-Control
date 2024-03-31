@@ -31,10 +31,10 @@ fn main() -> anyhow::Result<()> {
 
     // setup the configurations
     let params = Parameters {
-        shard: (0..2000).collect(),
+        shard: (0..1000).collect(),
         n_flows: vec![20000],
         n_hosts: vec![3, 5, 7],
-        shard_cc: (0..20).collect(),
+        shard_cc: (0..100).collect(),
     };
 
     // config for debugging
