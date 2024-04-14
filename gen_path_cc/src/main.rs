@@ -43,10 +43,13 @@ fn main() -> anyhow::Result<()> {
     let params = Parameters {
         shard: vec![0],
         n_flows: vec![1],
+        // n_flows: (1..=10).step_by(2).collect();
         n_hosts: vec![3],
         shard_cc: vec![0],
-        bandwidth: vec![20],
-        prop_delay: vec![1000],
+        // bandwidth: vec![20],
+        bandwidth: (10..=100).step_by(20).collect(),
+        // prop_delay: vec![1000],
+        prop_delay: (1000..=10000).step_by(2000).collect(),
     };
 
     // no need to change
