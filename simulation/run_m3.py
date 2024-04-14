@@ -89,7 +89,6 @@ if __name__ == "__main__":
 	parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
 	parser.add_argument('--bw', dest="bw", action='store', default='10', help="the NIC bandwidth")
-	parser.add_argument('--pd', dest="pd", action='store', default='1000', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
 	parser.add_argument('--topo', dest='topo', action='store', default='fat', help="the name of the topology file")
 	parser.add_argument('--utgt', dest='utgt', action='store', type=int, default=95, help="eta of HPCC")
