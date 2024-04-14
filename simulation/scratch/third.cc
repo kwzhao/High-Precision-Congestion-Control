@@ -142,6 +142,35 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
+unsigned long parse_rate(std::string& max_rate) {
+    // Define a map to store unit specifiers and their corresponding multipliers
+    std::map<std::string, unsigned long> unit_multipliers = {
+        {"b/s", 1},     // bits per second
+        {"Kb/s", 1000}, // kilobits per second
+        {"Mb/s", 1000000}, // megabits per second
+        {"Gb/s", 1000000000}, // gigabits per second
+        // Add more unit specifiers and their multipliers as needed
+    };
+
+    // Extract numeric value and unit specifier from the input string
+    std::istringstream iss(max_rate);
+    unsigned long numeric_value;
+    std::string unit_specifier;
+    iss >> numeric_value >> unit_specifier;
+
+    // Look up the multiplier corresponding to the unit specifier
+    auto multiplier_it = unit_multipliers.find(unit_specifier);
+    if (multiplier_it == unit_multipliers.end()) {
+        // Unknown unit specifier, default to bits per second
+        return numeric_value;
+    }
+    unsigned long multiplier = multiplier_it->second;
+
+    // Calculate the rate in bits per second
+	unsigned long res = static_cast<unsigned long>(numeric_value * multiplier);
+    return res;
+}
+
 void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
@@ -755,11 +784,12 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d\n",
+	max_rate_int = parse_rate(max_rate);
+	
+	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
        fwin, buffer_size, enable_pfc, cc_mode,
        rate2kmin[10000000000], rate2kmax[10000000000],
-       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn);
-	
+       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
 	bool dynamicth = use_dynamic_pfc_threshold;
 
 	Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));

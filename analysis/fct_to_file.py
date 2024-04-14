@@ -39,6 +39,14 @@ if __name__ == "__main__":
         help="bandwidth of edge link (Gbps)",
     )
     parser.add_argument(
+        "--pd",
+        dest="pd",
+        action="store",
+        type=int,
+        default=1000,
+        help="prop delay of edge link (ns)",
+    )
+    parser.add_argument(
         "--output_dir",
         dest="output_dir",
         action="store",
