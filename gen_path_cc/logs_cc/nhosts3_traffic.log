@@ -1,0 +1,5 @@
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../traffic_gen/traffic_gen_synthetic.py --shard 0 -f 1 -n 3 -b 10G -o /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3 --switchtohost 4 --constfsize 1000000000
+lr:  [10000000000.0, 10000000000.0] ntc:  1
+utilization:  0.001
+stats: 1 601.0
+
