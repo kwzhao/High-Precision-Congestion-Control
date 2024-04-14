@@ -131,8 +131,8 @@ fn main() -> anyhow::Result<()> {
         let mut log_path = format!("{}/nhosts{}_sim.log", log_dir, n_hosts,);
         let mut py_command = format!("{} {} {}", python_path, file_sim, command_args,);
         let mut cmd = format!(
-            "echo {} >> {}; {} >> {}/{}/pdrop_{}-{}_s{}.txt",
-            py_command, log_path, py_command, output_dir, scenario_dir,type_topo, n_hosts, shard_cc
+            "echo {} >> {}; {} >> {}/{}/pdrop_{}-{}-{}-{}_s{}.txt",
+            py_command, log_path, py_command, output_dir, scenario_dir,type_topo, n_hosts, bandwidth,prop_delay, shard_cc
         );
         // let mut cmd = format!(
         //     "echo {} >> {}; {} >> {}; echo \"\">>{}",
