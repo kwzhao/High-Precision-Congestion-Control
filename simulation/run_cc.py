@@ -110,20 +110,29 @@ if __name__ == "__main__":
     root = args.root
     bw = int(args.bw)
     pd=int(args.pd)
-    topo=args.topo+f"-{args.bw}-{args.pd}"
     trace = args.trace
+    topo_ori=args.topo
+    trace_track_ori=topo_ori.replace("topo","trace")
+    topo=topo_ori+f"-{args.bw}-{args.pd}"
+    trace_track=trace_track_ori+f"-{args.bw}-{args.pd}"
     #bfsz = 16 if bw==50 else 32
     # bfsz = int(16 * bw / 50)
     
     topo_path=f"{local_dir}/{topo}.txt"
+    trace_track_path=f"{local_dir}/{trace_track}.txt"
     if not os.path.exists(topo_path):
-        with open(f"{local_dir}/{args.topo}.txt", 'r') as file:
+        with open(f"{local_dir}/{topo_ori}.txt", 'r') as file:
             file_contents = file.read()
         file_contents = file_contents.replace("10Gbps", f"{bw}Gbps")
         file_contents = file_contents.replace("1000ns", f"{pd}ns")
         with open(topo_path, 'w') as file:
             file.write(file_contents)
- 
+    if not os.path.exists(trace_track_path):
+        with open(f"{local_dir}/{trace_track_ori}.txt", 'r') as file:
+            file_contents = file.read()
+        with open(trace_track_path, 'w') as file:
+            file.write(file_contents)
+            
     mi=args.mi
     pint_log_base=args.pint_log_base
     pint_prob = args.pint_prob
