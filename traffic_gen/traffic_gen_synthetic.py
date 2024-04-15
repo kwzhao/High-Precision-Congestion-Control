@@ -219,7 +219,7 @@ if __name__ == "__main__":
             flow_id_total+=1
         n_flows_total=flow_id_total
         if enable_const:
-            t+=600*UNIT_G
+            t+=600*UNIT_G   
         else:
             t+=UNIT_G
         data+="%f"%((t)/1e9)
