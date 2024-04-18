@@ -39,7 +39,7 @@ FAST_RECOVERY_TIMES 1
 RATE_AI {ai}Mb/s
 RATE_HAI {hai}Mb/s
 MIN_RATE 1000Mb/s
-MAX_RATE {bw}000Mb/s
+MAX_RATE 10000Mb/s
 DCTCP_RATE_AI {dctcp_ai}Mb/s
 TIMELY_T_HIGH {timely_t_high}
 TIMELY_T_LOW {timely_t_low}
@@ -123,8 +123,8 @@ if __name__ == "__main__":
     if not os.path.exists(topo_path):
         with open(f"{local_dir}/{topo_ori}.txt", 'r') as file:
             file_contents = file.read()
-        file_contents = file_contents.replace("10Gbps", f"{bw}Gbps")
-        file_contents = file_contents.replace("1000ns", f"{pd}ns")
+        file_contents = file_contents.replace("1Gbps", f"{bw}Gbps")
+        file_contents = file_contents.replace("5000ns", f"{pd}ns")
         with open(topo_path, 'w') as file:
             file.write(file_contents)
     if not os.path.exists(trace_track_path):
@@ -138,7 +138,8 @@ if __name__ == "__main__":
     pint_prob = args.pint_prob
 
     # fwin = args.fwin
-    base_rtt = args.base_rtt
+    # base_rtt = args.base_rtt
+    base_rtt=(1000+pd)*2
 
     failure = ''
     if args.down != '0 0 0':
@@ -317,8 +318,10 @@ if __name__ == "__main__":
 
     with open(config_name, "w") as file:
         file.write(config)
-    with open("%s/param_%s%s%s.txt"%(root, topo, failure, config_specs), "w") as file:
+    with open("%s/param%s%s.txt"%(root, failure, config_specs), "w") as file:
         file.write(" ".join(map(str, DEFAULT_PARAM_VEC)) + "\n")
         file.write("0 {} {} {} {} {} {} {} {} {} {} {}\n".format(bfsz, fwin, enable_pfc, cc, dctcp_k, dcqcn_k_min, dcqcn_k_max, u_tgt, hpai, timely_t_low, timely_t_high))
-    np.save("%s/param_%s%s%s.npy"%(root, topo, failure, config_specs), DEFAULT_PARAM_VEC)
+    with open("%s/cc_%s%s%s.txt"%(root, topo, failure, config_specs), "w") as file:
+        file.write("{}\n".format(cc))
+    # np.save("%s/param_%s%s%s.npy"%(root, topo, failure, config_specs), DEFAULT_PARAM_VEC)
     os.system("./waf --run 'scratch/third %s'"%(config_name))

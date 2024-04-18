@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py27/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_tc")]
+    #[clap(long, default_value = "/data2/lichenni/path_tc_cc")]
     output_dir: PathBuf,
 }
 
@@ -30,24 +30,24 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..2000).collect(),
-        n_flows: vec![20000],
-        n_hosts: vec![3, 5, 7],
-        shard_cc: (0..20).collect(),
-    };
+    // let params = Parameters {
+    //     shard: (0..100).collect(),
+    //     n_flows: vec![20000],
+    //     n_hosts: vec![3, 5, 7],
+    //     shard_cc: (0..100).collect(),
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![1,2],
-    //     n_flows: vec![1000],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..10).collect(),
-    // };
+    let params = Parameters {
+        shard: vec![1,2],
+        n_flows: vec![1000],
+        n_hosts: vec![3],
+        shard_cc: (0..10).collect(),
+    };
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs";
+    let log_dir = "./logs_cc";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
