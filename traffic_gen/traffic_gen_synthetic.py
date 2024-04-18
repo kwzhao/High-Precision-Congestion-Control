@@ -180,7 +180,7 @@ if __name__ == "__main__":
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
         if enable_const:
-            f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")
+            f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
         elif ia_distribution=="lognorm":
             avg_inter_arrival_in_s = 1/(bandwidth_list[load_bottleneck_link_id]*load_candidate/8./avg_in_byte)
             arr_sigma = ias_sigma_candidate
@@ -246,6 +246,15 @@ if __name__ == "__main__":
                 "size_sigma_candidate":size_sigma_candidate,
                 "ias_sigma_candidate":ias_sigma_candidate,
             }
+            np.save("%s/stats.npy"%(output_dir), stats)  # Byte
+        
+            flow_src_dst=np.array(flow_src_dst_save).astype("int32")
+            f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
+            f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
+            np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
+            np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
+            np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
+        
         else:
             end_time=float(t) / UNIT_G
             utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
@@ -256,11 +265,4 @@ if __name__ == "__main__":
                 "ratio": 1.0,
                 "n_flows_foreground":n_flows_foreground,
             }
-        np.save("%s/stats.npy"%(output_dir), stats)  # Byte
         
-        flow_src_dst=np.array(flow_src_dst_save).astype("int32")
-        f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
-        f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
-        np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
-        np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
-        np.save("%s/fsd.npy"%(output_dir), flow_src_dst)

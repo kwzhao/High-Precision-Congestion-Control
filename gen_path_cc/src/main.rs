@@ -16,7 +16,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_tc_cc")]
+    #[clap(long, default_value = "/data2/lichenni/path_tc_cc_s")]
     output_dir: PathBuf,
 }
 
@@ -30,31 +30,35 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 14400;
     let enable_tr = 1;
     let enable_debug = 0;
-    let constfsize=1000000000;
+    let constfsize=1000000;
     // setup the configurations
-    // let params = Parameters {
-    //     shard: (0..2000).collect(),
-    //     n_flows: vec![20000],
-    //     n_hosts: vec![3, 5, 7],
-    //     shard_cc: (0..20).collect(),
-    // };
+    let params = Parameters {
+        shard: (0..1).collect(),
+        // n_flows: vec![20000],
+        n_flows: (1..=9).step_by(2).collect(),
+        // n_hosts: vec![3, 5, 7],
+        n_hosts: vec![3],
+        shard_cc: (0..10000).collect(),
+        bandwidth: (1..=9).step_by(2).collect(),
+        prop_delay: (1000..=9000).step_by(2000).collect(),
+    };
 
     // config for debugging
-    let params = Parameters {
-        shard: vec![0],
-        n_flows: vec![1],
-        // n_flows: (1..=10).step_by(2).collect(),
-        n_hosts: vec![3],
-        shard_cc: vec![0],
-        bandwidth: vec![1],
-        // bandwidth: (10..=50).step_by(10).collect(),
-        prop_delay: vec![1000],
-        // prop_delay: (1000..=5000).step_by(1000).collect(),
-    };
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     // n_flows: vec![1],
+    //     n_flows: (1..=9).step_by(2).collect(),
+    //     n_hosts: vec![3],
+    //     shard_cc: vec![0],
+    //     // bandwidth: vec![1,5],
+    //     bandwidth: (1..=9).step_by(2).collect(),
+    //     // prop_delay: vec![1000,5000],
+    //     prop_delay: (1000..=9000).step_by(2000).collect(),
+    // };
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs_cc";
+    let log_dir = "./logs_cc_feat";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
@@ -63,8 +67,8 @@ fn main() -> anyhow::Result<()> {
 
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
     let file_sim = format!("{}/simulation/run_cc.py", root_path);
-    let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
-    let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
+    let file_ns3 = format!("{}/analysis/fct_to_file_cc.py", root_path);
+    // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
 
     // println!("{:?}", Parameters::field_names());
@@ -144,8 +148,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {} -b {} --pd {}",
-            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug,bandwidth,prop_delay
+            "--shard {} -p {}-{}-{}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {}",
+            shard, type_topo, n_hosts, bandwidth,prop_delay, output_dir, scenario_dir, shard_cc,enable_debug
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);
