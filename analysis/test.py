@@ -16,6 +16,7 @@ def parse_log_entry(line):
         port = int(queue_info[0])
         queue = int(queue_info[1])
         payload_size = int(parts[-1].split('(')[1].split(')')[0])
+        queue_len= int(parts[3])
         return {
             'timestamp': timestamp,
             'node': node,
@@ -23,17 +24,18 @@ def parse_log_entry(line):
             'queue': queue,
             'payload_size': payload_size,
             'event_type': event_type,
-            'data_pkt': data_pkt
+            'data_pkt': data_pkt,
+            'queue_len': queue_len
         }
 
 def calculate_throughput_and_delay(log_file):
     start_time=None
     end_time=None
     enqu_timestamps = deque()
-    packet_count = 0
     total_payload = 0
-    total_queuing_delay = 0
-    
+    queuing_delay_list = []
+    queue_len_max=0
+    queue_len_min=1000000
     with open(log_file, 'r') as file:
         for line in file:
             entry = parse_log_entry(line)
@@ -44,28 +46,28 @@ def calculate_throughput_and_delay(log_file):
                 end_time = entry['timestamp']
                 if entry['event_type'] == 'Enqu':
                     enqu_timestamps.append(entry['timestamp'])
+                    queue_len_max=max(queue_len_max,entry['queue_len'])
+                    queue_len_min=min(queue_len_min,entry['queue_len'])
                 elif entry['event_type'] == 'Dequ':
                     total_payload += entry['payload_size']
-                    packet_count += 1
                     if enqu_timestamps:
-                        total_queuing_delay += entry['timestamp'] - enqu_timestamps.popleft()
+                        queuing_delay_list.append(entry['timestamp'] - enqu_timestamps.popleft())
 
     total_time = end_time - start_time
-    throughput = total_payload*8 / total_time
-    average_queuing_delay = total_queuing_delay / packet_count if packet_count > 0 else 0
-
-    return throughput, average_queuing_delay
+    throughput = total_payload * 8 / total_time
+    average_queuing_delay = np.mean(queuing_delay_list)  if len(queuing_delay_list) > 0 else 0
+    return throughput, average_queuing_delay,queuing_delay_list
 
 shard=0
 nhosts=3
 
 shard_seed_list=[0]
-nflows_list=[1]
-bw_list=[1]
-pd_list=[1000]
-# nflows_list=np.arange(1,10,2)
-# bw_list=np.arange(10,60,10)
-# pd_list=np.arange(1000,6000,1000)
+# nflows_list=[1,50]
+# bw_list=[1,5,9]
+# pd_list=[1000,5000,9000]
+nflows_list=np.arange(1,10,2)
+bw_list=np.arange(1,10,2)
+pd_list=np.arange(1000,10000,2000)
 tr_list=[]
 
 for nflows in nflows_list:
@@ -74,19 +76,6 @@ for nflows in nflows_list:
         for bw in bw_list:
             for pd in pd_list:
                 tr_list.append(f"{data_dir}/mix_topo-pl-{nhosts}-{bw}-{pd}_s{shard_seed}.tr")
-# Calculate stats using a 1ms window
-window_size_ns = 20*1e6  # 1ms in nanoseconds
-
-flow_rate_top=10
-flow_rate_bottom=0
-queue_size_top=40
-queue_size_bottom=0
-ecn_mark_top = 1.0  # Maximum value for the y-axis
-ecn_mark_bottom = 0.0  # Minimum value for the y-axis
-pfc_top = 0.2  # Maximum value for the y-axis
-pfc_bottom = 0.0  # Minimum value for the y-axis
-drop_top = 1000  # Maximum value for the y-axis
-drop_bottom = 0.0  # Minimum value for the y-axis
 print(f"{len(tr_list)} tr files to be processed")
 for tr_path in tr_list:
     # Read and parse the log file
@@ -95,5 +84,5 @@ for tr_path in tr_list:
     if not os.path.exists(log_path):
         os.system(f"./trace_reader {tr_path} > {log_path}")
         
-    throughput, queuing_delay = calculate_throughput_and_delay(log_path)
-    print(f"{log_path}. Throughput: {throughput}Gbps, Queuing Delay: {queuing_delay}s")
+    throughput, queuing_delay,queuing_delay_list = calculate_throughput_and_delay(log_path)
+    print(f"{log_path}. Throughput: {throughput}Gbps, Queuing Delay: {queuing_delay}ns")
