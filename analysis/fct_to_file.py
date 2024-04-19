@@ -95,10 +95,11 @@ if __name__ == "__main__":
     #     output = subprocess.check_output(cmd, shell=True)
 
     # up to here, `output` should be a string of multiple lines, each line is: fct, size
-    a = output.split("\n")[:-1]
+    
+    output=output.decode()
+    a = output[:-1].split("\n")
     n = len(a)
-    res_np = np.array(map(lambda x: x.split(), a))
-
+    res_np = np.array([x.split() for x in a])
     print(res_np.shape)
     # for i in range(n):
     # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
