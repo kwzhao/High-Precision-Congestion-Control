@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py27/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/test")]
+    #[clap(long, default_value = "/data2/lichenni/path_tc")]
     output_dir: PathBuf,
 }
 
@@ -31,18 +31,18 @@ fn main() -> anyhow::Result<()> {
 
     // setup the configurations
     let params = Parameters {
-        shard: (0..1000).collect(),
+        shard: (0..2000).collect(),
         n_flows: vec![20000],
         n_hosts: vec![3, 5, 7],
-        shard_cc: (0..100).collect(),
+        shard_cc: (0..20).collect(),
     };
 
     // config for debugging
     // let params = Parameters {
-    //     shard: vec![0],
+    //     shard: vec![1,2],
     //     n_flows: vec![1000],
     //     n_hosts: vec![3],
-    //     shard_cc: vec![0],
+    //     shard_cc: (0..10).collect(),
     // };
 
     // no need to change
@@ -104,6 +104,7 @@ fn main() -> anyhow::Result<()> {
         let n_flows = combination.1;
         let n_hosts = combination.2;
         let shard_cc = combination.3;
+        let shard_total = shard * params.shard_cc.len() as u32 + shard_cc;
 
         println!("{:?}", combination);
         let scenario_dir = format!(
@@ -114,7 +115,7 @@ fn main() -> anyhow::Result<()> {
         // ns3 sim
         let mut command_args = format!(
             "--trace flows --bw 10 --base_rtt {} \
-            --topo {}-{}  --root {}/{} --shard_cc {} --enable_tr {} --enable_debug {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr, enable_debug,
+            --topo {}-{}  --root {}/{} --shard_cc {} --shard_total {} --enable_tr {} --enable_debug {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, shard_total, enable_tr, enable_debug,
         );
         let mut log_path = format!("{}/nhosts{}_sim.log", log_dir, n_hosts,);
         let mut py_command = format!("{} {} {}", python_path, file_sim, command_args,);

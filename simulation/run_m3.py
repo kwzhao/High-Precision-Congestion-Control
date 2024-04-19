@@ -86,7 +86,8 @@ BASE_RTT {base_rtt}
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='run simulation')
 	# parser.add_argument('--cc', dest='cc', action='store', default='hp', help="hp/dcqcn/timely/dctcp/hpccPint")
-	parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random seed")
+	parser.add_argument("--shard_total", dest = "shard_total",type=int, default=0, help="random shard_total")
+	parser.add_argument("--shard_cc", dest = "shard_cc",type=int, default=0, help="random shard_cc seed")
 	parser.add_argument('--trace', dest='trace', action='store', default='flow', help="the name of the flow file")
 	parser.add_argument('--bw', dest="bw", action='store', default='50', help="the NIC bandwidth")
 	parser.add_argument('--down', dest='down', action='store', default='0 0 0', help="link down event")
@@ -102,7 +103,7 @@ if __name__ == "__main__":
 	parser.add_argument('--base_rtt', dest='base_rtt', action='store', type=int, default=8000, help="the base RTT")
 	args = parser.parse_args()
 	seed=int(args.shard_cc)
-	fix_seed(seed)
+	fix_seed(int(args.shard_total))
 
 	enable_debug=args.enable_debug
 	enable_tr = args.enable_tr
@@ -146,6 +147,7 @@ if __name__ == "__main__":
 	u_tgt=args.utgt/100.
  
 	cc=np.random.choice(CC_LIST,1)[0]
+	# cc=CC_LIST[2]
 	
 	cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
 	DEFAULT_PARAM_VEC[cc_idx]=1.0
