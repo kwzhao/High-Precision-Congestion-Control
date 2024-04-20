@@ -118,7 +118,7 @@ if __name__ == "__main__":
     #bfsz = 16 if bw==50 else 32
     # bfsz = int(16 * bw / 50)
     
-    topo_path=f"{local_dir}/{topo}.txt"
+    topo_path=f"{local_dir}/{topo}_cc.txt"
     trace_track_path=f"{local_dir}/{trace_track}.txt"
     if not os.path.exists(topo_path):
         with open(f"{local_dir}/{topo_ori}.txt", 'r') as file:

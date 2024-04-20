@@ -58,7 +58,7 @@ fn main() -> anyhow::Result<()> {
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs_cc_feat";
+    let log_dir = "./logs_ccfeat";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
