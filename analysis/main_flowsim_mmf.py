@@ -28,7 +28,7 @@ def make_array(ctype, arr):
     return (ctype * len(arr))(*arr)
 
 
-C_LIB_PATH = "../../../../clibs/get_fct_mmf.so"
+C_LIB_PATH = "../../clibs/get_fct_mmf.so"
 
 C_LIB = CDLL(C_LIB_PATH)
 C_LIB.get_fct_mmf = C_LIB.get_fct_mmf
