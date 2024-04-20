@@ -194,7 +194,6 @@ if __name__ == "__main__":
         flow_id_total=0
         t=base_t
         host_pair_list_idx=np.arange(len(host_pair_list))
-		
         p_candidate_list=[ntc, 10, 20, 50, 100]
         p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         p_list=np.random.rand(ntc)*p_candidate/ntc
