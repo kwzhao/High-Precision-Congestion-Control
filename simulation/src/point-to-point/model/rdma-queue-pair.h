@@ -80,6 +80,19 @@ public:
 		DataRate m_curRate;
 		uint32_t m_incStage;
 	}hpccPint;
+	struct {
+        uint32_t m_cwnd;  // Congestion window size in bytes
+        uint32_t m_ssthresh;  // Slow start threshold
+        bool m_inRecovery;  // Flag for recovery state
+        uint64_t m_recoveryPoint;  // Recovery point for Reno
+        uint64_t m_lastAckSeq;  // Last acknowledged sequence number
+		uint32_t m_duplicateAcks;       // Count of consecutive duplicate acknowledgments (specific to TCP Reno)
+
+        // Cubic specific fields
+        double m_cubicC;  // Cubic coefficient C
+        double m_cubicK;  // Cubic time period K
+        Time m_lastCongestionEventTime;  // Last time congestion was detected
+    } tcpControl;
 
 	/***********
 	 * methods

@@ -153,6 +153,15 @@ public:
 	void SetPintSmplThresh(double p);
 	void HandleAckHpPint(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch);
 	void UpdateRateHpPint(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch, bool fast_react);
+
+	/*********************
+	 * Other CCs
+	 ********************/
+	void HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack);
+    void HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack);
+private:
+	double CubicWindowUpdate(Time t, uint32_t cwnd, double C, double K);
+
 };
 
 } /* namespace ns3 */

@@ -451,6 +451,12 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 	}else if (m_cc_mode == 10){
 		HandleAckHpPint(qp, p, ch);
 	}
+	else if (m_cc_mode == 11) {
+        HandleAckReno(qp, seq);
+    } else if (m_cc_mode == 12) {
+        HandleAckCubic(qp, seq);
+    }
+
 	// ACK may advance the on-the-fly window, allowing more packets to send
 	dev->TriggerTransmit();
 	return 0;
@@ -1143,6 +1149,93 @@ void RdmaHw::UpdateRateHpPint(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader
                                qp->hpccPint.m_lastUpdateSeq = next_seq; //+ rand() % 2 * m_mtu;
                }
        }
+}
+/**********************
+ * RENO
+ *********************/
+
+// Handle acknowledgment reception for TCP Reno
+void RdmaHw::HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack) {
+    uint64_t MSS = 1000;  // Example MSS in bytes
+
+    // Increment the count of duplicate acks or reset if ack is new
+    if (ack == qp->tcpControl.m_lastAckSeq) {
+        qp->tcpControl.m_duplicateAcks++;
+    } else if (ack > qp->tcpControl.m_lastAckSeq) {
+        qp->tcpControl.m_duplicateAcks = 0;
+        qp->tcpControl.m_lastAckSeq = ack;
+    }
+
+    // Packet loss detection using the "three duplicate ACKs" rule
+    if (qp->tcpControl.m_duplicateAcks >= 3) {
+        qp->tcpControl.m_ssthresh = std::max(qp->tcpControl.m_cwnd / 2, 2 * MSS);  // Reduce ssthresh
+        qp->tcpControl.m_cwnd = qp->tcpControl.m_ssthresh;  // Reset cwnd to ssthresh, start recovery
+        qp->tcpControl.m_inRecovery = true;
+        qp->tcpControl.m_recoveryPoint = qp->snd_nxt;  // Assume snd_nxt is the next sequence number to send
+    }
+
+    // Handling congestion avoidance and slow start
+    if (qp->tcpControl.m_inRecovery) {
+        if (ack >= qp->tcpControl.m_recoveryPoint) {
+            qp->tcpControl.m_inRecovery = false;
+            qp->tcpControl.m_cwnd = qp->tcpControl.m_ssthresh;  // Exit fast recovery
+        } else {
+            qp->tcpControl.m_cwnd += MSS;  // Inflate window for each duplicate ACK in fast recovery
+        }
+    } else {
+        if (qp->tcpControl.m_cwnd < qp->tcpControl.m_ssthresh) {
+            qp->tcpControl.m_cwnd += MSS;  // Slow start
+        } else {
+            qp->tcpControl.m_cwnd += MSS * MSS / qp->tcpControl.m_cwnd;  // Congestion avoidance
+        }
+    }
+}
+
+
+/**********************
+ * CUBIC
+ *********************/
+
+void RdmaHw::HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack) {
+    uint64_t MSS = 1000;  // Example MSS in bytes
+
+    // Increment the count of duplicate acks or reset if ack is new
+    if (ack == qp->tcpControl.m_lastAckSeq) {
+        qp->tcpControl.m_duplicateAcks++;
+    } else if (ack > qp->tcpControl.m_lastAckSeq) {
+        qp->tcpControl.m_duplicateAcks = 0;
+        qp->tcpControl.m_lastAckSeq = ack;
+    }
+
+    // Packet loss detection using the "three duplicate ACKs" rule
+    if (qp->tcpControl.m_duplicateAcks >= 3) {
+        // Start a new congestion event
+        qp->tcpControl.m_ssthresh = std::max(qp->tcpControl.m_cwnd / 2, 2 * MSS);  // Reduce ssthresh
+        qp->tcpControl.m_cwnd = qp->tcpControl.m_ssthresh;  // Reset cwnd to ssthresh, start recovery
+        qp->tcpControl.m_inRecovery = true;
+        qp->tcpControl.m_recoveryPoint = qp->snd_nxt;  // Assume snd_nxt is the next sequence number to send
+        qp->tcpControl.m_lastCongestionEventTime = Simulator::Now();  // Reset the time of last congestion event
+        qp->tcpControl.m_cubicK = std::cbrt(qp->tcpControl.m_cwnd * MSS / qp->tcpControl.m_cubicC);  // Recalculate K
+    }
+
+    if (qp->tcpControl.m_inRecovery) {
+        if (ack >= qp->tcpControl.m_recoveryPoint) {
+            qp->tcpControl.m_inRecovery = false;
+            qp->tcpControl.m_cwnd = qp->tcpControl.m_ssthresh;  // Exit fast recovery
+        } else {
+            qp->tcpControl.m_cwnd += MSS;  // Inflate window for each duplicate ACK in fast recovery
+        }
+    } else {
+        // Calculate the time since the last congestion event
+        Time t = Simulator::Now() - qp->tcpControl.m_lastCongestionEventTime;
+        double w_cubic = CubicWindowUpdate(t, qp->tcpControl.m_cwnd, qp->tcpControl.m_cubicC, qp->tcpControl.m_cubicK);
+        qp->tcpControl.m_cwnd = std::max(w_cubic, static_cast<double>(qp->tcpControl.m_cwnd));
+    }
+}
+
+double RdmaHw::CubicWindowUpdate(Time t, uint32_t cwnd, double C, double K) {
+    double t_sec = t.GetSeconds();
+    return cwnd + C * pow(t_sec - K, 3);
 }
 
 }
