@@ -13691,3 +13691,1639 @@
 
 /data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 273 --enable_debug 0
 /data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 273 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 273 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 273 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 274 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 275 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 276 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 277 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 278 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 280 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 279 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 281 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 282 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 283 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 284 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 285 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 287 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 286 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 288 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 289 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 290 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 291 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 292 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 293 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 294 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 295 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 296 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 297 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 299 --enable_debug 0
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 300 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 298 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 303 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 302 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 301 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 304 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-7-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-7000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-5000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 307 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 305 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-3-1000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 308 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-9-3000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 307 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-5-9000 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows1_nhosts3 --shard_cc 306 --enable_debug 0
+
