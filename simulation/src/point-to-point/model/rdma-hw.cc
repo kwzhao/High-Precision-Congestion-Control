@@ -263,6 +263,7 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 	}else if (m_cc_mode == 10){
 		qp->hpccPint.m_curRate = m_bps;
 	}
+	qp->tcpControl.m_cwnd=win;
 
 	// Notify Nic
 	m_nic[nic_idx].dev->NewQp(qp);
@@ -452,8 +453,10 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 		HandleAckHpPint(qp, p, ch);
 	}
 	else if (m_cc_mode == 11) {
+		// printf("node:%u handle ack reno\n", m_node->GetId());
         HandleAckReno(qp, seq);
     } else if (m_cc_mode == 12) {
+		// printf("node:%u handle ack cubic\n", m_node->GetId());
         HandleAckCubic(qp, seq);
     }
 
@@ -1157,7 +1160,7 @@ void RdmaHw::UpdateRateHpPint(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader
 
 // Handle acknowledgment reception for TCP Reno
 void RdmaHw::HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack) {
-    uint64_t MSS = 1000;  // Example MSS in bytes
+    uint32_t MSS = 1000;  // Example MSS in bytes
 
     // Increment the count of duplicate acks or reset if ack is new
     if (ack == qp->tcpControl.m_lastAckSeq) {
@@ -1198,7 +1201,7 @@ void RdmaHw::HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack) {
  *********************/
 
 void RdmaHw::HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack) {
-    uint64_t MSS = 1000;  // Example MSS in bytes
+    uint32_t MSS = 1000;  // Example MSS in bytes
 
     // Increment the count of duplicate acks or reset if ack is new
     if (ack == qp->tcpControl.m_lastAckSeq) {

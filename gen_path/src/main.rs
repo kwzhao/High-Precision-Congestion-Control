@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_tc_cc")]
+    #[clap(long, default_value = "/data2/lichenni/path_tc_cc_test")]
     output_dir: PathBuf,
 }
 
@@ -30,21 +30,21 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..1).collect(),
-        n_flows: vec![20000],
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![3],
-        shard_cc: (0..8000).collect(),
-    };
+    // let params = Parameters {
+    //     shard: (0..1).collect(),
+    //     n_flows: vec![20000],
+    //     // n_hosts: vec![3, 5, 7],
+    //     n_hosts: vec![3],
+    //     shard_cc: (0..8000).collect(),
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![0],
-    //     n_flows: vec![20000],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..2).collect(),
-    // };
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![20000],
+        n_hosts: vec![3],
+        shard_cc: (0..1).collect(),
+    };
 
     // no need to change
     let root_path = format!("..");
