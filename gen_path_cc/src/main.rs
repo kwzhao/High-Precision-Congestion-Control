@@ -38,7 +38,7 @@ fn main() -> anyhow::Result<()> {
         n_flows: (1..=9).step_by(2).collect(),
         // n_hosts: vec![3, 5, 7],
         n_hosts: vec![3],
-        shard_cc: (0..8000).collect(),
+        shard_cc: (0..12000).collect(),
         bandwidth: (1..=9).step_by(2).collect(),
         prop_delay: (1000..=9000).step_by(2000).collect(),
     };
@@ -58,7 +58,7 @@ fn main() -> anyhow::Result<()> {
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs_ccfeat";
+    let log_dir = "./logs_cc";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
