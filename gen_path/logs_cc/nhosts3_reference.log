@@ -1,0 +1,4 @@
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/main_flowsim_mmf.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --nhost 3
+c_sim:0.106251
+estimated_fcts:31771.283935
+

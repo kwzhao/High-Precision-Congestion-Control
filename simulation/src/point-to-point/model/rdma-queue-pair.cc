@@ -66,6 +66,16 @@ RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, ui
 
 	hpccPint.m_lastUpdateSeq = 0;
 	hpccPint.m_incStage = 0;
+
+	tcpControl.m_cwnd = 1000 * 10;  // Start with an initial cwnd of 10 MSS
+    tcpControl.m_ssthresh = UINT32_MAX;  // Initial slow start threshold
+    tcpControl.m_inRecovery = false;
+    tcpControl.m_recoveryPoint = 0;
+    tcpControl.m_lastAckSeq = 0;
+    tcpControl.m_duplicateAcks = 0;
+    tcpControl.m_cubicC = 0.4;  // Standard Cubic coefficient
+    tcpControl.m_cubicK = 0;  // To be calculated when needed
+    tcpControl.m_lastCongestionEventTime = Simulator::Now();
 }
 
 void RdmaQueuePair::SetSize(uint64_t size){
