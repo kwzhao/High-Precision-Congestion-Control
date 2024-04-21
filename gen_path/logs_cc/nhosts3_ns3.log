@@ -1532,3 +1532,437 @@
 (60000, 7)
 
 /data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 549 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 497 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 517 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 510 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 559 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 623 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 553 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 534 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 521 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 520 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 493 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 516 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 479 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 531 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 556 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 564 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 560 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 532 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 536 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 651 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 523 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 590 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 529 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 518 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 551 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 519 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 546 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 704 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 550 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 709 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 648 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 537 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 524 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 562 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 522 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 540 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 544 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 538 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 535 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 528 --enable_debug 0
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+
+
+(60000, 7)
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 539 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 655 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 541 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 530 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 580 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 558 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 557 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 607 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 589 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 602 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 533 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 638 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 570 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 555 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 572 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 566 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 587 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 598 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 547 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 585 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 573 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 578 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 620 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 634 --enable_debug 0
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 593 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 568 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 606 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 612 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 563 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 565 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 609 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 508 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 595 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 576 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 567 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+
+(60000, 7)
+
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 654 --enable_debug 0
+
+(60000, 7)
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 642 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 631 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 586 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 583 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 600 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 604 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 601 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 592 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 584 --enable_debug 0
+(60000, 7)
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 672 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 630 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 692 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 633 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 617 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 657 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 579 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 614 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 625 --enable_debug 0
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 591 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 636 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 561 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 574 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 637 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 660 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 608 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 644 --enable_debug 0
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 640 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 646 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 613 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 684 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 594 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 603 --enable_debug 0
+(60000, 7)
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 663 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 643 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 616 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 575 --enable_debug 0
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 624 --enable_debug 0
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 717 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 635 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 714 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 619 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 621 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 627 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 668 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 687 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 649 --enable_debug 0
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 645 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 647 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 588 --enable_debug 0
+(60000, 7)
+
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 650 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 661 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 615 --enable_debug 0
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 659 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 571 --enable_debug 0
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 670 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 694 --enable_debug 0
+(60000, 7)
+(60000, 7)
+
+
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 662 --enable_debug 0
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 667 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 581 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 656 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 605 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+(60000, 7)
+(60000, 7)
+
+
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 628 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 685 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 682 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 677 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 673 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 526 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 695 --enable_debug 0
+(60000, 7)
+
+(60000, 7)
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 622 --enable_debug 0
+(60000, 7)
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 679 --enable_debug 0
+(60000, 7)
+
+
+(60000, 7)
+
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 701 --enable_debug 0
+/data1/lichenni/software/anaconda3/envs/py39/bin/python ../analysis/fct_to_file.py --shard 0 -b 10 -p topo-pl-3 --output_dir /data2/lichenni/path_tc_cc6 --scenario_dir shard0_nflows20000_nhosts3_lr10Gbps --shard_cc 653 --enable_debug 0
+(60000, 7)
