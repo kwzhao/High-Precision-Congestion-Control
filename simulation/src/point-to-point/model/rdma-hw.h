@@ -159,9 +159,6 @@ public:
 	 ********************/
 	void HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack);
     void HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack);
-private:
-	double CubicWindowUpdate(Time t, uint32_t cwnd, double C, double K);
-
 };
 
 } /* namespace ns3 */
