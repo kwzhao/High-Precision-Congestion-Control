@@ -10,11 +10,11 @@ fwin=[10, 30,1000]
 enable_pfc=[1,1]
 # cc
 CC_IDX_BASE=4
-CC_LIST=["dctcp", "dcqcn_paper_vwin", "hp","timely_vwin"]
+CC_LIST=["dctcp", "dcqcn_paper_vwin", "hp","timely_vwin", "reno","cubic"]
 # CC_LIST=["dctcp"]
 
 # cc params
-CC_PARAM_IDX_BASE=CC_IDX_BASE+4
+CC_PARAM_IDX_BASE=CC_IDX_BASE+len(CC_LIST)
 dctcp_k=[10,60,1]
 # dctcp_k=[30,30,1]
 dcqcn_k_min=[10, 40,1]
@@ -32,6 +32,8 @@ PARAM_LIST=[
     bfsz,
     fwin,
     enable_pfc,
+    None,
+    None,
     None,
     None,
     None,
