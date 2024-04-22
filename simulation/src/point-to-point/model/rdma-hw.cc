@@ -1095,7 +1095,7 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 	// additive inc
 	if (qp->dctcp.m_caState == 0 && new_batch)
 		qp->m_rate = std::min(qp->m_max_rate, qp->m_rate + m_dctcp_rai);
-	printf("Rate: %lu\n", qp->m_rate.GetBitRate());
+	// printf("Rate: %lu\n", qp->m_rate.GetBitRate());
 }
 
 /*********************
@@ -1257,7 +1257,7 @@ void RdmaHw::HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack, CustomHeader &c
     // Update the transmission rate based on the new cwnd
     uint64_t rateBitsPerSecond = static_cast<uint64_t>((qp->tcpControl.m_cwnd * 8) / (static_cast<double>(qp->m_baseRtt) / 1000000000.0));
     qp->m_rate = DataRate(std::min(rateBitsPerSecond, static_cast<uint64_t>(qp->m_max_rate.GetBitRate())));
-	printf("Rate: %lu\n", qp->m_rate.GetBitRate());
+	// printf("Rate: %lu\n", qp->m_rate.GetBitRate());
 }
 
 double RdmaHw::CubicWindow(double timeSinceLastDrop, double w_max) {
