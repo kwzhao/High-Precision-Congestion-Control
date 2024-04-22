@@ -11,7 +11,7 @@ enable_pfc=[1,1]
 # cc
 CC_IDX_BASE=4
 CC_LIST=["dctcp", "dcqcn_paper_vwin", "hp","timely_vwin", "reno","cubic"]
-# CC_LIST=["dctcp"]
+# CC_LIST=["cubic"]
 
 # cc params
 CC_PARAM_IDX_BASE=CC_IDX_BASE+len(CC_LIST)

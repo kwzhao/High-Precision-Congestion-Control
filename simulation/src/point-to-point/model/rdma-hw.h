@@ -157,8 +157,9 @@ public:
 	/*********************
 	 * Other CCs
 	 ********************/
-	void HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack);
-    void HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack);
+	void HandleAckReno(Ptr<RdmaQueuePair> qp, uint64_t ack, CustomHeader &ch);
+    void HandleAckCubic(Ptr<RdmaQueuePair> qp, uint64_t ack, CustomHeader &ch);
+    double CubicWindow(double time, double w_max);
 };
 
 } /* namespace ns3 */

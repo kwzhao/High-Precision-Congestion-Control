@@ -204,6 +204,7 @@ log/
 log_demo/
 log_10m/
 log_bk/
+logs_cc/
 deprecated/
 arash/
 figs_bk
@@ -212,4 +213,3 @@ log_0828
 deprecated
 data_test
 run.sh
-logs_cc/

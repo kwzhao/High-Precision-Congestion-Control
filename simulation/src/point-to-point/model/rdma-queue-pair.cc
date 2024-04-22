@@ -76,6 +76,9 @@ RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, ui
     tcpControl.m_cubicC = 0.4;  // Standard Cubic coefficient
     tcpControl.m_cubicK = 0;  // To be calculated when needed
     tcpControl.m_lastCongestionEventTime = Simulator::Now();
+	tcpControl.m_lastMaxCwnd = tcpControl.m_cwnd;
+	tcpControl.m_lastDropTime = Simulator::Now();
+	tcpControl.m_maxCwnd = tcpControl.m_cwnd;
 }
 
 void RdmaQueuePair::SetSize(uint64_t size){
