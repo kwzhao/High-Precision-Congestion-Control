@@ -92,6 +92,10 @@ public:
         double m_cubicC;  // Cubic coefficient C
         double m_cubicK;  // Cubic time period K
         Time m_lastCongestionEventTime;  // Last time congestion was detected
+		uint32_t m_lastMaxCwnd;          // Last maximum congestion window (used in Cubic)
+    	Time m_lastDropTime;             // Last time when a packet loss occurred (used in Cubic)
+		uint32_t m_maxCwnd;              // Maximum congestion window size
+
     } tcpControl;
 
 	/***********

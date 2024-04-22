@@ -1,7 +1,0 @@
-/data1/lichenni/software/anaconda3/envs/py39/bin/python ../traffic_gen/traffic_gen_synthetic.py --shard 0 -f 20000 -n 3 -b 10G -o /data2/lichenni/path_tc_cc6/shard0_nflows20000_nhosts3_lr10Gbps --switchtohost 4
-lr:  [10000000000.0, 10000000000.0] ntc:  3
-psi:  0.2592563722282207
-utilization:  0.25 0.25
-load_candidate: 0.5 0.25
-stats: 60000 0.2472057436366208 20076 pareto 30000.0 1.5 4.635977523
-
