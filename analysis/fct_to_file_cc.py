@@ -154,8 +154,8 @@ if __name__ == "__main__":
         % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
     )
     
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/pdrop_%s%s.txt" % (output_dir, args.prefix, config_specs))
-    # )
+    os.system(
+        "rm %s"
+        % ("%s/pdrop_%s%s.txt" % (output_dir, args.prefix, config_specs))
+    )
 
