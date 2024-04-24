@@ -2,11 +2,11 @@
 #include "ns3/packet.h"
 #include "ns3/ipv4-header.h"
 #include "ns3/pause-header.h"
-#include "ns3/flow-id-tag.h"
+#include "ns3/flow-id-tag-pmn.h"
 #include "ns3/boolean.h"
 #include "ns3/uinteger.h"
 #include "ns3/double.h"
-#include "switch-node.h"
+#include "switch-node-pmn.h"
 #include "qbb-net-device.h"
 #include "ppp-header.h"
 #include "ns3/int-header.h"
@@ -77,10 +77,12 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch) {
 	} buf;
 	buf.u32[0] = ch.sip;
 	buf.u32[1] = ch.dip;
-	if (ch.l3Prot == 0x6)
+	if (ch.l3Prot == 0x6) {
 		buf.u32[2] = ch.tcp.sport | ((uint32_t)ch.tcp.dport << 16);
-	else if (ch.l3Prot == 0x11)
+	}
+	else if (ch.l3Prot == 0x11) {
 		buf.u32[2] = ch.udp.sport | ((uint32_t)ch.udp.dport << 16);
+	}
 	else if (ch.l3Prot == 0xFC || ch.l3Prot == 0xFD)
 		buf.u32[2] = ch.ack.sport | ((uint32_t)ch.ack.dport << 16);
 	uint32_t idx = EcmpHash(buf.u8, 12, m_ecmpSeed) % nexthops.size();
@@ -89,7 +91,7 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch) {
 
 void SwitchNode::CheckAndSendPfc(uint32_t inDev, uint32_t qIndex) {
 	Ptr<QbbNetDevice> device = DynamicCast<QbbNetDevice>(m_devices[inDev]);
-	if (m_mmu->CheckShouldPause(inDev, qIndex)){
+	if (m_mmu->CheckShouldPause(inDev, qIndex)) {
 		device->SendPfc(qIndex, 0);
 		m_mmu->SetPause(inDev, qIndex);
 	}

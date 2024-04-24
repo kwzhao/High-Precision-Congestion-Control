@@ -61,6 +61,7 @@ public:
   void SetLocal (Ipv4Address ip, uint16_t port);
   void SetPG (uint16_t pg);
   void SetSize(uint64_t size);
+  void SetFlowId(uint32_t flowId);
   void Finish();
 
 protected:
@@ -69,7 +70,10 @@ protected:
 private:
 
   virtual void StartApplication (void);
+  virtual void StartApplicationPmn (void);
   virtual void StopApplication (void);
+
+  uint32_t m_flowId;
 
   uint64_t m_size;
   uint16_t m_pg;
