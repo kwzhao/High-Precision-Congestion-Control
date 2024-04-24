@@ -1,7 +1,7 @@
 #ifndef RDMA_HW_H
 #define RDMA_HW_H
 
-#include <ns3/rdma.h>
+// #include <ns3/rdma.h>
 #include <ns3/rdma-queue-pair.h>
 #include <ns3/node.h>
 #include <ns3/custom-header.h>

@@ -212,6 +212,11 @@ QbbNetDevice::GetTypeId(void)
 	                                  BooleanValue(false),
 	                                  MakeBooleanAccessor(&QbbNetDevice::m_qcnEnabled),
 	                                  MakeBooleanChecker())
+						.AddAttribute("DynamicThreshold",
+				"Enable dynamic threshold.",
+				BooleanValue(false),
+				MakeBooleanAccessor(&QbbNetDevice::m_dynamicth),
+				MakeBooleanChecker())
 	                    .AddAttribute("PauseTime",
 	                                  "Number of microseconds to pause upon congestion",
 	                                  UintegerValue(5),
@@ -272,35 +277,6 @@ QbbNetDevice::DoDispose()
 
 DataRate QbbNetDevice::GetDataRate() {
 	return m_bps;
-}
-
-bool
-QbbNetDevice::TransmitStart(Ptr<Packet> p)
-{
-	NS_LOG_FUNCTION(this << p);
-	NS_LOG_LOGIC("UID is " << p->GetUid() << ")");
-	//
-	// This function is called to start the process of transmitting a packet.
-	// We need to tell the channel that we've started wiggling the wire and
-	// schedule an event that will be executed when the transmission is complete.
-	//
-	NS_ASSERT_MSG(m_txMachineState == READY, "Must be READY to transmit");
-	m_txMachineState = BUSY;
-	m_currentPkt = p;
-	m_phyTxBeginTrace(m_currentPkt);
-
-	Time txTime = m_bps.CalculateBytesTxTime(p->GetSize());
-	Time txCompleteTime = txTime + m_tInterframeGap;
-
-	NS_LOG_LOGIC("Schedule TransmitCompleteEvent in " << txCompleteTime.GetSeconds() << "sec");
-	Simulator::Schedule(txCompleteTime, &QbbNetDevice::TransmitComplete, this);
-
-	bool result = m_channel->TransmitStart(p, this, txTime);
-	if (result == false)
-	{
-		m_phyTxDropTrace(p);
-	}
-	return result;
 }
 
 void
@@ -621,6 +597,35 @@ QbbNetDevice::Attach(Ptr<QbbChannel> ch)
 	m_channel->Attach(this);
 	NotifyLinkUp();
 	return true;
+}
+
+bool
+QbbNetDevice::TransmitStart(Ptr<Packet> p)
+{
+	NS_LOG_FUNCTION(this << p);
+	NS_LOG_LOGIC("UID is " << p->GetUid() << ")");
+	//
+	// This function is called to start the process of transmitting a packet.
+	// We need to tell the channel that we've started wiggling the wire and
+	// schedule an event that will be executed when the transmission is complete.
+	//
+	NS_ASSERT_MSG(m_txMachineState == READY, "Must be READY to transmit");
+	m_txMachineState = BUSY;
+	m_currentPkt = p;
+	m_phyTxBeginTrace(m_currentPkt);
+
+	Time txTime = m_bps.CalculateBytesTxTime(p->GetSize());
+	Time txCompleteTime = txTime + m_tInterframeGap;
+
+	NS_LOG_LOGIC("Schedule TransmitCompleteEvent in " << txCompleteTime.GetSeconds() << "sec");
+	Simulator::Schedule(txCompleteTime, &QbbNetDevice::TransmitComplete, this);
+
+	bool result = m_channel->TransmitStart(p, this, txTime);
+	if (result == false)
+	{
+		m_phyTxDropTrace(p);
+	}
+	return result;
 }
 
 Ptr<Channel>
