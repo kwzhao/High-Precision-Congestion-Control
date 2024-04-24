@@ -8,6 +8,8 @@
 #include "ns3/double.h"
 #include "ns3/data-rate.h"
 #include "ns3/pointer.h"
+#include "ns3/flow-size-tag-pmn.h"
+#include "ns3/flow-id-tag-path-pmn.h"
 #include "rdma-hw.h"
 #include "ppp-header.h"
 #include "qbb-header.h"
@@ -25,6 +27,11 @@ TypeId RdmaHw::GetTypeId (void)
 	                                  DataRateValue(DataRate("100Mb/s")),
 	                                  MakeDataRateAccessor(&RdmaHw::m_minRate),
 	                                  MakeDataRateChecker())
+						.AddAttribute("MaxRate",
+				"Maximum rate of a flow",
+				DataRateValue(DataRate("100000Mb/s")),
+				MakeDataRateAccessor(&RdmaHw::m_maxRate),
+				MakeDataRateChecker())
 	                    .AddAttribute("Mtu",
 	                                  "Mtu.",
 	                                  UintegerValue(1000),
@@ -204,6 +211,24 @@ void RdmaHw::Setup(QpCompleteCallback cb) {
 	// setup qp complete callback
 	m_qpCompleteCallback = cb;
 }
+void RdmaHw::SetupPmn(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered) {
+	for (uint32_t i = 0; i < m_nic.size(); i++) {
+		Ptr<QbbNetDevice> dev = m_nic[i].dev;
+		if (dev == NULL)
+			continue;
+		// share data with NIC
+		dev->m_rdmaEQ->m_qpGrp = m_nic[i].qpGrp;
+		// setup callback
+		dev->m_rdmaReceiveCb = MakeCallback(&RdmaHw::Receive, this);
+		dev->m_rdmaLinkDownCb = MakeCallback(&RdmaHw::SetLinkDown, this);
+		dev->m_rdmaPktSent = MakeCallback(&RdmaHw::PktSent, this);
+		// config NIC
+		dev->m_rdmaEQ->m_rdmaGetNxtPkt = MakeCallback(&RdmaHw::GetNxtPacket, this);
+	}
+	// setup qp complete and delivered callback
+	m_qpCompleteCallback = qpComplete;
+	m_qpDeliveredCallback = qpDelivered;
+}
 
 uint32_t RdmaHw::GetNicIdxOfQp(Ptr<RdmaQueuePair> qp) {
 	auto &v = m_rtTable[qp->dip.Get()];
@@ -276,6 +301,46 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	m_nic[nic_idx].dev->NewQp(qp);
 }
 
+void RdmaHw::AddQueuePairPmn(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish) {
+	// create qp
+	Ptr<RdmaQueuePair> qp = CreateObject<RdmaQueuePair>(pg, sip, dip, sport, dport);
+	qp->SetSize(size);
+	qp->SetWin(win);
+	qp->SetBaseRtt(baseRtt);
+	qp->SetVarWin(m_var_win);
+	qp->SetAppNotifyCallback(notifyAppFinish);
+	qp->SetFlowId(flowId);
+
+	// add qp
+	uint32_t nic_idx = GetNicIdxOfQp(qp);
+	m_nic[nic_idx].qpGrp->AddQp(qp);
+	uint64_t key = GetQpKey(dip.Get(), sport, pg);
+	m_qpMap[key] = qp;
+
+	// set init variables
+	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
+	// qp->m_rate = m_bps;
+	qp->m_rate = std::min(m_bps,m_maxRate);
+	// qp->m_max_rate = m_bps;
+	qp->m_max_rate = std::min(m_bps,m_maxRate);
+	if (m_cc_mode == 1) {
+		qp->mlx.m_targetRate = m_bps;
+	} else if (m_cc_mode == 3) {
+		qp->hp.m_curRate = m_bps;
+		if (m_multipleRate) {
+			for (uint32_t i = 0; i < IntHeader::maxHop; i++)
+				qp->hp.hopState[i].Rc = m_bps;
+		}
+	} else if (m_cc_mode == 7) {
+		qp->tmly.m_curRate = m_bps;
+	} else if (m_cc_mode == 10) {
+		qp->hpccPint.m_curRate = m_bps;
+	}
+
+	// Notify Nic
+	m_nic[nic_idx].dev->NewQp(qp);
+}
+
 void RdmaHw::DeleteQueuePair(Ptr<RdmaQueuePair> qp) {
 	// remove qp from the m_qpMap
 	uint64_t key = GetQpKey(qp->dip.Get(), qp->sport, qp->m_pg);
@@ -291,6 +356,7 @@ Ptr<RdmaRxQueuePair> RdmaHw::GetRxQp(uint32_t sip, uint32_t dip, uint16_t sport,
 		// create new rx qp
 		Ptr<RdmaRxQueuePair> q = CreateObject<RdmaRxQueuePair>();
 		// init the qp
+		q->pg = pg;
 		q->sip = sip;
 		q->dip = dip;
 		q->sport = sport;
@@ -357,6 +423,13 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch) {
 		uint32_t nic_idx = GetNicIdxOfRxQp(rxQp);
 		m_nic[nic_idx].dev->RdmaEnqueueHighPrioQ(newp);
 		m_nic[nic_idx].dev->TriggerTransmit();
+	}
+
+	FlowSizeTag tag;
+	p->FindFirstMatchingByteTag (tag);
+	if (rxQp->ReceiverNextExpectedSeq == tag.GetFlowSize()) {
+		NS_ASSERT(!m_qpDeliveredCallback.IsNull());
+		m_qpDeliveredCallback(rxQp);
 	}
 	return 0;
 }
@@ -606,10 +679,20 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp) {
 	ppp.SetProtocol (0x0021); // EtherToPpp(0x800), see point-to-point-net-device.cc
 	p->AddHeader (ppp);
 
+	// add flow size tag
+	p->AddByteTag(FlowSizeTag(qp->m_size));
+
 	// update state
 	qp->snd_nxt += payload_size;
 	qp->m_ipid++;
 
+	FlowIdTagPath tag;
+	// Tag the packet with the flow ID
+	if (!p->PeekPacketTag (tag))
+	{
+		tag.SetFlowId(qp->m_flowId);
+		p->AddPacketTag(tag);
+	}
 	// return
 	return p;
 }
@@ -621,7 +704,6 @@ void RdmaHw::PktSent(Ptr<RdmaQueuePair> qp, Ptr<Packet> pkt, Time interframeGap)
 	uint32_t seq = qp->snd_nxt;
 	qp->rates[qp->snd_nxt] = Simulator::Now().GetNanoSeconds();
 	UpdateNextAvail(qp, interframeGap, pkt->GetSize());
-
 }
 
 void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t pkt_size) {
@@ -888,7 +970,6 @@ void RdmaHw::UpdateRateHp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch
 						new_rate = qp->hp.m_curRate + m_rai;
 						new_incStage = qp->hp.m_incStage + 1;
 					}
-
 					if (new_rate < m_minRate)
 						new_rate = m_minRate;
 					if (new_rate > qp->m_max_rate)

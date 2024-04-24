@@ -10,7 +10,7 @@
 #include "ns3/boolean.h"
 #include "ns3/simulator.h"
 #include "ns3/random-variable.h"
-#include "switch-mmu.h"
+#include "switch-mmu-pmn.h"
 
 NS_LOG_COMPONENT_DEFINE("SwitchMmu");
 namespace ns3 {

@@ -89,6 +89,11 @@ RdmaClient::GetTypeId (void)
                    UintegerValue (0),
                    MakeUintegerAccessor (&RdmaClient::m_baseRtt),
                    MakeUintegerChecker<uint64_t> ())
+  .AddAttribute ("FlowId",
+                   "Flow ID",
+                   UintegerValue (0),
+                   MakeUintegerAccessor (&RdmaClient::m_flowId),
+                   MakeUintegerChecker<uint32_t> ())
 	.AddAttribute ("stopTime", "stopTime", TimeValue (Simulator::GetMaximumSimulationTime()),
 				                      MakeTimeAccessor (&RdmaClient::stopTime),
 				                      MakeTimeChecker ())
@@ -128,6 +133,10 @@ void RdmaClient::SetSize(uint64_t size){
 	m_size = size;
 }
 
+void RdmaClient::SetFlowId(uint32_t flowId) {
+  m_flowId = flowId;
+}
+
 void RdmaClient::Finish(){
 	m_node->DeleteApplication(this);
 }
@@ -136,6 +145,15 @@ void RdmaClient::DoDispose (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   Application::DoDispose ();
+}
+
+void RdmaClient::StartApplicationPmn (void)
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  // get RDMA driver and add up queue pair
+  Ptr<Node> node = GetNode();
+  Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
+  rdma->AddQueuePairPmn(m_flowId, m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
 }
 
 void RdmaClient::StartApplication (void)

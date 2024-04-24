@@ -1,4 +1,4 @@
-#include "flow-size-tag.h"
+#include "flow-size-tag-pmn.h"
 
 namespace ns3 {
 
