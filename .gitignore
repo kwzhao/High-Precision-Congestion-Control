@@ -214,3 +214,8 @@ deprecated
 data_test
 run.sh
 model_ns3_35/
+
+./build/
+./__pycache__/
+.lock*
+.waf*
