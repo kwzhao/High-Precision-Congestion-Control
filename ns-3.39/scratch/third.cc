@@ -750,15 +750,14 @@ int main(int argc, char *argv[])
 	}
 
 	max_rate_int = parse_rate(max_rate);
-	// printf("753\n");
-	// printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
-    //    fwin, buffer_size, enable_pfc, cc_mode,
-    //    rate2kmin[10000000000], rate2kmax[10000000000],
-    //    timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
-	// printf("758\n");
+	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
+       fwin, buffer_size, enable_pfc, cc_mode,
+       rate2kmin[10000000000], rate2kmax[10000000000],
+       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
+
 	Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));
 	Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
-	// Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
+	Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
 
 	// set int_multi
 	IntHop::multi = int_multi;
@@ -778,7 +777,6 @@ int main(int argc, char *argv[])
 		IntHeader::pint_bytes = Pint::get_n_bytes();
 		printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
 	}
-	printf("781");
 	topof.open(topology_file.c_str());
 	flowf.open(flow_file.c_str());
 	tracef.open(trace_file.c_str());
@@ -787,7 +785,6 @@ int main(int argc, char *argv[])
 	flowf >> flow_num;
 	tracef >> trace_num;
 
-	printf("790");
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
 	for (uint32_t i=0;i<switch_num;i++){
@@ -822,7 +819,6 @@ int main(int argc, char *argv[])
 	}
 
 	NS_LOG_INFO("Create channels.");
-	printf("825");
 	//
 	// Explicitly create the channels required by the topology.
 	//
@@ -903,7 +899,6 @@ int main(int argc, char *argv[])
 		DynamicCast<QbbNetDevice>(d.Get(0))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(0))));
 		DynamicCast<QbbNetDevice>(d.Get(1))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(1))));
 	}
-	printf("906");
 	nic_rate = get_nic_rate(n);
 
 	// config switch
@@ -941,7 +936,6 @@ int main(int argc, char *argv[])
 			sw->m_mmu->node_id = sw->GetId();
 		}
 	}
-	printf("944");
 	#if ENABLE_QP
 	FILE *fct_output = fopen(fct_output_file.c_str(), "w");
 	//
@@ -1010,7 +1004,6 @@ int main(int argc, char *argv[])
 	// setup routing
 	CalculateRoutes(n);
 	SetRoutingEntries();
-	printf("1013");
 	//
 	// get BDP and delay
 	//
@@ -1049,7 +1042,6 @@ int main(int argc, char *argv[])
 	//
 	// add trace
 	//
-	printf("1052");
 	NodeContainer trace_nodes;
 	for (uint32_t i = 0; i < trace_num; i++)
 	{
@@ -1104,7 +1096,6 @@ int main(int argc, char *argv[])
 
 	topof.close();
 	tracef.close();
-	printf("1107");
 	// schedule link down
 	if (link_down_time > 0){
 		Simulator::Schedule(Seconds(2) + MicroSeconds(link_down_time), &TakeDownLink, n, n.Get(link_down_A), n.Get(link_down_B));
@@ -1113,7 +1104,6 @@ int main(int argc, char *argv[])
 	// schedule buffer monitor
 	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
 	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
-	printf("1116");
 	//
 	// Now, do the actual simulation.
 	//
