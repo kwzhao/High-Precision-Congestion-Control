@@ -147,23 +147,23 @@ void RdmaClient::DoDispose (void)
   Application::DoDispose ();
 }
 
-void RdmaClient::StartApplicationPmn (void)
-{
-  NS_LOG_FUNCTION_NOARGS ();
-  // get RDMA driver and add up queue pair
-  Ptr<Node> node = GetNode();
-  Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
-  rdma->AddQueuePairPmn(m_flowId, m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
-}
-
 void RdmaClient::StartApplication (void)
 {
   NS_LOG_FUNCTION_NOARGS ();
   // get RDMA driver and add up queue pair
   Ptr<Node> node = GetNode();
   Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
-  rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this),stopTime);
+  rdma->AddQueuePair(m_flowId, m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
 }
+
+// void RdmaClient::StartApplication (void)
+// {
+//   NS_LOG_FUNCTION_NOARGS ();
+//   // get RDMA driver and add up queue pair
+//   Ptr<Node> node = GetNode();
+//   Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
+//   rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this),stopTime);
+// }
 
 void RdmaClient::StopApplication ()
 {

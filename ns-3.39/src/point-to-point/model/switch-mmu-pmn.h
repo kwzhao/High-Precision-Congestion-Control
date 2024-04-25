@@ -8,14 +8,14 @@ namespace ns3 {
 
 class Packet;
 
-class SwitchMmu: public Object {
+class SwitchMmuPmn: public Object {
 public:
 	static const uint32_t pCnt = 257;	// Number of ports used
 	static const uint32_t qCnt = 8;	// Number of queues/priorities used
 
 	static TypeId GetTypeId (void);
 
-	SwitchMmu(void);
+	SwitchMmuPmn(void);
 
 	bool CheckIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize);
 	bool CheckEgressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize);

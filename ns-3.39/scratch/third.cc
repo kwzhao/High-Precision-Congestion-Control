@@ -33,7 +33,7 @@
 #include <ns3/rdma-client.h>
 #include <ns3/rdma-client-helper.h>
 #include <ns3/rdma-driver.h>
-#include <ns3/switch-node.h>
+#include <ns3/switch-node-pmn.h>
 #include <ns3/sim-setting.h>
 
 using namespace ns3;
@@ -257,12 +257,12 @@ map<uint32_t, map<uint32_t, QlenDistribution> > queue_result;
 void monitor_buffer(FILE* qlen_output, NodeContainer *n){
 	for (uint32_t i = 0; i < n->GetN(); i++){
 		if (n->Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n->Get(i));
+			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n->Get(i));
 			if (queue_result.find(i) == queue_result.end())
 				queue_result[i];
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				uint32_t size = 0;
-				for (uint32_t k = 0; k < SwitchMmu::qCnt; k++)
+				for (uint32_t k = 0; k < SwitchMmuPmn::qCnt; k++)
 					size += sw->m_mmu->egress_bytes[j][k];
 				queue_result[i][j].add(size);
 			}
@@ -356,7 +356,7 @@ void SetRoutingEntries(){
 				Ptr<Node> next = nexts[k];
 				uint32_t interface = nbr2if[node][next].idx;
 				if (node->GetNodeType() == 1)
-					DynamicCast<SwitchNode>(node)->AddTableEntry(dstAddr, interface);
+					DynamicCast<SwitchNodePmn>(node)->AddTableEntry(dstAddr, interface);
 				else{
 					node->GetObject<RdmaDriver>()->m_rdma->AddTableEntry(dstAddr, interface);
 				}
@@ -376,7 +376,7 @@ void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b){
 	// clear routing tables
 	for (uint32_t i = 0; i < n.GetN(); i++){
 		if (n.Get(i)->GetNodeType() == 1)
-			DynamicCast<SwitchNode>(n.Get(i))->ClearTable();
+			DynamicCast<SwitchNodePmn>(n.Get(i))->ClearTable();
 		else
 			n.Get(i)->GetObject<RdmaDriver>()->m_rdma->ClearTable();
 	}
@@ -750,15 +750,15 @@ int main(int argc, char *argv[])
 	}
 
 	max_rate_int = parse_rate(max_rate);
-	
-	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
-       fwin, buffer_size, enable_pfc, cc_mode,
-       rate2kmin[10000000000], rate2kmax[10000000000],
-       timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
-
+	// printf("753\n");
+	// printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
+    //    fwin, buffer_size, enable_pfc, cc_mode,
+    //    rate2kmin[10000000000], rate2kmax[10000000000],
+    //    timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
+	// printf("758\n");
 	Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));
 	Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
-	Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
+	// Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
 
 	// set int_multi
 	IntHop::multi = int_multi;
@@ -778,7 +778,7 @@ int main(int argc, char *argv[])
 		IntHeader::pint_bytes = Pint::get_n_bytes();
 		printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
 	}
-
+	printf("781");
 	topof.open(topology_file.c_str());
 	flowf.open(flow_file.c_str());
 	tracef.open(trace_file.c_str());
@@ -787,7 +787,7 @@ int main(int argc, char *argv[])
 	flowf >> flow_num;
 	tracef >> trace_num;
 
-
+	printf("790");
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
 	for (uint32_t i=0;i<switch_num;i++){
@@ -799,7 +799,7 @@ int main(int argc, char *argv[])
 		if (node_type[i] == 0)
 			n.Add(CreateObject<Node>());
 		else{
-			Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
+			Ptr<SwitchNodePmn> sw = CreateObject<SwitchNodePmn>();
 			n.Add(sw);
 			sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
 		}
@@ -822,7 +822,7 @@ int main(int argc, char *argv[])
 	}
 
 	NS_LOG_INFO("Create channels.");
-
+	printf("825");
 	//
 	// Explicitly create the channels required by the topology.
 	//
@@ -903,13 +903,13 @@ int main(int argc, char *argv[])
 		DynamicCast<QbbNetDevice>(d.Get(0))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(0))));
 		DynamicCast<QbbNetDevice>(d.Get(1))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(1))));
 	}
-
+	printf("906");
 	nic_rate = get_nic_rate(n);
 
 	// config switch
 	for (uint32_t i = 0; i < node_num; i++) {
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
 			uint32_t shift = 3; // by default 1/8
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
@@ -941,7 +941,7 @@ int main(int argc, char *argv[])
 			sw->m_mmu->node_id = sw->GetId();
 		}
 	}
-
+	printf("944");
 	#if ENABLE_QP
 	FILE *fct_output = fopen(fct_output_file.c_str(), "w");
 	//
@@ -999,7 +999,7 @@ int main(int argc, char *argv[])
 		{
 			if (n.Get(i)->GetNodeType() == 1)
 			{ // switch
-				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+				Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
 				sw->SetAttribute("AckHighPrio", UintegerValue(1));
 			}
 		}
@@ -1010,7 +1010,7 @@ int main(int argc, char *argv[])
 	// setup routing
 	CalculateRoutes(n);
 	SetRoutingEntries();
-
+	printf("1013");
 	//
 	// get BDP and delay
 	//
@@ -1040,7 +1040,7 @@ int main(int argc, char *argv[])
 	//
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // switch
-			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
 			sw->SetAttribute("CcMode", UintegerValue(cc_mode));
 			sw->SetAttribute("MaxRtt", UintegerValue(baseRtt));
 		}
@@ -1049,7 +1049,7 @@ int main(int argc, char *argv[])
 	//
 	// add trace
 	//
-
+	printf("1052");
 	NodeContainer trace_nodes;
 	for (uint32_t i = 0; i < trace_num; i++)
 	{
@@ -1104,7 +1104,7 @@ int main(int argc, char *argv[])
 
 	topof.close();
 	tracef.close();
-
+	printf("1107");
 	// schedule link down
 	if (link_down_time > 0){
 		Simulator::Schedule(Seconds(2) + MicroSeconds(link_down_time), &TakeDownLink, n, n.Get(link_down_A), n.Get(link_down_B));
@@ -1113,7 +1113,7 @@ int main(int argc, char *argv[])
 	// schedule buffer monitor
 	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
 	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
-
+	printf("1116");
 	//
 	// Now, do the actual simulation.
 	//

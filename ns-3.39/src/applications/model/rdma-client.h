@@ -70,7 +70,6 @@ protected:
 private:
 
   virtual void StartApplication (void);
-  virtual void StartApplicationPmn (void);
   virtual void StopApplication (void);
 
   uint32_t m_flowId;

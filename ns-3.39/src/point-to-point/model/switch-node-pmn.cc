@@ -2,7 +2,7 @@
 #include "ns3/packet.h"
 #include "ns3/ipv4-header.h"
 #include "ns3/pause-header.h"
-#include "ns3/flow-id-tag-pmn.h"
+#include "ns3/flow-id-tag.h"
 #include "ns3/boolean.h"
 #include "ns3/uinteger.h"
 #include "ns3/double.h"
@@ -14,39 +14,39 @@
 
 namespace ns3 {
 
-TypeId SwitchNode::GetTypeId (void)
+TypeId SwitchNodePmn::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::SwitchNode")
+  static TypeId tid = TypeId ("ns3::SwitchNodePmn")
     .SetParent<Node> ()
-    .AddConstructor<SwitchNode> ()
+    .AddConstructor<SwitchNodePmn> ()
 	.AddAttribute("EcnEnabled",
 			"Enable ECN marking.",
 			BooleanValue(false),
-			MakeBooleanAccessor(&SwitchNode::m_ecnEnabled),
+			MakeBooleanAccessor(&SwitchNodePmn::m_ecnEnabled),
 			MakeBooleanChecker())
 	.AddAttribute("CcMode",
 			"CC mode.",
 			UintegerValue(0),
-			MakeUintegerAccessor(&SwitchNode::m_ccMode),
+			MakeUintegerAccessor(&SwitchNodePmn::m_ccMode),
 			MakeUintegerChecker<uint32_t>())
 	.AddAttribute("AckHighPrio",
 			"Set high priority for ACK/NACK or not",
 			UintegerValue(0),
-			MakeUintegerAccessor(&SwitchNode::m_ackHighPrio),
+			MakeUintegerAccessor(&SwitchNodePmn::m_ackHighPrio),
 			MakeUintegerChecker<uint32_t>())
 	.AddAttribute("MaxRtt",
 			"Max Rtt of the network",
 			UintegerValue(9000),
-			MakeUintegerAccessor(&SwitchNode::m_maxRtt),
+			MakeUintegerAccessor(&SwitchNodePmn::m_maxRtt),
 			MakeUintegerChecker<uint32_t>())
   ;
   return tid;
 }
 
-SwitchNode::SwitchNode(){
+SwitchNodePmn::SwitchNodePmn(){
 	m_ecmpSeed = m_id;
 	m_node_type = 1;
-	m_mmu = CreateObject<SwitchMmu>();
+	m_mmu = CreateObject<SwitchMmuPmn>();
 	for (uint32_t i = 0; i < pCnt; i++)
 		for (uint32_t j = 0; j < pCnt; j++)
 			for (uint32_t k = 0; k < qCnt; k++)
@@ -59,7 +59,7 @@ SwitchNode::SwitchNode(){
 		m_u[i] = 0;
 }
 
-int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch) {
+int SwitchNodePmn::GetOutDev(Ptr<const Packet> p, CustomHeader &ch) {
 	// look up entries
 	auto entry = m_rtTable.find(ch.dip);
 
@@ -89,14 +89,14 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch) {
 	return nexthops[idx];
 }
 
-void SwitchNode::CheckAndSendPfc(uint32_t inDev, uint32_t qIndex) {
+void SwitchNodePmn::CheckAndSendPfc(uint32_t inDev, uint32_t qIndex) {
 	Ptr<QbbNetDevice> device = DynamicCast<QbbNetDevice>(m_devices[inDev]);
 	if (m_mmu->CheckShouldPause(inDev, qIndex)) {
 		device->SendPfc(qIndex, 0);
 		m_mmu->SetPause(inDev, qIndex);
 	}
 }
-void SwitchNode::CheckAndSendResume(uint32_t inDev, uint32_t qIndex) {
+void SwitchNodePmn::CheckAndSendResume(uint32_t inDev, uint32_t qIndex) {
 	Ptr<QbbNetDevice> device = DynamicCast<QbbNetDevice>(m_devices[inDev]);
 	if (m_mmu->CheckShouldResume(inDev, qIndex)) {
 		device->SendPfc(qIndex, 1);
@@ -104,7 +104,7 @@ void SwitchNode::CheckAndSendResume(uint32_t inDev, uint32_t qIndex) {
 	}
 }
 
-void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch) {
+void SwitchNodePmn::SendToDev(Ptr<Packet>p, CustomHeader &ch) {
 	int idx = GetOutDev(p, ch);
 	if (idx >= 0) {
 		NS_ASSERT_MSG(m_devices[idx]->IsLinkUp(), "The routing table look up should return link that is up");
@@ -136,7 +136,7 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch) {
 		return; // Drop
 }
 
-uint32_t SwitchNode::EcmpHash(const uint8_t* key, size_t len, uint32_t seed) {
+uint32_t SwitchNodePmn::EcmpHash(const uint8_t* key, size_t len, uint32_t seed) {
   uint32_t h = seed;
   if (len > 3) {
     const uint32_t* key_x4 = (const uint32_t*) key;
@@ -174,26 +174,26 @@ uint32_t SwitchNode::EcmpHash(const uint8_t* key, size_t len, uint32_t seed) {
   return h;
 }
 
-void SwitchNode::SetEcmpSeed(uint32_t seed) {
+void SwitchNodePmn::SetEcmpSeed(uint32_t seed) {
 	m_ecmpSeed = seed;
 }
 
-void SwitchNode::AddTableEntry(Ipv4Address &dstAddr, uint32_t intf_idx) {
+void SwitchNodePmn::AddTableEntry(Ipv4Address &dstAddr, uint32_t intf_idx) {
 	uint32_t dip = dstAddr.Get();
 	m_rtTable[dip].push_back(intf_idx);
 }
 
-void SwitchNode::ClearTable() {
+void SwitchNodePmn::ClearTable() {
 	m_rtTable.clear();
 }
 
 // This function can only be called in switch mode
-bool SwitchNode::SwitchReceiveFromDevice(Ptr<NetDevice> device, Ptr<Packet> packet, CustomHeader &ch) {
+bool SwitchNodePmn::SwitchReceiveFromDevice(Ptr<NetDevice> device, Ptr<Packet> packet, CustomHeader &ch) {
 	SendToDev(packet, ch);
 	return true;
 }
 
-void SwitchNode::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p) {
+void SwitchNodePmn::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p) {
 	FlowIdTag t;
 	p->PeekPacketTag(t);
 	if (qIndex != 0) {
@@ -305,12 +305,12 @@ void SwitchNode::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Pack
 	m_lastPktTs[ifIndex] = Simulator::Now().GetTimeStep();
 }
 
-int SwitchNode::logres_shift(int b, int l) {
+int SwitchNodePmn::logres_shift(int b, int l) {
 	static int data[] = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
 	return l - data[b];
 }
 
-int SwitchNode::log2apprx(int x, int b, int m, int l) {
+int SwitchNodePmn::log2apprx(int x, int b, int m, int l) {
 	int x0 = x;
 	int msb = int(log2(x)) + 1;
 	if (msb > m) {
