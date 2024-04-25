@@ -104,13 +104,13 @@ uint64_t maxRtt, maxBdp;
 uint64_t fwin;
 uint64_t baseRtt;
 
-struct Interface{
+struct Interface {
 	uint32_t idx;
 	bool up;
 	uint64_t delay;
 	uint64_t bw;
 
-	Interface() : idx(0), up(false){}
+	Interface() : idx(0), up(false) {}
 };
 map<Ptr<Node>, map<Ptr<Node>, Interface> > nbr2if;
 // Mapping destination to next hop for each node: <node, <dest, <nexthop0, ...> > >
@@ -157,21 +157,22 @@ unsigned long parse_rate(std::string& max_rate){
 }
 
 struct FlowInput{
-	uint32_t flowId, src, dst, pg, maxPacketCount, port, dport;
+	uint32_t flowId
+	uint64_t src, dst, pg, maxPacketCount, port, dport;
 	double start_time;
 	uint32_t idx;
 };
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
-void ReadFlowInput(){
-	if (flow_input.idx < flow_num){
+void ReadFlowInput() {
+	if (flow_input.idx < flow_num) {
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
 	}
 }
-void ScheduleFlowInputs(){
-	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
+void ScheduleFlowInputs() {
+	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()) {
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
@@ -183,22 +184,22 @@ void ScheduleFlowInputs(){
 	}
 
 	// schedule the next time to run this function
-	if (flow_input.idx < flow_num){
-		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
-	}else { // no more flows, close the file
+	if (flow_input.idx < flow_num) {
+		Simulator::Schedule(Seconds(flow_input.start_time) - Simulator::Now(), ScheduleFlowInputs);
+	} else { // no more flows, close the file
 		flowf.close();
 	}
 }
 
-Ipv4Address node_id_to_ip(uint32_t id){
+Ipv4Address node_id_to_ip(uint32_t id) {
 	return Ipv4Address(0x0b000001 + ((id / 256) * 0x00010000) + ((id % 256) * 0x00000100));
 }
 
-uint32_t ip_to_node_id(Ipv4Address ip){
+uint32_t ip_to_node_id(Ipv4Address ip) {
 	return (ip.Get() >> 8) & 0xffff;
 }
 
-void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
+void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q) {
 	uint32_t sid = ip_to_node_id(q->sip), did = ip_to_node_id(q->dip);
 	Ptr<Node> dstNode = n.Get(did);
 	Ptr<RdmaDriver> rdma = dstNode->GetObject<RdmaDriver> ();
@@ -230,7 +231,7 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 	fflush(fout);
 }
 
-void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type){
+void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type) {
 	fprintf(fout, "%lu %u %u %u %u\n", Simulator::Now().GetTimeStep(), dev->GetNode()->GetId(), dev->GetNode()->GetNodeType(), dev->GetIfIndex(), type);
 }
 
@@ -284,7 +285,7 @@ void monitor_buffer(FILE* qlen_output, NodeContainer *n){
 		Simulator::Schedule(NanoSeconds(qlen_mon_interval), &monitor_buffer, qlen_output, n);
 }
 
-void CalculateRoute(Ptr<Node> host){
+void CalculateRoute(Ptr<Node> host) {
 	// queue for the BFS.
 	vector<Ptr<Node> > q;
 	// Distance from the host to each node.
@@ -298,16 +299,16 @@ void CalculateRoute(Ptr<Node> host){
 	delay[host] = 0;
 	bw[host] = 0xfffffffffffffffflu;
 	// BFS.
-	for (int i = 0; i < (int)q.size(); i++){
+	for (int i = 0; i < (int)q.size(); i++) {
 		Ptr<Node> now = q[i];
 		int d = dis[now];
-		for (auto it = nbr2if[now].begin(); it != nbr2if[now].end(); it++){
+		for (auto it = nbr2if[now].begin(); it != nbr2if[now].end(); it++) {
 			// skip down link
 			if (!it->second.up)
 				continue;
 			Ptr<Node> next = it->first;
 			// If 'next' have not been visited.
-			if (dis.find(next) == dis.end()){
+			if (dis.find(next) == dis.end()) {
 				dis[next] = d + 1;
 				delay[next] = delay[now] + it->second.delay;
 				bws[next] = bws[now];
@@ -319,7 +320,7 @@ void CalculateRoute(Ptr<Node> host){
 					q.push_back(next);
 			}
 			// if 'now' is on the shortest path from 'next' to 'host'.
-			if (d + 1 == dis[next]){
+			if (d + 1 == dis[next]) {
 				nextHop[next][host].push_back(now);
 			}
 		}
@@ -332,32 +333,32 @@ void CalculateRoute(Ptr<Node> host){
 		pairBws[it.first->GetId()][host->GetId()] = it.second;
 }
 
-void CalculateRoutes(NodeContainer &n){
-	for (int i = 0; i < (int)n.GetN(); i++){
+void CalculateRoutes(NodeContainer &n) {
+	for (int i = 0; i < (int)n.GetN(); i++) {
 		Ptr<Node> node = n.Get(i);
 		if (node->GetNodeType() == 0)
 			CalculateRoute(node);
 	}
 }
 
-void SetRoutingEntries(){
+void SetRoutingEntries() {
 	// For each node.
-	for (auto i = nextHop.begin(); i != nextHop.end(); i++){
+	for (auto i = nextHop.begin(); i != nextHop.end(); i++) {
 		Ptr<Node> node = i->first;
 		auto &table = i->second;
-		for (auto j = table.begin(); j != table.end(); j++){
+		for (auto j = table.begin(); j != table.end(); j++) {
 			// The destination node.
 			Ptr<Node> dst = j->first;
 			// The IP address of the dst.
 			Ipv4Address dstAddr = dst->GetObject<Ipv4>()->GetAddress(1, 0).GetLocal();
 			// The next hops towards the dst.
 			vector<Ptr<Node> > nexts = j->second;
-			for (int k = 0; k < (int)nexts.size(); k++){
+			for (int k = 0; k < (int)nexts.size(); k++) {
 				Ptr<Node> next = nexts[k];
 				uint32_t interface = nbr2if[node][next].idx;
 				if (node->GetNodeType() == 1)
 					DynamicCast<SwitchNodePmn>(node)->AddTableEntry(dstAddr, interface);
-				else{
+				else {
 					node->GetObject<RdmaDriver>()->m_rdma->AddTableEntry(dstAddr, interface);
 				}
 			}
@@ -366,7 +367,7 @@ void SetRoutingEntries(){
 }
 
 // take down the link between a and b, and redo the routing
-void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b){
+void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b) {
 	if (!nbr2if[a][b].up)
 		return;
 	// take down link between a and b
@@ -374,7 +375,7 @@ void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b){
 	nextHop.clear();
 	CalculateRoutes(n);
 	// clear routing tables
-	for (uint32_t i = 0; i < n.GetN(); i++){
+	for (uint32_t i = 0; i < n.GetN(); i++) {
 		if (n.Get(i)->GetNodeType() == 1)
 			DynamicCast<SwitchNodePmn>(n.Get(i))->ClearTable();
 		else
@@ -386,13 +387,13 @@ void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b){
 	SetRoutingEntries();
 
 	// redistribute qp on each host
-	for (uint32_t i = 0; i < n.GetN(); i++){
+	for (uint32_t i = 0; i < n.GetN(); i++) {
 		if (n.Get(i)->GetNodeType() == 0)
 			n.Get(i)->GetObject<RdmaDriver>()->m_rdma->RedistributeQp();
 	}
 }
 
-uint64_t get_nic_rate(NodeContainer &n){
+uint64_t get_nic_rate(NodeContainer &n) {
 	for (uint32_t i = 0; i < n.GetN(); i++)
 		if (n.Get(i)->GetNodeType() == 0)
 			return DynamicCast<QbbNetDevice>(n.Get(i)->GetDevice(1))->GetDataRate().GetBitRate();
@@ -706,32 +707,32 @@ int main(int argc, char *argv[])
 			}else if (key.compare("BUFFER_SIZE") == 0){
 				conf >> buffer_size;
 				std::cout << "BUFFER_SIZE\t\t\t\t" << buffer_size << '\n';
-			}else if (key.compare("QLEN_MON_FILE") == 0){
+			}else if (key.compare("QLEN_MON_FILE") == 0) {
 				conf >> qlen_mon_file;
 				std::cout << "QLEN_MON_FILE\t\t\t\t" << qlen_mon_file << '\n';
 			}else if (key.compare("QLEN_MON_START") == 0){
 				conf >> qlen_mon_start;
 				std::cout << "QLEN_MON_START\t\t\t\t" << qlen_mon_start << '\n';
-			}else if (key.compare("QLEN_MON_END") == 0){
+			}else if (key.compare("QLEN_MON_END") == 0) {
 				conf >> qlen_mon_end;
 				std::cout << "QLEN_MON_END\t\t\t\t" << qlen_mon_end << '\n';
-			}else if (key.compare("MULTI_RATE") == 0){
+			}else if (key.compare("MULTI_RATE") == 0) {
 				int v;
 				conf >> v;
 				multi_rate = v;
 				std::cout << "MULTI_RATE\t\t\t\t" << multi_rate << '\n';
-			}else if (key.compare("SAMPLE_FEEDBACK") == 0){
+			}else if (key.compare("SAMPLE_FEEDBACK") == 0) {
 				int v;
 				conf >> v;
 				sample_feedback = v;
 				std::cout << "SAMPLE_FEEDBACK\t\t\t\t" << sample_feedback << '\n';
-			}else if(key.compare("PINT_LOG_BASE") == 0){
+			}else if(key.compare("PINT_LOG_BASE") == 0) {
 				conf >> pint_log_base;
 				std::cout << "PINT_LOG_BASE\t\t\t\t" << pint_log_base << '\n';
-			}else if (key.compare("PINT_PROB") == 0){
+			}else if (key.compare("PINT_PROB") == 0) {
 				conf >> pint_prob;
 				std::cout << "PINT_PROB\t\t\t\t" << pint_prob << '\n';
-			}else if (key.compare("FIXED_WIN") == 0){
+			}else if (key.compare("FIXED_WIN") == 0) {
 				conf >> fwin;
 				std::cout << "FIXED_WIN\t\t\t\t" << fwin << '\n';
 			}else if (key.compare("BASE_RTT") == 0){
@@ -772,7 +773,7 @@ int main(int argc, char *argv[])
 		IntHeader::mode = IntHeader::NONE;
 
 	// Set Pint
-	if (cc_mode == 10){
+	if (cc_mode == 10) {
 		Pint::set_log_base(pint_log_base);
 		IntHeader::pint_bytes = Pint::get_n_bytes();
 		printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
@@ -781,18 +782,18 @@ int main(int argc, char *argv[])
 	flowf.open(flow_file.c_str());
 	tracef.open(trace_file.c_str());
 	uint32_t node_num, switch_num, link_num, trace_num;
-	topof >> node_num >> switch_num >> link_num;
+	topof >> node_num >> switch_num >> link_num ;
 	flowf >> flow_num;
 	tracef >> trace_num;
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
-	for (uint32_t i=0;i<switch_num;i++){
+	for (uint32_t i = 0; i < switch_num; i++) {
 		uint32_t sid;
 		topof >> sid;
-		node_type[sid]=1;
+		node_type[sid] = 1;
 	}
-	for (uint32_t i = 0; i < node_num; i++){
+	for (uint32_t i = 0; i < node_num; i++) {
 		if (node_type[i] == 0)
 			n.Add(CreateObject<Node>());
 		else{
@@ -811,14 +812,15 @@ int main(int argc, char *argv[])
 	//
 	// Assign IP to each server
 	//
-	for (uint32_t i = 0; i < node_num; i++){
-		if (n.Get(i)->GetNodeType() == 0){ // is server
+	for (uint32_t i = 0; i < node_num; i++) {
+		if (n.Get(i)->GetNodeType() == 0) { // is server
 			serverAddress.resize(i + 1);
 			serverAddress[i] = node_id_to_ip(i);
 		}
 	}
 
 	NS_LOG_INFO("Create channels.");
+
 	//
 	// Explicitly create the channels required by the topology.
 	//
@@ -842,6 +844,7 @@ int main(int argc, char *argv[])
 		topof >> src >> dst >> data_rate >> link_delay >> error_rate;
 
 		Ptr<Node> snode = n.Get(src), dnode = n.Get(dst);
+
 
 		qbb.SetDeviceAttribute("DataRate", StringValue(data_rate));
 		qbb.SetChannelAttribute("Delay", StringValue(link_delay));
@@ -868,12 +871,12 @@ int main(int argc, char *argv[])
 		// because we want our IP to be the primary IP (first in the IP address list),
 		// so that the global routing is based on our IP
 		NetDeviceContainer d = qbb.Install(snode, dnode);
-		if (snode->GetNodeType() == 0){
+		if (snode->GetNodeType() == 0) {
 			Ptr<Ipv4> ipv4 = snode->GetObject<Ipv4>();
 			ipv4->AddInterface(d.Get(0));
 			ipv4->AddAddress(1, Ipv4InterfaceAddress(serverAddress[src], Ipv4Mask(0xff000000)));
 		}
-		if (dnode->GetNodeType() == 0){
+		if (dnode->GetNodeType() == 0) {
 			Ptr<Ipv4> ipv4 = dnode->GetObject<Ipv4>();
 			ipv4->AddInterface(d.Get(1));
 			ipv4->AddAddress(1, Ipv4InterfaceAddress(serverAddress[dst], Ipv4Mask(0xff000000)));
@@ -899,6 +902,7 @@ int main(int argc, char *argv[])
 		DynamicCast<QbbNetDevice>(d.Get(0))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(0))));
 		DynamicCast<QbbNetDevice>(d.Get(1))->TraceConnectWithoutContext("QbbPfc", MakeBoundCallback (&get_pfc, pfc_file, DynamicCast<QbbNetDevice>(d.Get(1))));
 	}
+
 	nic_rate = get_nic_rate(n);
 
 	// config switch
@@ -941,8 +945,8 @@ int main(int argc, char *argv[])
 	//
 	// install RDMA driver
 	//
-	for (uint32_t i = 0; i < node_num; i++){
-		if (n.Get(i)->GetNodeType() == 0){ // is server
+	for (uint32_t i = 0; i < node_num; i++) {
+		if (n.Get(i)->GetNodeType() == 0) { // is server
 			// create RdmaHw
 			Ptr<RdmaHw> rdmaHw = CreateObject<RdmaHw>();
 			rdmaHw->SetAttribute("ClampTargetRate", BooleanValue(clamp_target_rate));
@@ -1008,10 +1012,10 @@ int main(int argc, char *argv[])
 	// get BDP and delay
 	//
 	maxRtt = maxBdp = 0;
-	for (uint32_t i = 0; i < node_num; i++){
+	for (uint32_t i = 0; i < node_num; i++) {
 		if (n.Get(i)->GetNodeType() != 0)
 			continue;
-		for (uint32_t j = 0; j < node_num; j++){
+		for (uint32_t j = 0; j < node_num; j++) {
 			if (n.Get(j)->GetNodeType() != 0)
 				continue;
 			uint64_t delay = pairDelay[n.Get(i)][n.Get(j)];
@@ -1031,7 +1035,7 @@ int main(int argc, char *argv[])
 	//
 	// setup switch CC
 	//
-	for (uint32_t i = 0; i < node_num; i++){
+	for (uint32_t i = 0; i < node_num; i++) {
 		if (n.Get(i)->GetNodeType() == 1){ // switch
 			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
 			sw->SetAttribute("CcMode", UintegerValue(cc_mode));
@@ -1080,18 +1084,18 @@ int main(int argc, char *argv[])
 
 
 	// maintain port number for each host
-	for (uint32_t i = 0; i < node_num; i++){
+	for (uint32_t i = 0; i < node_num; i++) {
 		if (n.Get(i)->GetNodeType() == 0)
-			for (uint32_t j = 0; j < node_num; j++){
+			for (uint32_t j = 0; j < node_num; j++) {
 				if (n.Get(j)->GetNodeType() == 0)
 					portNumder[i][j] = 10000; // each host pair use port number from 10000
 			}
 	}
 
 	flow_input.idx = 0;
-	if (flow_num > 0){
+	if (flow_num > 0) {
 		ReadFlowInput();
-		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+		Simulator::Schedule(Seconds(flow_input.start_time) - Simulator::Now(), ScheduleFlowInputs);
 	}
 
 	topof.close();
