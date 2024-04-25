@@ -157,7 +157,7 @@ unsigned long parse_rate(std::string& max_rate){
 }
 
 struct FlowInput{
-	uint32_t flowId
+	uint32_t flowId;
 	uint64_t src, dst, pg, maxPacketCount, port, dport;
 	double start_time;
 	uint32_t idx;
