@@ -38,3 +38,7 @@ https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7
 The first number (2021) could represent the count of times the queue length was within the range of 0-1 KB,
 The second number (2259) could represent the count of times the queue length was within the range of 1-2 KB,
 And so on, with each subsequent number representing the count of times the queue length fell within progressively higher KB ranges.
+
+
+CXXFLAGS=-w ./ns3 configure --build-profile=debug
+./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt'
