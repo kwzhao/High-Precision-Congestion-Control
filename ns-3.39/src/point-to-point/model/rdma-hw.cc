@@ -8,8 +8,8 @@
 #include "ns3/double.h"
 #include "ns3/data-rate.h"
 #include "ns3/pointer.h"
-#include "ns3/flow-size-tag-pmn.h"
-#include "ns3/flow-id-tag-path-pmn.h"
+#include "ns3/flow-size-tag.h"
+#include "ns3/flow-id-tag-path.h"
 #include "rdma-hw.h"
 #include "ppp-header.h"
 #include "qbb-header.h"
@@ -211,7 +211,7 @@ void RdmaHw::Setup(QpCompleteCallback cb) {
 	// setup qp complete callback
 	m_qpCompleteCallback = cb;
 }
-void RdmaHw::SetupPmn(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered) {
+void RdmaHw::Setup(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered) {
 	for (uint32_t i = 0; i < m_nic.size(); i++) {
 		Ptr<QbbNetDevice> dev = m_nic[i].dev;
 		if (dev == NULL)
