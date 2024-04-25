@@ -17,7 +17,7 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
-#include "flow-id-tag-path-pmn.h"
+#include "flow-id-tag-path.h"
 
 namespace ns3 {
 

@@ -52,7 +52,7 @@ void RdmaDriver::Init(void){
 	// RdmaHw do setup
 	m_rdma->SetNode(m_node);
 	// m_rdma->Setup(MakeCallback(&RdmaDriver::QpComplete, this));
-	m_rdma->SetupPmn(MakeCallback(&RdmaDriver::QpComplete, this), MakeCallback(&RdmaDriver::QpDelivered, this));
+	m_rdma->Setup(MakeCallback(&RdmaDriver::QpComplete, this), MakeCallback(&RdmaDriver::QpDelivered, this));
 }
 
 void RdmaDriver::SetNode(Ptr<Node> node){

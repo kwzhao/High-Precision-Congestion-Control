@@ -8,12 +8,12 @@
 #include "ns3/double.h"
 #include "ns3/data-rate.h"
 #include "ns3/pointer.h"
-#include "ns3/flow-size-tag-pmn.h"
+#include "ns3/flow-size-tag.h"
 #include "rdma-hw-pmn.h"
 #include "ppp-header.h"
 #include "qbb-header.h"
 #include "cn-header.h"
-#include "ns3/flow-id-tag-path-pmn.h"
+#include "ns3/flow-id-tag-path.h"
 
 namespace ns3 {
 
