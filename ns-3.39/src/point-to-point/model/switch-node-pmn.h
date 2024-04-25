@@ -11,7 +11,7 @@ namespace ns3 {
 
 class Packet;
 
-class SwitchNode : public Node{
+class SwitchNodePmn : public Node{
 	static const uint32_t pCnt = 257;	// Number of ports used
 	static const uint32_t qCnt = 8;	// Number of queues/priorities used
 	uint32_t m_ecmpSeed;
@@ -40,10 +40,10 @@ private:
 	void CheckAndSendPfc(uint32_t inDev, uint32_t qIndex);
 	void CheckAndSendResume(uint32_t inDev, uint32_t qIndex);
 public:
-	Ptr<SwitchMmu> m_mmu;
+	Ptr<SwitchMmuPmn> m_mmu;
 
 	static TypeId GetTypeId (void);
-	SwitchNode();
+	SwitchNodePmn();
 	void SetEcmpSeed(uint32_t seed);
 	void AddTableEntry(Ipv4Address &dstAddr, uint32_t intf_idx);
 	void ClearTable();

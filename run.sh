@@ -16,7 +16,7 @@ export NS_LOG=PacketPathExample=info
 ./waf -d debug -out=debug.txt --run 'scratch/test'
 ./waf --run 'scratch/third /data2/lichenni/path_tc/shard0_nflows20_nhosts7_lr10Gbps/config_topo-pl-7_flows_hp_k18000.txt'
 
-./waf --run 'scratch/third /data2/lichenni/path_tc_cc_test/shard0_nflows10_nhosts3_lr10Gbps/config_topo-pl-3_flows_s0.txt' --command-template="gdb"
+./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/cc_topo-pl-3-1-1000_s0.txt' --command-template="gdb"
 
 /data2/lichenni/path_tc/shard0_nflows20_nhosts7_lr10Gbps/config_topo-pl-7_flows_hp_k18000.txt
 

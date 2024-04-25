@@ -38,7 +38,6 @@ set(source_files
     utils/ethernet-header.cc
     utils/ethernet-trailer.cc
     utils/flow-id-tag.cc
-    utils/flow-id-tag-pmn.cc
     utils/flow-id-tag-path-pmn.cc
     utils/flow-size-tag-pmn.cc
     utils/inet-socket-address.cc
@@ -125,7 +124,6 @@ set(header_files
     utils/ethernet-header.h
     utils/ethernet-trailer.h
     utils/flow-id-tag.h
-    utils/flow-id-tag-pmn.h
     utils/flow-id-tag-path-pmn.h
     utils/flow-size-tag-pmn.h
     utils/generic-phy.h
