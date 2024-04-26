@@ -2,6 +2,7 @@
 #include "ns3/packet.h"
 #include "ns3/ipv4-header.h"
 #include "ns3/pause-header.h"
+#include "ns3/interface-tag.h"
 #include "ns3/flow-id-tag.h"
 #include "ns3/boolean.h"
 #include "ns3/uinteger.h"
@@ -118,9 +119,9 @@ void SwitchNodePmn::SendToDev(Ptr<Packet>p, CustomHeader &ch) {
 		}
 
 		// admission control
-		FlowIdTag t;
+		InterfaceTag t;
 		p->PeekPacketTag(t);
-		uint32_t inDev = t.GetFlowId();
+		uint32_t inDev = t.GetPortId();
 		if (qIndex != 0){ //not highest priority
 			if (m_mmu->CheckIngressAdmission(inDev, qIndex, p->GetSize()) && m_mmu->CheckEgressAdmission(idx, qIndex, p->GetSize())){			// Admission control
 				m_mmu->UpdateIngressAdmission(inDev, qIndex, p->GetSize());
@@ -194,10 +195,10 @@ bool SwitchNodePmn::SwitchReceiveFromDevice(Ptr<NetDevice> device, Ptr<Packet> p
 }
 
 void SwitchNodePmn::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p) {
-	FlowIdTag t;
+	InterfaceTag t;
 	p->PeekPacketTag(t);
 	if (qIndex != 0) {
-		uint32_t inDev = t.GetFlowId();
+		uint32_t inDev = t.GetPortId();
 		m_mmu->RemoveFromIngressAdmission(inDev, qIndex, p->GetSize());
 		m_mmu->RemoveFromEgressAdmission(ifIndex, qIndex, p->GetSize());
 		m_bytes[inDev][ifIndex][qIndex] -= p->GetSize();

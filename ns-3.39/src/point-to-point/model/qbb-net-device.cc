@@ -377,14 +377,6 @@ QbbNetDevice::DequeueAndTransmit(void)
 				m_node->SwitchNotifyDequeue(m_ifIndex, qIndex, p);
 				p->RemovePacketTag(t);
 			}
-			FlowIdTag t_pmn;
-			if (qIndex == 0) { //this is a pause or cnp, send it immediately!
-				m_node->SwitchNotifyDequeue(m_ifIndex, qIndex, p);
-				p->RemovePacketTag(t_pmn);
-			} else {
-				m_node->SwitchNotifyDequeue(m_ifIndex, qIndex, p);
-				p->RemovePacketTag(t_pmn);
-			}
 			m_traceDequeue(p, qIndex);
 			TransmitStart(p);
 			numTxBytes += p->GetSize();
@@ -503,7 +495,6 @@ QbbNetDevice::Receive(Ptr<Packet> packet)
 	} else { // non-PFC packets (data, ACK, NACK, CNP...)
 		if (m_node->GetNodeType() > 0) { // switch
 			packet->AddPacketTag(InterfaceTag(m_ifIndex));
-			packet->AddPacketTag(FlowIdTag(m_ifIndex));
 			m_node->SwitchReceiveFromDevice(this, packet, ch);
 		} else { // NIC
 			int ret;
