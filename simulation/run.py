@@ -82,6 +82,8 @@ if __name__ == "__main__":
 	parser.add_argument('--fwin', dest='fwin', action='store', type=int, default=100000, help="the fixed window")
 	parser.add_argument('--base_rtt', dest='base_rtt', action='store', type=int, default=8000, help="the base RTT")
 	parser.add_argument('--wint', dest='wint', action='store', type=int, default=1, help="the weight update interval")
+	parser.add_argument('--dctcp_ai', dest='dctcp_ai', action='store', type=int, default=615, help="AI for DCTCP")
+	parser.add_argument('--dctcp_marking_c', dest='dctcp_marking_c', action='store', type=int, default=30, help="constant for computing K in DCTCP")
 	args = parser.parse_args()
 
 	root = args.root
@@ -98,6 +100,8 @@ if __name__ == "__main__":
 	fwin = args.fwin
 	base_rtt = args.base_rtt
 	wint = args.wint
+	dctcp_ai = args.dctcp_ai
+	dctcp_marking_c = args.dctcp_marking_c
 
 	failure = ''
 	if args.down != '0 0 0':
@@ -137,9 +141,8 @@ if __name__ == "__main__":
 	elif args.cc == "dctcp":
 		ai = 10 # ai is useless for dctcp
 		hai = ai  # also useless
-		dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
-		kmax_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
-		kmin_map = "2 %d %d %d %d"%(bw*1000000000, 30*bw/10, bw*4*1000000000, 30*bw*4/10)
+		kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_marking_c*bw/10, bw*4*1000000000, dctcp_marking_c*bw*4/10)
+		kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_marking_c*bw/10, bw*4*1000000000, dctcp_marking_c*bw*4/10)
 		pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
 		config = config_template.format(root=root, bw=bw, trace=trace, topo=topo, cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt, wint=wint)
 	elif args.cc == "timely":
