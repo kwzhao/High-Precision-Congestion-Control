@@ -13,6 +13,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 #undef PGO_TRAINING
 #define PATH_TO_PGO_CONFIG "path_to_pgo_config"
 
@@ -33,7 +34,7 @@
 #include <ns3/rdma-client.h>
 #include <ns3/rdma-client-helper.h>
 #include <ns3/rdma-driver.h>
-#include <ns3/switch-node-pmn.h>
+#include <ns3/switch-node.h>
 #include <ns3/sim-setting.h>
 
 using namespace ns3;
@@ -42,11 +43,12 @@ using namespace std;
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
-bool enable_qcn = true,enable_pfc = true;
+bool enable_qcn = true,enable_pfc = true, use_dynamic_pfc_threshold = true, enable_ecn=true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
+uint32_t bfsz_factor = 1;
 double pause_time = 5, simulator_stop_time = 3.01;
-std::string data_rate, link_delay, topology_file, flow_file, trace_file, trace_output_file;
+std::string data_rate, link_delay, topology_file, flow_file,flow_on_path_file, flow_path_map_file, trace_file, trace_output_file;
 std::string fct_output_file = "fct.txt";
 std::string pfc_output_file = "pfc.txt";
 
@@ -54,8 +56,8 @@ double alpha_resume_interval = 55, rp_timer, ewma_gain = 1 / 16;
 double rate_decrease_interval = 4;
 uint32_t fast_recovery_times = 5;
 std::string rate_ai, rate_hai, min_rate = "100Mb/s";
-std::string dctcp_rate_ai = "1000Mb/s";
 std::string max_rate = "10000Mb/s";
+std::string dctcp_rate_ai = "1000Mb/s";
 uint64_t max_rate_int = 10000000000lu;
 
 bool clamp_target_rate = false, l2_back_to_zero = false;
@@ -120,12 +122,25 @@ map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
 map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
+// map<uint32_t, map<uint32_t, set<uint32_t>>> src_dst_to_flows_in_f;
+// uint32_t path_src = 0;
+// uint32_t path_dst = 0;
+// uint32_t path_num_flows_in_f = 0;
 uint32_t log_time_interval = 1000; //ms
+// set<uint32_t> flows_in_f_prime;
 
 std::vector<Ipv4Address> serverAddress;
 
 // maintain port number for each host pair
 std::unordered_map<uint32_t, unordered_map<uint32_t, uint16_t> > portNumder;
+
+struct FlowInput{
+	uint32_t flowId, src, dst, pg, maxPacketCount, port, dport;
+	double start_time;
+	uint32_t idx;
+};
+FlowInput flow_input = {0};
+uint32_t flow_num;
 
 unsigned long parse_rate(std::string& max_rate) {
     // Define a map to store unit specifiers and their corresponding multipliers
@@ -156,18 +171,11 @@ unsigned long parse_rate(std::string& max_rate) {
     return res;
 }
 
-struct FlowInput{
-	uint32_t flowId, src, dst, pg, maxPacketCount, port, dport;
-	double start_time;
-	uint32_t idx;
-};
-FlowInput flow_input = {0};
-uint32_t flow_num;
-
 void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
+		// src_dst_to_flows_in_f[flow_input.src][flow_input.dst].insert(flow_input.flowId);
 	}
 }
 void ScheduleFlowInputs(){
@@ -258,12 +266,12 @@ map<uint32_t, map<uint32_t, QlenDistribution> > queue_result;
 void monitor_buffer(FILE* qlen_output, NodeContainer *n){
 	for (uint32_t i = 0; i < n->GetN(); i++){
 		if (n->Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n->Get(i));
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n->Get(i));
 			if (queue_result.find(i) == queue_result.end())
 				queue_result[i];
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				uint32_t size = 0;
-				for (uint32_t k = 0; k < SwitchMmuPmn::qCnt; k++)
+				for (uint32_t k = 0; k < SwitchMmu::qCnt; k++)
 					size += sw->m_mmu->egress_bytes[j][k];
 				queue_result[i][j].add(size);
 			}
@@ -357,7 +365,7 @@ void SetRoutingEntries(){
 				Ptr<Node> next = nexts[k];
 				uint32_t interface = nbr2if[node][next].idx;
 				if (node->GetNodeType() == 1)
-					DynamicCast<SwitchNodePmn>(node)->AddTableEntry(dstAddr, interface);
+					DynamicCast<SwitchNode>(node)->AddTableEntry(dstAddr, interface);
 				else{
 					node->GetObject<RdmaDriver>()->m_rdma->AddTableEntry(dstAddr, interface);
 				}
@@ -377,7 +385,7 @@ void TakeDownLink(NodeContainer n, Ptr<Node> a, Ptr<Node> b){
 	// clear routing tables
 	for (uint32_t i = 0; i < n.GetN(); i++){
 		if (n.Get(i)->GetNodeType() == 1)
-			DynamicCast<SwitchNodePmn>(n.Get(i))->ClearTable();
+			DynamicCast<SwitchNode>(n.Get(i))->ClearTable();
 		else
 			n.Get(i)->GetObject<RdmaDriver>()->m_rdma->ClearTable();
 	}
@@ -427,6 +435,8 @@ int main(int argc, char *argv[])
 			std::string key;
 			conf >> key;
 
+			//std::cout << conf.cur << "\n";
+
 			if (key.compare("ENABLE_QCN") == 0)
 			{
 				uint32_t v;
@@ -446,6 +456,16 @@ int main(int argc, char *argv[])
 					std::cout << "ENABLE_PFC\t\t\t" << "Yes" << "\n";
 				else
 					std::cout << "ENABLE_PFC\t\t\t" << "No" << "\n";
+			}
+			else if (key.compare("USE_DYNAMIC_PFC_THRESHOLD") == 0)
+			{
+				uint32_t v;
+				conf >> v;
+				use_dynamic_pfc_threshold = v;
+				if (use_dynamic_pfc_threshold)
+					std::cout << "USE_DYNAMIC_PFC_THRESHOLD\t" << "Yes" << "\n";
+				else
+					std::cout << "USE_DYNAMIC_PFC_THRESHOLD\t" << "No" << "\n";
 			}
 			else if (key.compare("CLAMP_TARGET_RATE") == 0)
 			{
@@ -522,6 +542,20 @@ int main(int argc, char *argv[])
 				conf >> v;
 				flow_file = v;
 				std::cout << "FLOW_FILE\t\t\t" << flow_file << "\n";
+			}
+			else if (key.compare("FLOW_ON_PATH_FILE") == 0)
+			{
+				std::string v;
+				conf >> v;
+				flow_on_path_file = v;
+				std::cout << "FLOW_ON_PATH_FILE\t\t\t" << flow_on_path_file << "\n";
+			}
+			else if (key.compare("FLOW_PATH_MAP_FILE") == 0)
+			{
+				std::string v;
+				conf >> v;
+				flow_path_map_file = v;
+				std::cout << "FLOW_PATH_MAP_FILE\t\t\t" << flow_path_map_file << "\n";
 			}
 			else if (key.compare("TRACE_FILE") == 0)
 			{
@@ -751,14 +785,17 @@ int main(int argc, char *argv[])
 	}
 
 	max_rate_int = parse_rate(max_rate);
+	
 	printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d,rate2kmin: %u, rate2kmax: %u, u_target: %f, ai: %s, enable_qcn: %d, max_rate: %s,max_rate_int: %lu\n",
        fwin, buffer_size, enable_pfc, cc_mode,
        rate2kmin[10000000000], rate2kmax[10000000000],
        timely_t_low, timely_t_high, rate2kmin[10000000000], rate2kmax[10000000000], u_target, rate_ai.c_str(),enable_qcn,max_rate.c_str(),max_rate_int);
+	bool dynamicth = use_dynamic_pfc_threshold;
 
 	Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));
 	Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
 	Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
+	Config::SetDefault("ns3::QbbNetDevice::DynamicThreshold", BooleanValue(dynamicth));
 
 	// set int_multi
 	IntHop::multi = int_multi;
@@ -778,6 +815,9 @@ int main(int argc, char *argv[])
 		IntHeader::pint_bytes = Pint::get_n_bytes();
 		printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
 	}
+
+	//SeedManager::SetSeed(time(NULL));
+
 	topof.open(topology_file.c_str());
 	flowf.open(flow_file.c_str());
 	tracef.open(trace_file.c_str());
@@ -785,6 +825,7 @@ int main(int argc, char *argv[])
 	topof >> node_num >> switch_num >> link_num;
 	flowf >> flow_num;
 	tracef >> trace_num;
+
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
@@ -798,9 +839,9 @@ int main(int argc, char *argv[])
 		if (node_type[i] == 0)
 			n.Add(CreateObject<Node>());
 		else{
-			Ptr<SwitchNodePmn> sw = CreateObject<SwitchNodePmn>();
+			Ptr<SwitchNode> sw = CreateObject<SwitchNode>();
 			n.Add(sw);
-			sw->SetAttribute("EcnEnabled", BooleanValue(enable_qcn));
+			sw->SetAttribute("EcnEnabled", BooleanValue(enable_ecn));
 		}
 	}
 
@@ -908,8 +949,9 @@ int main(int argc, char *argv[])
 	// config switch
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
-			uint32_t shift = 3; // by default 1/8
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			// uint32_t shift = 3; // by default 1/8
+			uint32_t shift = 2; // by default 1/4
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
 				// set ecn
@@ -923,7 +965,7 @@ int main(int argc, char *argv[])
 				sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
 				// set pfc
 				uint64_t delay = DynamicCast<QbbChannel>(dev->GetChannel())->GetDelay().GetTimeStep();
-				uint32_t headroom = rate * delay / 8 / 1000000000 * 3;
+				uint32_t headroom = rate * delay / 8 / 1000000000 * 3 / bfsz_factor;
 				sw->m_mmu->ConfigHdrm(j, headroom);
 
 				// set pfc alpha, proportional to link bw
@@ -933,13 +975,14 @@ int main(int argc, char *argv[])
 					rate /= 2;
 				}
 			}
-			sw->m_mmu->ConfigReserve(4 * 1024);
+			sw->m_mmu->ConfigReserve(4 * 1024 / bfsz_factor);
 			sw->m_mmu->ConfigNPort(sw->GetNDevices()-1);
 			// sw->m_mmu->ConfigBufferSize(buffer_size* 1024 * 1024);
 			sw->m_mmu->ConfigBufferSize(buffer_size * 1024);
 			sw->m_mmu->node_id = sw->GetId();
 		}
 	}
+
 	#if ENABLE_QP
 	FILE *fct_output = fopen(fct_output_file.c_str(), "w");
 	//
@@ -997,7 +1040,7 @@ int main(int argc, char *argv[])
 		{
 			if (n.Get(i)->GetNodeType() == 1)
 			{ // switch
-				Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
+				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
 				sw->SetAttribute("AckHighPrio", UintegerValue(1));
 			}
 		}
@@ -1038,7 +1081,7 @@ int main(int argc, char *argv[])
 	//
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // switch
-			Ptr<SwitchNodePmn> sw = DynamicCast<SwitchNodePmn>(n.Get(i));
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
 			sw->SetAttribute("CcMode", UintegerValue(cc_mode));
 			sw->SetAttribute("MaxRtt", UintegerValue(baseRtt));
 		}
@@ -1047,7 +1090,7 @@ int main(int argc, char *argv[])
 	//
 	// add trace
 	//
-	
+
 	NodeContainer trace_nodes;
 	for (uint32_t i = 0; i < trace_num; i++)
 	{
@@ -1110,7 +1153,7 @@ int main(int argc, char *argv[])
 	// schedule buffer monitor
 	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
 	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
-	
+
 	//
 	// Now, do the actual simulation.
 	//
@@ -1120,10 +1163,130 @@ int main(int argc, char *argv[])
 	Simulator::Schedule(MilliSeconds(log_time_interval), &PrintProgress, MilliSeconds(log_time_interval));
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
+
+	// for (uint32_t i = 0; i < node_num; i++){
+	// 	for (uint32_t j = 0; j < node_num; j++){
+	// 		uint32_t tmp=src_dst_to_flows_in_f[i][j].size();
+	// 		if (tmp>path_num_flows_in_f){
+	// 			path_num_flows_in_f = tmp;
+	// 			path_src=i;
+	// 			path_dst=j;
+	// 		}
+	// 	}
+	// }
+
+	// std::cout<<"path_num_flows_in_f="<<path_num_flows_in_f<<" path_src="<<path_src<<" path_dst="<<path_dst<<std::endl;
+	// set<uint32_t> flows_in_f=src_dst_to_flows_in_f[path_src][path_dst];
+
+	// for (auto flowId : src_dst_to_flows_in_f[path_src][path_dst]){
+	// 		std::cout << ", " << flowId;
+	// }
+	// std::cout << '\n';
+	bool enable_debug = false;
+	if (enable_debug){
+		// Open the file for writing using fopen
+		FILE* outputFile = fopen(flow_path_map_file.c_str(), "w");
+
+		// Check if the file is opened successfully
+		if (!outputFile) {
+			std::cerr << "Error opening file: " << flow_path_map_file << std::endl;
+			return 1;
+		}
+
+		for (uint32_t i = 0; i < node_num; i++){
+			if (n.Get(i)->GetNodeType() == 1){ // is switch
+				Ptr<SwitchNode> node = DynamicCast<SwitchNode>(n.Get(i));
+				for (uint32_t j = 1; j < node->GetNDevices(); j++){
+					Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+					Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+					for (uint32_t k = 0; k < 2; k++){
+						std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
+						if (m_flowIdSet.size()>0){
+							uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
+							if (src_node_id==i){
+								fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
+								for (auto flowId : m_flowIdSet){
+									fprintf(outputFile, ",%d", flowId);
+								}
+								fprintf(outputFile, "\n");
+								// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+								// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+								// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+								// 	// for (auto flowId : m_flowIdSet){
+								// 	// 		std::cout << ", " << flowId;
+								// 	// }
+								// 	// std::cout << '\n';
+								// }
+							}
+						}
+					}
+				}
+			}
+			else{
+				Ptr<Node> node = DynamicCast<Node>(n.Get(i));
+				for (uint32_t j = 1; j < node->GetNDevices(); j++){
+					Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(node->GetDevice(j));
+					Ptr<QbbChannel> channel =DynamicCast<QbbChannel>(dev->GetChannel());
+					for (uint32_t k = 0; k < 2; k++){
+						std::set<uint32_t> m_flowIdSet=channel->GetFlowIdSet(k);
+						if (m_flowIdSet.size()>0){
+							uint32_t src_node_id=channel->GetSource(k)->GetNode()->GetId();
+							if (src_node_id==i){
+								fprintf(outputFile, "%d,%d,%d,%zu", i, src_node_id, channel->GetDestination(k)->GetNode()->GetId(),m_flowIdSet.size());
+								for (auto flowId : m_flowIdSet){
+									fprintf(outputFile, ",%d", flowId);
+								}
+								fprintf(outputFile, "\n");
+								// if(areSetsOverlapping(m_flowIdSet,flows_in_f)){
+								// 	flows_in_f_prime.insert(m_flowIdSet.begin(), m_flowIdSet.end());
+								// 	// std::cout << "Switch-"<<i<<": "<<channel->GetSource(k)->GetNode()->GetId()<<"-"<<channel->GetDestination(k)->GetNode()->GetId()<<" has " << m_flowIdSet.size()<< " flows:";
+								// 	// for (auto flowId : m_flowIdSet){
+								// 	// 		std::cout << ", " << flowId;
+								// 	// }
+								// 	// std::cout << '\n';
+								// }
+							}
+						}
+					}
+				}
+			}
+		}
+		// Close the file using fclose
+		fclose(outputFile);
+	}
+	// # Get the (Src, Dst) pair that has the most flows
+
+	// Find all flows with the same (Src, Dst) pair, forming the flow set F
+
+	// Find all links traversed by flows in F, forming the link set L
+	
+	// Find all flows traversed any link in L, forming the flow set F’
+	
+	// Run the full topology simulation with flow set F’ in ns-3
+	
+	// Calculate the P99 slowdown of flows in F
+
 	Simulator::Destroy();
 	NS_LOG_INFO("Done.");
 	fclose(trace_output);
 
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";
+
+	// // Open the file for writing using fopen
+    // outputFile = fopen(flow_on_path_file.c_str(), "w");
+
+    // // Check if the file is opened successfully
+    // if (!outputFile) {
+    //     std::cerr << "Error opening file: " << flow_on_path_file << std::endl;
+    //     return 1;
+    // }
+	// fprintf(outputFile, "%d,%d,%zu\n", path_src,path_dst,flows_in_f_prime.size());
+    // // Write set elements to the file using fprintf
+    // for (const auto& element : flows_in_f_prime) {
+    //     fprintf(outputFile, "%d\n", element);
+    // }
+
+    // // Close the file using fclose
+    // fclose(outputFile);
 }
