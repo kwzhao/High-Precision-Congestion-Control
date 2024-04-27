@@ -67,8 +67,6 @@ extern "C"
 }
 #define GIGA    1000000000          // 1Gbps
 
-std::string topology_file, flow_file;
-
 Ptr<OutputStreamWrapper> fctOutput;
 AsciiTraceHelper asciiTraceHelper;
 
@@ -78,14 +76,18 @@ AsciiTraceHelper torTraceHelper;
 Ptr<OutputStreamWrapper> pfc_file;
 AsciiTraceHelper asciiTraceHelperpfc;
 
-uint32_t packet_payload_size = 1400, l2_chunk_size = 0, l2_ack_interval = 0;
+uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 double pause_time = 5, simulator_stop_time = 3.01;
+std::string data_rate, link_delay, topology_file, flow_file, trace_file, trace_output_file;
+std::string fct_output_file = "fct.txt";
+std::string pfc_output_file = "pfc.txt";
 
 double alpha_resume_interval = 55, rp_timer, ewma_gain = 1 / 16;
 double rate_decrease_interval = 4;
 uint32_t fast_recovery_times = 5;
 std::string rate_ai, rate_hai, min_rate = "100Mb/s";
 std::string dctcp_rate_ai = "1000Mb/s";
+
 bool clamp_target_rate = false, l2_back_to_zero = false;
 double error_rate_per_link = 0.0;
 uint32_t has_win = 1;
@@ -101,6 +103,12 @@ uint32_t int_multi = 1;
 bool rate_bound = true;
 
 uint32_t ack_high_prio = 0;
+uint64_t link_down_time = 0;
+uint32_t link_down_A = 0, link_down_B = 0;
+
+uint32_t enable_trace = 1;
+
+uint32_t buffer_size = 16;
 
 uint32_t qlen_dump_interval = 100000000, qlen_mon_interval = 100;
 uint64_t qlen_mon_start = 2000000000, qlen_mon_end = 2100000000;

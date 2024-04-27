@@ -211,24 +211,6 @@ void RdmaHw::Setup(QpCompleteCallback cb) {
 	// setup qp complete callback
 	m_qpCompleteCallback = cb;
 }
-void RdmaHw::Setup(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered) {
-	for (uint32_t i = 0; i < m_nic.size(); i++) {
-		Ptr<QbbNetDevice> dev = m_nic[i].dev;
-		if (dev == NULL)
-			continue;
-		// share data with NIC
-		dev->m_rdmaEQ->m_qpGrp = m_nic[i].qpGrp;
-		// setup callback
-		dev->m_rdmaReceiveCb = MakeCallback(&RdmaHw::Receive, this);
-		dev->m_rdmaLinkDownCb = MakeCallback(&RdmaHw::SetLinkDown, this);
-		dev->m_rdmaPktSent = MakeCallback(&RdmaHw::PktSent, this);
-		// config NIC
-		dev->m_rdmaEQ->m_rdmaGetNxtPkt = MakeCallback(&RdmaHw::GetNxtPacket, this);
-	}
-	// setup qp complete and delivered callback
-	m_qpCompleteCallback = qpComplete;
-	m_qpDeliveredCallback = qpDelivered;
-}
 
 uint32_t RdmaHw::GetNicIdxOfQp(Ptr<RdmaQueuePair> qp) {
 	auto &v = m_rtTable[qp->dip.Get()];
