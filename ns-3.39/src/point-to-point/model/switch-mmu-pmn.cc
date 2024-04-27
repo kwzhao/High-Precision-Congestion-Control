@@ -34,6 +34,8 @@ namespace ns3 {
 		memset(egress_bytes, 0, sizeof(egress_bytes));
 	}
 	bool SwitchMmuPmn::CheckIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
+		// if (tcp):
+		// return true;
 		if (psize + hdrm_bytes[port][qIndex] > headroom[port] && psize + GetSharedUsed(port, qIndex) > GetPfcThreshold(port)){
 			printf("%lu %u Drop: queue:%u,%u: Headroom full\n", Simulator::Now().GetTimeStep(), node_id, port, qIndex);
 			// for (uint32_t i = 1; i < 64; i++)
@@ -44,6 +46,13 @@ namespace ns3 {
 		return true;
 	}
 	bool SwitchMmuPmn::CheckEgressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
+		// if (tcp)
+			// do something;
+			// threshold = alpha * (buffersize - totaloccupancy);
+			// if (egress_bytes[port][qIndex] + psize > threshold)
+			//	drop;
+			// else
+			// accept
 		return true;
 	}
 	void SwitchMmuPmn::UpdateIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
@@ -62,6 +71,8 @@ namespace ns3 {
 	}
 	void SwitchMmuPmn::UpdateEgressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
 		egress_bytes[port][qIndex] += psize;
+		// if (tcp)
+		// totaloccupancy += psize;
 	}
 	void SwitchMmuPmn::RemoveFromIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
 		uint32_t from_hdrm = std::min(hdrm_bytes[port][qIndex], psize);
@@ -72,6 +83,8 @@ namespace ns3 {
 	}
 	void SwitchMmuPmn::RemoveFromEgressAdmission(uint32_t port, uint32_t qIndex, uint32_t psize){
 		egress_bytes[port][qIndex] -= psize;
+		// totaloccupancy -= psize;
+		// 
 	}
 	bool SwitchMmuPmn::CheckShouldPause(uint32_t port, uint32_t qIndex){
 		return !paused[port][qIndex] && (hdrm_bytes[port][qIndex] > 0 || GetSharedUsed(port, qIndex) >= GetPfcThreshold(port));
@@ -90,6 +103,8 @@ namespace ns3 {
 	}
 	//TODO by cl
 	uint32_t SwitchMmuPmn::GetPfcThreshold(uint32_t port){
+		// if(tcp)
+		// 	return UINT32_MAX;
 		uint32_t res=(buffer_size - total_hdrm - total_rsrv - shared_used_bytes) >> pfc_a_shift[port];
 		// printf("PFC threshold: %u, buffer_size:%u, total_hdrm:%u, total_rsrv:%u,reserve:%u, shared_used_bytes:%u, pfc_a_shift[port]:%u \n", res, buffer_size, total_hdrm, total_rsrv,reserve, shared_used_bytes, pfc_a_shift[port]);
 		return res;

@@ -3,7 +3,6 @@
 #include "ns3/ipv4-header.h"
 #include "ns3/pause-header.h"
 #include "ns3/interface-tag.h"
-#include "ns3/flow-id-tag.h"
 #include "ns3/boolean.h"
 #include "ns3/uinteger.h"
 #include "ns3/double.h"
