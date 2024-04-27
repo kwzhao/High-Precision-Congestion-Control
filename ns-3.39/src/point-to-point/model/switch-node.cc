@@ -55,7 +55,7 @@ TypeId SwitchNode::GetTypeId (void)
 	return tid;
 }
 
-SwitchNode::SwitchNode(){
+SwitchNode::SwitchNode() {
 	m_ecmpSeed = m_id;
 	m_node_type = 1;
 	m_mmu = CreateObject<SwitchMmu>();
