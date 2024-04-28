@@ -18,6 +18,7 @@ public:
 
 	// trace
 	TracedCallback<Ptr<RdmaQueuePair> > m_traceQpComplete;
+	TracedCallback<Ptr<RdmaRxQueuePair> > m_traceQpDelivered;
 
 	static TypeId GetTypeId (void);
 	RdmaDriver();
@@ -39,6 +40,9 @@ public:
 
 	// callback when qp completes
 	void QpComplete(Ptr<RdmaQueuePair> q);
+
+	// callback when a qp's data is delivered
+	void QpDelivered(Ptr<RdmaRxQueuePair> q);
 
 };
 

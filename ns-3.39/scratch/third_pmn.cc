@@ -106,13 +106,13 @@ uint64_t maxRtt, maxBdp;
 uint64_t fwin;
 uint64_t baseRtt;
 
-struct Interface{
+struct Interface {
 	uint32_t idx;
 	bool up;
 	uint64_t delay;
 	uint64_t bw;
 
-	Interface() : idx(0), up(false){}
+	Interface() : idx(0), up(false) {}
 };
 map<Ptr<Node>, map<Ptr<Node>, Interface> > nbr2if;
 // Mapping destination to next hop for each node: <node, <dest, <nexthop0, ...> > >
@@ -178,8 +178,8 @@ void ReadFlowInput(){
 		// src_dst_to_flows_in_f[flow_input.src][flow_input.dst].insert(flow_input.flowId);
 	}
 }
-void ScheduleFlowInputs(){
-	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
+void ScheduleFlowInputs() {
+	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()) {
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
@@ -191,18 +191,18 @@ void ScheduleFlowInputs(){
 	}
 
 	// schedule the next time to run this function
-	if (flow_input.idx < flow_num){
-		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
-	}else { // no more flows, close the file
+	if (flow_input.idx < flow_num) {
+		Simulator::Schedule(Seconds(flow_input.start_time) - Simulator::Now(), ScheduleFlowInputs);
+	} else { // no more flows, close the file
 		flowf.close();
 	}
 }
 
-Ipv4Address node_id_to_ip(uint32_t id){
+Ipv4Address node_id_to_ip(uint32_t id) {
 	return Ipv4Address(0x0b000001 + ((id / 256) * 0x00010000) + ((id % 256) * 0x00000100));
 }
 
-uint32_t ip_to_node_id(Ipv4Address ip){
+uint32_t ip_to_node_id(Ipv4Address ip) {
 	return (ip.Get() >> 8) & 0xffff;
 }
 
@@ -307,16 +307,16 @@ void CalculateRoute(Ptr<Node> host){
 	delay[host] = 0;
 	bw[host] = 0xfffffffffffffffflu;
 	// BFS.
-	for (int i = 0; i < (int)q.size(); i++){
+	for (int i = 0; i < (int)q.size(); i++) {
 		Ptr<Node> now = q[i];
 		int d = dis[now];
-		for (auto it = nbr2if[now].begin(); it != nbr2if[now].end(); it++){
+		for (auto it = nbr2if[now].begin(); it != nbr2if[now].end(); it++) {
 			// skip down link
 			if (!it->second.up)
 				continue;
 			Ptr<Node> next = it->first;
 			// If 'next' have not been visited.
-			if (dis.find(next) == dis.end()){
+			if (dis.find(next) == dis.end()) {
 				dis[next] = d + 1;
 				delay[next] = delay[now] + it->second.delay;
 				bws[next] = bws[now];
@@ -328,7 +328,7 @@ void CalculateRoute(Ptr<Node> host){
 					q.push_back(next);
 			}
 			// if 'now' is on the shortest path from 'next' to 'host'.
-			if (d + 1 == dis[next]){
+			if (d + 1 == dis[next]) {
 				nextHop[next][host].push_back(now);
 			}
 		}
@@ -341,32 +341,32 @@ void CalculateRoute(Ptr<Node> host){
 		pairBws[it.first->GetId()][host->GetId()] = it.second;
 }
 
-void CalculateRoutes(NodeContainer &n){
-	for (int i = 0; i < (int)n.GetN(); i++){
+void CalculateRoutes(NodeContainer &n) {
+	for (int i = 0; i < (int)n.GetN(); i++) {
 		Ptr<Node> node = n.Get(i);
 		if (node->GetNodeType() == 0)
 			CalculateRoute(node);
 	}
 }
 
-void SetRoutingEntries(){
+void SetRoutingEntries() {
 	// For each node.
-	for (auto i = nextHop.begin(); i != nextHop.end(); i++){
+	for (auto i = nextHop.begin(); i != nextHop.end(); i++) {
 		Ptr<Node> node = i->first;
 		auto &table = i->second;
-		for (auto j = table.begin(); j != table.end(); j++){
+		for (auto j = table.begin(); j != table.end(); j++) {
 			// The destination node.
 			Ptr<Node> dst = j->first;
 			// The IP address of the dst.
 			Ipv4Address dstAddr = dst->GetObject<Ipv4>()->GetAddress(1, 0).GetLocal();
 			// The next hops towards the dst.
 			vector<Ptr<Node> > nexts = j->second;
-			for (int k = 0; k < (int)nexts.size(); k++){
+			for (int k = 0; k < (int)nexts.size(); k++) {
 				Ptr<Node> next = nexts[k];
 				uint32_t interface = nbr2if[node][next].idx;
 				if (node->GetNodeType() == 1)
 					DynamicCast<SwitchNode>(node)->AddTableEntry(dstAddr, interface);
-				else{
+				else {
 					node->GetObject<RdmaDriver>()->m_rdma->AddTableEntry(dstAddr, interface);
 				}
 			}
@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
 				else
 					std::cout << "ENABLE_QCN\t\t\t" << "No" << "\n";
 			}
-			if (key.compare("ENABLE_PFC") == 0)
+			else if (key.compare("ENABLE_PFC") == 0)
 			{
 				uint32_t v;
 				conf >> v;
