@@ -56,6 +56,7 @@ using namespace std;
 # define INTCC 3
 # define TIMELYCC 7
 # define PINTCC 10
+
 # define CUBIC 2
 # define DCTCP 4
 
@@ -142,7 +143,7 @@ map<uint32_t, map<uint32_t, uint64_t> > pairBw;
 map<Ptr<Node>, map<Ptr<Node>, uint64_t> > pairBdp;
 map<uint32_t, map<uint32_t, uint64_t> > pairRtt;
 map<uint32_t, map<uint32_t, vector<uint64_t>>> pairBws;
-uint32_t log_time_interval = 1000; //ms
+uint32_t log_time_interval = 10000; //ms
 
 std::vector<Ipv4Address> serverAddress;
 
@@ -157,6 +158,14 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
+Ipv4Address node_id_to_ip(uint32_t id){
+    return Ipv4Address(0x0b000001 + ((id / 256) * 0x00010000) + ((id % 256) * 0x00000100));
+}
+
+uint32_t ip_to_node_id(Ipv4Address ip){
+    return (ip.Get() >> 8) & 0xffff;
+}
+
 void ReadFlowInput(){
     if (flow_input.idx < flow_num){
         flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
@@ -164,41 +173,78 @@ void ReadFlowInput(){
     }
 }
 
-void ScheduleFlowInputsTcp(){
+void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool incast, uint32_t prior, uint32_t flowId, InetSocketAddress sip_socket, InetSocketAddress dip_socket)
+{
+    printf("flow %u finished\n", flowId);
+    uint64_t start = static_cast<uint32_t>(start_double);
+    uint64_t size = static_cast<uint32_t>(size_double);
+    Ipv4Address sip = sip_socket.GetIpv4();
+    Ipv4Address dip = dip_socket.GetIpv4();
+    // std::cout << "Ipv4Address sip " << sip << ":" <<  sip_socket.GetPort() << ", dip " << dip << ":" <<  dip_socket.GetPort() << std::endl;
+    uint32_t sid = ip_to_node_id(sip), did = ip_to_node_id(dip);
+	uint64_t base_rtt = pairRtt[sid][did], b = pairBw[sid][did];
+	uint64_t header = CustomHeader::GetStaticWholeHeaderSize() - IntHeader::GetStaticSize();
+	uint64_t header_delay = header * 8000000000lu / b;
+	uint64_t head = std::min((uint64_t) packet_payload_size, size);
+	uint64_t rest = size - head;
+	uint32_t rest_nr_packets = (size-1) / packet_payload_size;
+	uint64_t tx_delay = 0;
+	for (auto bw: pairBws[sid][did]) {
+		tx_delay += ((head + header) * 8000000000lu / bw);
+	}
+	uint64_t rest_delay = rest * 8000000000lu / b + (rest_nr_packets * header_delay);
+	uint64_t standalone_fct = (base_rtt / 2) + tx_delay + rest_delay;
+	
+	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
+	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start, standalone_fct);
+	fflush(fout);
+}
+
+void ScheduleFlowInputsTcp(FILE* fout){
     uint32_t prior = 1; // hardcoded for tcp
-    while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
+    while (flow_input.idx < flow_num){
+        printf("flow %u sent\n", flow_input.idx);
         uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
-
-        Ptr<Node> rxNode = n.Get (flow_input.dst);
-        Ptr<Ipv4> ipv4 = rxNode->GetObject<Ipv4> ();
-        Ipv4InterfaceAddress rxInterface = ipv4->GetAddress (1, 0);
-        Ipv4Address rxAddress = rxInterface.GetLocal ();
-
+        
+        Ipv4Address rxAddress = serverAddress[flow_input.dst];
         InetSocketAddress ad (rxAddress, flow_input.dport);
         Address sinkAddress(ad);
+
+        Ipv4Address txAddress = serverAddress[flow_input.src];
+        InetSocketAddress adTx (txAddress, port);
+        Address sinkAddressTx(adTx);
+
+        std::cout << "Ipv4Address sip " << txAddress << ":" << port << ", dip " << rxAddress << ":" << flow_input.dport << std::endl;
+
         Ptr<BulkSendApplication> bulksend = CreateObject<BulkSendApplication>();
         bulksend->SetAttribute("Protocol", TypeIdValue(TcpSocketFactory::GetTypeId()));
         bulksend->SetAttribute ("SendSize", UintegerValue (flow_input.maxPacketCount));
         bulksend->SetAttribute ("MaxBytes", UintegerValue(flow_input.maxPacketCount));
-        bulksend->SetAttribute("FlowId", UintegerValue(flow_input.idx));
+        bulksend->SetAttribute("FlowId", UintegerValue(flow_input.flowId));
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
+        bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
         bulksend->SetAttribute("InitialCwnd", UintegerValue (maxBdp/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
         n.Get (flow_input.src)->AddApplication(bulksend);
 
+        PacketSinkHelper sink ("ns3::TcpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), flow_input.dport));
+        ApplicationContainer sinkApp = sink.Install (n.Get(flow_input.dst));
+        sinkApp.Get(0)->SetAttribute("TotalQueryBytes", UintegerValue(flow_input.maxPacketCount));
+        sinkApp.Get(0)->SetAttribute("LocalTag", AddressValue(sinkAddress));
+        sinkApp.Get(0)->SetAttribute("priority", UintegerValue(0)); // ack packets are prioritized
+        sinkApp.Get(0)->SetAttribute("priorityCustom", UintegerValue(0)); // ack packets are prioritized
+        sinkApp.Get(0)->SetAttribute("flowId", UintegerValue(flow_input.flowId));
+        sinkApp.Get(0)->SetAttribute("senderPriority", UintegerValue(prior));
+        sinkApp.Start (Seconds(flow_input.start_time));
+        sinkApp.Stop (Seconds (simulator_stop_time));
+        sinkApp.Get(0)->TraceConnectWithoutContext("FlowFinish", MakeBoundCallback(&TraceMsgFinish, fout));
+
         // get the next flow input
         flow_input.idx++;
         ReadFlowInput();
-    }
-
-    // schedule the next time to run this function
-    if (flow_input.idx < flow_num){
-        Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputsTcp);
-    }else { // no more flows, close the file
-        flowf.close();
     }
 }
 
@@ -219,14 +265,6 @@ void ScheduleFlowInputs(){
     }else { // no more flows, close the file
         flowf.close();
     }
-}
-
-Ipv4Address node_id_to_ip(uint32_t id){
-    return Ipv4Address(0x0b000001 + ((id / 256) * 0x00010000) + ((id % 256) * 0x00000100));
-}
-
-uint32_t ip_to_node_id(Ipv4Address ip){
-    return (ip.Get() >> 8) & 0xffff;
 }
 
 void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
@@ -807,7 +845,7 @@ int main(int argc, char *argv[])
     else // others, no extra header
         IntHeader::mode = IntHeader::NONE;
     
-    if (cc_mode == TIMELYCC || cc_mode == INTCC || cc_mode == PINTCC)
+    if (cc_mode == TIMELYCC || cc_mode == INTCC || cc_mode == PINTCC || cc_mode == DCQCNCC)
         gen_tcp_traffic = false;
 
     // Set Pint
@@ -1195,7 +1233,11 @@ int main(int argc, char *argv[])
     flow_input.idx = 0;
     if (flow_num > 0){
         ReadFlowInput();
-        Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+        if (gen_tcp_traffic){
+            Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
+        }
+        else
+            Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
     }
     
     topof.close();
@@ -1210,6 +1252,7 @@ int main(int argc, char *argv[])
 	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
 	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
 
+    Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 	//
 	// Now, do the actual simulation.
 	//

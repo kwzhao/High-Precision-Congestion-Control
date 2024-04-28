@@ -50,7 +50,7 @@ ALPHAFILE=$DIR/alphas
 
 EXP=$1
 
-RDMAREQRATE=2
+RDMAREQRATE=0
 TCPREQRATE=2
 
 ############################################################################
