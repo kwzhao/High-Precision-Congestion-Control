@@ -11,8 +11,6 @@ TypeId RdmaDriver::GetTypeId (void)
 		.SetParent<Object> ()
 		.AddTraceSource ("QpComplete", "A qp completes.",
 				MakeTraceSourceAccessor (&RdmaDriver::m_traceQpComplete),"ns3::Packet::TracedCallback")
-		.AddTraceSource ("QpDelivered", "A qp's data is delivered.",
-				MakeTraceSourceAccessor (&RdmaDriver::m_traceQpDelivered),"ns3::Packet::TracedCallback")
 		;
 	return tid;
 }
@@ -51,8 +49,7 @@ void RdmaDriver::Init(void){
 	#endif
 	// RdmaHw do setup
 	m_rdma->SetNode(m_node);
-	// m_rdma->Setup(MakeCallback(&RdmaDriver::QpComplete, this));
-	m_rdma->Setup(MakeCallback(&RdmaDriver::QpComplete, this), MakeCallback(&RdmaDriver::QpDelivered, this));
+	m_rdma->Setup(MakeCallback(&RdmaDriver::QpComplete, this));
 }
 
 void RdmaDriver::SetNode(Ptr<Node> node){
@@ -67,16 +64,8 @@ void RdmaDriver::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4A
 	m_rdma->AddQueuePair(size, pg, sip, dip, sport, dport, win, baseRtt, notifyAppFinish,stopTime);
 }
 
-void RdmaDriver::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish){
-	m_rdma->AddQueuePair(flowId, size, pg, sip, dip, sport, dport, win, baseRtt, notifyAppFinish);
-}
-
 void RdmaDriver::QpComplete(Ptr<RdmaQueuePair> q){
 	m_traceQpComplete(q);
-}
-
-void RdmaDriver::QpDelivered(Ptr<RdmaRxQueuePair> q){
-	m_traceQpDelivered(q);
 }
 
 } // namespace ns3

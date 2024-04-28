@@ -24,7 +24,7 @@
 #include "ns3/log.h"
 #include <iostream>
 #include <fstream>
-#include "ns3/flow-id-tag-path.h"
+
 
 namespace ns3 {
 
@@ -87,22 +87,6 @@ QbbChannel::Attach (Ptr<QbbNetDevice> device)
 
 }
 
-std::set<uint32_t> QbbChannel::GetFlowIdSet(uint32_t i)
-{
-    // std::cout << m_flowIdSet.size()<< " flows:";
-    // for (auto flowId : m_flowIdSet)
-    //     {
-    //   std::cout << ", " << flowId;
-    //     }
-    // std::cout << '\n';
-    return m_flowIdSet[i];
-    // NS_LOG_UNCOND("Flow IDs in Channel " << m_channelId << ":");
-    // for (auto flowId : m_flowIdSet)
-    // {
-    //     NS_LOG_UNCOND("  " << flowId);
-    // }
-}
-
 bool
 QbbChannel::TransmitStart (
   Ptr<Packet> p,
@@ -116,18 +100,6 @@ QbbChannel::TransmitStart (
   NS_ASSERT (m_link[1].m_state != INITIALIZING);
 
   uint32_t wire = src == m_link[0].m_src ? 0 : 1;
-
-  // Check if the packet has the FlowIdTag
-  FlowIdTagPath tag;
-  if (p->PeekPacketTag (tag))
-  {
-      // Extract the flow ID from the packet
-      // p->PeekPacketTag(tag);
-      uint32_t flowId = tag.GetFlowId();
-
-      // Add flow ID to per-channel set
-      m_flowIdSet[wire].insert(flowId);
-  }
 
   Simulator::ScheduleWithContext (m_link[wire].m_dst->GetNode ()->GetId (),
                                   txTime + m_delay, &QbbNetDevice::Receive,

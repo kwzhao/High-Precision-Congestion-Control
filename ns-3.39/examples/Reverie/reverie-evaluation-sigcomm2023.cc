@@ -203,7 +203,7 @@ uint32_t ip_to_node_id(Ipv4Address ip) {
 }
 
 
-void TraceMsgFinish (Ptr<OutputStreamWrapper> stream, double size, double start, bool incast, uint32_t prior, uint32_t flowId, InetSocketAddress sip_socket, InetSocketAddress dip_socket)
+void TraceMsgFinish (Ptr<OutputStreamWrapper> stream, double size, double start, bool incast, uint32_t prior )
 {
     double fct, standalone_fct, slowdown;
     fct = Simulator::Now().GetNanoSeconds() - start;
@@ -661,8 +661,8 @@ int main(int argc, char *argv[])
     bool powertcp = false;
     bool thetapowertcp = false;
 
-    std::string confFile = "/data1/lichenni/projects/ref_sys/High-Precision-Congestion-Control/ns-3.39/examples/Reverie/config-workload.txt";
-    std::string cdfFileName = "/data1/lichenni/projects/ref_sys/High-Precision-Congestion-Control/ns-3.39/examples/Reverie/websearch.csv";
+    std::string confFile = "/home/vamsi/src/phd/codebase/ns3-datacenter/simulator/ns-3.35/examples/Reverie/config-workload.txt";
+    std::string cdfFileName = "/home/vamsi/src/phd/codebase/ns3-datacenter/simulator/ns-3.35/workloads/websearch.csv";
 
     unsigned randomSeed = 1;
 
@@ -729,7 +729,7 @@ int main(int argc, char *argv[])
     double gamma = 0.99;
     cmd.AddValue("gamma","gamma parameter value for Reverie", gamma);
 
-    std::string alphasFile = "/data1/lichenni/projects/ref_sys/High-Precision-Congestion-Control/ns-3.39/examples/Reverie/alphas"; // On lakewood
+    std::string alphasFile = "/home/vamsi/src/phd/codebase/ns3-datacenter/simulator/ns-3.35/examples/Reverie/alphas"; // On lakewood
     cmd.AddValue ("alphasFile", "alpha values file (should be exactly nPrior lines)", alphasFile);
 
     cmd.AddValue("incast", "incast", incast);

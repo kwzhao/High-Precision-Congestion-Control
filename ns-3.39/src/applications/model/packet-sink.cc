@@ -34,7 +34,7 @@
 #include "ns3/boolean.h"
 #include "ns3/ipv4-packet-info-tag.h"
 #include "ns3/ipv6-packet-info-tag.h"
-#include "ns3/flow-id-tag.h"
+
 /* Modification */
 #include "ns3/uinteger.h"
 /* Modification */
@@ -56,11 +56,6 @@ PacketSink::GetTypeId (void)
                    "The Address on which to Bind the rx socket.",
                    AddressValue (),
                    MakeAddressAccessor (&PacketSink::m_local),
-                   MakeAddressChecker ())
-    .AddAttribute ("LocalTag",
-                   "The Address on which to Bind the rx socket.",
-                   AddressValue (),
-                   MakeAddressAccessor (&PacketSink::m_local_tag),
                    MakeAddressChecker ())
     .AddAttribute ("Protocol",
                    "The type id of the protocol to use for the rx socket.",
@@ -298,18 +293,11 @@ void PacketSink::HandleRead (Ptr<Socket> socket)
       if(TotalQueryBytes){
         if(m_totalRx >= TotalQueryBytes){
           double totalSize = m_totalRx ;//+ ((m_totalRx-1)/(1400.0)+1)*(64); // TODO: Add header sizes more precisely.
-          FlowIdTag tag;
-          uint32_t flowId = 0;
-          if (packet->PeekPacketTag (tag))
-          {
-              // Extract the flow ID from the packet
-              flowId = tag.GetFlowId();
-          }
           if (m_recvAt.GetSeconds()!=0){
-            m_flowFinishTrace(totalSize, m_recvAt.GetNanoSeconds(),true,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local_tag));
+            m_flowFinishTrace(totalSize, m_recvAt.GetNanoSeconds(),true,sender_priority);
           }
           else{
-            m_flowFinishTrace(totalSize, m_startTime.GetNanoSeconds(),false,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local_tag));
+            m_flowFinishTrace(totalSize, m_startTime.GetNanoSeconds(),false,sender_priority);
             // std::cout << "Flow finished. FCT = " << Simulator::Now().GetSeconds()-m_startTime.GetSeconds() << " seconds" << std::endl;
           }
           StopApplication();

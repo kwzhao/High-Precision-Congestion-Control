@@ -18,7 +18,6 @@ public:
 
 	// trace
 	TracedCallback<Ptr<RdmaQueuePair> > m_traceQpComplete;
-	TracedCallback<Ptr<RdmaRxQueuePair> > m_traceQpDelivered;
 
 	static TypeId GetTypeId (void);
 	RdmaDriver();
@@ -36,14 +35,8 @@ public:
 	// add a queue pair
 	void AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish, Time stopTime);
 
-	void AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish);
-
 	// callback when qp completes
 	void QpComplete(Ptr<RdmaQueuePair> q);
-
-	// callback when a qp's data is delivered
-	void QpDelivered(Ptr<RdmaRxQueuePair> q);
-
 };
 
 } // namespace ns3

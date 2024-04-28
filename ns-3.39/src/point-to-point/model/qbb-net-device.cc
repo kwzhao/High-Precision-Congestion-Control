@@ -38,7 +38,6 @@
 #include "ns3/point-to-point-channel.h"
 #include "ns3/qbb-channel.h"
 #include "ns3/random-variable.h"
-#include "ns3/flow-id-tag.h"
 #include "ns3/qbb-header.h"
 #include "ns3/error-model.h"
 #include "ns3/cn-header.h"
