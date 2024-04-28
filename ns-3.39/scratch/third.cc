@@ -4,6 +4,7 @@
  *  Created on: Feb 02, 2023
  *      Author: vamsi
  */
+
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
@@ -156,6 +157,13 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
+void ReadFlowInput(){
+    if (flow_input.idx < flow_num){
+        flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
+        NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
+    }
+}
+
 void ScheduleFlowInputsTcp(){
     uint32_t prior = 1; // hardcoded for tcp
     while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
@@ -188,18 +196,12 @@ void ScheduleFlowInputsTcp(){
 
     // schedule the next time to run this function
     if (flow_input.idx < flow_num){
-        Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+        Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputsTcp);
     }else { // no more flows, close the file
         flowf.close();
     }
 }
 
-void ReadFlowInput(){
-    if (flow_input.idx < flow_num){
-        flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
-        NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
-    }
-}
 void ScheduleFlowInputs(){
     while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
         uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
@@ -426,37 +428,38 @@ void PrintProgress(Time interval)
 
 int main(int argc, char *argv[])
 {
+    bool powertcp = false;
+    bool thetapowertcp = false;
+
+    uint32_t bufferalgIngress = DT;
+    uint32_t bufferalgEgress = DT;
+    double egressLossyShare = 0.8;
+    std::string bufferModel = "sonic";
+    double gamma = 0.99;
+
+    std::string alphasFile = "/data1/lichenni/projects/ref_sys/High-Precision-Congestion-Control/ns-3.39/examples/Reverie/alphas"; // On lakewood
+
+    std::string line;
+    std::fstream aFile;
+    aFile.open(alphasFile);
+    uint32_t p = 0;
+    while ( getline( aFile, line ) && p < 8 ) { // hard coded to read only 8 alpha values.
+        std::istringstream iss( line );
+        double a;
+        iss >> a;
+        alpha_values[p] = a;
+        // std::cout << "alpha-" << p << " " << alpha_values[p] << std::endl;
+        p++;
+    }
+    aFile.close();
+
 	clock_t begint, endt;
 	begint = clock();
+	if (argc > 1)
 	{
 		//Read the configuration file
 		std::ifstream conf;
 		conf.open(argv[1]);
-		bool powertcp = false;
-		bool thetapowertcp = false;
-
-		uint32_t bufferalgIngress = DT;
-		uint32_t bufferalgEgress = DT;
-		double egressLossyShare = 0.8;
-		std::string bufferModel = "sonic";
-		double gamma = 0.99;
-
-		std::string alphasFile = "/data1/lichenni/projects/ref_sys/High-Precision-Congestion-Control/ns-3.39/examples/Reverie/alphas"; // On lakewood
-
-		std::string line;
-		std::fstream aFile;
-		aFile.open(alphasFile);
-		uint32_t p = 0;
-		while ( getline( aFile, line ) && p < 8 ) { // hard coded to read only 8 alpha values.
-			std::istringstream iss( line );
-			double a;
-			iss >> a;
-			alpha_values[p] = a;
-			// std::cout << "alpha-" << p << " " << alpha_values[p] << std::endl;
-			p++;
-		}
-		aFile.close();
-
 		while (!conf.eof())
 		{
 			std::string key;
@@ -797,15 +800,14 @@ int main(int argc, char *argv[])
     // IntHeader::mode
     if (cc_mode == TIMELYCC) // timely, use ts
         IntHeader::mode = IntHeader::TS;
-        gen_tcp_traffic = false;
     else if (cc_mode == INTCC) // hpcc, powertcp, use int
         IntHeader::mode = IntHeader::NORMAL;
-        gen_tcp_traffic = false;
     else if (cc_mode == PINTCC) // hpcc-pint
         IntHeader::mode = IntHeader::PINT;
-        gen_tcp_traffic = false;
     else // others, no extra header
         IntHeader::mode = IntHeader::NONE;
+    
+    if (cc_mode == TIMELYCC || cc_mode == INTCC || cc_mode == PINTCC)
         gen_tcp_traffic = false;
 
     // Set Pint
@@ -1176,9 +1178,12 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
         Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
 
-        if (tcpcc == CUBIC)
+        if (cc_mode == CUBIC){
+            printf("CC: CUBIC\n");
             Config::SetDefault ("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpCubic::GetTypeId()));
-        else if (tcpcc == DCTCP){
+        }
+        else if (cc_mode == DCTCP){
+            printf("CC: CUBIC\n");
             if (enable_qcn != 1){
                 std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
                 exit(1);
