@@ -61,7 +61,7 @@ using namespace std;
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
-bool enable_qcn = true,enable_pfc = true, use_dynamic_pfc_threshold = true;
+bool enable_qcn = true,enable_pfc = true;
 bool gen_tcp_traffic = true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
@@ -462,8 +462,6 @@ int main(int argc, char *argv[])
 			std::string key;
 			conf >> key;
 
-			//std::cout << conf.cur << "\n";
-
 			if (key.compare("ENABLE_QCN") == 0)
 			{
 				uint32_t v;
@@ -483,16 +481,6 @@ int main(int argc, char *argv[])
 					std::cout << "ENABLE_PFC\t\t\t" << "Yes" << "\n";
 				else
 					std::cout << "ENABLE_PFC\t\t\t" << "No" << "\n";
-			}
-			else if (key.compare("USE_DYNAMIC_PFC_THRESHOLD") == 0)
-			{
-				uint32_t v;
-				conf >> v;
-				use_dynamic_pfc_threshold = v;
-				if (use_dynamic_pfc_threshold)
-					std::cout << "USE_DYNAMIC_PFC_THRESHOLD\t" << "Yes" << "\n";
-				else
-					std::cout << "USE_DYNAMIC_PFC_THRESHOLD\t" << "No" << "\n";
 			}
 			else if (key.compare("CLAMP_TARGET_RATE") == 0)
 			{
@@ -1160,8 +1148,6 @@ int main(int argc, char *argv[])
 	}
 
     Ipv4GlobalRoutingHelper::PopulateRoutingTables();
-
-    NS_LOG_INFO("Create Applications.");
 
     Time interPacketInterval = Seconds(0.0000005 / 2);
 

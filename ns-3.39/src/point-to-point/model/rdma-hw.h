@@ -29,7 +29,6 @@ public:
 
 	Ptr<Node> m_node;
 	DataRate m_minRate;		//< Min sending rate
-	DataRate m_maxRate;		//< Max sending rate
 	uint32_t m_mtu;
 	uint32_t m_cc_mode;
 	double m_nack_interval;
@@ -52,7 +51,7 @@ public:
 	void SetNode(Ptr<Node> node);
 	void Setup(QpCompleteCallback cb); // setup shared data and callbacks with the QbbNetDevice
 	void Setup(QpCompleteCallback qpComplete, QpDeliveredCallback qpDelivered); // setup shared data and callbacks with the QbbNetDevice
-	
+
 	static uint64_t GetQpKey(uint32_t dip, uint16_t sport, uint16_t pg); // get the lookup key for m_qpMap
 	Ptr<RdmaQueuePair> GetQp(uint32_t dip, uint16_t sport, uint16_t pg); // get the qp
 	uint32_t GetNicIdxOfQp(Ptr<RdmaQueuePair> qp); // get the NIC index of the qp
