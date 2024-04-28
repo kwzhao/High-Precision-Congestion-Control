@@ -57,8 +57,22 @@ using namespace std;
 # define TIMELYCC 7
 # define PINTCC 10
 
-# define CUBIC 2
-# define DCTCP 4
+// Define constants for TCP Congestion Controls
+#define TCP_BBR 15
+#define TCP_BIC 16
+#define TCP_CUBIC 17
+#define TCP_DCTCP 18
+#define TCP_HIGH_SPEED 19
+#define TCP_HTCP 20
+#define TCP_HYBLA 21
+#define TCP_ILLINOIS 22
+#define TCP_LED_BAT 23
+#define TCP_LP 24
+#define TCP_SCALABLE 25
+#define TCP_VEGAS 26
+#define TCP_VENO 27
+#define TCP_WESTWOOD 28
+#define TCP_YEAH 29
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -845,7 +859,7 @@ int main(int argc, char *argv[])
     else // others, no extra header
         IntHeader::mode = IntHeader::NONE;
     
-    if (cc_mode == TIMELYCC || cc_mode == INTCC || cc_mode == PINTCC || cc_mode == DCQCNCC)
+    if (cc_mode < TCP_BBR)
         gen_tcp_traffic = false;
 
     // Set Pint
@@ -1216,19 +1230,74 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
         Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
 
-        if (cc_mode == CUBIC){
-            printf("CC: CUBIC\n");
-            Config::SetDefault ("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpCubic::GetTypeId()));
+        switch (cc_mode) {
+            case TCP_BBR:
+                printf("CC: BBR\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
+                break;
+            case TCP_CUBIC:
+                printf("CC: CUBIC\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpCubic::GetTypeId()));
+                break;
+            case TCP_DCTCP:
+                printf("CC: DCTCP\n");
+                if (!enable_qcn) {
+                    std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
+                    exit(1);
+                }
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpDctcp::GetTypeId()));
+                Config::SetDefault("ns3::TcpSocketBase::UseEcn", StringValue("On"));
+                break;
+            case TCP_HIGH_SPEED:
+                printf("CC: HighSpeed\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHighSpeed::GetTypeId()));
+                break;
+            case TCP_HTCP:
+                printf("CC: HTCP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHtcp::GetTypeId()));
+                break;
+            case TCP_HYBLA:
+                printf("CC: Hybla\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHybla::GetTypeId()));
+                break;
+            case TCP_ILLINOIS:
+                printf("CC: Illinois\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
+                break;
+            case TCP_LED_BAT:
+                printf("CC: LEDBAT\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
+                break;
+            case TCP_LP:
+                printf("CC: LP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLp::GetTypeId()));
+                break;
+            case TCP_SCALABLE:
+                printf("CC: Scalable\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpScalable::GetTypeId()));
+                break;
+            case TCP_VEGAS:
+                printf("CC: Vegas\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
+                break;
+            case TCP_VENO:
+                printf("CC: Veno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
+                break;
+            case TCP_WESTWOOD:
+                printf("CC: Westwood+\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpWestwoodPlus::GetTypeId()));
+                break;
+            case TCP_YEAH:
+                printf("CC: YeAH\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
+                break;
+            case TCP_NEW_RENO:
+                printf("CC: Default TCP NewReno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpNewReno::GetTypeId()));
+                break;
         }
-        else if (cc_mode == DCTCP){
-            printf("CC: CUBIC\n");
-            if (enable_qcn != 1){
-                std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
-                exit(1);
-            }
-            Config::SetDefault ("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpDctcp::GetTypeId()));
-            Config::SetDefault ("ns3::TcpSocketBase::UseEcn", StringValue ("On"));
-        }
+
     }
     flow_input.idx = 0;
     if (flow_num > 0){
