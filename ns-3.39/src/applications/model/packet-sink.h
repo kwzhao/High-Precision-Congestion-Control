@@ -177,6 +177,7 @@ private:
   std::list<Ptr<Socket> > m_socketList; //!< the accepted sockets
 
   Address         m_local;        //!< Local address to bind to (address and port)
+  Address         m_local_tag;        //!< Local address to bind to (address and port) for callback
   uint16_t        m_localPort;    //!< Local port to bind to
   uint64_t        m_totalRx;      //!< Total bytes received
   TypeId          m_tid;          //!< Protocol TypeId
@@ -199,7 +200,7 @@ private:
   TracedCallback<Ptr<const Packet>, const Address &, const Address &, const SeqTsSizeHeader&> m_rxTraceWithSeqTsSize;
 
   /* Modification */
-  TracedCallback<double, double,bool,uint32_t> m_flowFinishTrace;
+  TracedCallback<double, double,bool,uint32_t,uint32_t,InetSocketAddress, InetSocketAddress> m_flowFinishTrace;
   /* Modification */
 };
 

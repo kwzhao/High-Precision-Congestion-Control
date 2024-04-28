@@ -203,7 +203,7 @@ uint32_t ip_to_node_id(Ipv4Address ip) {
 }
 
 
-void TraceMsgFinish (Ptr<OutputStreamWrapper> stream, double size, double start, bool incast, uint32_t prior )
+void TraceMsgFinish (Ptr<OutputStreamWrapper> stream, double size, double start, bool incast, uint32_t prior, uint32_t flowId, InetSocketAddress sip_socket, InetSocketAddress dip_socket)
 {
     double fct, standalone_fct, slowdown;
     fct = Simulator::Now().GetNanoSeconds() - start;

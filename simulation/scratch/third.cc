@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
 				else
 					std::cout << "ENABLE_QCN\t\t\t" << "No" << "\n";
 			}
-			if (key.compare("ENABLE_PFC") == 0)
+			else if (key.compare("ENABLE_PFC") == 0)
 			{
 				uint32_t v;
 				conf >> v;
@@ -950,8 +950,8 @@ int main(int argc, char *argv[])
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
 			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
-			// uint32_t shift = 3; // by default 1/8
-			uint32_t shift = 2; // by default 1/4
+			uint32_t shift = 3; // by default 1/8
+			// uint32_t shift = 2; // by default 1/4
 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
 				Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
 				// set ecn
