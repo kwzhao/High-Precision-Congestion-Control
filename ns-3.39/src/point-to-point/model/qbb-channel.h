@@ -101,12 +101,7 @@ public:
    */
   Time GetDelay (void) const;
 
-protected:
-  /*
-   * \brief Check to make sure the link is initialized
-   * \returns true if initialized, asserts otherwise
-   */
-  bool IsInitialized (void) const;
+  std::set<uint32_t> GetFlowIdSet(uint32_t i);
 
   /*
    * \brief Get the net-device source 
@@ -123,6 +118,13 @@ protected:
    * the specified link
    */
   Ptr<QbbNetDevice> GetDestination (uint32_t i) const;
+  
+protected:
+  /*
+   * \brief Check to make sure the link is initialized
+   * \returns true if initialized, asserts otherwise
+   */
+  bool IsInitialized (void) const;
 
 private:
   // Each point to point link has exactly two net devices
@@ -131,6 +133,7 @@ private:
   Time          m_delay;
   int32_t       m_nDevices;
 
+  std::set<uint32_t> m_flowIdSet[N_DEVICES];
   /**
    * The trace source for the packet transmission animation events that the 
    * device can fire.

@@ -27,11 +27,6 @@ TypeId RdmaHw::GetTypeId (void)
 	                                  DataRateValue(DataRate("100Mb/s")),
 	                                  MakeDataRateAccessor(&RdmaHw::m_minRate),
 	                                  MakeDataRateChecker())
-						.AddAttribute("MaxRate",
-				"Maximum rate of a flow",
-				DataRateValue(DataRate("100000Mb/s")),
-				MakeDataRateAccessor(&RdmaHw::m_maxRate),
-				MakeDataRateChecker())
 	                    .AddAttribute("Mtu",
 	                                  "Mtu.",
 	                                  UintegerValue(1000),
@@ -195,7 +190,7 @@ void RdmaHw::SetNode(Ptr<Node> node) {
 	m_node = node;
 }
 void RdmaHw::Setup(QpCompleteCallback cb) {
-	for (uint32_t i = 0; i < m_nic.size(); i++){
+	for (uint32_t i = 0; i < m_nic.size(); i++) {
 		Ptr<QbbNetDevice> dev = m_nic[i].dev;
 		if (dev == NULL)
 			continue;
@@ -320,10 +315,8 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 
 	// set init variables
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
-	// qp->m_rate = m_bps;
-	qp->m_rate = std::min(m_bps,m_maxRate);
-	// qp->m_max_rate = m_bps;
-	qp->m_max_rate = std::min(m_bps,m_maxRate);
+	qp->m_rate = m_bps;
+	qp->m_max_rate = m_bps;
 	if (m_cc_mode == 1) {
 		qp->mlx.m_targetRate = m_bps;
 	} else if (m_cc_mode == 3) {

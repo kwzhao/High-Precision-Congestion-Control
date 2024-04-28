@@ -701,6 +701,7 @@ bool SwitchMmu::CheckIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t p
 			        // or if the switch buffer is full
 			        || (psize + totalUsed > bufferPool) )
 			{
+				printf("%lu %u Drop: queue:%u,%u: Headroom full\n", Simulator::Now().GetTimeStep(), node_id, port, qIndex);
 				return false;
 			}
 			else {

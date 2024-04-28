@@ -213,11 +213,6 @@ QbbNetDevice::GetTypeId(void)
 	                                  BooleanValue(false),
 	                                  MakeBooleanAccessor(&QbbNetDevice::m_qcnEnabled),
 	                                  MakeBooleanChecker())
-						.AddAttribute("DynamicThreshold",
-				"Enable dynamic threshold.",
-				BooleanValue(false),
-				MakeBooleanAccessor(&QbbNetDevice::m_dynamicth),
-				MakeBooleanChecker())
 	                    .AddAttribute("PauseTime",
 	                                  "Number of microseconds to pause upon congestion",
 	                                  UintegerValue(5),
