@@ -24,7 +24,7 @@
 #include "ns3/log.h"
 #include <iostream>
 #include <fstream>
-
+#include "ns3/flow-id-tag-path.h"
 
 namespace ns3 {
 

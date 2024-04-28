@@ -9,11 +9,11 @@
 #include "ns3/data-rate.h"
 #include "ns3/pointer.h"
 #include "ns3/flow-size-tag.h"
-#include "ns3/flow-id-tag-path.h"
 #include "rdma-hw.h"
 #include "ppp-header.h"
 #include "qbb-header.h"
 #include "cn-header.h"
+#include "ns3/flow-id-tag-path.h"
 #include "ns3/unsched-tag.h"
 
 namespace ns3 {
