@@ -16,7 +16,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/test")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc_test")]
     output_dir: PathBuf,
 }
 
@@ -58,7 +58,7 @@ fn main() -> anyhow::Result<()> {
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs_cc";
+    let log_dir = "./logs";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
@@ -66,7 +66,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_sim = format!("{}/simulation/run_cc.py", root_path);
+    let file_sim = format!("{}/ns-3.39/run_cc.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_cc.py", root_path);
     // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";

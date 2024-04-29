@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_tc_cc6")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc_test")]
     output_dir: PathBuf,
 }
 
@@ -30,25 +30,25 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..1).collect(),
-        n_flows: vec![20000],
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![3],
-        shard_cc: (0..12000).collect(),
-    };
+    // let params = Parameters {
+    //     shard: (0..1).collect(),
+    //     n_flows: vec![20000],
+    //     // n_hosts: vec![3, 5, 7],
+    //     n_hosts: vec![3],
+    //     shard_cc: (0..12000).collect(),
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![0],
-    //     n_flows: vec![20000],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..1).collect(),
-    // };
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![20000],
+        n_hosts: vec![3],
+        shard_cc: (0..20).collect(),
+    };
 
     // no need to change
     let root_path = format!("..");
-    let log_dir = "./logs_cc";
+    let log_dir = "./logs";
     if let Err(err) = fs::create_dir_all(log_dir) {
         eprintln!("Error creating directory '{}': {}", log_dir, err);
     } else {
@@ -56,7 +56,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_sim = format!("{}/simulation/run_m3.py", root_path);
+    let file_sim = format!("{}/ns-3.39/run_m3.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
