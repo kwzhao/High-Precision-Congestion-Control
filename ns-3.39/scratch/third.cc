@@ -73,6 +73,7 @@ using namespace std;
 #define TCP_VENO 27
 #define TCP_WESTWOOD 28
 #define TCP_YEAH 29
+#define TCP_NEW_RENO 30
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -217,18 +218,18 @@ void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool i
 void ScheduleFlowInputsTcp(FILE* fout){
     uint32_t prior = 1; // hardcoded for tcp
     while (flow_input.idx < flow_num){
-        printf("flow %u sent\n", flow_input.idx);
         uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
         
         Ipv4Address rxAddress = serverAddress[flow_input.dst];
-        InetSocketAddress ad (rxAddress, flow_input.dport);
+        // InetSocketAddress ad (rxAddress, flow_input.dport);
+        InetSocketAddress ad (rxAddress, port);
         Address sinkAddress(ad);
 
         Ipv4Address txAddress = serverAddress[flow_input.src];
         InetSocketAddress adTx (txAddress, port);
         Address sinkAddressTx(adTx);
 
-        std::cout << "Ipv4Address sip " << txAddress << ":" << port << ", dip " << rxAddress << ":" << flow_input.dport << std::endl;
+        // std::cout << "Ipv4Address sip " << txAddress << ":" << port << ", dip " << rxAddress << ":" << flow_input.dport << std::endl;
 
         Ptr<BulkSendApplication> bulksend = CreateObject<BulkSendApplication>();
         bulksend->SetAttribute("Protocol", TypeIdValue(TcpSocketFactory::GetTypeId()));
@@ -237,14 +238,14 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("FlowId", UintegerValue(flow_input.flowId));
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
-        bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
+        // bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
         bulksend->SetAttribute("InitialCwnd", UintegerValue (maxBdp/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
         n.Get (flow_input.src)->AddApplication(bulksend);
 
-        PacketSinkHelper sink ("ns3::TcpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), flow_input.dport));
+        PacketSinkHelper sink ("ns3::TcpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), port));
         ApplicationContainer sinkApp = sink.Install (n.Get(flow_input.dst));
         sinkApp.Get(0)->SetAttribute("TotalQueryBytes", UintegerValue(flow_input.maxPacketCount));
         sinkApp.Get(0)->SetAttribute("LocalTag", AddressValue(sinkAddress));
