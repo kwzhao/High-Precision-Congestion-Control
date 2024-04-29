@@ -75,6 +75,7 @@ using namespace std;
 #define TCP_YEAH 29
 #define TCP_NEW_RENO 30
 
+#define PORT_NUMBER_START 4444
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
@@ -190,7 +191,7 @@ void ReadFlowInput(){
 
 void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool incast, uint32_t prior, uint32_t flowId, InetSocketAddress sip_socket, InetSocketAddress dip_socket)
 {
-    printf("flow %u finished\n", flowId);
+    // printf("flow %u finished\n", flowId);
     uint64_t start = static_cast<uint32_t>(start_double);
     uint64_t size = static_cast<uint32_t>(size_double);
     Ipv4Address sip = sip_socket.GetIpv4();
@@ -218,9 +219,19 @@ void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool i
 void ScheduleFlowInputsTcp(FILE* fout){
     uint32_t prior = 1; // hardcoded for tcp
     while (flow_input.idx < flow_num){
-        uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
-        
-        Ipv4Address rxAddress = serverAddress[flow_input.dst];
+        // printf("flow %u sent\n", flow_input.flowId);
+        // uint16_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
+        uint16_t port = PORT_START[flow_input.dst]++; // get a new port number
+        if (port >= UINT16_MAX - 1) {
+            port = PORT_NUMBER_START;
+            PORT_START[flow_input.dst] = PORT_NUMBER_START;
+        }
+
+        Ptr<Node> rxNode = n.Get (flow_input.dst);
+        Ptr<Ipv4> ipv4 = rxNode->GetObject<Ipv4> ();
+        Ipv4InterfaceAddress rxInterface = ipv4->GetAddress (1, 0);
+        Ipv4Address rxAddress = rxInterface.GetLocal ();
+        // Ipv4Address rxAddress = serverAddress[flow_input.dst];
         // InetSocketAddress ad (rxAddress, flow_input.dport);
         InetSocketAddress ad (rxAddress, port);
         Address sinkAddress(ad);
@@ -1209,9 +1220,10 @@ int main(int argc, char *argv[])
     // maintain port number for each host
     for (uint32_t i = 0; i < node_num; i++){
         if (n.Get(i)->GetNodeType() == 0)
+            PORT_START[i] = 4444;
             for (uint32_t j = 0; j < node_num; j++){
                 if (n.Get(j)->GetNodeType() == 0)
-                    portNumder[i][j] = 10000; // each host pair use port number from 10000
+                    portNumder[i][j] = PORT_NUMBER_START; // each host pair use port number from 10000
             }
     }
 

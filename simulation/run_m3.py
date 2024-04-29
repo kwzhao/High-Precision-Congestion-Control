@@ -22,8 +22,6 @@ PACKET_PAYLOAD_SIZE 1000
 
 TOPOLOGY_FILE {local_dir}/{topo}.txt
 FLOW_FILE {root}/{trace}.txt
-FLOW_ON_PATH_FILE {root}/{trace}_on_path.txt
-FLOW_PATH_MAP_FILE {root}/{trace}_path_map.txt
 TRACE_FILE {local_dir}/{trace_track}.txt
 TRACE_OUTPUT_FILE {root}/mix_{topo}{failure}{config_specs}.tr
 FCT_OUTPUT_FILE {root}/fct_{topo}{failure}{config_specs}.txt
