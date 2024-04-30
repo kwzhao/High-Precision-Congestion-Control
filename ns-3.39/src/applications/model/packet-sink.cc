@@ -249,6 +249,14 @@ void PacketSink::HandleRead (Ptr<Socket> socket)
         { //EOF
           break;
         }
+      // FlowIdTag tag;
+      // uint32_t flowIdTmp = flowId;
+      // if (packet->PeekPacketTag (tag))
+      // {
+      //     printf("FlowIdTag found\n");
+      //     // Extract the flow ID from the packet
+      //     flowIdTmp = tag.GetFlowId();
+      // }
       m_totalRx += packet->GetSize ();
       if (InetSocketAddress::IsMatchingType (from))
         {
@@ -298,14 +306,6 @@ void PacketSink::HandleRead (Ptr<Socket> socket)
       if(TotalQueryBytes){
         if(m_totalRx >= TotalQueryBytes){
           double totalSize = m_totalRx ;//+ ((m_totalRx-1)/(1400.0)+1)*(64); // TODO: Add header sizes more precisely.
-          // FlowIdTag tag;
-          // uint32_t flowIdTmp = flowId;
-          // if (packet->PeekPacketTag (tag))
-          // {
-          //     printf("FlowIdTag found\n");
-          //     // Extract the flow ID from the packet
-          //     flowIdTmp = tag.GetFlowId();
-          // }
           if (m_recvAt.GetSeconds()!=0){
             m_flowFinishTrace(totalSize, m_recvAt.GetNanoSeconds(),true,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local_tag));
           }
