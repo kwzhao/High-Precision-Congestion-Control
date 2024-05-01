@@ -134,7 +134,7 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {}",
+            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {}",
             shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);

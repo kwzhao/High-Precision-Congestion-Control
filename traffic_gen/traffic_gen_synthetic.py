@@ -100,14 +100,19 @@ if __name__ == "__main__":
                     host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
         
-        if nhost==2 or enable_const:
-            ntc=1
+        if enable_const:
+            ntc=nhost-1
+            host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
         else:
-            ntc=random.randint(2, nhost*(nhost-1)//2)
-            host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
-            host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+            if nhost==2:
+                ntc=1
+            else:
+                ntc=random.randint(2, nhost*(nhost-1)//2)
+                host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
+                host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+                
         assert len(host_pair_list)==ntc
-        print("lr: ", bandwidth_list, "ntc: ", ntc)
+        print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
     
         host_list = []
         for i in range(ntc):

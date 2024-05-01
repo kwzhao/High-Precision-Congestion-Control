@@ -16,7 +16,6 @@ local_dir="%s/mix_m3"%(cur_dir)
 
 config_template="""ENABLE_QCN {enable_qcn}
 ENABLE_PFC {enable_pfc}
-USE_DYNAMIC_PFC_THRESHOLD 1
 
 PACKET_PAYLOAD_SIZE 1000
 
@@ -39,7 +38,6 @@ FAST_RECOVERY_TIMES 1
 RATE_AI {ai}Mb/s
 RATE_HAI {hai}Mb/s
 MIN_RATE 1000Mb/s
-MAX_RATE 10000Mb/s
 DCTCP_RATE_AI {dctcp_ai}Mb/s
 TIMELY_T_HIGH {timely_t_high}
 TIMELY_T_LOW {timely_t_low}

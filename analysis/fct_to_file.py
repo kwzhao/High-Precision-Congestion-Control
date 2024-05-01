@@ -31,14 +31,6 @@ if __name__ == "__main__":
     )
     parser.add_argument('--enable_debug', dest='enable_debug', action = 'store', type=int, default=0, help="enable debug for parameter sample space")
     parser.add_argument(
-        "-b",
-        dest="bw",
-        action="store",
-        type=int,
-        default=25,
-        help="bandwidth of edge link (Gbps)",
-    )
-    parser.add_argument(
         "--output_dir",
         dest="output_dir",
         action="store",
