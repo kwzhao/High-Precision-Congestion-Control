@@ -104,7 +104,6 @@ if __name__ == "__main__":
             ntc=1
         else:
             ntc=random.randint(2, nhost*(nhost-1)//2)
-            ntc=1
             host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
             host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
         assert len(host_pair_list)==ntc

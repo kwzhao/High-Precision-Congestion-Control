@@ -76,7 +76,7 @@ using namespace std;
 #define TCP_YEAH 29
 #define TCP_LINUX_RENO 30
 
-#define PORT_NUMBER_START 65500
+#define PORT_NUMBER_START 4444
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -868,7 +868,7 @@ int main(int argc, char *argv[])
 
     if (cc_mode < TCP_BBR)
         gen_tcp_traffic = false;
-        
+
     // set int_multi
     IntHop::multi = int_multi;
     // IntHeader::mode
