@@ -169,7 +169,7 @@ std::vector<Ipv4Address> serverAddress;
 std::unordered_map<uint32_t, unordered_map<uint32_t, uint16_t> > portNumder;
 
 struct FlowInput{
-    uint32_t flowId, src, dst, pg, maxPacketCount, port, dport;
+    uint64_t flowId, src, dst, pg, maxPacketCount, port, dport;
     double start_time;
     uint32_t idx;
 };
@@ -194,8 +194,8 @@ void ReadFlowInput(){
 void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool incast, uint32_t prior, uint32_t flowId, InetSocketAddress sip_socket, InetSocketAddress dip_socket)
 {
     // printf("flow %u finished\n", flowId);
-    uint64_t start = static_cast<uint32_t>(start_double);
-    uint64_t size = static_cast<uint32_t>(size_double);
+    uint64_t start = static_cast<uint64_t>(start_double);
+    uint64_t size = static_cast<uint64_t>(size_double);
     Ipv4Address sip = sip_socket.GetIpv4();
     Ipv4Address dip = dip_socket.GetIpv4();
     // std::cout << "Ipv4Address sip " << sip << ":" <<  sip_socket.GetPort() << ", dip " << dip << ":" <<  dip_socket.GetPort() << std::endl;
