@@ -53,7 +53,8 @@ using namespace std;
 # define REVERIE 111
 
 # define DCQCNCC 1
-# define INTCC 3
+# define POWERTCP 2
+# define HPCC 3
 # define TIMELYCC 7
 # define PINTCC 10
 
@@ -75,7 +76,7 @@ using namespace std;
 #define TCP_YEAH 29
 #define TCP_LINUX_RENO 30
 
-#define PORT_NUMBER_START 4444
+#define PORT_NUMBER_START 65500
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -870,7 +871,7 @@ int main(int argc, char *argv[])
     // IntHeader::mode
     if (cc_mode == TIMELYCC) // timely, use ts
         IntHeader::mode = IntHeader::TS;
-    else if (cc_mode == INTCC) // hpcc, powertcp, use int
+    else if (cc_mode == HPCC || cc_mode == POWERTCP) // hpcc, powertcp, use int
         IntHeader::mode = IntHeader::NORMAL;
     else if (cc_mode == PINTCC) // hpcc-pint
         IntHeader::mode = IntHeader::PINT;
@@ -879,6 +880,10 @@ int main(int argc, char *argv[])
     
     if (cc_mode < TCP_BBR)
         gen_tcp_traffic = false;
+    if (cc_mode == POWERTCP){
+        powertcp = true;
+        // thetapowertcp = true;
+    }
 
     // Set Pint
     if (cc_mode == PINTCC) {
@@ -1320,14 +1325,36 @@ int main(int argc, char *argv[])
         }
 
     }
+    else{
+        switch (cc_mode) {
+            case DCQCNCC:
+                printf("CC: DCQCN\n");
+                break;
+            case TIMELYCC:
+                printf("CC: Timely\n");
+                break;
+            case HPCC:
+                printf("CC: HPCC\n");
+                break;
+            case PINTCC:
+                printf("CC: PINT\n");
+                break;
+            case POWERTCP:
+                printf("CC: PowerTCP\n");
+                break;
+        }
+    }
     flow_input.idx = 0;
     if (flow_num > 0){
         ReadFlowInput();
         if (gen_tcp_traffic){
+            printf("TCP traffic\n");
             Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
         }
-        else
+        else{
+            printf("RDMA traffic\n");
             Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+        }
     }
     
     topof.close();

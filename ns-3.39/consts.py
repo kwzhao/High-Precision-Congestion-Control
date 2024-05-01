@@ -14,6 +14,7 @@ CC_DICT = {
     "dcqcn_paper_vwin": 1,
     "hp": 3,
     "timely_vwin": 7,
+    "powertcp": 2,
     "tcp_bbr": 15,
     "tcp_bic": 16,
     "tcp_cubic": 17,
@@ -29,7 +30,7 @@ CC_DICT = {
     "tcp_veno": 27,
     "tcp_westwood": 28,
     "tcp_yeah": 29,
-    "tcp_new_reno": 30
+    "tcp_linux_reno": 30
 }
 
 dctcp_k=[10,60,1]
