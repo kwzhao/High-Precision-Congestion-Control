@@ -69,7 +69,7 @@ if __name__ == "__main__":
     if type == 0:
         cmd = (
             "cat %s" % (file)
-            + " | awk '{if ($5==100 && $7+$8<"
+            + " | awk '{if ($7+$8<"
             + "%d" % time_limit
             + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4"
         )

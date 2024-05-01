@@ -214,7 +214,7 @@ void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool i
 	uint64_t standalone_fct = (base_rtt / 2) + tx_delay + rest_delay;
 	
 	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
-	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start, standalone_fct);
+	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start - 1000000000, standalone_fct);
 	fflush(fout);
 }
 
