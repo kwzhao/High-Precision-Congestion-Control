@@ -57,11 +57,6 @@ PacketSink::GetTypeId (void)
                    AddressValue (),
                    MakeAddressAccessor (&PacketSink::m_local),
                    MakeAddressChecker ())
-    .AddAttribute ("LocalTag",
-                   "The Address on which to Bind the rx socket.",
-                   AddressValue (),
-                   MakeAddressAccessor (&PacketSink::m_local_tag),
-                   MakeAddressChecker ())
     .AddAttribute ("Protocol",
                    "The type id of the protocol to use for the rx socket.",
                    TypeIdValue (UdpSocketFactory::GetTypeId ()),
@@ -169,6 +164,7 @@ void PacketSink::StartApplication ()    // Called at time specified by Start
       /* Modification */
       if (m_socket->Bind (m_local) == -1)
         {
+          std::cout << "2. Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort() << std::endl;
           NS_FATAL_ERROR ("Failed to bind socket");
         }
       /* Modification */
@@ -307,13 +303,13 @@ void PacketSink::HandleRead (Ptr<Socket> socket)
         if(m_totalRx >= TotalQueryBytes){
           double totalSize = m_totalRx ;//+ ((m_totalRx-1)/(1400.0)+1)*(64); // TODO: Add header sizes more precisely.
           if (m_recvAt.GetSeconds()!=0){
-            m_flowFinishTrace(totalSize, m_recvAt.GetNanoSeconds(),true,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local_tag));
+            m_flowFinishTrace(totalSize, m_recvAt.GetNanoSeconds(),true,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local));
           }
           else{
-            m_flowFinishTrace(totalSize, m_startTime.GetNanoSeconds(),false,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local_tag));
+            m_flowFinishTrace(totalSize, m_startTime.GetNanoSeconds(),false,sender_priority,flowId,InetSocketAddress::ConvertFrom(from),InetSocketAddress::ConvertFrom(m_local));
             // std::cout << "Flow finished. FCT = " << Simulator::Now().GetSeconds()-m_startTime.GetSeconds() << " seconds" << std::endl;
           }
-          // StopApplication();
+          StopApplication();
         }
       }
       /* Modification */

@@ -186,12 +186,11 @@ void BulkSendApplication::StartApplication (void) // Called at time specified by
           NS_ABORT_MSG_IF ((Inet6SocketAddress::IsMatchingType (m_peer) && InetSocketAddress::IsMatchingType (m_local)) ||
                            (InetSocketAddress::IsMatchingType (m_peer) && Inet6SocketAddress::IsMatchingType (m_local)),
                            "Incompatible peer and local address IP version");
-          std::cout << "1. Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort() << std::endl;
+          NS_LOG_DEBUG ("Bulk: Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort());
           ret = m_socket->Bind (m_local);
         }
       else
         {
-          std::cout << "2. Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort() << std::endl;
           if (Inet6SocketAddress::IsMatchingType (m_peer))
             {
               ret = m_socket->Bind6 ();
@@ -359,7 +358,6 @@ void BulkSendApplication::SendData (const Address &from, const Address &to)
   // Check if time to close (all sent)
   if (m_totBytes == m_maxBytes && m_connected)
     {
-      std::cout << "BulkSendApplication::SendData: " << m_totBytes << " bytes sent, closing connection" << std::endl;
       m_socket->Close ();
       // m_socket->ShutdownSend ();
       m_connected = false;

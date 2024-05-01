@@ -30,9 +30,9 @@ namespace ns3
 NS_LOG_COMPONENT_DEFINE("Ipv4EndPointDemux");
 
 Ipv4EndPointDemux::Ipv4EndPointDemux()
-    : m_ephemeral(65500),
+    : m_ephemeral(4444),
       m_portLast(65535),
-      m_portFirst(65500)
+      m_portFirst(4444)
 {
     NS_LOG_FUNCTION(this);
 }
@@ -168,7 +168,7 @@ Ipv4EndPointDemux::DeAllocate(Ipv4EndPoint* endPoint)
     {
         if (*i == endPoint)
         {
-            std::cout<<"Delete >>" << endPoint->GetLocalAddress() << ":" << endPoint->GetLocalPort()<<std::endl;
+            NS_LOG_DEBUG("Delete: " << endPoint->GetLocalAddress() << ":" << endPoint->GetLocalPort());
             delete endPoint;
             m_endPoints.erase(i);
             break;

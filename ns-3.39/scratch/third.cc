@@ -75,7 +75,7 @@ using namespace std;
 #define TCP_YEAH 29
 #define TCP_LINUX_RENO 30
 
-#define PORT_NUMBER_START 65500
+#define PORT_NUMBER_START 4444
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -265,7 +265,6 @@ void ScheduleFlowInputsTcp(FILE* fout){
         PacketSinkHelper sink ("ns3::TcpSocketFactory", ad);
         ApplicationContainer sinkApp = sink.Install (n.Get(flow_input.dst));
         sinkApp.Get(0)->SetAttribute("TotalQueryBytes", UintegerValue(flow_input.maxPacketCount));
-        sinkApp.Get(0)->SetAttribute("LocalTag", AddressValue(sinkAddress));
         sinkApp.Get(0)->SetAttribute("Local", AddressValue(sinkAddress));
         sinkApp.Get(0)->SetAttribute("priority", UintegerValue(0)); // ack packets are prioritized
         sinkApp.Get(0)->SetAttribute("priorityCustom", UintegerValue(0)); // ack packets are prioritized
@@ -1060,7 +1059,7 @@ int main(int argc, char *argv[])
                     // set ecn
                     NS_ASSERT_MSG(rate2kmin.find(rate) != rate2kmin.end(), "must set kmin for each link speed");
                     NS_ASSERT_MSG(rate2kmax.find(rate) != rate2kmax.end(), "must set kmax for each link speed");
-                    // NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
+                    NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
                     sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
                 }
 
@@ -1239,6 +1238,7 @@ int main(int argc, char *argv[])
         /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
         Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
         Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (1000)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
         Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (10))); //TimeValue (MicroSeconds (80))
@@ -1249,7 +1249,7 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
         Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
         Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
-        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (0)));
+        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
 
         switch (cc_mode) {
             case TCP_BBR:
