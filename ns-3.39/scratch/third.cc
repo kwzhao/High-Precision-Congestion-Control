@@ -73,9 +73,10 @@ using namespace std;
 #define TCP_VENO 27
 #define TCP_WESTWOOD 28
 #define TCP_YEAH 29
-#define TCP_NEW_RENO 30
+#define TCP_LINUX_RENO 30
 
-#define PORT_NUMBER_START 4444
+#define PORT_NUMBER_START 65500
+
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
@@ -221,26 +222,31 @@ void ScheduleFlowInputsTcp(FILE* fout){
     while (flow_input.idx < flow_num){
         // printf("flow %u sent\n", flow_input.flowId);
         // uint16_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
-        uint16_t port = PORT_START[flow_input.dst]++; // get a new port number
+        uint16_t port = PORT_START[flow_input.src]++; // get a new port number
         if (port >= UINT16_MAX - 1) {
             port = PORT_NUMBER_START;
-            PORT_START[flow_input.dst] = PORT_NUMBER_START;
+            PORT_START[flow_input.src] = PORT_NUMBER_START+1;
         }
 
-        Ptr<Node> rxNode = n.Get (flow_input.dst);
-        Ptr<Ipv4> ipv4 = rxNode->GetObject<Ipv4> ();
-        Ipv4InterfaceAddress rxInterface = ipv4->GetAddress (1, 0);
-        Ipv4Address rxAddress = rxInterface.GetLocal ();
-        // Ipv4Address rxAddress = serverAddress[flow_input.dst];
-        // InetSocketAddress ad (rxAddress, flow_input.dport);
-        InetSocketAddress ad (rxAddress, port);
+        uint16_t dport = PORT_START[flow_input.dst]++; // get a new port number
+        if (dport >= UINT16_MAX - 1) {
+            dport = PORT_NUMBER_START;
+            PORT_START[flow_input.dst] = PORT_NUMBER_START+1;
+        }
+
+        // Ptr<Node> rxNode = n.Get (flow_input.dst);
+        // Ptr<Ipv4> ipv4 = rxNode->GetObject<Ipv4> ();
+        // Ipv4InterfaceAddress rxInterface = ipv4->GetAddress (1, 0);
+        // Ipv4Address rxAddress = rxInterface.GetLocal ();
+        Ipv4Address rxAddress = serverAddress[flow_input.dst];
+        InetSocketAddress ad (rxAddress, dport);
         Address sinkAddress(ad);
 
         Ipv4Address txAddress = serverAddress[flow_input.src];
         InetSocketAddress adTx (txAddress, port);
         Address sinkAddressTx(adTx);
 
-        // std::cout << "Ipv4Address sip " << txAddress << ":" << port << ", dip " << rxAddress << ":" << flow_input.dport << std::endl;
+        // std::cout << "Ipv4Address sip " << txAddress << ":" << port << ", dip " << rxAddress << ":" << dport << std::endl;
 
         Ptr<BulkSendApplication> bulksend = CreateObject<BulkSendApplication>();
         bulksend->SetAttribute("Protocol", TypeIdValue(TcpSocketFactory::GetTypeId()));
@@ -249,17 +255,18 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("FlowId", UintegerValue(flow_input.flowId));
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
-        // bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
+        bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
         bulksend->SetAttribute("InitialCwnd", UintegerValue (maxBdp/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
         n.Get (flow_input.src)->AddApplication(bulksend);
 
-        PacketSinkHelper sink ("ns3::TcpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), port));
+        PacketSinkHelper sink ("ns3::TcpSocketFactory", ad);
         ApplicationContainer sinkApp = sink.Install (n.Get(flow_input.dst));
         sinkApp.Get(0)->SetAttribute("TotalQueryBytes", UintegerValue(flow_input.maxPacketCount));
         sinkApp.Get(0)->SetAttribute("LocalTag", AddressValue(sinkAddress));
+        sinkApp.Get(0)->SetAttribute("Local", AddressValue(sinkAddress));
         sinkApp.Get(0)->SetAttribute("priority", UintegerValue(0)); // ack packets are prioritized
         sinkApp.Get(0)->SetAttribute("priorityCustom", UintegerValue(0)); // ack packets are prioritized
         sinkApp.Get(0)->SetAttribute("flowId", UintegerValue(flow_input.flowId));
@@ -1053,7 +1060,7 @@ int main(int argc, char *argv[])
                     // set ecn
                     NS_ASSERT_MSG(rate2kmin.find(rate) != rate2kmin.end(), "must set kmin for each link speed");
                     NS_ASSERT_MSG(rate2kmax.find(rate) != rate2kmax.end(), "must set kmax for each link speed");
-                    NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
+                    // NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
                     sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
                 }
 
@@ -1220,7 +1227,7 @@ int main(int argc, char *argv[])
     // maintain port number for each host
     for (uint32_t i = 0; i < node_num; i++){
         if (n.Get(i)->GetNodeType() == 0)
-            PORT_START[i] = 4444;
+            PORT_START[i] = PORT_NUMBER_START;
             for (uint32_t j = 0; j < node_num; j++){
                 if (n.Get(j)->GetNodeType() == 0)
                     portNumder[i][j] = PORT_NUMBER_START; // each host pair use port number from 10000
@@ -1235,13 +1242,14 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
         Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (10))); //TimeValue (MicroSeconds (80))
+        Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(1)); // 1
         Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
         Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
         Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (6));  // Syn retry count
         Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
         Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
         Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
-        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
+        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (0)));
 
         switch (cc_mode) {
             case TCP_BBR:
@@ -1305,9 +1313,9 @@ int main(int argc, char *argv[])
                 printf("CC: YeAH\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
                 break;
-            case TCP_NEW_RENO:
-                printf("CC: Default TCP NewReno\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpNewReno::GetTypeId()));
+            case TCP_LINUX_RENO:
+                printf("CC: Default TCP Linux Reno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLinuxReno::GetTypeId()));
                 break;
         }
 

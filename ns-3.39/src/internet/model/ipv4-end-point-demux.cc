@@ -121,6 +121,7 @@ Ipv4EndPoint*
 Ipv4EndPointDemux::Allocate(Ptr<NetDevice> boundNetDevice, Ipv4Address address, uint16_t port)
 {
     NS_LOG_FUNCTION(this << address << port << boundNetDevice);
+    
     if (LookupLocal(boundNetDevice, address, port) || LookupLocal(nullptr, address, port))
     {
         NS_LOG_WARN("Duplicated endpoint.");
@@ -167,6 +168,7 @@ Ipv4EndPointDemux::DeAllocate(Ipv4EndPoint* endPoint)
     {
         if (*i == endPoint)
         {
+            std::cout<<"Delete >>" << endPoint->GetLocalAddress() << ":" << endPoint->GetLocalPort()<<std::endl;
             delete endPoint;
             m_endPoints.erase(i);
             break;
