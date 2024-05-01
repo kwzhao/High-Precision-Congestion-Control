@@ -2,7 +2,8 @@ import numpy as np
 
 # extra params, bdp, init_window,buffer_size, enable_pfc
 # bfsz=[20,50,10]
-bfsz=[10,10,10]
+# https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9288775
+bfsz=[100,100,10]
 # PFC threshold: [15, 45, 65]
 # fwin=[10, 30,1000]
 fwin=[18, 18, 1000]

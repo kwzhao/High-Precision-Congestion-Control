@@ -214,7 +214,7 @@ void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool i
 	uint64_t standalone_fct = (base_rtt / 2) + tx_delay + rest_delay;
 	
 	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
-	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start - 1000000000, standalone_fct);
+	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start, standalone_fct);
 	fflush(fout);
 }
 
@@ -893,6 +893,113 @@ int main(int argc, char *argv[])
         printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
     }
 
+    /* Applications Background*/
+    if (gen_tcp_traffic){
+        /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
+        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
+        Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
+        Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (10))); //TimeValue (MicroSeconds (80))
+        Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(1)); // 1
+        Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
+        Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
+        Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (6));  // Syn retry count
+        Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
+        Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
+        Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
+        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
+
+        switch (cc_mode) {
+            case TCP_BBR:
+                printf("CC: BBR\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
+                break;
+            case TCP_CUBIC:
+                printf("CC: CUBIC\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpCubic::GetTypeId()));
+                break;
+            case TCP_DCTCP:
+                printf("CC: DCTCP\n");
+                if (!enable_qcn) {
+                    std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
+                    exit(1);
+                }
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpDctcp::GetTypeId()));
+                Config::SetDefault("ns3::TcpSocketBase::UseEcn", StringValue("On"));
+                break;
+            case TCP_HIGH_SPEED:
+                printf("CC: HighSpeed\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHighSpeed::GetTypeId()));
+                break;
+            case TCP_HTCP:
+                printf("CC: HTCP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHtcp::GetTypeId()));
+                break;
+            case TCP_HYBLA:
+                printf("CC: Hybla\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHybla::GetTypeId()));
+                break;
+            case TCP_ILLINOIS:
+                printf("CC: Illinois\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
+                break;
+            case TCP_LED_BAT:
+                printf("CC: LEDBAT\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
+                break;
+            case TCP_LP:
+                printf("CC: LP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLp::GetTypeId()));
+                break;
+            case TCP_SCALABLE:
+                printf("CC: Scalable\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpScalable::GetTypeId()));
+                break;
+            case TCP_VEGAS:
+                printf("CC: Vegas\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
+                break;
+            case TCP_VENO:
+                printf("CC: Veno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
+                break;
+            case TCP_WESTWOOD:
+                printf("CC: Westwood+\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpWestwoodPlus::GetTypeId()));
+                break;
+            case TCP_YEAH:
+                printf("CC: YeAH\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
+                break;
+            case TCP_LINUX_RENO:
+                printf("CC: Default TCP Linux Reno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLinuxReno::GetTypeId()));
+                break;
+        }
+
+    }
+    else{
+        switch (cc_mode) {
+            case DCQCNCC:
+                printf("CC: DCQCN\n");
+                break;
+            case TIMELYCC:
+                printf("CC: Timely\n");
+                break;
+            case HPCC:
+                printf("CC: HPCC\n");
+                break;
+            case PINTCC:
+                printf("CC: PINT\n");
+                break;
+            case POWERTCP:
+                printf("CC: PowerTCP\n");
+                break;
+        }
+    }
+
     topof.open(topology_file.c_str());
     flowf.open(flow_file.c_str());
     tracef.open(trace_file.c_str());
@@ -1239,118 +1346,13 @@ int main(int argc, char *argv[])
             }
     }
 
-    /* Applications Background*/
-    if (gen_tcp_traffic){
-        /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
-        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
-        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (5)) );  //(MilliSeconds (5))
-        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
-        Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
-        Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
-        Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (10))); //TimeValue (MicroSeconds (80))
-        Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(1)); // 1
-        Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (buffer_size)); //1073725440
-        Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (buffer_size));
-        Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (6));  // Syn retry count
-        Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
-        Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
-        Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
-        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
-
-        switch (cc_mode) {
-            case TCP_BBR:
-                printf("CC: BBR\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
-                break;
-            case TCP_CUBIC:
-                printf("CC: CUBIC\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpCubic::GetTypeId()));
-                break;
-            case TCP_DCTCP:
-                printf("CC: DCTCP\n");
-                if (!enable_qcn) {
-                    std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
-                    exit(1);
-                }
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpDctcp::GetTypeId()));
-                Config::SetDefault("ns3::TcpSocketBase::UseEcn", StringValue("On"));
-                break;
-            case TCP_HIGH_SPEED:
-                printf("CC: HighSpeed\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHighSpeed::GetTypeId()));
-                break;
-            case TCP_HTCP:
-                printf("CC: HTCP\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHtcp::GetTypeId()));
-                break;
-            case TCP_HYBLA:
-                printf("CC: Hybla\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHybla::GetTypeId()));
-                break;
-            case TCP_ILLINOIS:
-                printf("CC: Illinois\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
-                break;
-            case TCP_LED_BAT:
-                printf("CC: LEDBAT\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
-                break;
-            case TCP_LP:
-                printf("CC: LP\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLp::GetTypeId()));
-                break;
-            case TCP_SCALABLE:
-                printf("CC: Scalable\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpScalable::GetTypeId()));
-                break;
-            case TCP_VEGAS:
-                printf("CC: Vegas\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
-                break;
-            case TCP_VENO:
-                printf("CC: Veno\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
-                break;
-            case TCP_WESTWOOD:
-                printf("CC: Westwood+\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpWestwoodPlus::GetTypeId()));
-                break;
-            case TCP_YEAH:
-                printf("CC: YeAH\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
-                break;
-            case TCP_LINUX_RENO:
-                printf("CC: Default TCP Linux Reno\n");
-                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLinuxReno::GetTypeId()));
-                break;
-        }
-
-    }
-    else{
-        switch (cc_mode) {
-            case DCQCNCC:
-                printf("CC: DCQCN\n");
-                break;
-            case TIMELYCC:
-                printf("CC: Timely\n");
-                break;
-            case HPCC:
-                printf("CC: HPCC\n");
-                break;
-            case PINTCC:
-                printf("CC: PINT\n");
-                break;
-            case POWERTCP:
-                printf("CC: PowerTCP\n");
-                break;
-        }
-    }
+    
     flow_input.idx = 0;
     if (flow_num > 0){
         ReadFlowInput();
         if (gen_tcp_traffic){
             printf("TCP traffic\n");
-            Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
+            Simulator::Schedule(Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
         }
         else{
             printf("RDMA traffic\n");
