@@ -164,7 +164,7 @@ void PacketSink::StartApplication ()    // Called at time specified by Start
       /* Modification */
       if (m_socket->Bind (m_local) == -1)
         {
-          std::cout << "2. Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort() << std::endl;
+          NS_LOG_DEBUG("Packet: Binding to local address " << InetSocketAddress::ConvertFrom(m_local).GetIpv4() << " port " << InetSocketAddress::ConvertFrom(m_local).GetPort());
           NS_FATAL_ERROR ("Failed to bind socket");
         }
       /* Modification */
