@@ -95,7 +95,7 @@ TcpSocketBase::GetTypeId()
             .AddAttribute("MaxSegLifetime",
                           "Maximum segment lifetime in seconds, use for TIME_WAIT state transition "
                           "to CLOSED state",
-                          DoubleValue(120), /* RFC793 says MSL=2 minutes*/
+                          DoubleValue(0), /* RFC793 says MSL=2 minutes*/
                           MakeDoubleAccessor(&TcpSocketBase::m_msl),
                           MakeDoubleChecker<double>(0))
             .AddAttribute("MaxWindowSize",
@@ -1153,6 +1153,9 @@ int
 TcpSocketBase::DoClose()
 {
     NS_LOG_FUNCTION(this);
+    std::cout << "DoClose: " << m_state << ", Socket " << m_endPoint->GetLocalAddress()
+                           << ":" << m_endPoint->GetLocalPort() << " to " <<  m_endPoint->GetPeerAddress() << ":"
+                           << m_endPoint->GetPeerPort() << std::endl;
     switch (m_state)
     {
     case SYN_RCVD:
@@ -1371,6 +1374,7 @@ TcpSocketBase::IsValidTcpSegment(const SequenceNumber32 seq,
 void
 TcpSocketBase::DoForwardUp(Ptr<Packet> packet, const Address& fromAddress, const Address& toAddress)
 {
+    NS_LOG_LOGIC("At state " << TcpStateName[m_state]);
     // in case the packet still has a priority tag attached, remove it
     SocketPriorityTag priorityTag;
     packet->RemovePacketTag(priorityTag);
@@ -1471,6 +1475,12 @@ TcpSocketBase::DoForwardUp(Ptr<Packet> packet, const Address& fromAddress, const
         EstimateRtt(tcpHeader);
         UpdateWindowSize(tcpHeader);
     }
+    // if (m_state == TIME_WAIT)
+    // {
+    //     // NS_LOG_INFO("TIME_WAIT -> CLOSED");
+    //     // m_state = CLOSED;
+    //     CloseAndNotify();
+    // }
 
     if (m_rWnd.Get() == 0 && m_persistEvent.IsExpired())
     { // Zero window: Enter persist state to send 1 byte to probe
@@ -2654,7 +2664,9 @@ void
 TcpSocketBase::ProcessLastAck(Ptr<Packet> packet, const TcpHeader& tcpHeader)
 {
     NS_LOG_FUNCTION(this << tcpHeader);
-
+    std::cout << "ProcessLastAck: " << m_state << ", Socket: " << m_endPoint->GetLocalAddress()
+                           << ":" << m_endPoint->GetLocalPort() << " to " << m_endPoint->GetPeerAddress() << ":"
+                           << m_endPoint->GetPeerPort() << std::endl;
     // Extract the flags. PSH and URG are disregarded.
     uint8_t tcpflags = tcpHeader.GetFlags() & ~(TcpHeader::PSH | TcpHeader::URG);
 
@@ -2666,6 +2678,7 @@ TcpSocketBase::ProcessLastAck(Ptr<Packet> packet, const TcpHeader& tcpHeader)
     {
         if (tcpHeader.GetSequenceNumber() == m_tcb->m_rxBuffer->NextRxSequence())
         { // This ACK corresponds to the FIN sent. This socket closed peacefully.
+            std::cout << "ACK received" << std::endl;
             CloseAndNotify();
         }
     }
@@ -2675,6 +2688,7 @@ TcpSocketBase::ProcessLastAck(Ptr<Packet> packet, const TcpHeader& tcpHeader)
     }
     else if (tcpflags == (TcpHeader::FIN | TcpHeader::ACK) || tcpflags == TcpHeader::RST)
     {
+        std::cout << "FIN_ACK or RST received" << std::endl;
         CloseAndNotify();
     }
     else
@@ -2761,6 +2775,7 @@ TcpSocketBase::DoPeerClose()
         m_dataRetrCount = m_dataRetries; // prevent endless FINs
         NS_LOG_LOGIC("TcpSocketBase " << this << " scheduling LATO1");
         Time lastRto = m_rtt->GetEstimate() + Max(m_clockGranularity, m_rtt->GetVariation() * 4);
+        std::cout << "LastAckTimeout: " << lastRto << std::endl;
         m_lastAckEvent = Simulator::Schedule(lastRto, &TcpSocketBase::LastAckTimeout, this);
     }
 }
@@ -4042,6 +4057,8 @@ TcpSocketBase::LastAckTimeout()
     m_lastAckEvent.Cancel();
     if (m_state == LAST_ACK)
     {
+        std::cout << "m_dataRetrCount: " << 
+        m_dataRetrCount << std::endl;
         if (m_dataRetrCount == 0)
         {
             NS_LOG_INFO("LAST-ACK: No more data retries available. Dropping connection");
