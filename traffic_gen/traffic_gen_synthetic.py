@@ -100,11 +100,12 @@ if __name__ == "__main__":
                     host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
         
-        if enable_const:
-            # ntc=nhost-1
-            # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
-            ntc=1
-        else:
+        # if enable_const:
+        #     # ntc=nhost-1
+        #     # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
+        #     ntc=1
+        # else:
+        if True:
             if nhost==2:
                 ntc=1
             else:
@@ -265,9 +266,12 @@ if __name__ == "__main__":
             np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
         
         else:
-            end_time=float(t) / UNIT_G
-            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
-            print("utilization: ",np.round(utilization, 3))
+            # end_time=float(t) / UNIT_G
+            end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
+            # utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
+            # print("utilization: ",np.round(utilization, 3))
+            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
+            print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
             print("stats:", n_flows_total,end_time)
             stats={
                 "n_flows": n_flows_total,
