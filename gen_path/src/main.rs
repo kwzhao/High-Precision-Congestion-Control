@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<()> {
         shard: vec![0],
         n_flows: vec![20000],
         n_hosts: vec![3],
-        shard_cc: (0..21).collect(),
+        shard_cc: (0..20).collect(),
     };
 
     // no need to change
