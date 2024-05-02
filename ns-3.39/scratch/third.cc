@@ -897,7 +897,7 @@ int main(int argc, char *argv[])
     if (gen_tcp_traffic){
         /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
         Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
-        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (200)) );  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
