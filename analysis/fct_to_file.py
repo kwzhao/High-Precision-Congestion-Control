@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # ofile.close()
 
     if not enable_debug:
-        # os.system("rm %s" % (file))
+        os.system("rm %s" % (file))
         os.system(
             "rm %s"
             % ("%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs))
