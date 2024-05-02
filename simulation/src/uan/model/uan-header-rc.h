@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
@@ -18,358 +17,502 @@
  * Author: Leonard Tracy <lentracy@gmail.com>
  */
 
-
 #ifndef UAN_HEADER_RC_H
 #define UAN_HEADER_RC_H
 
 #include "ns3/header.h"
+#include "ns3/mac8-address.h"
 #include "ns3/nstime.h"
-#include "ns3/uan-address.h"
 
 #include <set>
 
-namespace ns3 {
+namespace ns3
+{
 
 /**
- * \class UanHeaderRcData
+ * \ingroup uan
  *
- * \brief Extra data header information
+ * Extra data header information.
  *
- * Adds prop. delay measure, and frame number info to
- * transmitted data packet
+ * Adds propagation delay measure, and frame number info to
+ * transmitted data packet.
  */
 class UanHeaderRcData : public Header
 {
-public:
-  UanHeaderRcData ();
-  /**
-   * \param frameNum Data frame # of reservation being transmitted
-   * \param propDelay  Measured propagation delay found in handshaking
-   * \note Prop. delay is transmitted with 16 bits and ms accuracy
-   */
-  UanHeaderRcData (uint8_t frameNum, Time propDelay);
-  virtual ~UanHeaderRcData ();
+  public:
+    /** Default constructor */
+    UanHeaderRcData();
+    /**
+     * Constructor.
+     *
+     * \param frameNum Data frame # of reservation being transmitted.
+     * \param propDelay  Measured propagation delay found in handshaking.
+     * \note Prop. delay is transmitted with 16 bits and ms accuracy.
+     */
+    UanHeaderRcData(uint8_t frameNum, Time propDelay);
+    /** Destructor */
+    ~UanHeaderRcData() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param frameNum Data frame # of reservation being transmitted
-   */
-  void SetFrameNo (uint8_t frameNum);
-  /**
-   * \param propDelay Measured propagation delay found in handshaking
-   * \note Prop. delay is transmitted with 16 bits and ms accuracy
-   */
-  void SetPropDelay (Time propDelay);
-  /**
-   * \returns Data frame # of reservation being transmitted
-   */
-  uint8_t GetFrameNo (void) const;
-  /**
-   * \returns Measured propagation delay found in handshaking
-   * \note Prop. delay is transmitted with 16 bits and ms accuracy
-   */
-  Time GetPropDelay (void) const;
+    /**
+     * Set the frame number of the reservation being transmitted.
+     *
+     * \param frameNum The data frame number.
+     */
+    void SetFrameNo(uint8_t frameNum);
+    /**
+     * Set the propagation delay as found in handshaking.
+     *
+     * \param propDelay The measured propagation delay.
+     * \note Prop. delay is transmitted with 16 bits and ms accuracy.
+     */
+    void SetPropDelay(Time propDelay);
+    /**
+     * Get the frame number of the reservation being transmitted.
+     *
+     * \return The data frame number.
+     */
+    uint8_t GetFrameNo() const;
+    /**
+     * Get the propagation delay found in handshaking.
+     *
+     * \return The measured propagation delay.
+     * \note Prop. delay is transmitted with 16 bits and ms accuracy
+     */
+    Time GetPropDelay() const;
+    /**
+     * Specialized Print with Time::Unit declared.
+     *
+     * \param os ostream.
+     * \param unit Time unit.
+     */
+    void Print(std::ostream& os, Time::Unit unit) const;
 
-  // Inherrited methods
-  virtual uint32_t GetSerializedSize (void) const;
-  virtual void Serialize (Buffer::Iterator start) const;
-  virtual uint32_t Deserialize (Buffer::Iterator start);
-  virtual void Print (std::ostream &os) const;
-  virtual TypeId GetInstanceTypeId (void) const;
+    // Inherited methods
+    uint32_t GetSerializedSize() const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+    void Print(std::ostream& os) const override;
+    TypeId GetInstanceTypeId() const override;
 
-private:
-  uint8_t m_frameNo;
-  Time m_propDelay;
-};
+  private:
+    uint8_t m_frameNo; //!< Data frame number.
+    Time m_propDelay;  //!< Propagation delay.
+
+}; // class UanHeaderRcData
 
 /**
- * \class UanHeaderRcRts
+ * \ingroup uan
  *
- * \brief RTS header
+ * RTS header.
  *
- * Contains frame #, retry #, # frames, length, and timestamp
+ * Contains frame number, retry number, number of frames, length, and timestamp.
  */
 class UanHeaderRcRts : public Header
 {
-public:
-  UanHeaderRcRts ();
-  /**
-   * \param frameNo Reservation frame #
-   * \param retryNo Retry # of RTS packet
-   * \param noFrames # of data frames in reservation
-   * \param length # of bytes (including headers) in data
-   * \param ts RTS TX timestamp
-   * \note Timestamp is serialized into 32 bits with ms accuracy
-   */
-  UanHeaderRcRts (uint8_t frameNo, uint8_t retryNo, uint8_t noFrames, uint16_t length, Time ts);
-  virtual ~UanHeaderRcRts ();
+  public:
+    /** Default constructor */
+    UanHeaderRcRts();
+    /**
+     * Constructor.
+     *
+     * \param frameNo Reservation frame number.
+     * \param retryNo Retry number of RTS packet.
+     * \param noFrames Number of data frames in reservation.
+     * \param length Number of bytes (including headers) in data.
+     * \param ts RTS TX timestamp.
+     * \note Timestamp is serialized into 32 bits with ms accuracy.
+     */
+    UanHeaderRcRts(uint8_t frameNo, uint8_t retryNo, uint8_t noFrames, uint16_t length, Time ts);
+    /** Destructor */
+    ~UanHeaderRcRts() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param fno TX frame #
-   */
-  void SetFrameNo (uint8_t fno);
-  /**
-   * \param no Number of data frames included in this reservation request
-   */
-  void SetNoFrames (uint8_t no);
-  /**
-   * \param timeStamp RTS transmission time
-   */
-  void SetTimeStamp (Time timeStamp);
-  /**
-   * \param length Total number of data bytes in reservation (including headers)
-   * \note Timestamp is serialized with 32 bits in ms precision
-   */
-  void SetLength (uint16_t length);
-  /**
-   * \param no Retry number of this RTS (Used to match timestamp to correctly received RTS)
-   */
-  void SetRetryNo (uint8_t no);
+    /**
+     * Set the frame number.
+     *
+     * \param fno TX frame number
+     */
+    void SetFrameNo(uint8_t fno);
+    /**
+     * Set the number of data frames included in this reservation request.
+     *
+     * \param no Number of frames.
+     */
+    void SetNoFrames(uint8_t no);
+    /**
+     * Set RTS transmission time.
+     *
+     * \param timeStamp The RTS transmission time.
+     */
+    void SetTimeStamp(Time timeStamp);
+    /**
+     * Set the number of data bytes in the reservation.
+     *
+     * \param length Total number of data bytes in reservation (including headers).
+     * \note Timestamp is serialized with 32 bits in ms precision.
+     */
+    void SetLength(uint16_t length);
+    /**
+     * Set the retry number of this RTS packet.
+     *
+     * This is used to match timestamp to correctly received RTS.
+     *
+     * \param no Retry number.
+     */
+    void SetRetryNo(uint8_t no);
 
-  /**
-   * \returns Frame #
-   */
-  uint8_t GetFrameNo (void) const;
-  /**
-   * \returns # of data frames in reservation
-   */
-  uint8_t GetNoFrames (void) const;
-  /**
-   * \returns TX time of the RTS packet
-   * \note Timestamp is serialized with 32 bits in ms precision
-   */
-  Time GetTimeStamp (void) const;
-  /**
-   * \returns Total # of bytes in data packets for reservation (including headers)
-   */
-  uint16_t GetLength (void) const;
-  /**
-   * \returns Retry number of this RTS packet
-   */
-  uint8_t GetRetryNo (void) const;
+    /**
+     * Get the frame number.
+     *
+     * \return The frame number.
+     */
+    uint8_t GetFrameNo() const;
+    /**
+     * Get the number of data frames in the reservation.
+     *
+     * \return The number of data frames.
+     */
+    uint8_t GetNoFrames() const;
+    /**
+     * Get the transmit timestamp of this RTS packet.
+     *
+     * \return The TX time.
+     * \note Timestamp is serialized with 32 bits in ms precision.
+     */
+    Time GetTimeStamp() const;
+    /**
+     * Get the total number of bytes in the reservation, including headers.
+     *
+     * \return Total number of bytes in data packets for reservation.
+     */
+    uint16_t GetLength() const;
+    /**
+     * Get the retry number of this RTS packet.
+     *
+     * \return The retry number.
+     */
+    uint8_t GetRetryNo() const;
+    /**
+     * Specialized Print with Time::Unit declared.
+     *
+     * \param os ostream.
+     * \param unit Time unit.
+     */
+    void Print(std::ostream& os, Time::Unit unit) const;
 
-  // Inherrited methods
-  virtual uint32_t GetSerializedSize (void) const;
-  virtual void Serialize (Buffer::Iterator start) const;
-  virtual uint32_t Deserialize (Buffer::Iterator start);
-  virtual void Print (std::ostream &os) const;
-  virtual TypeId GetInstanceTypeId (void) const;
+    // Inherited methods
+    uint32_t GetSerializedSize() const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+    void Print(std::ostream& os) const override;
+    TypeId GetInstanceTypeId() const override;
 
-private:
-  uint8_t m_frameNo;
-  uint8_t m_noFrames;
-  uint16_t m_length;
-  Time m_timeStamp;
-  uint8_t m_retryNo;
-};
+  private:
+    uint8_t m_frameNo;  //!< Reservation frame number.
+    uint8_t m_noFrames; //!< Number of data frames in reservation.
+    uint16_t m_length;  //!< Number of bytes (including headers) in data.
+    Time m_timeStamp;   //!< RTS TX timestamp.
+    uint8_t m_retryNo;  //!< Retry number of RTS packet.
+
+}; // class UanHeaderRcRts
 
 /**
- * \class UanHeaderRcCtsGlobal
+ * \ingroup uan
  *
- * \brief Cycle broadcast information for
+ * Cycle broadcast information.
+ *
+ * This includes the rate number, retry rate and window time.
  */
-
-
 class UanHeaderRcCtsGlobal : public Header
 {
-public:
-  /**
-   * \brief Create UanHeaderRcCtsGlobal with fields zeroed out
-   */
-  UanHeaderRcCtsGlobal ();
-  /**
-   * \brief Create object with given window time, time stamp, rate, and retry rate.
-   * \param wt Window time
-   * \param ts Timestamp
-   * \param rate Rate number
-   * \param retryRate  Retry rate value
-   */
-  UanHeaderRcCtsGlobal (Time wt, Time ts, uint16_t rate, uint16_t retryRate);
-  ~UanHeaderRcCtsGlobal ();
+  public:
+    /** Default constructor */
+    UanHeaderRcCtsGlobal();
+    /**
+     * Constructor
+     *
+     * \param wt Window time.
+     * \param ts Timestamp.
+     * \param rate Rate number.
+     * \param retryRate  Retry rate value.
+     */
+    UanHeaderRcCtsGlobal(Time wt, Time ts, uint16_t rate, uint16_t retryRate);
+    /** Destructor */
+    ~UanHeaderRcCtsGlobal() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param rate Rate number corresponding to data rate of current cycle
-   */
-  void SetRateNum (uint16_t rate);
-  /**
-   * \param rate Retry rate number for current cycle
-   */
-  void SetRetryRate (uint16_t rate);
-  /**
-   * \param t Time duration following blocking time to allow RTS transmissions
-   */
-  void SetWindowTime (Time t);
+    /**
+     * Set the rate number corresponding to data rate of current cycle.
+     * \param rate The rate number.
+     */
+    void SetRateNum(uint16_t rate);
+    /**
+     * Set the retry rate number for the current cycle.
+     * \param rate The retry rate number
+     */
+    void SetRetryRate(uint16_t rate);
+    /**
+     * Set the window time (time duration following blocking time
+     * to allow RTS transmissions).
+     *
+     * \param t The window time.
+     */
+    void SetWindowTime(Time t);
 
-  /**
-   * \param timeStamp Time of CTS transmission
-   */
-  void SetTxTimeStamp (Time timeStamp);
+    /**
+     * Set the CTS timestamp.
+     *
+     * \param timeStamp The time of CTS transmission.
+     */
+    void SetTxTimeStamp(Time timeStamp);
 
-  /**
-   * \returns Rate # corresponding to data rate of current cycle
-   */
-  uint16_t GetRateNum (void) const;
-  /**
-   * \returns retry rate # of retry rate for current cycle
-   */
-  uint16_t GetRetryRate (void) const;
-  /**
-   * \returns Time duration after blocking time allowed for RTS transmissions
-   */
-  Time GetWindowTime (void) const;
-  /**
-   * \returns Timestamp of CTS transmission
-   */
-  Time GetTxTimeStamp (void) const;
+    /**
+     * Get the data rate number.
+     *
+     * \return The rate number.
+     */
+    uint16_t GetRateNum() const;
+    /**
+     * Get the retry rate number.
+     *
+     * \return The retry rate number.
+     */
+    uint16_t GetRetryRate() const;
+    /**
+     * Get the window time (time duration following blocking time
+     * to allow RTS transmissions).
+     *
+     * \return The window time.
+     */
+    Time GetWindowTime() const;
+    /**
+     * Get the CTS transmit timestamp.
+     *
+     * \return The timestamp.
+     */
+    Time GetTxTimeStamp() const;
+    /**
+     * Specialized Print with Time::Unit declared.
+     *
+     * \param os ostream.
+     * \param unit Time unit.
+     */
+    void Print(std::ostream& os, Time::Unit unit) const;
 
-  // Inherrited methods
-  virtual uint32_t GetSerializedSize (void) const;
-  virtual void Serialize (Buffer::Iterator start) const;
-  virtual uint32_t Deserialize (Buffer::Iterator start);
-  virtual void Print (std::ostream &os) const;
-  virtual TypeId GetInstanceTypeId (void) const;
+    // Inherited methods
+    uint32_t GetSerializedSize() const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+    void Print(std::ostream& os) const override;
+    TypeId GetInstanceTypeId() const override;
 
-private:
-  Time m_timeStampTx;
-  Time m_winTime;
-  uint16_t m_retryRate;
-  uint16_t m_rateNum;
-};
+  private:
+    Time m_timeStampTx;   //!< Timestamp.
+    Time m_winTime;       //!< Window time.
+    uint16_t m_retryRate; //!< Retry rate.
+    uint16_t m_rateNum;   //!< Rate number.
+
+}; // class UanHeaderRcCtsGlobal
+
 /**
- * \class UanHeaderRcCts
+ * \ingroup uan
  *
- * \brief CTS header
+ * CTS header
  *
  * Includes RTS RX time, CTS TX time, delay until TX, RTS blocking period,
  * RTS tx period, rate #, and retry rate #
  */
-
 class UanHeaderRcCts : public Header
 {
-public:
-  UanHeaderRcCts ();
-  /**
-   * \param frameNo Resrvation frame # being cleared
-   * \param retryNo Retry # of received RTS packet
-   * \param rtsTs RX time of RTS packet at gateway
-   * \param delay Delay until transmission
-   * \param addr Destination of CTS packet
-   * \note Times are serialized, with ms precission, into 32 bit fields.
-   */
-  UanHeaderRcCts (uint8_t frameNo, uint8_t retryNo, Time rtsTs, Time delay, UanAddress addr);
-  virtual ~UanHeaderRcCts ();
+  public:
+    /** Default constructor */
+    UanHeaderRcCts();
+    /**
+     * Constructor
+     *
+     * \param frameNo Reservation frame # being cleared.
+     * \param retryNo Retry # of received RTS packet.
+     * \param rtsTs RX time of RTS packet at gateway.
+     * \param delay Delay until transmission.
+     * \param addr Destination of CTS packet.
+     * \note Times are serialized, with ms precision, into 32 bit fields.
+     */
+    UanHeaderRcCts(uint8_t frameNo, uint8_t retryNo, Time rtsTs, Time delay, Mac8Address addr);
+    /** Destructor */
+    ~UanHeaderRcCts() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param frameNo Frame # of RTS being cleared
-   */
-  void SetFrameNo (uint8_t frameNo);
-  /**
-   * \param timeStamp Time of RTS reception
-   */
-  void SetRtsTimeStamp (Time timeStamp);
-  /**
-   * \param delay Time duration, from CTS TX, before first data frame arrival
-   */
-  void SetDelayToTx (Time delay);
-  /**
-   * \param no Retry number of RTS frame being cleared
-   */
-  void SetRetryNo (uint8_t no);
-  /**
-   * \param addr Destination for scheduling info
-   */
-  void SetAddress (UanAddress addr);
+    /**
+     * Set the RTS frame number being cleared.
+     *
+     * \param frameNo The frame number.
+     */
+    void SetFrameNo(uint8_t frameNo);
+    /**
+     * Set the timestamp for RTS reception.
+     *
+     * \param timeStamp The timestamp.
+     */
+    void SetRtsTimeStamp(Time timeStamp);
+    /**
+     * Set the time delay from CTS transmission to first data frame arrival.
+     *
+     * \param delay The delay time.
+     */
+    void SetDelayToTx(Time delay);
+    /**
+     * Set the retry number of the RTS frame being cleared.
+     *
+     * \param no The retry number.
+     */
+    void SetRetryNo(uint8_t no);
+    /**
+     * Set the destination address, for scheduling info.
+     *
+     * \param addr The destination address.
+     */
+    void SetAddress(Mac8Address addr);
 
-  /**
-   * \returns Frame # of RTS being cleared
-   */
-  uint8_t GetFrameNo (void) const;
-  /**
-   * \returns RX time of RTS being cleared
-   */
-  Time GetRtsTimeStamp (void) const;
-  /**
-   * \returns Delay from TX time of CTS packet until arrival of first data frame
-   */
-  Time GetDelayToTx (void) const;
-  /**
-   * \returns Retry # of RTS packet being cleared
-   */
-  uint8_t GetRetryNo (void) const;
-  /**
-   * \returns Destination for scheduling info
-   */
-  UanAddress GetAddress (void) const;
+    /**
+     * Get the frame number of the RTS being cleared.
+     *
+     * \return The frame number.
+     */
+    uint8_t GetFrameNo() const;
+    /**
+     * Get the receive time of the RTS being cleared.
+     *
+     * \return The RX time.
+     */
+    Time GetRtsTimeStamp() const;
+    /**
+     * Get the time delay from TX time of CTS packet until
+     * arrival of first data frame.
+     *
+     * \return The delay time.
+     */
+    Time GetDelayToTx() const;
+    /**
+     * Get the retry number of the RTS packet being cleared.
+     *
+     * \return The retry number
+     */
+    uint8_t GetRetryNo() const;
+    /**
+     * Get the destination address, for scheduling info.
+     *
+     * \return The destination address.
+     */
+    Mac8Address GetAddress() const;
+    /**
+     * Specialized Print with Time::Unit declared.
+     *
+     * \param os ostream.
+     * \param unit Time unit.
+     */
+    void Print(std::ostream& os, Time::Unit unit) const;
 
-  // Inherrited methods
-  virtual uint32_t GetSerializedSize (void) const;
-  virtual void Serialize (Buffer::Iterator start) const;
-  virtual uint32_t Deserialize (Buffer::Iterator start);
-  virtual void Print (std::ostream &os) const;
-  virtual TypeId GetInstanceTypeId (void) const;
+    // Inherited methods
+    uint32_t GetSerializedSize() const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+    void Print(std::ostream& os) const override;
+    TypeId GetInstanceTypeId() const override;
 
-private:
-  uint8_t m_frameNo;
-  Time m_timeStampRts;
-  uint8_t m_retryNo;
-  Time m_delay;
-  UanAddress m_address;
-};
+  private:
+    uint8_t m_frameNo;     //!< Reservation frame number being cleared.
+    Time m_timeStampRts;   //!< RX time of RTS packet at gateway.
+    uint8_t m_retryNo;     //!< Retry number of received RTS packet.
+    Time m_delay;          //!< Delay until transmission.
+    Mac8Address m_address; //!< Destination of CTS packet.
+
+}; // class UanHeaderRcCts
 
 /**
- * \class UanHeaderRcAck
- * \brief Header used for ACK packets by protocol ns3::UanMacRc
+ * \ingroup uan
+ *
+ * Header used for ACK packets by protocol UanMacRc
  */
 class UanHeaderRcAck : public Header
 {
-public:
-  UanHeaderRcAck ();
-  virtual ~UanHeaderRcAck ();
+  public:
+    /** Default constructor */
+    UanHeaderRcAck();
+    /** Destructor */
+    ~UanHeaderRcAck() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param frameNo Frame # of reservation being acknowledged
-   */
-  void SetFrameNo (uint8_t frameNo);
-  /**
-   * \param frame Data frame # being nacked
-   */
-  void AddNackedFrame (uint8_t frame);
+    /**
+     * Set the frame number of the reservation being acknowledged.
+     *
+     * \param frameNo The frame number.
+     */
+    void SetFrameNo(uint8_t frameNo);
+    /**
+     * NACK a frame.
+     *
+     * \param frame The data frame number being NACKed.
+     */
+    void AddNackedFrame(uint8_t frame);
 
-  /**
-   * \returns Set of nacked frames
-   */
-  const std::set<uint8_t> &GetNackedFrames (void) const;
-  /**
-   * \returns Reservation frame # being acknowledged.
-   */
-  uint8_t GetFrameNo (void) const;
-  /**
-   * \returns Number of data frames being NACKED
-   */
-  uint8_t GetNoNacks (void) const;
+    /**
+     * Get the set of NACK'ed frames.
+     *
+     * \return The set of NACK'ed frames.
+     */
+    const std::set<uint8_t>& GetNackedFrames() const;
+    /**
+     * Get the reservation frame number being ACKed.
+     *
+     * \return The frame number.
+     */
+    uint8_t GetFrameNo() const;
+    /**
+     * Get the number of data frames being NACKed.
+     *
+     * \return The number of NACKed frames.
+     */
+    uint8_t GetNoNacks() const;
 
-  // Inherrited methods
-  virtual uint32_t GetSerializedSize (void) const;
-  virtual void Serialize (Buffer::Iterator start) const;
-  virtual uint32_t Deserialize (Buffer::Iterator start);
-  virtual void Print (std::ostream &os) const;
-  virtual TypeId GetInstanceTypeId (void) const;
+    // Inherited methods
+    uint32_t GetSerializedSize() const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+    void Print(std::ostream& os) const override;
+    TypeId GetInstanceTypeId() const override;
 
-private:
-  uint8_t m_frameNo;
-  std::set<uint8_t> m_nackedFrames;
+  private:
+    uint8_t m_frameNo;                //!< Next frame number.
+    std::set<uint8_t> m_nackedFrames; //!< Marker for nacked frames.
 
-};
+}; // class UanHeaderRcAck
 
-}
+} // namespace ns3
 
 #endif /* UAN_HEADER_RC_H */

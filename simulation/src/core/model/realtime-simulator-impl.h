@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 University of Washington
  *
@@ -19,108 +18,217 @@
 #ifndef REALTIME_SIMULATOR_IMPL_H
 #define REALTIME_SIMULATOR_IMPL_H
 
-#include "simulator-impl.h"
-#include "system-thread.h"
-
-#include "scheduler.h"
-#include "synchronizer.h"
-#include "event-impl.h"
-
-#include "ptr.h"
 #include "assert.h"
+#include "event-impl.h"
 #include "log.h"
-#include "system-mutex.h"
+#include "ptr.h"
+#include "scheduler.h"
+#include "simulator-impl.h"
+#include "synchronizer.h"
 
 #include <list>
+#include <mutex>
+#include <thread>
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup realtime
+ * ns3::RealtimeSimulatorImpl declaration.
+ */
+
+namespace ns3
+{
 
 /**
  * \ingroup simulator
+ * \defgroup realtime Realtime Simulator
+ *
+ * Realtime simulator implementation.
+ */
+
+/**
+ * \ingroup realtime
+ *
+ * Realtime version of SimulatorImpl.
  */
 class RealtimeSimulatorImpl : public SimulatorImpl
 {
-public:
-  static TypeId GetTypeId (void);
+  public:
+    /**
+     * Get the registered TypeId for this class.
+     * \returns The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * Enumeration of the types of packets supported in the class.
-   *
-   */
-  enum SynchronizationMode {
-    SYNC_BEST_EFFORT, /** Make a best effort to keep synced to real-time */
-    SYNC_HARD_LIMIT, /** Keep to real-time within a tolerance or die trying */
-  };
+    /**
+     * What to do when we can't maintain real time synchrony.
+     */
+    enum SynchronizationMode
+    {
+        /**
+         * Make a best effort to keep synced to real-time.
+         *
+         * If we fall behind, keep going.
+         */
+        SYNC_BEST_EFFORT,
+        /**
+         * Keep to real time within the hard limit tolerance configured
+         * with SetHardLimit, or die trying.
+         *
+         * Falling behind by more than the hard limit tolerance triggers
+         * a fatal error.
+         * \see SetHardLimit
+         */
+        SYNC_HARD_LIMIT,
+    };
 
-  RealtimeSimulatorImpl ();
-  ~RealtimeSimulatorImpl ();
+    /** Constructor. */
+    RealtimeSimulatorImpl();
+    /** Destructor. */
+    ~RealtimeSimulatorImpl() override;
 
-  virtual void Destroy ();
-  virtual bool IsFinished (void) const;
-  virtual void Stop (void);
-  virtual void Stop (Time const &time);
-  virtual EventId Schedule (Time const &time, EventImpl *event);
-  virtual void ScheduleWithContext (uint32_t context, Time const &time, EventImpl *event);
-  virtual EventId ScheduleNow (EventImpl *event);
-  virtual EventId ScheduleDestroy (EventImpl *event);
-  virtual void Remove (const EventId &ev);
-  virtual void Cancel (const EventId &ev);
-  virtual bool IsExpired (const EventId &ev) const;
-  virtual void Run (void);
-  virtual Time Now (void) const;
-  virtual Time GetDelayLeft (const EventId &id) const;
-  virtual Time GetMaximumSimulationTime (void) const;
-  virtual void SetScheduler (ObjectFactory schedulerFactory);
-  virtual uint32_t GetSystemId (void) const; 
-  virtual uint32_t GetContext (void) const;
+    // Inherited from SimulatorImpl
+    void Destroy() override;
+    bool IsFinished() const override;
+    void Stop() override;
+    void Stop(const Time& delay) override;
+    EventId Schedule(const Time& delay, EventImpl* event) override;
+    void ScheduleWithContext(uint32_t context, const Time& delay, EventImpl* event) override;
+    EventId ScheduleNow(EventImpl* event) override;
+    EventId ScheduleDestroy(EventImpl* event) override;
+    void Remove(const EventId& ev) override;
+    void Cancel(const EventId& ev) override;
+    bool IsExpired(const EventId& ev) const override;
+    void Run() override;
+    Time Now() const override;
+    Time GetDelayLeft(const EventId& id) const override;
+    Time GetMaximumSimulationTime() const override;
+    void SetScheduler(ObjectFactory schedulerFactory) override;
+    uint32_t GetSystemId() const override;
+    uint32_t GetContext() const override;
+    uint64_t GetEventCount() const override;
 
-  void ScheduleRealtimeWithContext (uint32_t context, Time const &time, EventImpl *event);
-  void ScheduleRealtime (Time const &time, EventImpl *event);
-  void ScheduleRealtimeNowWithContext (uint32_t context, EventImpl *event);
-  void ScheduleRealtimeNow (EventImpl *event);
-  Time RealtimeNow (void) const;
+    /** \copydoc ScheduleWithContext(uint32_t,const Time&,EventImpl*) */
+    void ScheduleRealtimeWithContext(uint32_t context, const Time& delay, EventImpl* event);
+    /**
+     * Schedule a future event execution (in the same context).
+     *
+     * @param [in] delay Delay until the event expires.
+     * @param [in] event The event to schedule.
+     */
+    void ScheduleRealtime(const Time& delay, EventImpl* event);
+    /**
+     * Schedule an event to run at the current virtual time.
+     *
+     * \param [in] context Event context.
+     * \param [in] event The event to schedule.
+     */
+    void ScheduleRealtimeNowWithContext(uint32_t context, EventImpl* event);
+    /**
+     * Schedule an event to run at the current virtual time.
+     *
+     * @param [in] event The event to schedule.
+     */
+    void ScheduleRealtimeNow(EventImpl* event);
+    /**
+     * Get the current real time from the synchronizer.
+     * \returns The current real time.
+     */
+    Time RealtimeNow() const;
 
-  void SetSynchronizationMode (RealtimeSimulatorImpl::SynchronizationMode mode);
-  RealtimeSimulatorImpl::SynchronizationMode GetSynchronizationMode (void) const;
+    /**
+     * Set the SynchronizationMode.
+     *
+     * \param [in] mode The new SynchronizationMode.
+     */
+    void SetSynchronizationMode(RealtimeSimulatorImpl::SynchronizationMode mode);
+    /**
+     * Get the SynchronizationMode.
+     * \returns The current SynchronizationMode.
+     */
+    RealtimeSimulatorImpl::SynchronizationMode GetSynchronizationMode() const;
 
-  void SetHardLimit (Time limit);
-  Time GetHardLimit (void) const;
+    /**
+     * Set the fatal error threshold for SynchronizationMode SYNC_HARD_LIMIT.
+     *
+     * \param [in] limit The maximum amount of real time we are allowed to fall
+     *     behind before we trigger a fatal error.
+     */
+    void SetHardLimit(Time limit);
+    /**
+     * Get the current fatal error threshold for SynchronizationMode
+     * SYNC_HARD_LIMIT.
+     *
+     * \returns The hard limit threshold.
+     */
+    Time GetHardLimit() const;
 
-private:
-  bool Running (void) const;
-  bool Realtime (void) const;
-  uint64_t NextTs (void) const;
-  void ProcessOneEvent (void);
-  virtual void DoDispose (void);
+  private:
+    /**
+     * Is the simulator running?
+     * \returns \c true if we are running.
+     */
+    bool Running() const;
+    /**
+     * Check that the Synchronizer is locked to the real time clock.
+     * \return \c true if the Synchronizer is locked.
+     */
+    bool Realtime() const;
+    /**
+     * Get the timestep of the next event.
+     * \returns The timestep of the next event.
+     */
+    uint64_t NextTs() const;
+    /** Process the next event. */
+    void ProcessOneEvent();
+    /** Destructor implementation. */
+    void DoDispose() override;
 
-  typedef std::list<EventId> DestroyEvents;
-  DestroyEvents m_destroyEvents;
-  bool m_stop;
-  bool m_running;
+    /** Container type for events to be run at destroy time. */
+    typedef std::list<EventId> DestroyEvents;
+    /** Container for events to be run at destroy time. */
+    DestroyEvents m_destroyEvents;
+    /** Has the stopping condition been reached? */
+    bool m_stop;
+    /** Is the simulator currently running. */
+    bool m_running;
 
-  // The following variables are protected using the m_mutex
-  Ptr<Scheduler> m_events;
-  int m_unscheduledEvents;
-  uint32_t m_uid;
-  uint32_t m_currentUid;
-  uint64_t m_currentTs;
-  uint32_t m_currentContext;
+    /**
+     * \name Mutex-protected variables.
+     *
+     * These variables are protected by #m_mutex.
+     */
+    /**@{*/
+    /** The event list. */
+    Ptr<Scheduler> m_events;
+    /**< Number of events in the event list. */
+    int m_unscheduledEvents;
+    /**< Unique id for the next event to be scheduled. */
+    uint32_t m_uid;
+    /**< Unique id of the current event. */
+    uint32_t m_currentUid;
+    /**< Timestep of the current event. */
+    uint64_t m_currentTs;
+    /**< Execution context. */
+    uint32_t m_currentContext;
+    /** The event count. */
+    uint64_t m_eventCount;
+    /**@}*/
 
-  mutable SystemMutex m_mutex;
+    /** Mutex to control access to key state. */
+    mutable std::mutex m_mutex;
 
-  Ptr<Synchronizer> m_synchronizer;
+    /** The synchronizer in use to track real time. */
+    Ptr<Synchronizer> m_synchronizer;
 
-  /**
-   * The policy to use if the simulation cannot keep synchronized to real-time.
-   */
-  SynchronizationMode m_synchronizationMode;
+    /** SynchronizationMode policy. */
+    SynchronizationMode m_synchronizationMode;
 
-  /**
-   * The maximum allowable drift from real-time in SYNC_HARD_LIMIT mode.
-   */
-  Time m_hardLimit;
+    /** The maximum allowable drift from real-time in SYNC_HARD_LIMIT mode. */
+    Time m_hardLimit;
 
-  SystemThread::ThreadId m_main;
+    /** Main thread. */
+    std::thread::id m_main;
 };
 
 } // namespace ns3

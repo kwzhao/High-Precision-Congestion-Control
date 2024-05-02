@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 CTTC
  *
@@ -18,41 +17,45 @@
  * Author: Nicola Baldo <nbaldo@cttc.es>
  */
 
-
-#include <ns3/log.h>
-
-#include "antenna-model.h"
 #include "isotropic-antenna-model.h"
 
+#include "antenna-model.h"
 
-NS_LOG_COMPONENT_DEFINE ("IsotropicAntennaModel");
+#include <ns3/double.h>
+#include <ns3/log.h>
 
-namespace ns3 {
-
-NS_OBJECT_ENSURE_REGISTERED (IsotropicAntennaModel);
-
-
-TypeId 
-IsotropicAntennaModel::GetTypeId ()
+namespace ns3
 {
-  static TypeId tid = TypeId ("ns3::IsotropicAntennaModel")
-    .SetParent<AntennaModel> ()
-    .AddConstructor<IsotropicAntennaModel> ()
-  ;
-  return tid;
-}
 
-IsotropicAntennaModel::IsotropicAntennaModel ()
+NS_LOG_COMPONENT_DEFINE("IsotropicAntennaModel");
+
+NS_OBJECT_ENSURE_REGISTERED(IsotropicAntennaModel);
+
+TypeId
+IsotropicAntennaModel::GetTypeId()
 {
-  NS_LOG_FUNCTION (this);
+    static TypeId tid = TypeId("ns3::IsotropicAntennaModel")
+                            .SetParent<AntennaModel>()
+                            .SetGroupName("Antenna")
+                            .AddConstructor<IsotropicAntennaModel>()
+                            .AddAttribute("Gain",
+                                          "The gain of the antenna in dB",
+                                          DoubleValue(0),
+                                          MakeDoubleAccessor(&IsotropicAntennaModel::m_gainDb),
+                                          MakeDoubleChecker<double>());
+    return tid;
 }
 
-double 
-IsotropicAntennaModel::GetGainDb (Angles a)
+IsotropicAntennaModel::IsotropicAntennaModel()
 {
-  NS_LOG_FUNCTION (this << a);
-  return 0.0;
+    NS_LOG_FUNCTION(this);
 }
 
+double
+IsotropicAntennaModel::GetGainDb(Angles a)
+{
+    NS_LOG_FUNCTION(this << a);
+    return m_gainDb;
 }
 
+} // namespace ns3

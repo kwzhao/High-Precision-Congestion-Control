@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -20,412 +19,649 @@
 #ifndef TYPE_ID_H
 #define TYPE_ID_H
 
-#include "attribute.h"
 #include "attribute-accessor-helper.h"
-#include "trace-source-accessor.h"
 #include "attribute-helper.h"
+#include "attribute.h"
 #include "callback.h"
 #include "hash.h"
-#include <string>
-#include <stdint.h>
+#include "trace-source-accessor.h"
 
-namespace ns3 {
+#include <stdint.h>
+#include <string>
+
+/**
+ * \file
+ * \ingroup object
+ * ns3::TypeId declaration; inline and template implementations.
+ */
+
+namespace ns3
+{
 
 class ObjectBase;
 
 /**
+ * \ingroup object
  * \brief a unique identifier for an interface.
  *
- * This class records a lot of meta-information about a 
+ * This class records a lot of meta-information about a
  * subclass of the Object base class:
  *  - the base class of the subclass
  *  - the set of accessible constructors in the subclass
  *  - the set of 'attributes' accessible in the subclass
  *
+ * \see attribute_TypeId
+ *
  * \internal
  *  See the discussion in IidManager about hash chaining of TypeId's.
- *
  */
 class TypeId
 {
-public:
-  /**
-   * Flags describing when a given attribute can be read or written
-   */
-  enum AttributeFlag {
-    ATTR_GET = 1<<0, /**< The attribute can be read */
-    ATTR_SET = 1<<1, /**< The attribute can be written */
-    ATTR_CONSTRUCT = 1<<2, /**< The attribute can be written at construction-time */
-    ATTR_SGC = ATTR_GET | ATTR_SET | ATTR_CONSTRUCT, /**< The attribute can be read, and written at any time */
-  };
-  struct AttributeInformation {
-    std::string name;
-    std::string help;
-    uint32_t flags;
-    Ptr<const AttributeValue> originalInitialValue;
-    Ptr<const AttributeValue> initialValue;
-    Ptr<const AttributeAccessor> accessor;
-    Ptr<const AttributeChecker> checker;
-  };
-  struct TraceSourceInformation {
-    std::string name;
-    std::string help;
-    Ptr<const TraceSourceAccessor> accessor;
-  };
+  public:
+    /** Flags describing when a given attribute can be read or written. */
+    enum AttributeFlag
+    {
+        ATTR_GET = 1 << 0,       /**< The attribute can be read */
+        ATTR_SET = 1 << 1,       /**< The attribute can be written */
+        ATTR_CONSTRUCT = 1 << 2, /**< The attribute can be written at construction-time */
+        ATTR_SGC = ATTR_GET | ATTR_SET |
+                   ATTR_CONSTRUCT, /**< The attribute can be read, and written at any time */
+    };
 
-  /**
-   * Type of hash values
-   */
-  typedef uint32_t hash_t;
+    /** The level of support or deprecation for attributes or trace sources. */
+    enum SupportLevel
+    {
+        SUPPORTED,  /**< Attribute or trace source is currently used. */
+        DEPRECATED, /**< Attribute or trace source is deprecated; user is warned. */
+        OBSOLETE    /**< Attribute or trace source is not used anymore; simulation fails. */
+    };
 
-  /**
-   * \param name the name of the requested TypeId
-   * \returns the unique id associated with the requested
-   *          name. 
-   *
-   * This method cannot fail: it will crash if the input 
-   * name is not a valid TypeId name.
-   */
-  static TypeId LookupByName (std::string name);
-  /**
-   * \param name the name of the requested TypeId
-   * \param tid a pointer to the TypeId instance where the 
-   *        result of this function should be stored.
-   * \returns true if the requested name was found, false otherwise.
-   */
-  static bool LookupByNameFailSafe (std::string name, TypeId *tid);
-  /**
-   * \param hash the hash to lookup
-   * \returns the unique id associated with the requested hash.
-   *
-   * This method cannot fail: it will crash if the input 
-   * hash does not match an existing TypeId.
-   */
-  static TypeId LookupByHash (hash_t hash);
-  /**
-   * \param hash the hash of the requested TypeId
-   * \param tid a pointer to the TypeId instance where the 
-   *        result of this function should be stored.
-   * \returns true if the requested hash was found, false otherwise.
-   */
-  static bool LookupByHashFailSafe (hash_t hash, TypeId *tid);
+    /** Attribute implementation. */
+    struct AttributeInformation
+    {
+        /** Attribute name. */
+        std::string name;
+        /** Attribute help string. */
+        std::string help;
+        /** AttributeFlags value. */
+        uint32_t flags;
+        /** Default initial value. */
+        Ptr<const AttributeValue> originalInitialValue;
+        /** Configured initial value. */
+        Ptr<const AttributeValue> initialValue;
+        /** Accessor object. */
+        Ptr<const AttributeAccessor> accessor;
+        /** Checker object. */
+        Ptr<const AttributeChecker> checker;
+        /** Support level/deprecation. */
+        TypeId::SupportLevel supportLevel;
+        /** Support message. */
+        std::string supportMsg;
+    };
 
-  /**
-   * \returns the number of TypeId instances registered.
-   */
-  static uint32_t GetRegisteredN (void);
-  /**
-   * \param i index
-   * \returns the TypeId instance whose index is i.
-   */
-  static TypeId GetRegistered (uint32_t i);
+    /** TraceSource implementation. */
+    struct TraceSourceInformation
+    {
+        /** Trace name. */
+        std::string name;
+        /** Trace help string. */
+        std::string help;
+        /** Callback function signature type. */
+        std::string callback;
+        /** Trace accessor. */
+        Ptr<const TraceSourceAccessor> accessor;
+        /** Support level/deprecation. */
+        TypeId::SupportLevel supportLevel;
+        /** Support message. */
+        std::string supportMsg;
+    };
 
-  /**
-   * \param name the name of the interface to construct.
-   *
-   * No two instances can share the same name. The name is expected to be
-   * the full c++ typename of associated c++ object.
-   */
-  explicit TypeId (const char * name);
+    /** Type of hash values. */
+    typedef uint32_t hash_t;
 
-  /**
-   * \returns the parent of this TypeId
-   *
-   * This method cannot fail. It will return itself
-   * if this TypeId has no parent. i.e., it is at the top
-   * of the TypeId hierarchy. Currently, this is the
-   * case for the TypeId associated to the Object class 
-   * only.
-   */
-  TypeId GetParent (void) const;
+    /**
+     * Get a TypeId by name.
+     *
+     * \param [in] name The name of the requested TypeId
+     * \returns The unique id associated with the requested name.
+     *
+     * This method cannot fail: it will crash if the input
+     * name is not a valid TypeId name.
+     */
+    static TypeId LookupByName(std::string name);
+    /**
+     * Get a TypeId by name.
+     *
+     * \param [in]  name The name of the requested TypeId
+     * \param [out] tid A pointer to the TypeId instance where the
+     *              result of this function should be stored.
+     * \returns \c true if the requested name was found.
+     */
+    static bool LookupByNameFailSafe(std::string name, TypeId* tid);
+    /**
+     * Get a TypeId by hash.
+     *
+     * \param [in] hash The hash to lookup
+     * \returns The unique id associated with the requested hash.
+     *
+     * This method cannot fail: it will crash if the input
+     * hash does not match an existing TypeId.
+     */
+    static TypeId LookupByHash(hash_t hash);
+    /**
+     * Get a TypeId by hash.
+     *
+     * \param [in]  hash The hash of the requested TypeId
+     * \param [out] tid A pointer to the TypeId instance where the
+     *              result of this function should be stored.
+     * \returns \c true if the requested hash was found.
+     */
+    static bool LookupByHashFailSafe(hash_t hash, TypeId* tid);
 
-  bool HasParent (void) const;
+    /**
+     * Get the number of registered TypeIds.
+     *
+     * \returns The number of TypeId instances registered.
+     */
+    static uint16_t GetRegisteredN();
+    /**
+     * Get a TypeId by index.
+     *
+     * \param [in] i Index of the TypeId.
+     * \returns The TypeId instance whose index is \c i.
+     */
+    static TypeId GetRegistered(uint16_t i);
 
-  /**
-   * \param other a parent TypeId
-   * \returns true if the input TypeId is really a parent
-   *          of this TypeId, false otherwise.
-   *
-   * Calling this method is roughly similar to calling dynamic_cast
-   * except that you do not need object instances: you can do the check
-   * with TypeId instances instead.
-   */
-  bool IsChildOf (TypeId other) const;
+    /**
+     * Constructor.
+     *
+     * \param [in] name The name of the interface to construct.
+     *
+     * No two instances can share the same name. The name is expected to be
+     * the full c++ typename of associated c++ object.
+     */
+    explicit TypeId(const std::string& name);
 
-  /**
-   * \returns the name of the group associated to this TypeId.
-   */
-  std::string GetGroupName (void) const;
+    /**
+     * Get the parent of this TypeId.
+     *
+     * \returns The parent of this TypeId
+     *
+     * This method cannot fail. It will return itself
+     * if this TypeId has no parent. i.e., it is at the top
+     * of the TypeId hierarchy. Currently, this is the
+     * case for the TypeId associated to the ns3::ObjectBase class
+     * only.
+     */
+    TypeId GetParent() const;
 
-  /**
-   * \returns the name of this interface.
-   */
-  std::string GetName (void) const;
+    /**
+     * Check if this TypeId has a parent.
+     *
+     * \return \c true if this TypeId has a parent.
+     */
+    bool HasParent() const;
 
-  /**
-   * \returns the hash of this interface.
-   */
-  hash_t GetHash (void) const;
+    /**
+     * Check if this TypeId is a child of another.
+     *
+     * \param [in] other A parent TypeId
+     * \returns \c true if the input TypeId is really a parent of this TypeId.
+     *
+     * Calling this method is roughly similar to calling dynamic_cast
+     * except that you do not need object instances: you can do the check
+     * with TypeId instances instead.
+     */
+    bool IsChildOf(TypeId other) const;
 
-  /**
-   * \returns true if this TypeId has a constructor
-   */
-  bool HasConstructor (void) const;
+    /**
+     * Get the group name.
+     *
+     * \returns The name of the group associated to this TypeId.
+     */
+    std::string GetGroupName() const;
 
-  /**
-   * \returns the number of attributes associated to this TypeId
-   */
-  uint32_t GetAttributeN (void) const;
-  /**
-   * \param i index into attribute array
-   * \returns the information associated to attribute whose 
-   *          index is i.
-   */
-  struct TypeId::AttributeInformation GetAttribute(uint32_t i) const;
-  /**
-   * \param i index into attribute array
-   * \returns the full name associated to the attribute whose
-   *          index is i.
-   */
-  std::string GetAttributeFullName (uint32_t i) const;
+    /**
+     * Get the name.
+     *
+     * \returns The name of this interface.
+     */
+    std::string GetName() const;
 
-  /**
-   * \returns a callback which can be used to instanciate an object
-   *          of this type.
-   */
-  Callback<ObjectBase *> GetConstructor (void) const;
+    /**
+     * Get the hash.
+     *
+     * \returns The hash of this interface.
+     */
+    hash_t GetHash() const;
 
-  /**
-   * \returns true if this TypeId should be hidden from the user, 
-   *          false otherwise.
-   */
-  bool MustHideFromDocumentation (void) const;
+    /**
+     * Get the size of this object.
+     *
+     * \returns The size of this interface.
+     */
+    std::size_t GetSize() const;
 
+    /**
+     * Check if this TypeId has a constructor.
+     *
+     * \returns \c true if this TypeId has a constructor
+     */
+    bool HasConstructor() const;
 
-  /**
-   * \returns the number of trace sources defined in this TypeId.
-   */
-  uint32_t GetTraceSourceN (void) const;
-  /**
-   * \param i index into trace source array.
-   * \returns detailed information about the requested trace source.
-   */
-  struct TypeId::TraceSourceInformation GetTraceSource(uint32_t i) const;
+    /**
+     * Get the number of attributes.
+     *
+     * \returns The number of attributes associated to this TypeId
+     */
+    std::size_t GetAttributeN() const;
+    /**
+     * Get Attribute information by index.
+     *
+     * \param [in] i Index into attribute array
+     * \returns The information associated to attribute whose index is \pname{i}.
+     */
+    TypeId::AttributeInformation GetAttribute(std::size_t i) const;
+    /**
+     * Get the Attribute name by index.
+     *
+     * \param [in] i Index into attribute array
+     * \returns The full name associated to the attribute whose index is \pname{i}.
+     */
+    std::string GetAttributeFullName(std::size_t i) const;
 
-  /**
-   * \param tid the TypeId of the base class.
-   * \return this TypeId instance.
-   *
-   * Record in this TypeId which TypeId is the TypeId
-   * of the base class of the subclass.
-   */
-  TypeId SetParent (TypeId tid);
-  /**
-   * \return this TypeId instance.
-   *
-   * Record in this TypeId which TypeId is the TypeId
-   * of the base class of the subclass.
-   */
-  template <typename T>
-  TypeId SetParent (void);
+    /**
+     * Get the constructor callback.
+     *
+     * \returns A callback which can be used to instantiate an object
+     *          of this type.
+     */
+    Callback<ObjectBase*> GetConstructor() const;
 
-  /**
-   * \param groupName the name of the group this TypeId belongs to.
-   * \returns this TypeId instance.
-   *
-   * The group name is purely an advisory information used to 
-   * group together types according to a user-specific grouping
-   * scheme.
-   */
-  TypeId SetGroupName (std::string groupName);
+    /**
+     * Check if this TypeId should not be listed in documentation.
+     *
+     * \returns \c true if this TypeId should be hidden from the user.
+     */
+    bool MustHideFromDocumentation() const;
 
-  /**
-   * \returns this TypeId instance
-   *
-   * Record in this TypeId the fact that the default constructor
-   * is accessible.
-   */
-  template <typename T>
-  TypeId AddConstructor (void);
+    /**
+     * Get the number of Trace sources.
+     *
+     * \returns The number of trace sources defined in this TypeId.
+     */
+    std::size_t GetTraceSourceN() const;
+    /**
+     * Get the trace source by index.
+     *
+     * \param [in] i Index into trace source array.
+     * \returns Detailed information about the requested trace source.
+     */
+    TypeId::TraceSourceInformation GetTraceSource(std::size_t i) const;
 
-  /**
-   * \param name the name of the new attribute
-   * \param help some help text which describes the purpose of this
-   *        attribute.
-   * \param initialValue the initial value for this attribute.
-   * \param accessor an instance of the associated AttributeAccessor subclass.
-   * \param checker an instance of the associated AttributeChecker subclass.
-   * \returns this TypeId instance
-   *
-   * Record in this TypeId the fact that a new attribute exists.
-   */
-  TypeId AddAttribute (std::string name,
-                       std::string help, 
-                       const AttributeValue &initialValue,
-                       Ptr<const AttributeAccessor> accessor,
-                       Ptr<const AttributeChecker> checker);
+    /**
+     * Set the parent TypeId.
+     *
+     * \param [in] tid The TypeId of the base class.
+     * \return This TypeId instance.
+     *
+     * Record in this TypeId which TypeId is the TypeId
+     * of the base class of the subclass.
+     */
+    TypeId SetParent(TypeId tid);
+    /**
+     * Set the parent TypeId.
+     *
+     * \tparam T \explicit The parent TypeID type.
+     * \return This TypeId instance.
+     *
+     * Record in this TypeId which TypeId is the TypeId
+     * of the base class of the subclass.
+     */
+    template <typename T>
+    TypeId SetParent();
 
-  /**
-   * \param i the attribute to manipulate
-   * \param initialValue the new initial value to use for this attribute.
-   * \returns true if the call was successfuly, false otherwise.
-   */
-  bool SetAttributeInitialValue(uint32_t i, 
-                                Ptr<const AttributeValue> initialValue);
+    /**
+     * Set the group name.
+     *
+     * \param [in] groupName The name of the group this TypeId belongs to.
+     * \returns This TypeId instance.
+     *
+     * The group name is purely an advisory information used to
+     * group together types according to a user-specific grouping
+     * scheme.
+     */
+    TypeId SetGroupName(std::string groupName);
 
-  /**
-   * \param name the name of the new attribute
-   * \param help some help text which describes the purpose of this
-   *        attribute
-   * \param flags flags which describe how this attribute can be read and/or written.
-   * \param initialValue the initial value for this attribute.
-   * \param accessor an instance of the associated AttributeAccessor subclass.
-   * \param checker an instance of the associated AttributeChecker subclass.
-   * \returns this TypeId instance
-   *
-   * Record in this TypeId the fact that a new attribute exists.
-   */
-  TypeId AddAttribute (std::string name,
-                       std::string help, 
-                       uint32_t flags,
-                       const AttributeValue &initialValue,
-                       Ptr<const AttributeAccessor> accessor,
-                       Ptr<const AttributeChecker> checker);
+    /**
+     * Set the size of this type.
+     *
+     * Call this way:
+     * \code
+     *   SetSize (sizeof (<typename>));
+     * \endcode
+     * This is done automatically by NS_LOG_ENSURE_REGISTERED()
+     * A ridiculously large reported size is a symptom that the
+     * type hasn't been registered.
+     *
+     * \param [in] size The size of the object, in bytes.
+     * \returns This TypeId instance.
+     */
+    TypeId SetSize(std::size_t size);
 
-  /**
-   * \param name the name of the new trace source
-   * \param help some help text which describes the purpose of this
-   *        trace source.
-   * \param accessor a pointer to a TraceSourceAccessor which can be
-   *        used to connect/disconnect sinks to this trace source.
-   * \returns this TypeId instance.
-   */
-  TypeId AddTraceSource (std::string name,
-                         std::string help,
-                         Ptr<const TraceSourceAccessor> accessor);
+    /**
+     * Record in this TypeId the fact that the default constructor
+     * is accessible.
+     *
+     * \tparam T \explicit The class name represented by this TypeId.
+     * \returns This TypeId instance
+     */
+    template <typename T>
+    TypeId AddConstructor();
 
-  TypeId HideFromDocumentation (void);
+    /**
+     * Record in this TypeId the fact that a new attribute exists.
+     *
+     * \param [in] name The name of the new attribute
+     * \param [in] help Some help text which describes the purpose of this
+     *             attribute.
+     * \param [in] initialValue The initial value for this attribute.
+     * \param [in] accessor An instance of the associated AttributeAccessor
+     *             subclass.
+     * \param [in] checker An instance of the associated AttributeChecker
+     *             subclass.
+     * \param [in] supportLevel Support/deprecation status of the attribute.
+     * \param [in] supportMsg Upgrade hint if this attribute is no longer
+     *             supported.  If the attribute is \c DEPRECATED the attribute
+     *             behavior still exists, but user code should be updated
+     *             following guidance in the hint.
+     *             If the attribute is \c OBSOLETE, the hint should indicate
+     *             which class the attribute functional has been moved to,
+     *             or that the functionality is no longer supported.
+     *             See test file type-id-test-suite.cc for examples.
+     * \returns This TypeId instance
+     */
+    TypeId AddAttribute(std::string name,
+                        std::string help,
+                        const AttributeValue& initialValue,
+                        Ptr<const AttributeAccessor> accessor,
+                        Ptr<const AttributeChecker> checker,
+                        SupportLevel supportLevel = SUPPORTED,
+                        const std::string& supportMsg = "");
 
-  /**
-   * \param name the name of the requested attribute
-   * \param info a pointer to the TypeId::AttributeInformation data structure
-   *        where the result value of this method will be stored.
-   * \returns true if the requested attribute could be found, false otherwise.
-   */
-  bool LookupAttributeByName (std::string name, struct AttributeInformation *info) const;
-  /**
-   * \param name the name of the requested trace source
-   * \returns the trace source accessor which can be used to connect and disconnect
-   *          trace sinks with the requested trace source on an object instance.
-   *
-   * If no matching trace source is found, this method returns zero.
-   */
-  Ptr<const TraceSourceAccessor> LookupTraceSourceByName (std::string name) const;
+    /**
+     * Set the initial value of an Attribute.
+     *
+     * \param [in] i The attribute to manipulate
+     * \param [in] initialValue The new initial value to use for this attribute.
+     * \returns \c true if the call was successfully.
+     */
+    bool SetAttributeInitialValue(std::size_t i, Ptr<const AttributeValue> initialValue);
 
-  /**
-   * \returns the internal integer which uniquely identifies this
-   *          TypeId.
-   *
-   * This is really an internal method which users are not expected
-   * to use.
-   */
-  uint16_t GetUid (void) const;
-  /**
-   * \param tid the internal integer which uniquely identifies 
-   *        this TypeId.
-   *
-   * This method is even more internal than TypeId::GetUid. Use
-   * at your own risk and don't be surprised that it eats raw 
-   * babies on full-moon nights.
-   */
-  void SetUid (uint16_t tid);
+    /**
+     * Record in this TypeId the fact that a new attribute exists.
+     *
+     * \param [in] name The name of the new attribute
+     * \param [in] help Some help text which describes the purpose of this
+     *        attribute
+     * \param [in] flags Flags which describe how this attribute can be read and/or written.
+     * \param [in] initialValue The initial value for this attribute.
+     * \param [in] accessor An instance of the associated AttributeAccessor
+     *             subclass.
+     * \param [in] checker An instance of the associated AttributeChecker
+     *             subclass.
+     * \param [in] supportLevel Support/deprecation status of the attribute.
+     * \param [in] supportMsg Upgrade hint if this attribute is no longer
+     *             supported.  If the attribute is \c DEPRECATED the attribute
+     *             behavior still exists, but user code should be updated
+     *             following guidance in the hint..
+     *             If the attribute is \c OBSOLETE, the hint should indicate
+     *             which class the attribute functional has been moved to,
+     *             or that the functionality is no longer supported.
+     * \returns This TypeId instance
+     */
+    TypeId AddAttribute(std::string name,
+                        std::string help,
+                        uint32_t flags,
+                        const AttributeValue& initialValue,
+                        Ptr<const AttributeAccessor> accessor,
+                        Ptr<const AttributeChecker> checker,
+                        SupportLevel supportLevel = SUPPORTED,
+                        const std::string& supportMsg = "");
 
-  // construct an invalid TypeId.
-  inline TypeId ();
-  inline TypeId (const TypeId &o);
-  inline TypeId &operator = (const TypeId &o);
-  inline ~TypeId ();
+    /**
+     * Record a new TraceSource.
+     *
+     * \param [in] name The name of the new trace source
+     * \param [in] help Some help text which describes the purpose of this
+     *             trace source.
+     * \param [in] accessor A pointer to a TraceSourceAccessor which can be
+     *             used to connect/disconnect sinks to this trace source.
+     * \param [in] callback Fully qualified typedef name for the callback
+     *             signature.  Generally this should begin with the
+     *             "ns3::" namespace qualifier.
+     * \param [in] supportLevel Support/deprecation status of the attribute.
+     * \param [in] supportMsg Upgrade hint if this attribute is no longer
+     *             supported.  If the attribute is \c DEPRECATED the attribute
+     *             behavior still exists, but user code should be updated
+     *             following guidance in the hint..
+     *             If the attribute is \c OBSOLETE, the hint should indicate
+     *             which class the attribute functional has been moved to,
+     *             or that the functionality is no longer supported.
+     *             See test file type-id-test-suite.cc for examples.
+     * \returns This TypeId instance.
+     */
+    TypeId AddTraceSource(std::string name,
+                          std::string help,
+                          Ptr<const TraceSourceAccessor> accessor,
+                          std::string callback,
+                          SupportLevel supportLevel = SUPPORTED,
+                          const std::string& supportMsg = "");
 
-private:
-  friend class AttributeList;
-  friend bool operator == (TypeId a, TypeId b);
-  friend bool operator != (TypeId a, TypeId b);
-  friend bool operator <  (TypeId a, TypeId b);
+    /**
+     * Hide this TypeId from documentation.
+     * \returns This TypeId instance.
+     */
+    TypeId HideFromDocumentation();
 
+    /**
+     * Find an Attribute by name, retrieving the associated AttributeInformation.
+     *
+     * \param [in]  name The name of the requested attribute
+     * \param [in,out] info A pointer to the TypeId::AttributeInformation
+     *              data structure where the result value of this method
+     *              will be stored.
+     * \returns \c true if the requested attribute could be found.
+     */
+    bool LookupAttributeByName(std::string name, AttributeInformation* info) const;
+    /**
+     * Find a TraceSource by name.
+     *
+     * If no matching trace source is found, this method returns zero.
+     *
+     * \param [in] name The name of the requested trace source
+     * \return The trace source accessor which can be used to connect
+     *  and disconnect trace sinks with the requested trace source on
+     *  an object instance.
+     */
+    Ptr<const TraceSourceAccessor> LookupTraceSourceByName(std::string name) const;
+    /**
+     * Find a TraceSource by name, retrieving the associated TraceSourceInformation.
+     *
+     * \param [in]  name The name of the requested trace source.
+     * \param [out] info A pointer to the TypeId::TraceSourceInformation
+     *              data structure where the result value of this method
+     *              will be stored.
+     * \return The trace source accessor which can be used to connect
+     *  and disconnect trace sinks with the requested trace source on
+     *  an object instance.
+     */
+    Ptr<const TraceSourceAccessor> LookupTraceSourceByName(std::string name,
+                                                           TraceSourceInformation* info) const;
 
-  explicit TypeId (uint16_t tid);
-  void DoAddConstructor (Callback<ObjectBase *> callback);
+    /**
+     * Get the internal id of this TypeId.
+     *
+     * \returns The internal integer which uniquely identifies this TypeId.
+     *
+     * This is really an internal method which users are not expected
+     * to use.
+     */
+    uint16_t GetUid() const;
+    /**
+     * Set the internal id of this TypeId.
+     *
+     * \param [in] uid The internal integer which uniquely identifies
+     *            this TypeId.  This TypeId should already have been registered.
+     *
+     * Typically this is used in serialization/deserialization.
+     *
+     * This method is even more internal than GetUid(). Use
+     * at your own risk and don't be surprised that it eats raw
+     * babies on full-moon nights.
+     */
+    void SetUid(uint16_t uid);
 
-  uint16_t m_tid;
+    /** Default constructor.  This produces an invalid TypeId. */
+    inline TypeId();
+    /**
+     * Copy constructor.
+     * \param [in] o The other TypeId.
+     */
+    inline TypeId(const TypeId& o);
+    /**
+     * Assignment.
+     * \param [in] o The other TypeId.
+     * \returns The copied TypeId.
+     */
+    inline TypeId& operator=(const TypeId& o);
+    /** Destructor. */
+    inline ~TypeId();
+
+  private:
+    /**
+     * \name Comparison operators.
+     * Standard comparison operators.
+     * @{
+     */
+    friend inline bool operator==(TypeId a, TypeId b);
+    friend inline bool operator!=(TypeId a, TypeId b);
+    friend bool operator<(TypeId a, TypeId b);
+    /**@}*/
+
+    /**
+     * Construct from an integer value.
+     * \param [in] tid The TypeId value as an integer.
+     */
+    explicit TypeId(uint16_t tid);
+    /**
+     * Implementation for AddConstructor().
+     *
+     * \param [in] callback Callback which constructs an instance of this TypeId.
+     */
+    void DoAddConstructor(Callback<ObjectBase*> callback);
+
+    /** The TypeId value. */
+    uint16_t m_tid;
 };
 
-std::ostream & operator << (std::ostream &os, TypeId tid);
-std::istream & operator >> (std::istream &is, TypeId &tid);
-inline bool operator == (TypeId a, TypeId b);
-inline bool operator != (TypeId a, TypeId b);
-bool operator <  (TypeId a, TypeId b);
+/**
+ * \relates TypeId
+ * Output streamer.
+ *
+ * \param [in,out] os The output stream.
+ * \param [in] tid The TypeId.
+ * \returns The output stream.
+ */
+std::ostream& operator<<(std::ostream& os, TypeId tid);
+/**
+ * \relates TypeId
+ * Input Streamer.
+ * \param [in,out] is The input stream.
+ * \param [out] tid The TypeId to set from the stream.
+ * \returns The input stream.
+ */
+std::istream& operator>>(std::istream& is, TypeId& tid);
 
 /**
- * \class ns3::TypeIdValue
- * \brief hold objects of type ns3::TypeId
+ * Comparison operator.
+ * \param [in] a One value.
+ * \param [in] b The other value.
+ * \returns The result of the comparison.
+ * @{
  */
+inline bool operator==(TypeId a, TypeId b);
+inline bool operator!=(TypeId a, TypeId b);
+bool operator<(TypeId a, TypeId b);
+/** @} */
 
+ATTRIBUTE_HELPER_HEADER(TypeId);
 
-ATTRIBUTE_HELPER_HEADER (TypeId);
+} // namespace ns3
 
-} // namespace ns3 
-
-namespace ns3 {
-
-TypeId::TypeId ()
-  : m_tid (0) {
-}
-TypeId::TypeId (const TypeId &o)
-  : m_tid (o.m_tid) {
-}
-TypeId &TypeId::operator = (const TypeId &o)
+namespace ns3
 {
-  m_tid = o.m_tid;
-  return *this;
-}
-TypeId::~TypeId ()
+
+TypeId::TypeId()
+    : m_tid(0)
 {
 }
-inline bool operator == (TypeId a, TypeId b)
+
+TypeId::TypeId(const TypeId& o)
+    : m_tid(o.m_tid)
 {
-  return a.m_tid == b.m_tid;
 }
 
-inline bool operator != (TypeId a, TypeId b)
+TypeId&
+TypeId::operator=(const TypeId& o)
 {
-  return a.m_tid != b.m_tid;
+    m_tid = o.m_tid;
+    return *this;
 }
 
+TypeId::~TypeId()
+{
+}
+
+inline bool
+operator==(TypeId a, TypeId b)
+{
+    return a.m_tid == b.m_tid;
+}
+
+inline bool
+operator!=(TypeId a, TypeId b)
+{
+    return a.m_tid != b.m_tid;
+}
 
 /*************************************************************************
  *   The TypeId implementation which depends on templates
  *************************************************************************/
 
 template <typename T>
-TypeId 
-TypeId::SetParent (void)
+TypeId
+TypeId::SetParent()
 {
-  return SetParent (T::GetTypeId ());
+    return SetParent(T::GetTypeId());
 }
 
 template <typename T>
-TypeId 
-TypeId::AddConstructor (void)
+TypeId
+TypeId::AddConstructor()
 {
-  struct Maker {
-    static ObjectBase * Create () {
-      ObjectBase * base = new T ();
-      return base;
-    }
-  };
-  Callback<ObjectBase *> cb = MakeCallback (&Maker::Create);
-  DoAddConstructor (cb);
-  return *this;
+    struct Maker
+    {
+        static ObjectBase* Create()
+        {
+            ObjectBase* base = new T();
+            return base;
+        }
+    };
+
+    Callback<ObjectBase*> cb = MakeCallback(&Maker::Create);
+    DoAddConstructor(cb);
+    return *this;
 }
 
 } // namespace ns3

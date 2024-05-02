@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 //
 //  Copyright (C) 2001  Pierre L'Ecuyer (lecuyer@iro.umontreal.ca)
 //
@@ -15,56 +14,83 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// Modified for ns-3 by: 
+// Modified for ns-3 by:
 //   - Rajib Bhattacharjea<raj.b@gatech.edu>
 //   - Mathieu Lacage <mathieu.lacage@gmail.com>
 //
 
-#include <cstdlib>
-#include <iostream>
 #include "rng-stream.h"
+
 #include "fatal-error.h"
 #include "log.h"
+
+#include <cstdlib>
+#include <iostream>
+
+/**
+ * \file
+ * \ingroup rngimpl
+ * ns3::RngStream and MRG32k3a implementations.
+ */
+
+namespace ns3
+{
 
 // Note:  Logging in this file is largely avoided due to the
 // number of calls that are made to these functions and the possibility
 // of causing recursions leading to stack overflow
+NS_LOG_COMPONENT_DEFINE("RngStream");
 
-NS_LOG_COMPONENT_DEFINE ("RngStream");
+} // namespace ns3
 
-namespace
+/**
+ * \ingroup rngimpl
+ * @{
+ */
+/** Namespace for MRG32k3a implementation details. */
+namespace MRG32k3a
 {
+
+// clang-format off
+
+/** Type for 3x3 matrix of doubles. */
 typedef double Matrix[3][3];
 
+/** First component modulus, 2<sup>32</sup> - 209. */
 const double m1   =       4294967087.0;
+
+/** Second component modulus, 2<sup>32</sup> - 22853. */
 const double m2   =       4294944443.0;
+
+/** Normalization to obtain randoms on [0,1). */
 const double norm =       1.0 / (m1 + 1.0);
+
+/** First component multiplier of <i>n</i> - 2 value. */
 const double a12  =       1403580.0;
+
+/** First component multiplier of <i>n</i> - 3 value. */
 const double a13n =       810728.0;
+
+/** Second component multiplier of <i>n</i> - 1 value. */
 const double a21  =       527612.0;
+
+/** Second component multiplier of <i>n</i> - 3 value. */
 const double a23n =       1370589.0;
+
+/** Decomposition factor for computing a*s in less than 53 bits, 2<sup>17</sup> */
 const double two17 =      131072.0;
+
+/** IEEE-754 floating point precision, 2<sup>53</sup> */
 const double two53 =      9007199254740992.0;
-const double fact =       5.9604644775390625e-8;     /* 1 / 2^24  */
 
-const Matrix InvA1 = {          // Inverse of A1p0
-  { 184888585.0,   0.0,  1945170933.0 },
-  {         1.0,   0.0,           0.0 },
-  {         0.0,   1.0,           0.0 }
-};
-
-const Matrix InvA2 = {          // Inverse of A2p0
-  {      0.0,  360363334.0,  4225571728.0 },
-  {      1.0,          0.0,           0.0 },
-  {      0.0,          1.0,           0.0 }
-};
-
+/** First component transition matrix. */
 const Matrix A1p0 = {
   {       0.0,        1.0,       0.0 },
   {       0.0,        0.0,       1.0 },
   { -810728.0,  1403580.0,       0.0 }
 };
 
+/** Second component transition matrix. */
 const Matrix A2p0 = {
   {        0.0,        1.0,       0.0 },
   {        0.0,        0.0,       1.0 },
@@ -73,8 +99,18 @@ const Matrix A2p0 = {
 
 
 //-------------------------------------------------------------------------
-// Return (a*s + c) MOD m; a, s, c and m must be < 2^35
-//
+/**
+ * Return (a*s + c) MOD m; a, s, c and m must be < 2^35
+ *
+ * This computes the result exactly, without exceeding the 53 bit
+ * precision of doubles.
+ *
+ * \param [in] a First multiplicative argument.
+ * \param [in] s Second multiplicative argument.
+ * \param [in] c Additive argument.
+ * \param [in] m Modulus.
+ * \returns <tt>(a*s +c) MOD m</tt>
+ */
 double MultModM (double a, double s, double c, double m)
 {
   double v;
@@ -98,7 +134,7 @@ double MultModM (double a, double s, double c, double m)
     {
       return v += m;
     }
-  else 
+  else
     {
       return v;
     }
@@ -106,9 +142,15 @@ double MultModM (double a, double s, double c, double m)
 
 
 //-------------------------------------------------------------------------
-// Compute the vector v = A*s MOD m. Assume that -m < s[i] < m.
-// Works also when v = s.
-//
+/**
+ * Compute the vector v = A*s MOD m. Assume that -m < s[i] < m.
+ * Works also when v = s.
+ *
+ * \param [in] A Matrix argument, 3x3.
+ * \param [in] s Three component input vector.
+ * \param [out] v Three component output vector.
+ * \param [in] m Modulus.
+ */
 void MatVecModM (const Matrix A, const double s[3], double v[3],
                  double m)
 {
@@ -129,13 +171,20 @@ void MatVecModM (const Matrix A, const double s[3], double v[3],
 
 
 //-------------------------------------------------------------------------
-// Compute the matrix C = A*B MOD m. Assume that -m < s[i] < m.
-// Note: works also if A = C or B = C or A = B = C.
-//
+/**
+ * Compute the matrix C = A*B MOD m. Assume that -m < s[i] < m.
+ * Note: works also if A = C or B = C or A = B = C.
+ *
+ * \param [in] A First matrix argument.
+ * \param [in] B Second matrix argument.
+ * \param [out] C Result matrix.
+ * \param [in] m Modulus.
+ */
 void MatMatModM (const Matrix A, const Matrix B,
                  Matrix C, double m)
 {
-  int i, j;
+  int i;
+  int j;
   double V[3];
   Matrix W;
 
@@ -162,11 +211,18 @@ void MatMatModM (const Matrix A, const Matrix B,
 
 
 //-------------------------------------------------------------------------
-// Compute the matrix B = (A^(2^e) Mod m);  works also if A = B. 
-//
+/**
+ * Compute the matrix B = (A^(2^e) Mod m);  works also if A = B.
+ *
+ * \param [in] src Matrix input argument \c A.
+ * \param [out] dst Matrix output \c B.
+ * \param [in] m Modulus.
+ * \param [in] e The exponent.
+ */
 void MatTwoPowModM (const Matrix src, Matrix dst, double m, int32_t e)
 {
-  int i, j;
+  int i;
+  int j;
 
   /* initialize: dst = src */
   for (i = 0; i < 3; ++i)
@@ -185,13 +241,18 @@ void MatTwoPowModM (const Matrix src, Matrix dst, double m, int32_t e)
 
 
 //-------------------------------------------------------------------------
-// Compute the matrix B = (A^n Mod m);  works even if A = B.
-//
-/*
+/**
+ * Compute the matrix B = (A^n Mod m);  works even if A = B.
+ *
+ * \param [in] A Matrix input argument.
+ * \param [out] B Matrix output.
+ * \param [in] m Modulus.
+ * \param [in] n Exponent.
+ */
 void MatPowModM (const double A[3][3], double B[3][3], double m, int32_t n)
 {
-  NS_LOG_FUNCTION (A << B << m << n);
-  int i, j;
+  int i;
+  int j;
   double W[3][3];
 
   // initialize: W = A; B = I
@@ -219,18 +280,26 @@ void MatPowModM (const double A[3][3], double B[3][3], double m, int32_t n)
       n /= 2;
     }
 }
-*/
 
-// The following are the transition matrices of the two MRG components
-// (in matrix form), raised to all powers of 2 from 1 to 191
+/**
+ * The transition matrices of the two MRG components
+ * (in matrix form), raised to all powers of 2 from 1 to 191
+ */
 struct Precalculated
 {
-  Matrix a1[190];
-  Matrix a2[190];
+  Matrix a1[190];  //!< First component transition matrix powers.
+  Matrix a2[190];  //!< Second component transition matrix powers.
 };
-struct Precalculated PowerOfTwoConstants (void)
+
+/**
+ * Compute the transition matrices of the two MRG components
+ * raised to all powers of 2 from 1 to 191.
+ *
+ * \returns The precalculated powers of the transition matrices.
+ */
+Precalculated PowerOfTwoConstants ()
 {
-  struct Precalculated precalculated;
+  Precalculated precalculated;
   for (int i = 0; i < 190; i++)
     {
       int power = i + 1;
@@ -239,9 +308,16 @@ struct Precalculated PowerOfTwoConstants (void)
     }
   return precalculated;
 }
+/**
+ * Get the transition matrices raised to a power of 2.
+ *
+ * \param [in] n The power of 2.
+ * \param [out] a1p The first transition matrix power.
+ * \param [out] a2p The second transition matrix power.
+ */
 void PowerOfTwoMatrix (int n, Matrix a1p, Matrix a2p)
 {
-  static struct Precalculated constants = PowerOfTwoConstants ();
+  static  Precalculated constants = PowerOfTwoConstants ();
   for (int i = 0; i < 3; i ++)
     {
       for (int j = 0; j < 3; j++)
@@ -252,81 +328,93 @@ void PowerOfTwoMatrix (int n, Matrix a1p, Matrix a2p)
     }
 }
 
-} // end of anonymous namespace
+} // namespace MRG32k3a
 
+// clang-format on
 
-namespace ns3 {
-//-------------------------------------------------------------------------
-// Generate the next random number.
-//
-double RngStream::RandU01 ()
+namespace ns3
 {
-  int32_t k;
-  double p1, p2, u;
 
-  /* Component 1 */
-  p1 = a12 * m_currentState[1] - a13n * m_currentState[0];
-  k = static_cast<int32_t> (p1 / m1);
-  p1 -= k * m1;
-  if (p1 < 0.0)
+using namespace MRG32k3a;
+
+double
+RngStream::RandU01()
+{
+    int32_t k;
+    double p1;
+    double p2;
+    double u;
+
+    /* Component 1 */
+    p1 = a12 * m_currentState[1] - a13n * m_currentState[0];
+    k = static_cast<int32_t>(p1 / m1);
+    p1 -= k * m1;
+    if (p1 < 0.0)
     {
-      p1 += m1;
+        p1 += m1;
     }
-  m_currentState[0] = m_currentState[1]; m_currentState[1] = m_currentState[2]; m_currentState[2] = p1;
+    m_currentState[0] = m_currentState[1];
+    m_currentState[1] = m_currentState[2];
+    m_currentState[2] = p1;
 
-  /* Component 2 */
-  p2 = a21 * m_currentState[5] - a23n * m_currentState[3];
-  k = static_cast<int32_t> (p2 / m2);
-  p2 -= k * m2;
-  if (p2 < 0.0)
+    /* Component 2 */
+    p2 = a21 * m_currentState[5] - a23n * m_currentState[3];
+    k = static_cast<int32_t>(p2 / m2);
+    p2 -= k * m2;
+    if (p2 < 0.0)
     {
-      p2 += m2;
+        p2 += m2;
     }
-  m_currentState[3] = m_currentState[4]; m_currentState[4] = m_currentState[5]; m_currentState[5] = p2;
+    m_currentState[3] = m_currentState[4];
+    m_currentState[4] = m_currentState[5];
+    m_currentState[5] = p2;
 
-  /* Combination */
-  u = ((p1 > p2) ? (p1 - p2) * norm : (p1 - p2 + m1) * norm);
+    /* Combination */
+    u = ((p1 > p2) ? (p1 - p2) * norm : (p1 - p2 + m1) * norm);
 
-  return u;
+    return u;
 }
 
-RngStream::RngStream (uint32_t seedNumber, uint64_t stream, uint64_t substream)
+RngStream::RngStream(uint32_t seedNumber, uint64_t stream, uint64_t substream)
 {
-  if (seedNumber >= m1 || seedNumber >= m2 || seedNumber == 0)
+    if (seedNumber >= m1 || seedNumber >= m2 || seedNumber == 0)
     {
-      NS_FATAL_ERROR ("invalid Seed " << seedNumber);
+        NS_FATAL_ERROR("invalid Seed " << seedNumber);
     }
-  for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 6; ++i)
     {
-      m_currentState[i] = seedNumber;
+        m_currentState[i] = seedNumber;
     }
-  AdvanceNthBy (stream, 127, m_currentState);
-  AdvanceNthBy (substream, 76, m_currentState);
+    AdvanceNthBy(stream, 127, m_currentState);
+    AdvanceNthBy(substream, 76, m_currentState);
 }
 
 RngStream::RngStream(const RngStream& r)
 {
-  for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 6; ++i)
     {
-      m_currentState[i] = r.m_currentState[i];
+        m_currentState[i] = r.m_currentState[i];
     }
 }
 
-void 
-RngStream::AdvanceNthBy (uint64_t nth, int by, double state[6])
+void
+RngStream::AdvanceNthBy(uint64_t nth, int by, double state[6])
 {
-  Matrix matrix1,matrix2;
-  for (int i = 0; i < 64; i++)
+    Matrix matrix1;
+    Matrix matrix2;
+    for (int i = 0; i < 64; i++)
     {
-      int nbit = 63 - i;
-      int bit = (nth >> nbit) & 0x1;
-      if (bit)
+        int nbit = 63 - i;
+        int bit = (nth >> nbit) & 0x1;
+        if (bit)
         {
-          PowerOfTwoMatrix(by + nbit, matrix1, matrix2);
-          MatVecModM (matrix1, state, state, m1);
-          MatVecModM (matrix2, &state[3], &state[3], m2);
+            PowerOfTwoMatrix(by + nbit, matrix1, matrix2);
+            MatVecModM(matrix1, state, state, m1);
+            MatVecModM(matrix2, &state[3], &state[3], m2);
         }
     }
 }
 
 } // namespace ns3
+
+/**@}*/ // \ingroup rngimpl

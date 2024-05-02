@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007 INRIA, Gustavo Carneiro
  *
@@ -21,374 +20,516 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "attribute-construction-list.h"
+#include "attribute.h"
+#include "object-base.h"
+#include "ptr.h"
+#include "simple-ref-count.h"
+
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include "ptr.h"
-#include "attribute.h"
-#include "object-base.h"
-#include "attribute-construction-list.h"
-#include "simple-ref-count.h"
 
+/**
+ * \file
+ * \ingroup object
+ * ns3::Object class declaration, which is the root of the Object hierarchy
+ * and Aggregation.
+ */
 
-namespace ns3 {
+namespace ns3
+{
 
 class Object;
 class AttributeAccessor;
 class AttributeValue;
 class TraceSourceAccessor;
 
-struct ObjectDeleter
-{
-  inline static void Delete (Object *object);
-};
-
 /**
  * \ingroup core
  * \defgroup object Object
+ * \brief Base classes which provide memory management and object aggregation.
  */
+
 /**
  * \ingroup object
- * \brief a base class which provides memory management and object aggregation
- *
- * The memory management scheme is based on reference-counting with dispose-like
- * functionality to break the reference cycles. The reference count is increamented
- * and decremented with the methods Object::Ref and Object::Unref. If a reference cycle is
- * present, the user is responsible for breaking it by calling Object::Dispose in
- * a single location. This will eventually trigger the invocation of Object::DoDispose 
- * on itself and all its aggregates. The Object::DoDispose method is always automatically
- * invoked from the Object::Unref method before destroying the object, even if the user 
- * did not call Object::Dispose directly.
+ * \ingroup ptr
+ * Standard Object deleter, used by SimpleRefCount
+ * to delete an Object when the reference count drops to zero.
  */
-class Object : public SimpleRefCount<Object,ObjectBase,ObjectDeleter>
+struct ObjectDeleter
 {
-public:
-  /**
-   * Get the type ID.
-   */
-  static TypeId GetTypeId (void);
-
-  /**
-   * \brief Iterate over the objects aggregated to an ns3::Object.
-   *
-   * This iterator does not allow you to iterate over the initial
-   * object used to call Object::GetAggregateIterator. 
-   *
-   * Note: this is a java-style iterator.
-   */
-  class AggregateIterator
-  {
-public:
-    AggregateIterator ();
-
     /**
-     * \returns true if HasNext can be called and return a non-null
-     *          pointer, false otherwise.
+     * Smart pointer deleter implementation for Object.
+     *
+     * Delete implementation, forwards to the Object::DoDelete()
+     * method.
+     *
+     * \param [in] object The Object to delete.
      */
-    bool HasNext (void) const;
-
-    /**
-     * \returns the next aggregated object.
-     */
-    Ptr<const Object> Next (void);
-private:
-    friend class Object;
-    AggregateIterator (Ptr<const Object> object);  //!< Constructor
-    Ptr<const Object> m_object;                    //!< Parent Object
-    uint32_t m_current;                            //!< Current position in parent's aggegrates
-  };
-
-  Object ();
-  virtual ~Object ();
-
-  /*
-   * Implement the GetInstanceTypeId method defined in ObjectBase.
-   */
-  virtual TypeId GetInstanceTypeId (void) const;
-
-  /**
-   * \returns a pointer to the requested interface or zero if it could not be found.
-   */
-  template <typename T>
-  inline Ptr<T> GetObject (void) const;
-  /**
-   * \param tid the interface id of the requested interface
-   * \returns a pointer to the requested interface or zero if it could not be found.
-   */
-  template <typename T>
-  Ptr<T> GetObject (TypeId tid) const;
-  /**
-   * Run the DoDispose methods of this object and all the
-   * objects aggregated to it.
-   * After calling this method, the object is expected to be
-   * totally unusable except for the Ref and Unref methods.
-   *
-   * Note that you can call Dispose many times on the same object or
-   * different objects aggregated together, and DoDispose will be
-   * called only once for each aggregated object.
-   *
-   * This method is typically used to break reference cycles.
-   */
-  void Dispose (void);
-  /**
-   * \param other another object pointer
-   *
-   * This method aggregates the two objects together: after this
-   * method returns, it becomes possible to call GetObject
-   * on one to get the other, and vice-versa. 
-   *
-   * This method calls the virtual method NotifyNewAggregates to
-   * notify all aggregated objects that they have been aggregated
-   * together.
-   *
-   * \sa NotifyNewAggregate
-   */
-  void AggregateObject (Ptr<Object> other);
-
-  /**
-   * \returns an iterator to the first object aggregated to this
-   *          object.
-   *
-   * If no objects are aggregated to this object, then, the returned
-   * iterator will be empty and AggregateIterator::HasNext will
-   * always return false.
-   */
-  AggregateIterator GetAggregateIterator (void) const;
-
-  /**
-   * This method calls the virtual DoInitialize method on all the objects
-   * aggregated to this object. DoInitialize will be called only once over
-   * the lifetime of an object, just like DoDispose is called only
-   * once.
-   *
-   * \sa DoInitialize
-   */
-  void Initialize (void);
-  void Start (void);
-
-protected:
-  /**
-   * This method is invoked whenever two sets of objects are aggregated together.
-   * It is invoked exactly once for each object in both sets.
-   * This method can be overriden by subclasses who wish to be notified of aggregation
-   * events. These subclasses must chain up to their base class NotifyNewAggregate method.
-   * It is safe to call GetObject and AggregateObject from within this method.
-   */
-  virtual void NotifyNewAggregate (void);
-  /**
-   * This method is called only once by Object::Initialize. If the user
-   * calls Object::Initialize multiple times, DoInitialize is called only the
-   * first time.
-   *
-   * Subclasses are expected to override this method and _chain up_
-   * to their parent's implementation once they are done. It is
-   * safe to call GetObject and AggregateObject from within this method.
-   */
-  virtual void DoInitialize (void);
-
-  virtual void DoStart(void);
-
-  /**
-   * This method is called by Object::Dispose or by the object's 
-   * destructor, whichever comes first.
-   *
-   * Subclasses are expected to implement their real destruction
-   * code in an overriden version of this method and chain
-   * up to their parent's implementation once they are done.
-   * i.e., for simplicity, the destructor of every subclass should
-   * be empty and its content should be moved to the associated
-   * DoDispose method.
-   *
-   * It is safe to call GetObject from within this method.
-   */
-  virtual void DoDispose (void);
-  /**
-   * \param o the object to copy.
-   *
-   * Allow subclasses to implement a copy constructor.
-   * While it is technically possible to implement a copy
-   * constructor in a subclass, we strongly discourage you
-   * to do so. If you really want to do it anyway, you have
-   * to understand that this copy constructor will _not_
-   * copy aggregated objects. i.e., if your object instance
-   * is already aggregated to another object and if you invoke
-   * this copy constructor, the new object instance will be
-   * a pristine standalone object instance not aggregated to
-   * any other object. It is thus _your_ responsability
-   * as a caller of this method to do what needs to be done
-   * (if it is needed) to ensure that the object stays in a
-   * valid state.
-   */
-  Object (const Object &o);
-private:
-
-  template <typename T>
-  friend Ptr<T> CopyObject (Ptr<T> object);
-  template <typename T>
-  friend Ptr<T> CopyObject (Ptr<const T> object);
-  template <typename T>
-  friend Ptr<T> CompleteConstruct (T *object);
-
-  friend class ObjectFactory;
-  friend class AggregateIterator;
-  friend struct ObjectDeleter;
-
-  /**
-   * This data structure uses a classic C-style trick to 
-   * hold an array of variable size without performing
-   * two memory allocations: the declaration of the structure
-   * declares a one-element array but when we allocate
-   * memory for this struct, we effectively allocate a larger
-   * chunk of memory than the struct to allow space for a larger
-   * variable sized buffer whose size is indicated by the element
-   * 'n'
-   */
-  struct Aggregates {
-    uint32_t n;
-    Object *buffer[1];
-  };
-
-  /**
-   * Find an object of TypeId tid in the aggregates of this Object.
-   *
-   * \param tid the TypeId we're looking for
-   * \return the matching Object, if it is found
-   */
-  Ptr<Object> DoGetObject (TypeId tid) const;
-  /**
-   * \return is reference count non zero
-   */
-  bool Check (void) const;
-  /**
-   * \return Do any of our aggregates have non zero reference count?
-   *
-   * In some cases, when an event is scheduled against a subclass of
-   * Object, and if no one owns a reference directly to this object, the
-   * object is alive, has a refcount of zero and the method ran when the
-   * event expires runs against the raw pointer which means that we are
-   * manipulating an object with a refcount of zero.  So, instead we
-   * check the aggregate reference count.
-   */
-  bool CheckLoose (void) const;
-  /**
-   * \param tid an TypeId
-   *
-   * Invoked from ns3::CreateObject only.
-   * Initialize the m_tid member variable to
-   * keep track of the type of this object instance.
-   */
-  void SetTypeId (TypeId tid);
-  /**
-  * \param attributes the attribute values used to initialize
-  *        the member variables of this object's instance.
-  *
-  * Invoked from ns3::ObjectFactory::Create and ns3::CreateObject only.
-  * Initialize all the member variables which were
-  * registered with the associated TypeId.
-  */
-  void Construct (const AttributeConstructionList &attributes);
-
-  /**
-   * Keep the list of aggregates in most-recently-used order
-   *
-   * \param aggregates the list of aggregated objects
-   * \param i the most recently used entry in the list
-   */
-  void UpdateSortedArray (struct Aggregates *aggregates, uint32_t i) const;
-  /**
-   * Attempt to delete this object. This method iterates
-   * over all aggregated objects to check if they all 
-   * have a zero refcount. If yes, the object and all
-   * its aggregates are deleted. If not, nothing is done.
-   */
-  void DoDelete (void);
-
-  /**
-   * Identifies the type of this object instance.
-   */
-  TypeId m_tid;
-  /**
-   * Set to true when the DoDispose method of the object
-   * has run, false otherwise.
-   */
-  bool m_disposed;
-  /**
-   * Set to true once the DoInitialize method has run,
-   * false otherwise
-   */
-  bool m_initialized;
-  /**
-   * a pointer to an array of 'aggregates'. i.e., a pointer to
-   * each object aggregated to this object is stored in this 
-   * array. The array is shared by all aggregated objects
-   * so the size of the array is indirectly a reference count.
-   */
-  struct Aggregates * m_aggregates;
-  /**
-   * Indicates the number of times the object was accessed with a
-   * call to GetObject. This integer is used to implement a
-   * heuristic to sort the array of aggregates to put at the start
-   * of the array the most-frequently accessed elements.
-   */
-  uint32_t m_getObjectCount;
+    inline static void Delete(Object* object);
 };
 
 /**
- * \param object a pointer to the object to copy.
- * \returns a copy of the input object.
+ * \ingroup object
+ * \brief A base class which provides memory management and object aggregation
  *
- * This method invoke the copy constructor of the input object
- * and returns the new instance.
+ * The memory management scheme is based on reference-counting with
+ * dispose-like functionality to break the reference cycles.
+ * The reference count is incremented and decremented with
+ * the methods Ref() and Unref(). If a reference cycle is
+ * present, the user is responsible for breaking it
+ * by calling Dispose() in a single location. This will
+ * eventually trigger the invocation of DoDispose() on itself and
+ * all its aggregates. The DoDispose() method is always automatically
+ * invoked from the Unref() method before destroying the Object,
+ * even if the user did not call Dispose() directly.
  */
+class Object : public SimpleRefCount<Object, ObjectBase, ObjectDeleter>
+{
+  public:
+    /**
+     * \brief Register this type.
+     * \return The Object TypeId.
+     */
+    static TypeId GetTypeId();
+
+    /**
+     * \brief Iterate over the Objects aggregated to an ns3::Object.
+     *
+     * This iterator does not allow you to iterate over the parent
+     * Object used to call Object::GetAggregateIterator.
+     *
+     * \note This is a java-style iterator.
+     */
+    class AggregateIterator
+    {
+      public:
+        /** Default constructor, which has no Object. */
+        AggregateIterator();
+
+        /**
+         * Check if there are more Aggregates to iterate over.
+         *
+         * \returns \c true if Next() can be called and return a non-null
+         *          pointer, \c false otherwise.
+         */
+        bool HasNext() const;
+
+        /**
+         * Get the next Aggregated Object.
+         *
+         * \returns The next aggregated Object.
+         */
+        Ptr<const Object> Next();
+
+      private:
+        /** Object needs access. */
+        friend class Object;
+        /**
+         * Construct from an Object.
+         *
+         * This is private, with Object as friend, so only Objects can create
+         * useful AggregateIterators.
+         *
+         * \param [in] object The Object whose Aggregates should be iterated over.
+         */
+        AggregateIterator(Ptr<const Object> object);
+        Ptr<const Object> m_object; //!< Parent Object.
+        uint32_t m_current;         //!< Current position in parent's aggregates.
+    };
+
+    /** Constructor. */
+    Object();
+    /** Destructor. */
+    ~Object() override;
+
+    TypeId GetInstanceTypeId() const override;
+
+    /**
+     * Get a pointer to the requested aggregated Object.  If the type of object
+     * requested is ns3::Object, a Ptr to the calling object is returned.
+     *
+     * \tparam T \explicit The type of the aggregated Object to retrieve.
+     * \returns A pointer to the requested Object, or zero
+     *          if it could not be found.
+     */
+    template <typename T>
+    inline Ptr<T> GetObject() const;
+    /**
+     * Get a pointer to the requested aggregated Object by TypeId.  If the
+     * TypeId argument is ns3::Object, a Ptr to the calling object is returned.
+     *
+     * \tparam T \explicit The type of the aggregated Object to retrieve.
+     * \param [in] tid The TypeId of the requested Object.
+     * \returns A pointer to the requested Object with the specified TypeId,
+     *          or zero if it could not be found.
+     */
+    template <typename T>
+    Ptr<T> GetObject(TypeId tid) const;
+    /**
+     * Dispose of this Object.
+     *
+     * Run the DoDispose() methods of this Object and all the
+     * Objects aggregated to it.
+     * After calling this method, this Object is expected to be
+     * totally unusable except for the Ref() and Unref() methods.
+     *
+     * \note You can call Dispose() many times on the same Object or
+     * different Objects aggregated together, and DoDispose() will be
+     * called only once for each aggregated Object.
+     *
+     * This method is typically used to break reference cycles.
+     */
+    void Dispose();
+    /**
+     * Aggregate two Objects together.
+     *
+     * \param [in] other The other Object pointer
+     *
+     * This method aggregates the two Objects together: after this
+     * method returns, it becomes possible to call GetObject()
+     * on one to get the other, and vice-versa.
+     *
+     * This method calls the virtual method NotifyNewAggregates() to
+     * notify all aggregated Objects that they have been aggregated
+     * together.
+     *
+     * \sa NotifyNewAggregate()
+     */
+    void AggregateObject(Ptr<Object> other);
+
+    /**
+     * Get an iterator to the Objects aggregated to this one.
+     *
+     * \returns An iterator to the first Object aggregated to this
+     *          Object.
+     *
+     * If no Objects are aggregated to this Object, then, the returned
+     * iterator will be empty and AggregateIterator::HasNext() will
+     * always return \c false.
+     */
+    AggregateIterator GetAggregateIterator() const;
+
+    /**
+     * Invoke DoInitialize on all Objects aggregated to this one.
+     *
+     * This method calls the virtual DoInitialize() method on all the Objects
+     * aggregated to this Object. DoInitialize() will be called only once over
+     * the lifetime of an Object, just like DoDispose() is called only
+     * once.
+     *
+     * \sa DoInitialize()
+     */
+    void Initialize();
+
+    /**
+     * Check if the object has been initialized.
+     *
+     * \brief Check if the object has been initialized.
+     * \returns \c true if the object has been initialized.
+     */
+    bool IsInitialized() const;
+
+  protected:
+    /**
+     * Notify all Objects aggregated to this one of a new Object being
+     * aggregated.
+     *
+     * This method is invoked whenever two sets of Objects are aggregated
+     * together.  It is invoked exactly once for each Object in both sets.
+     * This method can be overridden by subclasses who wish to be notified
+     * of aggregation events. These subclasses must chain up to their
+     * base class NotifyNewAggregate() method.
+     *
+     * It is safe to call GetObject() and AggregateObject() from within
+     * this method.
+     */
+    virtual void NotifyNewAggregate();
+    /**
+     * Initialize() implementation.
+     *
+     * This method is called only once by Initialize(). If the user
+     * calls Initialize() multiple times, DoInitialize() is called only the
+     * first time.
+     *
+     * Subclasses are expected to override this method and chain up
+     * to their parent's implementation once they are done. It is
+     * safe to call GetObject() and AggregateObject() from within this method.
+     */
+    virtual void DoInitialize();
+    /**
+     * Destructor implementation.
+     *
+     * This method is called by Dispose() or by the Object's
+     * destructor, whichever comes first.
+     *
+     * Subclasses are expected to implement their real destruction
+     * code in an overridden version of this method and chain
+     * up to their parent's implementation once they are done.
+     * _i.e_, for simplicity, the destructor of every subclass should
+     * be empty and its content should be moved to the associated
+     * DoDispose() method.
+     *
+     * It is safe to call GetObject() from within this method.
+     */
+    virtual void DoDispose();
+    /**
+     * Copy an Object.
+     *
+     * \param [in] o the Object to copy.
+     *
+     * Allow subclasses to implement a copy constructor.
+     *
+     * While it is technically possible to implement a copy
+     * constructor in a subclass, we strongly discourage you
+     * from doing so. If you really want to do it anyway, you have
+     * to understand that this copy constructor will _not_
+     * copy aggregated Objects, _i.e_, if your Object instance
+     * is already aggregated to another Object and if you invoke
+     * this copy constructor, the new Object instance will be
+     * a pristine standalone Object instance not aggregated to
+     * any other Object. It is thus _your_ responsibility
+     * as a caller of this method to do what needs to be done
+     * (if it is needed) to ensure that the Object stays in a
+     * valid state.
+     */
+    Object(const Object& o);
+
+  private:
+    /**
+     * Copy an Object.
+     *
+     * \tparam T \deduced The type of the Object being copied.
+     * \param [in] object A pointer to the object to copy.
+     * \returns A copy of the input object.
+     *
+     * This method invoke the copy constructor of the input object
+     * and returns the new instance.
+     */
+    /**@{*/
+    template <typename T>
+    friend Ptr<T> CopyObject(Ptr<T> object);
+    template <typename T>
+    friend Ptr<T> CopyObject(Ptr<const T> object);
+    /**@}*/
+
+    /**
+     * Set the TypeId and construct all Attributes of an Object.
+     *
+     * \tparam T \deduced The type of the Object to complete.
+     * \param [in] object The uninitialized object pointer.
+     * \return The derived object.
+     */
+    template <typename T>
+    friend Ptr<T> CompleteConstruct(T* object);
+
+    /** Friends. @{*/
+    friend class ObjectFactory;
+    friend class AggregateIterator;
+    friend struct ObjectDeleter;
+
+    /**@}*/
+
+    /**
+     * The list of Objects aggregated to this one.
+     *
+     * This data structure uses a classic C-style trick to
+     * hold an array of variable size without performing
+     * two memory allocations: the declaration of the structure
+     * declares a one-element array but when we allocate
+     * memory for this struct, we effectively allocate a larger
+     * chunk of memory than the struct to allow space for a larger
+     * variable sized buffer whose size is indicated by the element
+     * \c n
+     */
+    struct Aggregates
+    {
+        /** The number of entries in \c buffer. */
+        uint32_t n;
+        /** The array of Objects. */
+        Object* buffer[1];
+    };
+
+    /**
+     * Find an Object of TypeId tid in the aggregates of this Object.
+     *
+     * \param [in] tid The TypeId we're looking for
+     * \return The matching Object, if it is found
+     */
+    Ptr<Object> DoGetObject(TypeId tid) const;
+    /**
+     * Verify that this Object is still live, by checking it's reference count.
+     * \return \c true if the reference count is non zero.
+     */
+    bool Check() const;
+    /**
+     * Check if any aggregated Objects have non-zero reference counts.
+     *
+     * \return \c true if any of our aggregates have non zero reference count.
+     *
+     * In some cases, when an event is scheduled against a subclass of
+     * Object, and if no one owns a reference directly to this Object, the
+     * Object is alive, has a refcount of zero and the method run when the
+     * event expires runs against the raw pointer, which means that we are
+     * manipulating an Object with a refcount of zero.  So, instead we
+     * check the aggregate reference count.
+     */
+    bool CheckLoose() const;
+    /**
+     * Set the TypeId of this Object.
+
+     * \param [in] tid The TypeId value to set.
+     *
+     * Invoked from ns3::CreateObject only.
+     * Initialize the \c m_tid member variable to
+     * keep track of the type of this Object instance.
+     */
+    void SetTypeId(TypeId tid);
+    /**
+     * Initialize all member variables registered as Attributes of this TypeId.
+     *
+     * \param [in] attributes The attribute values used to initialize
+     *        the member variables of this Object's instance.
+     *
+     * Invoked from ns3::ObjectFactory::Create and ns3::CreateObject only.
+     * Initialize all the member variables which were
+     * registered with the associated TypeId.
+     */
+    void Construct(const AttributeConstructionList& attributes);
+
+    /**
+     * Keep the list of aggregates in most-recently-used order
+     *
+     * \param [in,out] aggregates The list of aggregated Objects.
+     * \param [in] i The most recently used entry in the list.
+     */
+    void UpdateSortedArray(Aggregates* aggregates, uint32_t i) const;
+    /**
+     * Attempt to delete this Object.
+     *
+     * This method iterates over all aggregated Objects to check if they all
+     * have a zero refcount. If yes, the Object and all
+     * its aggregates are deleted. If not, nothing is done.
+     */
+    void DoDelete();
+
+    /**
+     * Identifies the type of this Object instance.
+     */
+    TypeId m_tid;
+    /**
+     * Set to \c true when the DoDispose() method of the Object has run,
+     * \c false otherwise.
+     */
+    bool m_disposed;
+    /**
+     * Set to \c true once the DoInitialize() method has run,
+     * \c false otherwise
+     */
+    bool m_initialized;
+    /**
+     * A pointer to an array of 'aggregates'.
+     *
+     * A pointer to each Object aggregated to this Object is stored in this
+     * array.  The array is shared by all aggregated Objects
+     * so the size of the array is indirectly a reference count.
+     */
+    Aggregates* m_aggregates;
+    /**
+     * The number of times the Object was accessed with a
+     * call to GetObject().
+     *
+     * This integer is used to implement a heuristic to sort
+     * the array of aggregates in most-frequently accessed order.
+     */
+    uint32_t m_getObjectCount;
+};
+
 template <typename T>
-Ptr<T> CopyObject (Ptr<const T> object);
+Ptr<T> CopyObject(Ptr<const T> object);
 template <typename T>
-Ptr<T> CopyObject (Ptr<T> object);
+Ptr<T> CopyObject(Ptr<T> object);
 
 } // namespace ns3
 
-namespace ns3 {
-
-void 
-ObjectDeleter::Delete (Object *object)
+namespace ns3
 {
-  object->DoDelete ();
-}
 
 /*************************************************************************
  *   The Object implementation which depends on templates
  *************************************************************************/
 
-template <typename T>
-Ptr<T> 
-Object::GetObject () const
+void
+ObjectDeleter::Delete(Object* object)
 {
-  // This is an optimization: if the cast works (which is likely),
-  // things will be pretty fast.
-  T *result = dynamic_cast<T *> (m_aggregates->buffer[0]);
-  if (result != 0)
-    {
-      return Ptr<T> (result);
-    }
-  // if the cast does not work, we try to do a full type check.
-  Ptr<Object> found = DoGetObject (T::GetTypeId ());
-  if (found != 0)
-    {
-      return Ptr<T> (static_cast<T *> (PeekPointer (found)));
-    }
-  return 0;
+    object->DoDelete();
 }
 
 template <typename T>
-Ptr<T> 
-Object::GetObject (TypeId tid) const
+Ptr<T>
+Object::GetObject() const
 {
-  Ptr<Object> found = DoGetObject (tid);
-  if (found != 0)
+    // This is an optimization: if the cast works (which is likely),
+    // things will be pretty fast.
+    T* result = dynamic_cast<T*>(m_aggregates->buffer[0]);
+    if (result != nullptr)
     {
-      return Ptr<T> (static_cast<T *> (PeekPointer (found)));
+        return Ptr<T>(result);
     }
-  return 0;
+    // if the cast does not work, we try to do a full type check.
+    Ptr<Object> found = DoGetObject(T::GetTypeId());
+    if (found)
+    {
+        return Ptr<T>(static_cast<T*>(PeekPointer(found)));
+    }
+    return nullptr;
+}
+
+/**
+ * Specialization of \link Object::GetObject () \endlink for
+ * objects of type ns3::Object.
+ *
+ * \returns A Ptr to the calling object.
+ */
+template <>
+inline Ptr<Object>
+Object::GetObject() const
+{
+    return Ptr<Object>(const_cast<Object*>(this));
+}
+
+template <typename T>
+Ptr<T>
+Object::GetObject(TypeId tid) const
+{
+    Ptr<Object> found = DoGetObject(tid);
+    if (found)
+    {
+        return Ptr<T>(static_cast<T*>(PeekPointer(found)));
+    }
+    return nullptr;
+}
+
+/**
+ * Specialization of \link Object::GetObject (TypeId tid) \endlink for
+ * objects of type ns3::Object.
+ *
+ * \param [in] tid The TypeId of the requested Object.
+ * \returns A Ptr to the calling object.
+ */
+template <>
+inline Ptr<Object>
+Object::GetObject(TypeId tid) const
+{
+    if (tid == Object::GetTypeId())
+    {
+        return Ptr<Object>(const_cast<Object*>(this));
+    }
+    else
+    {
+        return DoGetObject(tid);
+    }
 }
 
 /*************************************************************************
@@ -396,79 +537,52 @@ Object::GetObject (TypeId tid) const
  *************************************************************************/
 
 template <typename T>
-Ptr<T> CopyObject (Ptr<T> object)
+Ptr<T>
+CopyObject(Ptr<T> object)
 {
-  Ptr<T> p = Ptr<T> (new T (*PeekPointer (object)), false);
-  NS_ASSERT (p->GetInstanceTypeId () == object->GetInstanceTypeId ());
-  return p;
+    Ptr<T> p = Ptr<T>(new T(*PeekPointer(object)), false);
+    NS_ASSERT(p->GetInstanceTypeId() == object->GetInstanceTypeId());
+    return p;
 }
 
 template <typename T>
-Ptr<T> CopyObject (Ptr<const T> object)
+Ptr<T>
+CopyObject(Ptr<const T> object)
 {
-  Ptr<T> p = Ptr<T> (new T (*PeekPointer (object)), false);
-  NS_ASSERT (p->GetInstanceTypeId () == object->GetInstanceTypeId ());
-  return p;
+    Ptr<T> p = Ptr<T>(new T(*PeekPointer(object)), false);
+    NS_ASSERT(p->GetInstanceTypeId() == object->GetInstanceTypeId());
+    return p;
 }
 
 template <typename T>
-Ptr<T> CompleteConstruct (T *p)
+Ptr<T>
+CompleteConstruct(T* object)
 {
-  p->SetTypeId (T::GetTypeId ());
-  p->Object::Construct (AttributeConstructionList ());
-  return Ptr<T> (p, false);
+    object->SetTypeId(T::GetTypeId());
+    object->Object::Construct(AttributeConstructionList());
+    return Ptr<T>(object, false);
 }
 
-template <typename T>
-Ptr<T> CreateObject (void)
+/**
+ * \ingroup object
+ * @{
+ */
+/**
+ * Create an object by type, with varying number of constructor parameters.
+ *
+ * \tparam T \explicit The type of the derived object to construct.
+ * \param [in] args Arguments to pass to the constructor.
+ * \return The derived object.
+ */
+template <typename T, typename... Args>
+Ptr<T>
+CreateObject(Args&&... args)
 {
-  return CompleteConstruct (new T ());
+    return CompleteConstruct(new T(std::forward<Args>(args)...));
 }
 
-template <typename T, typename T1>
-Ptr<T> CreateObject (T1 a1)
-{
-  return CompleteConstruct (new T (a1));
-}
-
-template <typename T, typename T1, typename T2>
-Ptr<T> CreateObject (T1 a1, T2 a2)
-{
-  return CompleteConstruct (new T (a1,a2));
-}
-
-template <typename T, typename T1, typename T2, typename T3>
-Ptr<T> CreateObject (T1 a1, T2 a2, T3 a3)
-{
-  return CompleteConstruct (new T (a1,a2,a3));
-}
-
-template <typename T, typename T1, typename T2, typename T3, typename T4>
-Ptr<T> CreateObject (T1 a1, T2 a2, T3 a3, T4 a4)
-{
-  return CompleteConstruct (new T (a1,a2,a3,a4));
-}
-
-template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5>
-Ptr<T> CreateObject (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5)
-{
-  return CompleteConstruct (new T (a1,a2,a3,a4,a5));
-}
-
-template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
-Ptr<T> CreateObject (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6)
-{
-  return CompleteConstruct (new T (a1,a2,a3,a4,a5,a6));
-}
-
-template <typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
-Ptr<T> CreateObject (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6, T7 a7)
-{
-  return CompleteConstruct (new T (a1,a2,a3,a4,a5,a6,a7));
-}
-
+/**@}*/
 
 } // namespace ns3
 
 #endif /* OBJECT_H */
-

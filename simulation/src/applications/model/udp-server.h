@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007,2008,2009 INRIA, UDCAST
  *
@@ -23,12 +22,16 @@
 #ifndef UDP_SERVER_H
 #define UDP_SERVER_H
 
+#include "packet-loss-counter.h"
+
+#include "ns3/address.h"
 #include "ns3/application.h"
 #include "ns3/event-id.h"
 #include "ns3/ptr.h"
-#include "ns3/address.h"
-#include "packet-loss-counter.h"
-namespace ns3 {
+#include "ns3/traced-callback.h"
+
+namespace ns3
+{
 /**
  * \ingroup applications
  * \defgroup udpclientserver UdpClientServer
@@ -36,65 +39,76 @@ namespace ns3 {
 
 /**
  * \ingroup udpclientserver
- * \class UdpServer
- * \brief A Udp server. Receives UDP packets from a remote host. UDP packets
- * carry a 32bits sequence number followed by a 64bits time stamp in their
- * payloads. The application uses, the sequence number to determine if a packet
- * is lost, and the time stamp to compute the delay
+ *
+ * \brief A UDP server, receives UDP packets from a remote host.
+ *
+ * UDP packets carry a 32bits sequence number followed by a 64bits time
+ * stamp in their payloads. The application uses the sequence number
+ * to determine if a packet is lost, and the time stamp to compute the delay.
  */
 class UdpServer : public Application
 {
-public:
-  static TypeId GetTypeId (void);
-  UdpServer ();
-  virtual ~UdpServer ();
-  /**
-   * returns the number of lost packets
-   * \return the number of lost packets
-   */
-  uint32_t GetLost (void) const;
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
+    UdpServer();
+    ~UdpServer() override;
+    /**
+     * \brief Returns the number of lost packets
+     * \return the number of lost packets
+     */
+    uint32_t GetLost() const;
 
-  /**
-   * \brief returns the number of received packets
-   * \return the number of received packets
-   */
-  uint32_t GetReceived (void) const;
+    /**
+     * \brief Returns the number of received packets
+     * \return the number of received packets
+     */
+    uint64_t GetReceived() const;
 
-  /**
-   * \return the size of the window used for checking loss.
-   */
-  uint16_t GetPacketWindowSize () const;
+    /**
+     * \brief Returns the size of the window used for checking loss.
+     * \return the size of the window used for checking loss.
+     */
+    uint16_t GetPacketWindowSize() const;
 
-  /**
-   * \brief Set the size of the window used for checking loss. This value should
-   *  be a multiple of 8
-   * \param size the size of the window used for checking loss. This value should
-   *  be a multiple of 8
-   */
-  void SetPacketWindowSize (uint16_t size);
+    /**
+     * \brief Set the size of the window used for checking loss. This value should
+     *  be a multiple of 8
+     * \param size the size of the window used for checking loss. This value should
+     *  be a multiple of 8
+     */
+    void SetPacketWindowSize(uint16_t size);
 
-  void SetRemote (Ipv4Address ip, uint16_t port);
+  protected:
+    void DoDispose() override;
 
-protected:
-  virtual void DoDispose (void);
+  private:
+    void StartApplication() override;
+    void StopApplication() override;
 
-private:
+    /**
+     * \brief Handle a packet reception.
+     *
+     * This function is called by lower layers.
+     *
+     * \param socket the socket the packet was received to.
+     */
+    void HandleRead(Ptr<Socket> socket);
 
-  virtual void StartApplication (void);
-  virtual void StopApplication (void);
+    uint16_t m_port;                 //!< Port on which we listen for incoming packets.
+    Ptr<Socket> m_socket;            //!< IPv4 Socket
+    Ptr<Socket> m_socket6;           //!< IPv6 Socket
+    uint64_t m_received;             //!< Number of received packets
+    PacketLossCounter m_lossCounter; //!< Lost packet counter
 
-  void HandleRead (Ptr<Socket> socket);
+    /// Callbacks for tracing the packet Rx events
+    TracedCallback<Ptr<const Packet>> m_rxTrace;
 
-  uint16_t m_port;
-  Ptr<Socket> m_socket;
-  Ptr<Socket> m_socket6;
-  Address m_local;
-  uint32_t m_received;
-  PacketLossCounter m_lossCounter;
-  
-  Address m_peerAddress;
-  uint16_t m_peerPort;
-
+    /// Callbacks for tracing the packet Rx events, includes source and destination addresses
+    TracedCallback<Ptr<const Packet>, const Address&, const Address&> m_rxTraceWithAddresses;
 };
 
 } // namespace ns3

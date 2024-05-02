@@ -1,9 +1,8 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as 
+ * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
  *
  * This program is distributed in the hope that it will be useful,
@@ -22,74 +21,74 @@
 #define UAN_MAC_ALOHA_H
 
 #include "uan-mac.h"
-#include "uan-address.h"
+
+#include "ns3/mac8-address.h"
 
 namespace ns3
 {
-
 
 class UanPhy;
 class UanTxMode;
 
 /**
- * \class UanMacAloha
- * \brief ALOHA MAC Protocol
+ * \ingroup uan
  *
- * The simplest MAC protocol for wireless networks.  Packets enqueued
- * are immediately transmitted.  This MAC attaches a UanHeaderCommon
- * to outgoing packets for address information.  (The type field is not used)
+ * ALOHA MAC Protocol, the simplest MAC protocol for wireless networks.
+ *
+ * Packets enqueued are immediately transmitted.  This MAC attaches
+ * a UanHeaderCommon to outgoing packets for address information.
+ * (The type field is not used)
  */
 class UanMacAloha : public UanMac
 {
-public:
-  UanMacAloha ();
-  virtual ~UanMacAloha ();
-  static TypeId GetTypeId (void);
+  public:
+    /** Default constructor */
+    UanMacAloha();
+    /** Dummy destructor, see DoDispose. */
+    ~UanMacAloha() override;
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
+    // Inherited methods
+    bool Enqueue(Ptr<Packet> pkt, uint16_t protocolNumber, const Address& dest) override;
+    void SetForwardUpCb(Callback<void, Ptr<Packet>, uint16_t, const Mac8Address&> cb) override;
+    void AttachPhy(Ptr<UanPhy> phy) override;
+    void Clear() override;
+    int64_t AssignStreams(int64_t stream) override;
 
-  //Inheritted functions
-  Address GetAddress (void);
-  virtual void SetAddress (UanAddress addr);
-  virtual bool Enqueue (Ptr<Packet> pkt, const Address &dest, uint16_t protocolNumber);
-  virtual void SetForwardUpCb (Callback<void, Ptr<Packet>, const UanAddress& > cb);
-  virtual void AttachPhy (Ptr<UanPhy> phy);
-  virtual Address GetBroadcast (void) const;
-  virtual void Clear (void);
+  private:
+    /** PHY layer attached to this MAC. */
+    Ptr<UanPhy> m_phy;
+    /** Forwarding up callback. */
+    Callback<void, Ptr<Packet>, uint16_t, const Mac8Address&> m_forUpCb;
+    /** Flag when we've been cleared. */
+    bool m_cleared;
 
- /**
-  * Assign a fixed random variable stream number to the random variables
-  * used by this model.  Return the number of streams (possibly zero) that
-  * have been assigned.
-  *
-  * \param stream first stream index to use
-  * \return the number of stream indices assigned by this model
-  */
-  int64_t AssignStreams (int64_t stream);
+    /**
+     * Receive packet from lower layer (passed to PHY as callback).
+     *
+     * \param pkt Packet being received.
+     * \param sinr SINR of received packet.
+     * \param txMode Mode of received packet.
+     */
+    void RxPacketGood(Ptr<Packet> pkt, double sinr, UanTxMode txMode);
 
-private:
-  UanAddress m_address;
-  Ptr<UanPhy> m_phy;
-  Callback<void, Ptr<Packet>, const UanAddress& > m_forUpCb;
-  bool m_cleared;
+    /**
+     * Packet received at lower layer in error.
+     *
+     * \param pkt Packet received in error.
+     * \param sinr SINR of received packet.
+     */
+    void RxPacketError(Ptr<Packet> pkt, double sinr);
 
-  /**
-   * \brief Receive packet from lower layer (passed to PHY as callback)
-   * \param pkt Packet being received
-   * \param sinr SINR of received packet
-   * \param txMode Mode of received packet
-   */
-  void RxPacketGood (Ptr<Packet> pkt, double sinr, UanTxMode txMode);
+  protected:
+    void DoDispose() override;
 
-  /**
-   * \brief Packet received at lower layer in error
-   * \param pkt Packet received in error
-   * \param sinr SINR of received packet
-   */
-  void RxPacketError (Ptr<Packet> pkt, double sinr);
-protected:
-  virtual void DoDispose ();
-};
+}; // class UanMacAloha
 
-}
+} // namespace ns3
 
 #endif /* UAN_MAC_ALOHA_H */

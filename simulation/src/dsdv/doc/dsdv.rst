@@ -7,10 +7,10 @@ Destination-Sequenced Distance Vector (DSDV) routing protocol is a pro-active, t
 for MANETs developed by Charles E. Perkins and Pravin Bhagwat in 1994. It uses the hop count as metric in route
 selection.
 
-This model was developed by 
-`the ResiliNets research group <http://www.ittc.ku.edu/resilinets>`_
+This model was developed by
+`the ResiliNets research group <https://resilinets.org/>`_
 at the University of Kansas.  A paper on this model exists at
-`this URL <https://wiki.ittc.ku.edu/resilinets/ResiliNets_Publications#.E2.80.9CDestination-Sequenced_Distance_Vector_.28DSDV.29_Routing_Protocol_Implementation_in_ns-3.E2.80.9D>`_. 
+`this URL <https://resilinets.org/resilinets_publications.html#.E2.80.9CDestination-Sequenced_Distance_Vector_.28DSDV.29_Routing_Protocol_Implementation_in_ns-3.E2.80.9D>`_.
 
 DSDV Routing Overview
 *********************
@@ -31,10 +31,10 @@ Each node uses 2 mechanisms to send out the DSDV updates. They are,
 2. Trigger Updates
     Trigger Updates are small updates in-between the periodic updates. These updates are sent out whenever a node
     receives a DSDV packet that caused a change in its routing table. The original paper did not clearly mention
-    when for what change in the table should a DSDV update be sent out. The current implemntation sends out an update
+    when for what change in the table should a DSDV update be sent out. The current implementation sends out an update
     irrespective of the change in the routing table.
 
-The updates are accepted based on the metric for a particular node. The first factor determinig the acceptance of
+The updates are accepted based on the metric for a particular node. The first factor determining the acceptance of
 an update is the sequence number. It has to accept the update if the sequence number of the update message is higher
 irrespective of the metric. If the update with same sequence number is received, then the update with least metric
 (hopCount) is given precedence.

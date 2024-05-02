@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007 INRIA
  *
@@ -20,58 +19,48 @@
 #ifndef UDP_SOCKET_FACTORY_IMPL_H
 #define UDP_SOCKET_FACTORY_IMPL_H
 
-#include "ns3/udp-socket-factory.h"
 #include "ns3/ptr.h"
+#include "ns3/udp-socket-factory.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 class UdpL4Protocol;
 
 /**
- * \ingroup internet
- * \defgroup udp Udp
- *
- * This  is  an  implementation of the User Datagram Protocol described in
- * RFC 768.  It implements a connectionless,  unreliable  datagram  packet
- * service.   Packets  may  be reordered or duplicated before they arrive.
- * UDP generates and checks checksums to catch transmission errors.
- *
- * The following options are not presently part of this implementation:
- * UDP_CORK, MSG_DONTROUTE, path MTU discovery control (e.g. 
- * IP_MTU_DISCOVER).  MTU handling is also weak in ns-3 for the moment;
- * it is best to send datagrams that do not exceed 1500 byte MTU (e.g.
- * 1472 byte UDP datagrams)
- */
-
-/**
+ * \ingroup socket
  * \ingroup udp
- * \brief Object to create UDP socket instances 
- * \internal
+ *
+ * \brief Object to create UDP socket instances
  *
  * This class implements the API for creating UDP sockets.
  * It is a socket factory (deriving from class SocketFactory).
  */
 class UdpSocketFactoryImpl : public UdpSocketFactory
 {
-public:
-  UdpSocketFactoryImpl ();
-  virtual ~UdpSocketFactoryImpl ();
+  public:
+    UdpSocketFactoryImpl();
+    ~UdpSocketFactoryImpl() override;
 
-  void SetUdp (Ptr<UdpL4Protocol> udp);
+    /**
+     * \brief Set the associated UDP L4 protocol.
+     * \param udp the UDP L4 protocol
+     */
+    void SetUdp(Ptr<UdpL4Protocol> udp);
 
-  /**
-   * \brief Implements a method to create a Udp-based socket and return
-   * a base class smart pointer to the socket.
-   * \internal
-   *
-   * \return smart pointer to Socket
-   */
-  virtual Ptr<Socket> CreateSocket (void);
+    /**
+     * \brief Implements a method to create a Udp-based socket and return
+     * a base class smart pointer to the socket.
+     *
+     * \return smart pointer to Socket
+     */
+    Ptr<Socket> CreateSocket() override;
 
-protected:
-  virtual void DoDispose (void);
-private:
-  Ptr<UdpL4Protocol> m_udp;
+  protected:
+    void DoDispose() override;
+
+  private:
+    Ptr<UdpL4Protocol> m_udp; //!< the associated UDP L4 protocol
 };
 
 } // namespace ns3

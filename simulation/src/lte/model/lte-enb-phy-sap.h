@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *
@@ -18,17 +17,18 @@
  * Author: Marco Miozzo <mmiozzo@cttc.es>
  */
 
-
-
 #ifndef LTE_ENB_PHY_SAP_H
 #define LTE_ENB_PHY_SAP_H
 
+#include "ff-mac-common.h"
+#include "ff-mac-sched-sap.h"
+
 #include <ns3/packet.h>
-#include <ns3/ff-mac-common.h>
 
-namespace ns3 {
+namespace ns3
+{
 
-class IdealControlMessage;
+class LteControlMessage;
 
 /**
  * Service Access Point (SAP) offered by the eNB-PHY to the eNB-MAC
@@ -38,50 +38,27 @@ class IdealControlMessage;
  */
 class LteEnbPhySapProvider
 {
-public:
-  virtual ~LteEnbPhySapProvider ();
+  public:
+    virtual ~LteEnbPhySapProvider();
 
-  /**
-   * \brief Send the MAC PDU to the channel
-   * \param p the MAC PDU to send
-   * \return true if
-   */
-  virtual void SendMacPdu (Ptr<Packet> p) = 0;
+    /**
+     * \brief Send the MAC PDU to the channel
+     * \param p the MAC PDU to send
+     */
+    virtual void SendMacPdu(Ptr<Packet> p) = 0;
 
-  /**
-   * \param ulBandwidth the UL bandwidth in RB
-   * \param dlBandwidth the DL bandwidth in RB
-   */
-  virtual void SetBandwidth (uint8_t ulBandwidth, uint8_t dlBandwidth) = 0;
-  
-  /**
-  * \param rnti the RNTI of the user
-  * \param txMode the transmissionMode of the user
-  */
-  virtual void SetTransmissionMode (uint16_t  rnti, uint8_t txMode) = 0;
+    /**
+     * \brief Send SendLteControlMessage (PDCCH map, CQI feedbacks) using the ideal control channel
+     * \param msg the Ideal Control Message to send
+     */
+    virtual void SendLteControlMessage(Ptr<LteControlMessage> msg) = 0;
 
-  /** 
-   * 
-   * 
-   * \param cellId the Cell Identifier
-   */
-  virtual void SetCellId (uint16_t cellId) = 0;
-
-  /**
-   * \brief Send SendIdealControlMessage (PDCCH map, CQI feedbacks) using the ideal control channel
-   * \param msg the Ideal Control Message to send
-   */
-  virtual void SendIdealControlMessage (Ptr<IdealControlMessage> msg) = 0;
-  
-  /**
-  * \brief Get the delay from MAC to Channel expressed in TTIs
-  *
-  */
-  virtual uint8_t GetMacChTtiDelay () = 0;
-
-
+    /**
+     * \brief Get the delay from MAC to Channel expressed in TTIs
+     * \returns MAC channel TTI delay
+     */
+    virtual uint8_t GetMacChTtiDelay() = 0;
 };
-
 
 /**
  * Service Access Point (SAP) offered by the eNB-PHY to the eNB-MAC
@@ -91,41 +68,58 @@ public:
  */
 class LteEnbPhySapUser
 {
-public:
-  virtual ~LteEnbPhySapUser ();
+  public:
+    virtual ~LteEnbPhySapUser();
 
+    /**
+     * Called by the Phy to notify the MAC of the reception of a new PHY-PDU
+     *
+     * \param p
+     */
+    virtual void ReceivePhyPdu(Ptr<Packet> p) = 0;
 
-  /**
-   * Called by the Phy to notify the MAC of the reception of a new PHY-PDU
-   *
-   * \param p
-   */
-  virtual void ReceivePhyPdu (Ptr<Packet> p) = 0;
+    /**
+     * \brief Trigger the start from a new frame (input from Phy layer)
+     * \param frameNo frame number
+     * \param subframeNo subframe number
+     */
+    virtual void SubframeIndication(uint32_t frameNo, uint32_t subframeNo) = 0;
 
-  /**
-   * \brief Trigger the start from a new frame (input from Phy layer)
-   * \param frameNo frame number
-   * \param subframeNo subframe number
-   */
-  virtual void SubframeIndication (uint32_t frameNo, uint32_t subframeNo) = 0;
+    /**
+     * \brief Receive SendLteControlMessage (PDCCH map, CQI feedbacks) using the ideal control
+     * channel
+     * \param msg the Ideal Control Message to receive
+     */
+    virtual void ReceiveLteControlMessage(Ptr<LteControlMessage> msg) = 0;
 
-  /**
-   * \brief Receive SendIdealControlMessage (PDCCH map, CQI feedbacks) using the ideal control channel
-   * \param msg the Ideal Control Message to receive
-   */
-  virtual void ReceiveIdealControlMessage (Ptr<IdealControlMessage> msg) = 0;
+    /**
+     * notify the reception of a RACH preamble on the PRACH
+     *
+     * \param prachId the ID of the preamble
+     */
+    virtual void ReceiveRachPreamble(uint32_t prachId) = 0;
 
-  /**
-   * \brief Returns to MAC level the UL-CQI evaluated
-   * \param ulcqi the UL-CQI (see FF MAC API 4.3.29)
-   */
-  virtual void UlCqiReport (UlCqi_s ulcqi) = 0;
+    /**
+     * \brief Returns to MAC level the UL-CQI evaluated
+     * \param ulcqi the UL-CQI (see FF MAC API 4.3.29)
+     */
+    virtual void UlCqiReport(FfMacSchedSapProvider::SchedUlCqiInfoReqParameters ulcqi) = 0;
 
+    /**
+     * Notify the HARQ on the UL transmission status
+     *
+     * \param params
+     */
+    virtual void UlInfoListElementHarqFeedback(UlInfoListElement_s params) = 0;
+
+    /**
+     * Notify the HARQ on the DL transmission status
+     *
+     * \param params
+     */
+    virtual void DlInfoListElementHarqFeedback(DlInfoListElement_s params) = 0;
 };
 
-
-
 } // namespace ns3
-
 
 #endif // LTE_ENB_PHY_SAP_H

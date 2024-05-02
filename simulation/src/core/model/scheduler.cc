@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006 INRIA
  *
@@ -19,27 +18,33 @@
  */
 
 #include "scheduler.h"
+
 #include "assert.h"
 #include "log.h"
 
-NS_LOG_COMPONENT_DEFINE ("Scheduler");
+/**
+ * \file
+ * \ingroup scheduler
+ * ns3::Scheduler implementation.
+ */
 
-namespace ns3 {
-
-NS_OBJECT_ENSURE_REGISTERED (Scheduler);
-
-Scheduler::~Scheduler ()
+namespace ns3
 {
-  NS_LOG_FUNCTION (this);
+
+NS_LOG_COMPONENT_DEFINE("Scheduler");
+
+NS_OBJECT_ENSURE_REGISTERED(Scheduler);
+
+Scheduler::~Scheduler()
+{
+    NS_LOG_FUNCTION(this);
 }
 
 TypeId
-Scheduler::GetTypeId (void)
+Scheduler::GetTypeId()
 {
-  static TypeId tid = TypeId ("ns3::Scheduler")
-    .SetParent<Object> ()
-  ;
-  return tid;
+    static TypeId tid = TypeId("ns3::Scheduler").SetParent<Object>().SetGroupName("Core");
+    return tid;
 }
 
 } // namespace ns3

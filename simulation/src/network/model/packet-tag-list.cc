@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006 INRIA
  *
@@ -17,161 +16,448 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
+
+/**
+\file   packet-tag-list.cc
+\brief  Implements a linked list of Packet tags, including copy-on-write semantics.
+*/
+
 #include "packet-tag-list.h"
+
 #include "tag-buffer.h"
 #include "tag.h"
+
 #include "ns3/fatal-error.h"
 #include "ns3/log.h"
-#include <string.h>
 
-NS_LOG_COMPONENT_DEFINE ("PacketTagList");
+#include <cstring>
 
-namespace ns3 {
-
-#ifdef USE_FREE_LIST
-
-struct PacketTagList::TagData *PacketTagList::g_free = 0;
-uint32_t PacketTagList::g_nfree = 0;
-
-struct PacketTagList::TagData *
-PacketTagList::AllocData (void) const
+namespace ns3
 {
-  NS_LOG_FUNCTION (g_nfree);
-  struct PacketTagList::TagData *retval;
-  if (g_free != 0) 
-    {
-      retval = g_free;
-      g_free = g_free->m_next;
-      g_nfree--;
-    } 
-  else 
-    {
-      retval = new struct PacketTagList::TagData ();
-    }
-  return retval;
-}
 
-void
-PacketTagList::FreeData (struct TagData *data) const
-{
-  NS_LOG_FUNCTION (g_nfree << data);
-  if (g_nfree > 1000) 
-    {
-      delete data;
-      return;
-    }
-  g_nfree++;
-  data->next = g_free;
-  data->tid = TypeId ();
-  g_free = data;
-}
-#else
-struct PacketTagList::TagData *
-PacketTagList::AllocData (void) const
-{
-  NS_LOG_FUNCTION_NOARGS ();
-  struct PacketTagList::TagData *retval;
-  retval = new struct PacketTagList::TagData ();
-  return retval;
-}
+NS_LOG_COMPONENT_DEFINE("PacketTagList");
 
-void
-PacketTagList::FreeData (struct TagData *data) const
+PacketTagList::TagData*
+PacketTagList::CreateTagData(size_t dataSize)
 {
-  NS_LOG_FUNCTION (data);
-  delete data;
-}
-#endif
+    NS_ASSERT_MSG(dataSize < std::numeric_limits<decltype(TagData::size)>::max(),
+                  "Requested TagData size " << dataSize << " exceeds maximum "
+                                            << std::numeric_limits<decltype(TagData::size)>::max());
 
-bool
-PacketTagList::Remove (Tag &tag)
-{
-  NS_LOG_FUNCTION (this << tag.GetInstanceTypeId ());
-  TypeId tid = tag.GetInstanceTypeId ();
-  bool found = false;
-  for (struct TagData *cur = m_next; cur != 0; cur = cur->next) 
-    {
-      if (cur->tid == tid) 
-        {
-          found = true;
-          tag.Deserialize (TagBuffer (cur->data, cur->data+PACKET_TAG_MAX_SIZE));
-        }
-    }
-  if (!found) 
-    {
-      return false;
-    }
-  struct TagData *start = 0;
-  struct TagData **prevNext = &start;
-  for (struct TagData *cur = m_next; cur != 0; cur = cur->next) 
-    {
-      if (cur->tid == tid) 
-        {
-          /**
-           * XXX
-           * Note: I believe that we could optimize this to
-           * avoid copying each TagData located after the target id
-           * and just link the already-copied list to the next tag.
-           */
-          continue;
-        }
-      struct TagData *copy = AllocData ();
-      copy->tid = cur->tid;
-      copy->count = 1;
-      copy->next = 0;
-      memcpy (copy->data, cur->data, PACKET_TAG_MAX_SIZE);
-      *prevNext = copy;
-      prevNext = &copy->next;
-    }
-  *prevNext = 0;
-  RemoveAll ();
-  m_next = start;
-  return true;
-}
+    void* p = std::malloc(sizeof(TagData) + dataSize - 1);
+    // The matching frees are in RemoveAll and RemoveWriter
 
-void 
-PacketTagList::Add (const Tag &tag) const
-{
-  NS_LOG_FUNCTION (this << tag.GetInstanceTypeId ());
-  // ensure this id was not yet added
-  for (struct TagData *cur = m_next; cur != 0; cur = cur->next) 
-    {
-      NS_ASSERT (cur->tid != tag.GetInstanceTypeId ());
-    }
-  struct TagData *head = AllocData ();
-  head->count = 1;
-  head->next = 0;
-  head->tid = tag.GetInstanceTypeId ();
-  head->next = m_next;
-  NS_ASSERT (tag.GetSerializedSize () <= PACKET_TAG_MAX_SIZE);
-  tag.Serialize (TagBuffer (head->data, head->data+tag.GetSerializedSize ()));
-
-  const_cast<PacketTagList *> (this)->m_next = head;
+    TagData* tag = new (p) TagData;
+    tag->size = dataSize;
+    return tag;
 }
 
 bool
-PacketTagList::Peek (Tag &tag) const
+PacketTagList::COWTraverse(Tag& tag, PacketTagList::COWWriter Writer)
 {
-  NS_LOG_FUNCTION (this << tag.GetInstanceTypeId ());
-  TypeId tid = tag.GetInstanceTypeId ();
-  for (struct TagData *cur = m_next; cur != 0; cur = cur->next) 
+    TypeId tid = tag.GetInstanceTypeId();
+    NS_LOG_FUNCTION(this << tid);
+    NS_LOG_INFO("looking for " << tid);
+
+    // trivial case when list is empty
+    if (m_next == nullptr)
     {
-      if (cur->tid == tid) 
+        return false;
+    }
+
+    bool found = false;
+
+    TagData** prevNext = &m_next; // previous node's next pointer
+    TagData* cur = m_next;        // cursor to current node
+    TagData* it = nullptr;        // utility
+
+    // Search from the head of the list until we find tid or a merge
+    while (cur != nullptr)
+    {
+        if (cur->count > 1)
         {
-          /* found tag */
-          tag.Deserialize (TagBuffer (cur->data, cur->data+PACKET_TAG_MAX_SIZE));
-          return true;
+            // found merge
+            NS_LOG_INFO("found initial merge before tid");
+            break;
+        }
+        else if (cur->tid == tid)
+        {
+            NS_LOG_INFO("found tid before initial merge, calling writer");
+            found = (this->*Writer)(tag, true, cur, prevNext);
+            break;
+        }
+        else
+        {
+            // no merge or tid found yet, move on
+            prevNext = &cur->next;
+            cur = cur->next;
+        }
+    } // while !found && !cow
+
+    // did we find it or run out of tags?
+    if (cur == nullptr || found)
+    {
+        NS_LOG_INFO("returning after header with found: " << found);
+        return found;
+    }
+
+    // From here on out, we have to copy the list
+    // until we find tid, then link past it
+
+    // Before we do all that work, let's make sure tid really exists
+    for (it = cur; it != nullptr; it = it->next)
+    {
+        if (it->tid == tid)
+        {
+            break;
         }
     }
-  /* no tag found */
-  return false;
+    if (it == nullptr)
+    {
+        // got to end of list without finding tid
+        NS_LOG_INFO("tid not found after first merge");
+        return found;
+    }
+
+    // At this point cur is a merge, but untested for tid
+    NS_ASSERT(cur != nullptr);
+    NS_ASSERT(cur->count > 1);
+
+    /*
+       Walk the remainder of the list, copying, until we find tid
+       As we put a copy of the cur node onto our list,
+       we move the merge point down the list.
+
+       Starting position                  End position
+         T1 is a merge                     T1.count decremented
+                                           T2 is a merge
+                                           T1' is a copy of T1
+
+            other                             other
+                 \                                 \
+        Prev  ->  T1  ->  T2  -> ...                T1  ->  T2  -> ...
+             /   /                                         /|
+        pNext cur                         Prev  ->  T1' --/ |
+                                                       /    |
+                                                  pNext   cur
+
+       When we reach tid, we link past it, decrement count, and we're done.
+    */
+
+    // Should normally check for null cur pointer,
+    // but since we know tid exists, we'll skip this test
+    while (/* cur && */ cur->tid != tid)
+    {
+        NS_ASSERT(cur != nullptr);
+        NS_ASSERT(cur->count > 1);
+        cur->count--; // unmerge cur
+        TagData* copy = CreateTagData(cur->size);
+        copy->tid = cur->tid;
+        copy->count = 1;
+        copy->size = cur->size;
+        memcpy(copy->data, cur->data, copy->size);
+        copy->next = cur->next; // merge into tail
+        copy->next->count++;    // mark new merge
+        *prevNext = copy;       // point prior list at copy
+        prevNext = &copy->next; // advance
+        cur = copy->next;
+    }
+    // Sanity check:
+    NS_ASSERT(cur != nullptr);  // cur should be non-zero
+    NS_ASSERT(cur->tid == tid); // cur->tid should be tid
+    NS_ASSERT(cur->count > 1);  // cur should be a merge
+
+    // link around tid, removing it from our list
+    found = (this->*Writer)(tag, false, cur, prevNext);
+    return found;
 }
 
-const struct PacketTagList::TagData *
-PacketTagList::Head (void) const
+bool
+PacketTagList::Remove(Tag& tag)
 {
-  return m_next;
+    return COWTraverse(tag, &PacketTagList::RemoveWriter);
 }
 
-} // namespace ns3
+// COWWriter implementing Remove
+bool
+PacketTagList::RemoveWriter(Tag& tag,
+                            bool preMerge,
+                            PacketTagList::TagData* cur,
+                            PacketTagList::TagData** prevNext)
+{
+    NS_LOG_FUNCTION_NOARGS();
 
+    // found tid
+    bool found = true;
+    tag.Deserialize(TagBuffer(cur->data, cur->data + cur->size));
+    *prevNext = cur->next; // link around cur
+
+    if (preMerge)
+    {
+        // found tid before first merge, so delete cur
+        cur->~TagData();
+        std::free(cur);
+    }
+    else
+    {
+        // cur is always a merge at this point
+        // unmerge cur, since we linked around it already
+        cur->count--;
+        if (cur->next != nullptr)
+        {
+            // there's a next, so make it a merge
+            cur->next->count++;
+        }
+    }
+    return found;
+}
+
+bool
+PacketTagList::Replace(Tag& tag)
+{
+    bool found = COWTraverse(tag, &PacketTagList::ReplaceWriter);
+    if (!found)
+    {
+        Add(tag);
+    }
+    return found;
+}
+
+// COWWriter implementing Replace
+bool
+PacketTagList::ReplaceWriter(Tag& tag,
+                             bool preMerge,
+                             PacketTagList::TagData* cur,
+                             PacketTagList::TagData** prevNext)
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    // found tid
+    bool found = true;
+    if (preMerge)
+    {
+        // found tid before first merge, so just rewrite
+        tag.Serialize(TagBuffer(cur->data, cur->data + cur->size));
+    }
+    else
+    {
+        // cur is always a merge at this point
+        // need to copy, replace, and link past cur
+        cur->count--; // unmerge cur
+        TagData* copy = CreateTagData(tag.GetSerializedSize());
+        copy->tid = tag.GetInstanceTypeId();
+        copy->count = 1;
+        tag.Serialize(TagBuffer(copy->data, copy->data + copy->size));
+        copy->next = cur->next; // merge into tail
+        if (copy->next != nullptr)
+        {
+            copy->next->count++; // mark new merge
+        }
+        *prevNext = copy; // point prior list at copy
+    }
+    return found;
+}
+
+void
+PacketTagList::Add(const Tag& tag) const
+{
+    NS_LOG_FUNCTION(this << tag.GetInstanceTypeId());
+    // ensure this id was not yet added
+    for (TagData* cur = m_next; cur != nullptr; cur = cur->next)
+    {
+        NS_ASSERT_MSG(cur->tid != tag.GetInstanceTypeId(),
+                      "Error: cannot add the same kind of tag twice.");
+    }
+    TagData* head = CreateTagData(tag.GetSerializedSize());
+    head->count = 1;
+    head->next = nullptr;
+    head->tid = tag.GetInstanceTypeId();
+    head->next = m_next;
+    tag.Serialize(TagBuffer(head->data, head->data + head->size));
+
+    const_cast<PacketTagList*>(this)->m_next = head;
+}
+
+bool
+PacketTagList::Peek(Tag& tag) const
+{
+    NS_LOG_FUNCTION(this << tag.GetInstanceTypeId());
+    TypeId tid = tag.GetInstanceTypeId();
+    for (TagData* cur = m_next; cur != nullptr; cur = cur->next)
+    {
+        if (cur->tid == tid)
+        {
+            /* found tag */
+            tag.Deserialize(TagBuffer(cur->data, cur->data + cur->size));
+            return true;
+        }
+    }
+    /* no tag found */
+    return false;
+}
+
+const PacketTagList::TagData*
+PacketTagList::Head() const
+{
+    return m_next;
+}
+
+uint32_t
+PacketTagList::GetSerializedSize() const
+{
+    NS_LOG_FUNCTION_NOARGS();
+
+    uint32_t size = 0;
+
+    size = 4; // numberOfTags
+
+    for (TagData* cur = m_next; cur != nullptr; cur = cur->next)
+    {
+        size += 4; // TagData -> size
+
+        // TypeId hash; ensure size is multiple of 4 bytes
+        uint32_t hashSize = (sizeof(TypeId::hash_t) + 3) & (~3);
+        size += hashSize;
+
+        // TagData -> data; ensure size is multiple of 4 bytes
+        uint32_t tagWordSize = (cur->size + 3) & (~3);
+        size += tagWordSize;
+    }
+
+    return size;
+}
+
+uint32_t
+PacketTagList::Serialize(uint32_t* buffer, uint32_t maxSize) const
+{
+    NS_LOG_FUNCTION(this << buffer << maxSize);
+
+    uint32_t* p = buffer;
+    uint32_t size = 0;
+
+    uint32_t* numberOfTags = nullptr;
+
+    if (size + 4 <= maxSize)
+    {
+        numberOfTags = p;
+        *p++ = 0;
+        size += 4;
+    }
+    else
+    {
+        return 0;
+    }
+
+    for (TagData* cur = m_next; cur != nullptr; cur = cur->next)
+    {
+        if (size + 4 <= maxSize)
+        {
+            *p++ = cur->size;
+            size += 4;
+        }
+        else
+        {
+            return 0;
+        }
+
+        NS_LOG_INFO("Serializing tag id " << cur->tid);
+
+        // ensure size is multiple of 4 bytes for 4 byte boundaries
+        uint32_t hashSize = (sizeof(TypeId::hash_t) + 3) & (~3);
+        if (size + hashSize <= maxSize)
+        {
+            TypeId::hash_t tid = cur->tid.GetHash();
+            memcpy(p, &tid, sizeof(TypeId::hash_t));
+            p += hashSize / 4;
+            size += hashSize;
+        }
+        else
+        {
+            return 0;
+        }
+
+        // ensure size is multiple of 4 bytes for 4 byte boundaries
+        uint32_t tagWordSize = (cur->size + 3) & (~3);
+        if (size + tagWordSize <= maxSize)
+        {
+            memcpy(p, cur->data, cur->size);
+            size += tagWordSize;
+            p += tagWordSize / 4;
+        }
+        else
+        {
+            return 0;
+        }
+
+        (*numberOfTags)++;
+    }
+
+    // Serialized successfully
+    return 1;
+}
+
+uint32_t
+PacketTagList::Deserialize(const uint32_t* buffer, uint32_t size)
+{
+    NS_LOG_FUNCTION(this << buffer << size);
+    const uint32_t* p = buffer;
+    uint32_t sizeCheck = size - 4;
+
+    NS_ASSERT(sizeCheck >= 4);
+    uint32_t numberOfTags = *p++;
+    sizeCheck -= 4;
+
+    NS_LOG_INFO("Deserializing number of tags " << numberOfTags);
+
+    TagData* prevTag = nullptr;
+    for (uint32_t i = 0; i < numberOfTags; ++i)
+    {
+        NS_ASSERT(sizeCheck >= 4);
+        uint32_t tagSize = *p++;
+        sizeCheck -= 4;
+
+        uint32_t hashSize = (sizeof(TypeId::hash_t) + 3) & (~3);
+        NS_ASSERT(sizeCheck >= hashSize);
+        TypeId::hash_t hash;
+        memcpy(&hash, p, sizeof(TypeId::hash_t));
+        p += hashSize / 4;
+        sizeCheck -= hashSize;
+
+        TypeId tid = TypeId::LookupByHash(hash);
+
+        NS_LOG_INFO("Deserializing tag of type " << tid);
+
+        TagData* newTag = CreateTagData(tagSize);
+        newTag->count = 1;
+        newTag->next = nullptr;
+        newTag->tid = tid;
+
+        NS_ASSERT(sizeCheck >= tagSize);
+        memcpy(newTag->data, p, tagSize);
+
+        // ensure 4 byte boundary
+        uint32_t tagWordSize = (tagSize + 3) & (~3);
+        p += tagWordSize / 4;
+        sizeCheck -= tagWordSize;
+
+        // Set link list pointers.
+        if (i == 0)
+        {
+            m_next = newTag;
+        }
+        else
+        {
+            prevTag->next = newTag;
+        }
+
+        prevTag = newTag;
+    }
+
+    NS_ASSERT(sizeCheck == 0);
+
+    // return zero if buffer did not
+    // contain a complete message
+    return (sizeCheck != 0) ? 0 : 1;
+}
+
+} /* namespace ns3 */

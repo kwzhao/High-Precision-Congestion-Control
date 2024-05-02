@@ -22,11 +22,10 @@
 #include "ns3/packet.h"
 #include "ns3/simulator.h"
 #include "ns3/log.h"
-#include <iostream>
-
-NS_LOG_COMPONENT_DEFINE ("PointToPointChannel");
 
 namespace ns3 {
+
+NS_LOG_COMPONENT_DEFINE ("PointToPointChannel");
 
 NS_OBJECT_ENSURE_REGISTERED (PointToPointChannel);
 
@@ -35,14 +34,18 @@ PointToPointChannel::GetTypeId (void)
 {
   static TypeId tid = TypeId ("ns3::PointToPointChannel")
     .SetParent<Channel> ()
+    .SetGroupName ("PointToPoint")
     .AddConstructor<PointToPointChannel> ()
-    .AddAttribute ("Delay", "Transmission delay through the channel",
+    .AddAttribute ("Delay", "Propagation delay through the channel",
                    TimeValue (Seconds (0)),
                    MakeTimeAccessor (&PointToPointChannel::m_delay),
                    MakeTimeChecker ())
     .AddTraceSource ("TxRxPointToPoint",
-                     "Trace source indicating transmission of packet from the PointToPointChannel, used by the Animation interface.",
-                     MakeTraceSourceAccessor (&PointToPointChannel::m_txrxPointToPoint))
+                     "Trace source indicating transmission of packet "
+                     "from the PointToPointChannel, used by the Animation "
+                     "interface.",
+                     MakeTraceSourceAccessor (&PointToPointChannel::m_txrxPointToPoint),
+                     "ns3::PointToPointChannel::TxRxAnimationCallback")
   ;
   return tid;
 }
@@ -82,7 +85,7 @@ PointToPointChannel::Attach (Ptr<PointToPointNetDevice> device)
 
 bool
 PointToPointChannel::TransmitStart (
-  Ptr<Packet> p,
+  Ptr<const Packet> p,
   Ptr<PointToPointNetDevice> src,
   Time txTime)
 {
@@ -96,26 +99,22 @@ PointToPointChannel::TransmitStart (
 
   Simulator::ScheduleWithContext (m_link[wire].m_dst->GetNode ()->GetId (),
                                   txTime + m_delay, &PointToPointNetDevice::Receive,
-                                  m_link[wire].m_dst, p);
+                                  m_link[wire].m_dst, p->Copy ());
 
   // Call the tx anim callback on the net device
   m_txrxPointToPoint (p, src, m_link[wire].m_dst, txTime, txTime + m_delay);
   return true;
 }
 
-uint32_t 
+std::size_t
 PointToPointChannel::GetNDevices (void) const
 {
   NS_LOG_FUNCTION_NOARGS ();
-
-  //std::cout<<m_nDevices<<"\n";
-  //std::cout.flush();
-
   return m_nDevices;
 }
 
 Ptr<PointToPointNetDevice>
-PointToPointChannel::GetPointToPointDevice (uint32_t i) const
+PointToPointChannel::GetPointToPointDevice (std::size_t i) const
 {
   NS_LOG_FUNCTION_NOARGS ();
   NS_ASSERT (i < 2);
@@ -123,7 +122,7 @@ PointToPointChannel::GetPointToPointDevice (uint32_t i) const
 }
 
 Ptr<NetDevice>
-PointToPointChannel::GetDevice (uint32_t i) const
+PointToPointChannel::GetDevice (std::size_t i) const
 {
   NS_LOG_FUNCTION_NOARGS ();
   return GetPointToPointDevice (i);

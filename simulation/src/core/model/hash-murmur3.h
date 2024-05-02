@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2012 Lawrence Livermore National Laboratory
  *
@@ -23,11 +22,20 @@
 
 #include "hash-function.h"
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup hash
+ * \brief ns3::Hash::Function::Murmur3 declaration.
+ */
 
-namespace Hash {
+namespace ns3
+{
 
-namespace Function {
+namespace Hash
+{
+
+namespace Function
+{
 
 /**
  *  \ingroup hash
@@ -46,75 +54,76 @@ namespace Function {
  */
 class Murmur3 : public Implementation
 {
-public:
-  /**
-   * Constructor, clears internal state
-   */
-  Murmur3 ();
-  /**
-   * Compute 32-bit hash of a byte buffer
-   *
-   * Call clear () between calls to GetHash32() to reset the
-   * internal state and hash each buffer separately.
-   *
-   * If you don't call clear() between calls to GetHash32,
-   * you can hash successive buffers.  The final return value
-   * will be the cumulative hash across all calls.
-   *
-   * \param [in] buffer pointer to the beginning of the buffer
-   * \param [in] size length of the buffer, in bytes
-   * \return 32-bit hash of the buffer
-   */
-  uint32_t  GetHash32  (const char * buffer, const size_t size);
-  /**
-   * Compute 64-bit hash of a byte buffer.
-   *
-   * Call clear () between calls to GetHash64() to reset the
-   * internal state and hash each buffer separately.
-   *
-   * If you don't call clear() between calls to GetHash64,
-   * you can hash successive buffers.  The final return value
-   * will be the cumulative hash across all calls.
-   *
-   * \param [in] buffer pointer to the beginning of the buffer
-   * \param [in] size length of the buffer, in bytes
-   * \return 64-bit hash of the buffer
-   */
-  uint64_t  GetHash64  (const char * buffer, const size_t size);
-  /**
-   * Restore initial state
-   */
-  virtual void clear (void);
+  public:
+    /**
+     * Constructor, clears internal state
+     */
+    Murmur3();
+    /**
+     * Compute 32-bit hash of a byte buffer
+     *
+     * Call clear () between calls to GetHash32() to reset the
+     * internal state and hash each buffer separately.
+     *
+     * If you don't call clear() between calls to GetHash32,
+     * you can hash successive buffers.  The final return value
+     * will be the cumulative hash across all calls.
+     *
+     * \param [in] buffer pointer to the beginning of the buffer
+     * \param [in] size length of the buffer, in bytes
+     * \return 32-bit hash of the buffer
+     */
+    uint32_t GetHash32(const char* buffer, const std::size_t size) override;
+    /**
+     * Compute 64-bit hash of a byte buffer.
+     *
+     * Call clear () between calls to GetHash64() to reset the
+     * internal state and hash each buffer separately.
+     *
+     * If you don't call clear() between calls to GetHash64,
+     * you can hash successive buffers.  The final return value
+     * will be the cumulative hash across all calls.
+     *
+     * \param [in] buffer pointer to the beginning of the buffer
+     * \param [in] size length of the buffer, in bytes
+     * \return 64-bit hash of the buffer
+     */
+    uint64_t GetHash64(const char* buffer, const std::size_t size) override;
+    /**
+     * Restore initial state
+     */
+    void clear() override;
 
-private:
-  /**
-   * Seed value
-   *
-   * This has to be a constant for all MPI ranks to generate
-   * the same hash from the same string.
-   */
-  enum seed
-  {
-    SEED = 0x8BADF00D  // Ate bad food
-  };
-  //@{
-  /** 
-   * Cache last hash value, and total bytes hashed (needed to finalize),
-   * for incremental hashing
-   */
-  uint32_t m_hash32;
-  uint32_t m_size32;
-  /** murmur3 produces 128-bit hash and state; we use just the first 64-bits. */
-  uint64_t m_hash64[2];  
-  uint64_t m_size64;
-  //@}
-      
-};  // class Murmur3
+  private:
+    /**
+     * Seed value
+     *
+     * This has to be a constant for all MPI ranks to generate
+     * the same hash from the same string.
+     */
+    static constexpr auto SEED{0x8BADF00D}; // Ate bad food
 
-}  // namespace Function
+    /**
+     * Cache last hash value, and total bytes hashed (needed to finalize),
+     * for incremental hashing
+     */
+    /**@{*/
+    uint32_t m_hash32;
+    std::size_t m_size32;
+    /**@}*/
 
-}  // namespace Hash
+    /** murmur3 produces 128-bit hash and state; we use just the first 64-bits. */
+    /**@{*/
+    uint64_t m_hash64[2];
+    std::size_t m_size64;
+    /**@}*/
 
-}  // namespace ns3
+}; // class Murmur3
 
-#endif  /* HASH_MURMUR3_H */
+} // namespace Function
+
+} // namespace Hash
+
+} // namespace ns3
+
+#endif /* HASH_MURMUR3_H */

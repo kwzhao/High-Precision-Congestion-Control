@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *
@@ -21,105 +20,158 @@
 #ifndef LTE_TEST_RLC_UM_TRANSMITTER_H
 #define LTE_TEST_RLC_UM_TRANSMITTER_H
 
+#include "ns3/nstime.h"
+#include "ns3/ptr.h"
 #include "ns3/test.h"
 
-
-namespace ns3 {
+namespace ns3
+{
 
 class LteTestRrc;
 class LteTestMac;
 class LteTestPdcp;
+class LteRlc;
+
+} // namespace ns3
+
+using namespace ns3;
 
 /**
- * TestSuite 4.1.1 RLC UM: Only transmitter
+ * \ingroup lte-test
+ *
+ * \brief TestSuite 4.1.1 for RLC UM: Only transmitter part.
  */
 class LteRlcUmTransmitterTestSuite : public TestSuite
 {
   public:
-    LteRlcUmTransmitterTestSuite ();
-};
-
-class LteRlcUmTransmitterTestCase : public TestCase
-{
-  public:
-    LteRlcUmTransmitterTestCase (std::string name);
-    LteRlcUmTransmitterTestCase ();
-    virtual ~LteRlcUmTransmitterTestCase ();
-
-    void CheckDataReceived (Time time, std::string shouldReceived, std::string assertMsg);
-
-  protected:
-    virtual void DoRun (void);
-
-    Ptr<LteTestPdcp> txPdcp;
-    Ptr<LteRlc> txRlc;
-    Ptr<LteTestMac> txMac;
-
-  private:
-    void DoCheckDataReceived (std::string shouldReceived, std::string assertMsg);
-
+    LteRlcUmTransmitterTestSuite();
 };
 
 /**
- * Test 4.1.1.1 One SDU, One PDU
+ * \ingroup lte-test
+ *
+ * \brief Test case used by LteRlcUmTransmitterOneSduTestCase to create topology
+ * and to implement functionalities and check if data received corresponds to
+ * data sent.
+ */
+class LteRlcUmTransmitterTestCase : public TestCase
+{
+  public:
+    /**
+     * Constructor
+     *
+     * \param name the test name
+     */
+    LteRlcUmTransmitterTestCase(std::string name);
+    LteRlcUmTransmitterTestCase();
+    ~LteRlcUmTransmitterTestCase() override;
+
+    /**
+     * Check data received function
+     * \param time the time to check
+     * \param shouldReceived should have received indicator
+     * \param assertMsg the assert message
+     */
+    void CheckDataReceived(Time time, std::string shouldReceived, std::string assertMsg);
+
+  protected:
+    void DoRun() override;
+
+    Ptr<LteTestPdcp> txPdcp; ///< the transmit PDCP
+    Ptr<LteRlc> txRlc;       ///< the RLC
+    Ptr<LteTestMac> txMac;   ///< the MAC
+
+  private:
+    /**
+     * Check data received function
+     * \param shouldReceived should have received indicator
+     * \param assertMsg the assert message
+     */
+    void DoCheckDataReceived(std::string shouldReceived, std::string assertMsg);
+};
+
+/**
+ * \ingroup lte-test
+ *
+ * \brief Test 4.1.1.1 One SDU, One PDU
  */
 class LteRlcUmTransmitterOneSduTestCase : public LteRlcUmTransmitterTestCase
 {
   public:
-    LteRlcUmTransmitterOneSduTestCase (std::string name);
-    LteRlcUmTransmitterOneSduTestCase ();
-    virtual ~LteRlcUmTransmitterOneSduTestCase ();
+    /**
+     * Constructor
+     *
+     * \param name the test name
+     */
+    LteRlcUmTransmitterOneSduTestCase(std::string name);
+    LteRlcUmTransmitterOneSduTestCase();
+    ~LteRlcUmTransmitterOneSduTestCase() override;
 
   private:
-    virtual void DoRun (void);
-
+    void DoRun() override;
 };
 
 /**
- * Test 4.1.1.2 Segmentation (One SDU => n PDUs)
+ * \ingroup lte-test
+ *
+ * \brief Test 4.1.1.2 Segmentation (One SDU => n PDUs)
  */
 class LteRlcUmTransmitterSegmentationTestCase : public LteRlcUmTransmitterTestCase
 {
   public:
-    LteRlcUmTransmitterSegmentationTestCase (std::string name);
-    LteRlcUmTransmitterSegmentationTestCase ();
-    virtual ~LteRlcUmTransmitterSegmentationTestCase ();
+    /**
+     * Constructor
+     *
+     * \param name the reference name
+     */
+    LteRlcUmTransmitterSegmentationTestCase(std::string name);
+    LteRlcUmTransmitterSegmentationTestCase();
+    ~LteRlcUmTransmitterSegmentationTestCase() override;
 
   private:
-    virtual void DoRun (void);
-
+    void DoRun() override;
 };
 
 /**
- * Test 4.1.1.3 Concatenation (n SDUs => One PDU)
+ * \ingroup lte-test
+ *
+ * \brief Test 4.1.1.3 Concatenation (n SDUs => One PDU)
  */
 class LteRlcUmTransmitterConcatenationTestCase : public LteRlcUmTransmitterTestCase
 {
   public:
-    LteRlcUmTransmitterConcatenationTestCase (std::string name);
-    LteRlcUmTransmitterConcatenationTestCase ();
-    virtual ~LteRlcUmTransmitterConcatenationTestCase ();
+    /**
+     * Constructor
+     *
+     * \param name the reference name
+     */
+    LteRlcUmTransmitterConcatenationTestCase(std::string name);
+    LteRlcUmTransmitterConcatenationTestCase();
+    ~LteRlcUmTransmitterConcatenationTestCase() override;
 
   private:
-    virtual void DoRun (void);
-
+    void DoRun() override;
 };
 
 /**
- * Test 4.1.1.4 Report Buffer Status (test primitive parameters)
+ * \ingroup lte-test
+ *
+ * \brief Test 4.1.1.4 Report Buffer Status (test primitive parameters)
  */
 class LteRlcUmTransmitterReportBufferStatusTestCase : public LteRlcUmTransmitterTestCase
 {
   public:
-    LteRlcUmTransmitterReportBufferStatusTestCase (std::string name);
-    LteRlcUmTransmitterReportBufferStatusTestCase ();
-    virtual ~LteRlcUmTransmitterReportBufferStatusTestCase ();
+    /**
+     * Constructor
+     *
+     * \param name the reference name
+     */
+    LteRlcUmTransmitterReportBufferStatusTestCase(std::string name);
+    LteRlcUmTransmitterReportBufferStatusTestCase();
+    ~LteRlcUmTransmitterReportBufferStatusTestCase() override;
 
   private:
-    virtual void DoRun (void);
-
+    void DoRun() override;
 };
-
-} // namespace ns3
 
 #endif /* LTE_TEST_RLC_UM_TRANSMITTER_H */

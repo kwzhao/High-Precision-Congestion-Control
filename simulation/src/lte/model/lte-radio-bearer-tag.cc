@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *
@@ -18,118 +17,126 @@
  * Author: Marco Miozzo <marco.miozzo@cttc.es>
  */
 
-
 #include "lte-radio-bearer-tag.h"
+
 #include "ns3/tag.h"
 #include "ns3/uinteger.h"
 
-namespace ns3 {
-
-NS_OBJECT_ENSURE_REGISTERED (LteRadioBearerTag);
-
-TypeId
-LteRadioBearerTag::GetTypeId (void)
+namespace ns3
 {
-  static TypeId tid = TypeId ("ns3::LteRadioBearerTag")
-    .SetParent<Tag> ()
-    .AddConstructor<LteRadioBearerTag> ()
-    .AddAttribute ("rnti", "The rnti that indicates the UE which packet belongs",
-                   UintegerValue (0),
-                   MakeUintegerAccessor (&LteRadioBearerTag::GetRnti),
-                   MakeUintegerChecker<uint16_t> ())
-    .AddAttribute ("lcid", "The LC id that indicates the UE which packet belongs",
-                   UintegerValue (0),
-                   MakeUintegerAccessor (&LteRadioBearerTag::GetLcid),
-                   MakeUintegerChecker<uint8_t> ())
-  ;
-  return tid;
-}
+
+NS_OBJECT_ENSURE_REGISTERED(LteRadioBearerTag);
 
 TypeId
-LteRadioBearerTag::GetInstanceTypeId (void) const
+LteRadioBearerTag::GetTypeId()
 {
-  return GetTypeId ();
+    static TypeId tid =
+        TypeId("ns3::LteRadioBearerTag")
+            .SetParent<Tag>()
+            .SetGroupName("Lte")
+            .AddConstructor<LteRadioBearerTag>()
+            .AddAttribute("rnti",
+                          "The rnti that indicates the UE to which packet belongs",
+                          UintegerValue(0),
+                          MakeUintegerAccessor(&LteRadioBearerTag::GetRnti),
+                          MakeUintegerChecker<uint16_t>())
+            .AddAttribute(
+                "lcid",
+                "The id within the UE identifying the logical channel to which the packet belongs",
+                UintegerValue(0),
+                MakeUintegerAccessor(&LteRadioBearerTag::GetLcid),
+                MakeUintegerChecker<uint8_t>());
+    return tid;
 }
 
-LteRadioBearerTag::LteRadioBearerTag ()
-  : m_rnti (0),
-    m_lcid (0),
-    m_layer (0)
+TypeId
+LteRadioBearerTag::GetInstanceTypeId() const
 {
+    return GetTypeId();
 }
-LteRadioBearerTag::LteRadioBearerTag (uint16_t rnti, uint8_t lcid)
-  : m_rnti (rnti),
-    m_lcid (lcid)
+
+LteRadioBearerTag::LteRadioBearerTag()
+    : m_rnti(0),
+      m_lcid(0),
+      m_layer(0)
 {
 }
 
-LteRadioBearerTag::LteRadioBearerTag (uint16_t rnti, uint8_t lcid, uint8_t layer)
-: m_rnti (rnti),
-  m_lcid (lcid),
-  m_layer (layer)
+LteRadioBearerTag::LteRadioBearerTag(uint16_t rnti, uint8_t lcid)
+    : m_rnti(rnti),
+      m_lcid(lcid)
+{
+}
+
+LteRadioBearerTag::LteRadioBearerTag(uint16_t rnti, uint8_t lcid, uint8_t layer)
+    : m_rnti(rnti),
+      m_lcid(lcid),
+      m_layer(layer)
 {
 }
 
 void
-LteRadioBearerTag::SetRnti (uint16_t rnti)
+LteRadioBearerTag::SetRnti(uint16_t rnti)
 {
-  m_rnti = rnti;
+    m_rnti = rnti;
 }
 
 void
-LteRadioBearerTag::SetLcid (uint8_t lcid)
+LteRadioBearerTag::SetLcid(uint8_t lcid)
 {
-  m_lcid = lcid;
+    m_lcid = lcid;
 }
 
 void
-LteRadioBearerTag::SetLayer (uint8_t layer)
+LteRadioBearerTag::SetLayer(uint8_t layer)
 {
-  m_layer = layer;
+    m_layer = layer;
 }
 
 uint32_t
-LteRadioBearerTag::GetSerializedSize (void) const
+LteRadioBearerTag::GetSerializedSize() const
 {
-  return 3;
+    return 4;
 }
 
 void
-LteRadioBearerTag::Serialize (TagBuffer i) const
+LteRadioBearerTag::Serialize(TagBuffer i) const
 {
-  i.WriteU16 (m_rnti);
-  i.WriteU8 (m_lcid);
+    i.WriteU16(m_rnti);
+    i.WriteU8(m_lcid);
+    i.WriteU8(m_layer);
 }
 
 void
-LteRadioBearerTag::Deserialize (TagBuffer i)
+LteRadioBearerTag::Deserialize(TagBuffer i)
 {
-  m_rnti = (uint16_t) i.ReadU16 ();
-  m_lcid = (uint8_t) i.ReadU8 ();
+    m_rnti = (uint16_t)i.ReadU16();
+    m_lcid = (uint8_t)i.ReadU8();
+    m_layer = (uint8_t)i.ReadU8();
 }
 
 uint16_t
-LteRadioBearerTag::GetRnti () const
+LteRadioBearerTag::GetRnti() const
 {
-  return m_rnti;
+    return m_rnti;
 }
 
 uint8_t
-LteRadioBearerTag::GetLcid () const
+LteRadioBearerTag::GetLcid() const
 {
-  return m_lcid;
+    return m_lcid;
 }
 
 uint8_t
-LteRadioBearerTag::GetLayer () const
+LteRadioBearerTag::GetLayer() const
 {
-  return m_layer;
+    return m_layer;
 }
 
 void
-LteRadioBearerTag::Print (std::ostream &os) const
+LteRadioBearerTag::Print(std::ostream& os) const
 {
-  os << "rnti=" << m_rnti << ", lcid=" << (uint16_t) m_lcid;
+    os << "rnti=" << m_rnti << ", lcid=" << (uint16_t)m_lcid << ", layer=" << (uint16_t)m_layer;
 }
 
 } // namespace ns3

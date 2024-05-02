@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 CTTC
  *
@@ -18,182 +17,153 @@
  * Author: Nicola Baldo <nbaldo@cttc.es>
  */
 
-
 #ifndef MULTI_MODEL_SPECTRUM_CHANNEL_H
 #define MULTI_MODEL_SPECTRUM_CHANNEL_H
 
-#include <ns3/spectrum-value.h>
-#include <ns3/spectrum-converter.h>
-#include <ns3/spectrum-channel.h>
-#include <ns3/spectrum-propagation-loss-model.h>
 #include <ns3/propagation-delay-model.h>
+#include <ns3/spectrum-channel.h>
+#include <ns3/spectrum-converter.h>
+#include <ns3/spectrum-propagation-loss-model.h>
+#include <ns3/spectrum-value.h>
+
 #include <map>
-#include <list>
+#include <set>
 
-namespace ns3 {
-
-
-typedef std::map<SpectrumModelUid_t, SpectrumConverter> SpectrumConverterMap_t;
-
+namespace ns3
+{
 
 /**
  * \ingroup spectrum
- *
+ * Container: SpectrumModelUid_t, SpectrumConverter
+ */
+typedef std::map<SpectrumModelUid_t, SpectrumConverter> SpectrumConverterMap_t;
+
+/**
+ * \ingroup spectrum
+ * The Tx spectrum model information. This class is used to convert
+ * one spectrum model into another one.
  */
 class TxSpectrumModelInfo
 {
-public:
-  TxSpectrumModelInfo (Ptr<const SpectrumModel> txSpectrumModel);
+  public:
+    /**
+     * Constructor.
+     * \param txSpectrumModel the Tx Spectrum model.
+     */
+    TxSpectrumModelInfo(Ptr<const SpectrumModel> txSpectrumModel);
 
-  Ptr<const SpectrumModel> m_txSpectrumModel;
-  SpectrumConverterMap_t m_spectrumConverterMap;
+    Ptr<const SpectrumModel> m_txSpectrumModel;    //!< Tx Spectrum model.
+    SpectrumConverterMap_t m_spectrumConverterMap; //!< Spectrum converter.
 };
-
-typedef std::map<SpectrumModelUid_t, TxSpectrumModelInfo> TxSpectrumModelInfoMap_t;
-
 
 /**
  * \ingroup spectrum
- *
+ * Container: SpectrumModelUid_t, TxSpectrumModelInfo
+ */
+typedef std::map<SpectrumModelUid_t, TxSpectrumModelInfo> TxSpectrumModelInfoMap_t;
+
+/**
+ * \ingroup spectrum
+ * The Rx spectrum model information. This class is used to convert
+ * one spectrum model into another one.
  */
 class RxSpectrumModelInfo
 {
-public:
-  RxSpectrumModelInfo (Ptr<const SpectrumModel> rxSpectrumModel);
+  public:
+    /**
+     * Constructor.
+     * \param rxSpectrumModel the Rx Spectrum model.
+     */
+    RxSpectrumModelInfo(Ptr<const SpectrumModel> rxSpectrumModel);
 
-  Ptr<const SpectrumModel> m_rxSpectrumModel;
-  std::list<Ptr<SpectrumPhy> > m_rxPhyList;
+    Ptr<const SpectrumModel> m_rxSpectrumModel; //!< Rx Spectrum model.
+    std::vector<Ptr<SpectrumPhy>> m_rxPhys;     //!< Container of the Rx Spectrum phy objects.
 };
 
+/**
+ * \ingroup spectrum
+ * Container: SpectrumModelUid_t, RxSpectrumModelInfo
+ */
 typedef std::map<SpectrumModelUid_t, RxSpectrumModelInfo> RxSpectrumModelInfoMap_t;
-
-
-
 
 /**
  * \ingroup spectrum
  *
  * This SpectrumChannel implementation can handle the presence of
  * SpectrumPhy instances which can use
- * different spectrum models, i.e.,  different SpectrumModel. The only
- * requirement is that every SpectrumPhy instance uses the same
- * SpectrumModel for the whole simulation.
+ * different spectrum models, i.e.,  different SpectrumModel.
+ *
+ * \note It is allowed for a receiving SpectrumPhy to switch to a
+ * different SpectrumModel during the simulation. The requirement
+ * for this to work is that, after the SpectrumPhy switched its
+ * SpectrumModel,  MultiModelSpectrumChannel::AddRx () is
+ * called again passing the pointer to that SpectrumPhy.
  */
 class MultiModelSpectrumChannel : public SpectrumChannel
 {
+  public:
+    MultiModelSpectrumChannel();
 
-public:
-  MultiModelSpectrumChannel ();
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  static TypeId GetTypeId (void);
+    // inherited from SpectrumChannel
+    void RemoveRx(Ptr<SpectrumPhy> phy) override;
+    void AddRx(Ptr<SpectrumPhy> phy) override;
+    void StartTx(Ptr<SpectrumSignalParameters> params) override;
 
-  // inherited from SpectrumChannel
-  virtual void AddPropagationLossModel (Ptr<PropagationLossModel> loss);
-  virtual void AddSpectrumPropagationLossModel (Ptr<SpectrumPropagationLossModel> loss);
-  virtual void SetPropagationDelayModel (Ptr<PropagationDelayModel> delay);
-  virtual void AddRx (Ptr<SpectrumPhy> phy);
-  virtual void StartTx (Ptr<SpectrumSignalParameters> params);
+    // inherited from Channel
+    std::size_t GetNDevices() const override;
+    Ptr<NetDevice> GetDevice(std::size_t i) const override;
 
+  protected:
+    void DoDispose() override;
 
-  // inherited from Channel
-  virtual uint32_t GetNDevices (void) const;
-  virtual Ptr<NetDevice> GetDevice (uint32_t i) const;
+  private:
+    /**
+     * This method checks if m_rxSpectrumModelInfoMap contains an entry
+     * for the given TX SpectrumModel. If such entry exists, it returns
+     * an iterator pointing to it. If not, it creates a new entry in
+     * m_txSpectrumMpodelInfoMap, and returns an iterator to it.
+     *
+     * \param txSpectrumModel The TX SpectrumModel  being considered
+     *
+     * \return An iterator pointing to the corresponding entry in m_txSpectrumModelInfoMap
+     */
+    TxSpectrumModelInfoMap_t::const_iterator FindAndEventuallyAddTxSpectrumModel(
+        Ptr<const SpectrumModel> txSpectrumModel);
 
-  virtual Ptr<SpectrumPropagationLossModel> GetSpectrumPropagationLossModel (void);
+    /**
+     * Used internally to reschedule transmission after the propagation delay.
+     *
+     * \param params The signal parameters.
+     * \param receiver A pointer to the receiver SpectrumPhy.
+     */
+    virtual void StartRx(Ptr<SpectrumSignalParameters> params, Ptr<SpectrumPhy> receiver);
 
+    /**
+     * Data structure holding, for each TX SpectrumModel,  all the
+     * converters to any RX SpectrumModel, and all the corresponding
+     * SpectrumPhy instances.
+     *
+     */
+    TxSpectrumModelInfoMap_t m_txSpectrumModelInfoMap;
 
-protected:
-  void DoDispose ();
+    /**
+     * Data structure holding, for each RX spectrum model, all the
+     * corresponding SpectrumPhy instances.
+     */
+    RxSpectrumModelInfoMap_t m_rxSpectrumModelInfoMap;
 
-
-
-private:
-  /**
-   * this method checks if m_rxSpectrumModelInfoMap contains an entry
-   * for the given TX SpectrumModel. If such entry exists, it returns
-   * an interator pointing to it. If not, it creates a new entry in
-   * m_txSpectrumMpodelInfoMap, and returns an iterator to it.
-   *
-   * @param txSpectrumModel the TX SpectrumModel  being considered
-   *
-   * @return an iterator pointing to the corresponding entry in m_txSpectrumModelInfoMap
-   */
-  TxSpectrumModelInfoMap_t::const_iterator FindAndEventuallyAddTxSpectrumModel (Ptr<const SpectrumModel> txSpectrumModel);
-
-
-  /**
-   * make sure that there are SpectrumConverters from any
-   * SpectrumPhy being used for TX to the given SpectrumModel being used for RX
-   *
-   * @param rxPhy the RXing SpectrumPhy
-   * @param rxSpectrumModel the SpectrumModel used for RX by rxPhy
-   */
-  void CheckAddRxSpectrumModel (Ptr<SpectrumPhy> rxPhy, Ptr<const SpectrumModel> rxSpectrumModel);
-
-
-
-  /**
-   * used internally to reschedule transmission after the propagation delay
-   *
-   * @param params
-   * @param receiver
-   */
-  virtual void StartRx (Ptr<SpectrumSignalParameters> params, Ptr<SpectrumPhy> receiver);
-
-
-
-  /**
-   * propagation delay model to be used with this channel
-   *
-   */
-  Ptr<PropagationDelayModel> m_propagationDelay;
-
-  /**
-    * single-frequency propagation loss model to be used with this channel
-    *
-    */
-  Ptr<PropagationLossModel> m_propagationLoss;
-
-  /**
-   * frequency-dependent propagation loss model to be used with this channel
-   *
-   */
-  Ptr<SpectrumPropagationLossModel> m_spectrumPropagationLoss;
-
-
-  /**
-   * data structure holding, for each TX SpectrumModel,  all the
-   * converters to any RX SpectrumModel, and all the corresponding
-   * SpectrumPhy instances.
-   *
-   */
-  TxSpectrumModelInfoMap_t m_txSpectrumModelInfoMap;
-
-
-  /**
-   * data structure holding, for each RX spectrum model, all the
-   * corresponding SpectrumPhy instances.
-   *
-   */
-  RxSpectrumModelInfoMap_t m_rxSpectrumModelInfoMap;
-
-  /**
-   * this is only used to provide a straighforward implementation of
-   * GetNDevices() and GetDevice()
-   *
-   */
-  std::vector<Ptr<SpectrumPhy> > m_phyVector;
-
-
-  double m_maxLossDb;
-
-  TracedCallback<Ptr<SpectrumPhy>, Ptr<SpectrumPhy>, double > m_pathLossTrace;
+    /**
+     * Number of devices connected to the channel.
+     */
+    std::size_t m_numDevices;
 };
 
-
-
-}
-
-
+} // namespace ns3
 
 #endif /* MULTI_MODEL_SPECTRUM_CHANNEL_H */

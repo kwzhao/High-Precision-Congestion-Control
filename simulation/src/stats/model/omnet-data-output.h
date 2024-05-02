@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 Drexel University
  *
@@ -21,68 +20,112 @@
 #ifndef OMNET_DATA_OUTPUT_H
 #define OMNET_DATA_OUTPUT_H
 
-#include "ns3/nstime.h"
-
 #include "data-output-interface.h"
 
-namespace ns3 {
+#include "ns3/nstime.h"
 
+namespace ns3
+{
 
 //------------------------------------------------------------
 //--------------------------------------------
 /**
- * \ingroup stats
+ * \ingroup dataoutput
+ * \class OmnetDataOutput
+ * \brief Outputs data in a format compatible with OMNeT library and framework
  *
  */
-class OmnetDataOutput : public DataOutputInterface {
-public:
-  OmnetDataOutput();
-  virtual ~OmnetDataOutput();
+class OmnetDataOutput : public DataOutputInterface
+{
+  public:
+    OmnetDataOutput();
+    ~OmnetDataOutput() override;
 
-  virtual void Output (DataCollector &dc);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-protected:
-  virtual void DoDispose ();
+    void Output(DataCollector& dc) override;
 
-private:
-  class OmnetOutputCallback : public DataOutputCallback {
-public:
-    OmnetOutputCallback(std::ostream *scalar);
+  protected:
+    void DoDispose() override;
 
-    void OutputStatistic (std::string context,
-                          std::string name,
-                          const StatisticalSummary *statSum);
+  private:
+    /**
+     * \ingroup dataoutput
+     *
+     * \brief Class to generate OMNeT output
+     */
+    class OmnetOutputCallback : public DataOutputCallback
+    {
+      public:
+        /**
+         * Constructor
+         * \param scalar the output stream
+         */
+        OmnetOutputCallback(std::ostream* scalar);
 
-    void OutputSingleton (std::string context,
-                          std::string name,
-                          int val);
+        /**
+         * \brief Generates data statistics
+         * \param context the output context
+         * \param name the output name
+         * \param statSum the stats to print
+         */
+        void OutputStatistic(std::string context,
+                             std::string name,
+                             const StatisticalSummary* statSum) override;
 
-    void OutputSingleton (std::string context,
-                          std::string name,
-                          uint32_t val);
+        /**
+         * \brief Generates a single data output
+         * \param context the output context
+         * \param name the output name
+         * \param val the value
+         */
+        void OutputSingleton(std::string context, std::string name, int val) override;
 
-    void OutputSingleton (std::string context,
-                          std::string name,
-                          double val);
+        /**
+         * \brief Generates a single data output
+         * \param context the output context
+         * \param name the output name
+         * \param val the value
+         */
+        void OutputSingleton(std::string context, std::string name, uint32_t val) override;
 
-    void OutputSingleton (std::string context,
-                          std::string name,
-                          std::string val);
+        /**
+         * \brief Generates a single data output
+         * \param context the output context
+         * \param name the output name
+         * \param val the value
+         */
+        void OutputSingleton(std::string context, std::string name, double val) override;
 
-    void OutputSingleton (std::string context,
-                          std::string name,
-                          Time val);
+        /**
+         * \brief Generates a single data output
+         * \param context the output context
+         * \param name the output name
+         * \param val the value
+         */
+        void OutputSingleton(std::string context, std::string name, std::string val) override;
 
-private:
-    std::ostream *m_scalar;
-    // end class OmnetOutputCallback
-  };
+        /**
+         * \brief Generates a single data output
+         * \param context the output context
+         * \param name the output name
+         * \param val the value
+         */
+        void OutputSingleton(std::string context, std::string name, Time val) override;
 
-  // end class OmnetDataOutput
+      private:
+        std::ostream* m_scalar; //!< output stream
+                                // end class OmnetOutputCallback
+    };
+
+    // end class OmnetDataOutput
 };
 
 // end namespace ns3
-};
-
+}; // namespace ns3
 
 #endif /* OMNET_DATA_OUTPUT_H */

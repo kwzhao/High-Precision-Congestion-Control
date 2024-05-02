@@ -9,6 +9,8 @@
 #include <ns3/custom-header.h>
 #include <ns3/int-header.h>
 #include <vector>
+//vamsi
+#include <map>
 
 namespace ns3 {
 
@@ -30,6 +32,13 @@ public:
 	uint32_t wp; // current window of packets
 	uint32_t lastPktSize;
 	Callback<void> m_notifyAppFinish;
+
+// vamsi
+	std::map<uint32_t,double> rates;
+	double prevRtt;
+	double prevCompletion;
+	bool powerEnabled;
+	Time stopTime;
 
 	/******************************
 	 * runtime states
@@ -56,10 +65,26 @@ public:
 		double u;
 		struct {
 			double u;
+			double qRate;
 			DataRate Rc;
 			uint32_t incStage;
 		}hopState[IntHeader::maxHop];
 	} hp;
+	struct {
+			uint32_t m_lastUpdateSeq;
+			DataRate m_curRate;
+			IntHop hop[IntHeader::maxHop];
+			uint32_t keep[IntHeader::maxHop];
+			uint32_t m_incStage;
+			double m_lastGap;
+			double u;
+			bool useInt;
+			struct {
+				double u;
+				DataRate Rc;
+				uint32_t incStage;
+			}hopState[IntHeader::maxHop];
+		} power;
 	struct{
 		uint32_t m_lastUpdateSeq;
 		DataRate m_curRate;
@@ -101,6 +126,7 @@ public:
 	uint64_t GetWin(); // window size calculated from m_rate
 	bool IsFinished();
 	uint64_t HpGetCurWin(); // window size calculated from hp.m_curRate, used by HPCC
+	uint32_t incastFlow;
 };
 
 class RdmaRxQueuePair : public Object { // Rx side queue pair

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006, 2009 INRIA
  * Copyright (c) 2009 MIRKO BANCHI
@@ -16,53 +15,41 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
- * Author: Mirko Banchi <mk.banchi@gmail.com>
+ * Authors: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
+ *          Mirko Banchi <mk.banchi@gmail.com>
  */
+
 #ifndef ADHOC_WIFI_MAC_H
 #define ADHOC_WIFI_MAC_H
 
-#include "regular-wifi-mac.h"
+#include "wifi-mac.h"
 
-#include "amsdu-subframe-header.h"
-
-namespace ns3 {
+namespace ns3
+{
 
 /**
  * \ingroup wifi
  *
- *
+ * \brief Wifi MAC high model for an ad-hoc Wifi MAC
  */
-class AdhocWifiMac : public RegularWifiMac
+class AdhocWifiMac : public WifiMac
 {
-public:
-  static TypeId GetTypeId (void);
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  AdhocWifiMac ();
-  virtual ~AdhocWifiMac ();
+    AdhocWifiMac();
+    ~AdhocWifiMac() override;
 
-  /**
-   * \param address the current address of this MAC layer.
-   */
-  virtual void SetAddress (Mac48Address address);
+    void SetLinkUpCallback(Callback<void> linkUp) override;
+    void Enqueue(Ptr<Packet> packet, Mac48Address to) override;
+    bool CanForwardPacketsTo(Mac48Address to) const override;
 
-  /**
-   * \param linkUp the callback to invoke when the link becomes up.
-   */
-  virtual void SetLinkUpCallback (Callback<void> linkUp);
-
-  /**
-   * \param packet the packet to send.
-   * \param to the address to which the packet should be sent.
-   *
-   * The packet should be enqueued in a tx queue, and should be
-   * dequeued as soon as the channel access function determines that
-   * access is granted to this MAC.
-   */
-  virtual void Enqueue (Ptr<const Packet> packet, Mac48Address to);
-
-private:
-  virtual void Receive (Ptr<Packet> packet, const WifiMacHeader *hdr);
+  private:
+    void Receive(Ptr<const WifiMpdu> mpdu, uint8_t linkId) override;
 };
 
 } // namespace ns3

@@ -25,12 +25,27 @@
  * The Initial Developer of the Original Code is Keith Packard
  *
  * Contributor(s):
- *	Keith R. Packard <keithp@keithp.com>
+ *    Keith R. Packard <keithp@keithp.com>
+ *
+ * Code changes for ns-3 from upstream are marked with `//PDB'
  */
+
+// NOLINTBEGIN
+// clang-format off
 
 #include "cairo-wideint-private.h"
 
+#include <climits>
+
+/**
+ * \file
+ * \ingroup highprec
+ * Implementation of the cairo_x functions which implement high precision arithmetic.
+ */
+
 #if HAVE_UINT64_T
+
+const char * cairo_impl64 = "uint64_t";
 
 #define _cairo_uint32s_to_uint64(h,l) ((uint64_t) (h) << 32 | (l))
 
@@ -45,6 +60,8 @@ _cairo_uint64_divrem (cairo_uint64_t num, cairo_uint64_t den)
 }
 
 #else
+
+const char * cairo_impl64 = "uint32_t";
 
 cairo_uint64_t
 _cairo_uint32_to_uint64 (uint32_t i)
@@ -300,17 +317,19 @@ _cairo_int64_divrem (cairo_int64_t num, cairo_int64_t den)
 	den = _cairo_int64_negate (den);
     uqr = _cairo_uint64_divrem (num, den);
     if (num_neg)
-	qr.rem = _cairo_int64_negate (uqr.rem);
+	qr.rem = _cairo_int64_negate ((cairo_int64_t)uqr.rem);  //PDB cast
     else
 	qr.rem = uqr.rem;
     if (num_neg != den_neg)
-	qr.quo = (cairo_int64_t) _cairo_int64_negate (uqr.quo);
+	qr.quo = (cairo_int64_t) _cairo_int64_negate ((cairo_int64_t)uqr.quo);  //PDB cast
     else
 	qr.quo = (cairo_int64_t) uqr.quo;
     return qr;
 }
 
 #if HAVE_UINT128_T
+
+const char * cairo_impl128 = "uint128_t";
 
 cairo_uquorem128_t
 _cairo_uint128_divrem (cairo_uint128_t num, cairo_uint128_t den)
@@ -323,6 +342,8 @@ _cairo_uint128_divrem (cairo_uint128_t num, cairo_uint128_t den)
 }
 
 #else
+
+const char * cairo_impl128 = "cairo_uint64_t";
 
 cairo_uint128_t
 _cairo_uint32_to_uint128 (uint32_t i)
@@ -610,16 +631,16 @@ _cairo_uint128_divrem (cairo_uint128_t num, cairo_uint128_t den)
     return qr;
 }
 
-cairo_int128_t
-_cairo_int128_negate (cairo_int128_t a)
+cairo_uint128_t
+_cairo_uint128_negate (cairo_uint128_t a)
 {
     a.lo = _cairo_uint64_not (a.lo);
     a.hi = _cairo_uint64_not (a.hi);
     return _cairo_uint128_add (a, _cairo_uint32_to_uint128 (1));
 }
 
-cairo_int128_t
-_cairo_int128_not (cairo_int128_t a)
+cairo_uint128_t
+_cairo_uint128_not (cairo_uint128_t a)
 {
     a.lo = _cairo_uint64_not (a.lo);
     a.hi = _cairo_uint64_not (a.hi);
@@ -659,7 +680,7 @@ _cairo_int128_divrem (cairo_int128_t num, cairo_int128_t den)
  * dividend and 64 bit divisor.  If the quotient doesn't fit into 32
  * bits then the returned remainder is equal to the divisor, and the
  * quotient is the largest representable 64 bit integer.  It is an
- * error to call this function with the high 32 bits of @num being
+ * error to call this function with the high 32 bits of `num' being
  * non-zero. */
 cairo_uquorem64_t
 _cairo_uint_96by64_32x64_divrem (cairo_uint128_t num,
@@ -674,7 +695,7 @@ _cairo_uint_96by64_32x64_divrem (cairo_uint128_t num,
     cairo_uint64_t x = _cairo_uint128_to_uint64 (_cairo_uint128_rsl(num, 32));
 
     /* Initialise the result to indicate overflow. */
-    result.quo = _cairo_uint32s_to_uint64 (-1U, -1U);
+    result.quo = _cairo_uint32s_to_uint64 (UINT_MAX, UINT_MAX);  //PDB cast
     result.rem = den;
 
     /* Don't bother if the quotient is going to overflow. */
@@ -741,7 +762,7 @@ _cairo_uint_96by64_32x64_divrem (cairo_uint128_t num,
 	/* Add the main term's contribution to quotient.  Note B-v =
 	 * -v as an uint32 (unless v = 0) */
 	if (v)
-	    quorem = _cairo_uint64_divrem (_cairo_uint32x32_64_mul (q, -v), den);
+	    quorem = _cairo_uint64_divrem (_cairo_uint32x32_64_mul (q, -(int32_t)v), den);  //PDB cast
 	else
 	    quorem = _cairo_uint64_divrem (_cairo_uint32s_to_uint64 (q, 0), den);
 	quotient += _cairo_uint64_to_uint32 (quorem.quo);
@@ -790,18 +811,21 @@ _cairo_int_96by64_32x64_divrem (cairo_int128_t num, cairo_int64_t den)
     uqr = _cairo_uint_96by64_32x64_divrem (num, nonneg_den);
     if (_cairo_uint64_eq (uqr.rem, _cairo_int64_to_uint64 (nonneg_den))) {
 	/* bail on overflow. */
-	qr.quo = _cairo_uint32s_to_uint64 (0x7FFFFFFF, -1U);;
+	qr.quo = _cairo_uint32s_to_uint64 (0x7FFFFFFF, UINT_MAX);  //PDB cast
 	qr.rem = den;
 	return qr;
     }
 
     if (num_neg)
-	qr.rem = _cairo_int64_negate (uqr.rem);
+	qr.rem = _cairo_int64_negate ((cairo_int64_t)uqr.rem);  //PDB cast
     else
 	qr.rem = uqr.rem;
     if (num_neg != den_neg)
-	qr.quo = _cairo_int64_negate (uqr.quo);
+	qr.quo = _cairo_int64_negate ((cairo_int64_t)uqr.quo);  //PDB cast
     else
 	qr.quo = uqr.quo;
     return qr;
 }
+
+// clang-format on
+// NOLINTEND

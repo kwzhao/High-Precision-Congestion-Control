@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 Drexel University
  *
@@ -24,209 +23,329 @@
 #include "data-calculator.h"
 #include "data-output-interface.h"
 
-namespace ns3 {
+#include "ns3/type-name.h"
+
+namespace ns3
+{
 
 /**
- * \defgroup stats Statistics
+ * \ingroup stats
+ * \class MinMaxAvgTotalCalculator
+ * \brief Template class MinMaxAvgTotalCalculator
  *
  */
-
 //------------------------------------------------------------
 //--------------------------------------------
-template <typename T  = uint32_t>
-class MinMaxAvgTotalCalculator : public DataCalculator,
-                                 public StatisticalSummary {
-public:
-  MinMaxAvgTotalCalculator();
-  virtual ~MinMaxAvgTotalCalculator();
+template <typename T = uint32_t>
+class MinMaxAvgTotalCalculator : public DataCalculator, public StatisticalSummary
+{
+  public:
+    MinMaxAvgTotalCalculator();
+    ~MinMaxAvgTotalCalculator() override;
 
-  void Update (const T i);
-  void Reset ();
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  virtual void Output (DataOutputCallback &callback) const;
+    /**
+     * Updates all variables of MinMaxAvgTotalCalculator
+     * \param i value of type T to use for updating the calculator
+     */
+    void Update(const T i);
+    /**
+     * Reinitializes all variables of MinMaxAvgTotalCalculator
+     */
+    void Reset();
 
-  long getCount () const { return m_count; }
-  double getSum () const { return m_total; }
-  double getMin () const { return m_min; }
-  double getMax () const { return m_max; }
-  double getMean () const { return m_meanCurr; }
-  double getStddev () const { return sqrt (m_varianceCurr); }
-  double getVariance () const { return m_varianceCurr; }
-  double getSqrSum () const { return m_squareTotal; }
+    /**
+     * Outputs the data based on the provided callback
+     * \param callback
+     */
+    void Output(DataOutputCallback& callback) const override;
 
-protected:
-  virtual void DoDispose (void);
+    /**
+     * Returns the count
+     * \return Count
+     */
+    long getCount() const override
+    {
+        return m_count;
+    }
 
-  uint32_t m_count;
+    /**
+     * Returns the sum
+     * \return Total
+     */
+    double getSum() const override
+    {
+        return m_total;
+    }
 
-  T m_total;
-  T m_squareTotal;
-  T m_min;
-  T m_max;
+    /**
+     * Returns the minimum value
+     * \return Min
+     */
+    double getMin() const override
+    {
+        return m_min;
+    }
 
-  double m_meanCurr;
-  double m_sCurr;
-  double m_varianceCurr;
+    /**
+     * Returns the maximum value
+     * \return Max
+     */
+    double getMax() const override
+    {
+        return m_max;
+    }
 
-  double m_meanPrev;
-  double m_sPrev;
+    /**
+     * Returns the mean value
+     * \return Mean
+     */
+    double getMean() const override
+    {
+        return m_meanCurr;
+    }
 
-  // end MinMaxAvgTotalCalculator
+    /**
+     * Returns the standard deviation
+     * \return Standard deviation
+     */
+    double getStddev() const override
+    {
+        return std::sqrt(m_varianceCurr);
+    }
+
+    /**
+     * Returns the current variance
+     * \return Variance
+     */
+    double getVariance() const override
+    {
+        return m_varianceCurr;
+    }
+
+    /**
+     * Returns the sum of squares
+     * \return Sum of squares
+     */
+    double getSqrSum() const override
+    {
+        return m_squareTotal;
+    }
+
+  protected:
+    /**
+     * Dispose of this Object.
+     */
+    void DoDispose() override;
+
+    uint32_t m_count; //!< Count value of MinMaxAvgTotalCalculator
+
+    T m_total;       //!< Total value of MinMaxAvgTotalCalculator
+    T m_squareTotal; //!< Sum of squares value of MinMaxAvgTotalCalculator
+    T m_min;         //!< Minimum value of MinMaxAvgTotalCalculator
+    T m_max;         //!< Maximum value of MinMaxAvgTotalCalculator
+
+    double m_meanCurr;     //!< Current mean of MinMaxAvgTotalCalculator
+    double m_sCurr;        //!< Current s of MinMaxAvgTotalCalculator
+    double m_varianceCurr; //!< Current variance of MinMaxAvgTotalCalculator
+
+    double m_meanPrev; //!< Previous mean of MinMaxAvgTotalCalculator
+    double m_sPrev;    //!< Previous s of MinMaxAvgTotalCalculator
+
+    // end MinMaxAvgTotalCalculator
 };
 
 //----------------------------------------------
 template <typename T>
 MinMaxAvgTotalCalculator<T>::MinMaxAvgTotalCalculator()
 {
-  m_count = 0;
+    m_count = 0;
 
-  m_total       = 0;
-  m_squareTotal = 0;
+    m_total = 0;
+    m_squareTotal = 0;
 
-  m_meanCurr     = NaN;
-  m_sCurr        = NaN;
-  m_varianceCurr = NaN;
+    m_meanCurr = NaN;
+    m_sCurr = NaN;
+    m_varianceCurr = NaN;
 
-  m_meanPrev     = NaN;
-  m_sPrev        = NaN;
+    m_meanPrev = NaN;
+    m_sPrev = NaN;
 }
 
 template <typename T>
 MinMaxAvgTotalCalculator<T>::~MinMaxAvgTotalCalculator()
 {
 }
+
 template <typename T>
 void
-MinMaxAvgTotalCalculator<T>::DoDispose (void)
+MinMaxAvgTotalCalculator<T>::DoDispose()
 {
-  DataCalculator::DoDispose ();
-  // MinMaxAvgTotalCalculator::DoDispose
+    DataCalculator::DoDispose();
+    // MinMaxAvgTotalCalculator::DoDispose
+}
+
+/* static */
+template <typename T>
+TypeId
+MinMaxAvgTotalCalculator<T>::GetTypeId()
+{
+    static TypeId tid = TypeId("ns3::MinMaxAvgTotalCalculator<" + TypeNameGet<T>() + ">")
+                            .SetParent<Object>()
+                            .SetGroupName("Stats")
+                            .AddConstructor<MinMaxAvgTotalCalculator<T>>();
+    return tid;
 }
 
 template <typename T>
 void
-MinMaxAvgTotalCalculator<T>::Update (const T i)
+MinMaxAvgTotalCalculator<T>::Update(const T i)
 {
-  if (m_enabled) {
-      m_count++;
+    if (m_enabled)
+    {
+        m_count++;
 
-      m_total       += i;
-      m_squareTotal += i*i;
+        m_total += i;
+        m_squareTotal += i * i;
 
-      if (m_count == 1)
+        if (m_count == 1)
         {
-          m_min = i;
-          m_max = i;
+            m_min = i;
+            m_max = i;
         }
-      else
+        else
         {
-          if (i < m_min)
-            {
-              m_min = i;
-            }
-          if (i > m_max)
-            {
-              m_max = i;
-            }
+            m_min = (i < m_min) ? i : m_min;
+            m_max = (i > m_max) ? i : m_max;
         }
 
-      // Calculate the variance based on equations (15) and (16) on
-      // page 216 of "The Art of Computer Programming, Volume 2",
-      // Second Edition. Donald E. Knuth.  Addison-Wesley
-      // Publishing Company, 1973.
-      //
-      // The relationships between the variance, standard deviation,
-      // and s are as follows
-      //
-      //                      s
-      //     variance  =  -----------
-      //                   count - 1
-      //
-      //                                -------------
-      //                               /
-      //     standard_deviation  =    /  variance
-      //                            \/
-      //
-      if (m_count == 1)
+        // Calculate the variance based on equations (15) and (16) on
+        // page 216 of "The Art of Computer Programming, Volume 2",
+        // Second Edition. Donald E. Knuth.  Addison-Wesley
+        // Publishing Company, 1973.
+        //
+        // The relationships between the variance, standard deviation,
+        // and s are as follows
+        //
+        //                      s
+        //     variance  =  -----------
+        //                   count - 1
+        //
+        //                                -------------
+        //                               /
+        //     standard_deviation  =    /  variance
+        //                            \/
+        //
+        if (m_count == 1)
         {
-          // Set the very first values.
-          m_meanCurr     = i;
-          m_sCurr        = 0;
-          m_varianceCurr = m_sCurr;
+            // Set the very first values.
+            m_meanCurr = i;
+            m_sCurr = 0;
+            m_varianceCurr = m_sCurr;
         }
-      else
+        else
         {
-          // Save the previous values.
-          m_meanPrev     = m_meanCurr;
-          m_sPrev        = m_sCurr;
+            // Save the previous values.
+            m_meanPrev = m_meanCurr;
+            m_sPrev = m_sCurr;
 
-          // Update the current values.
-          m_meanCurr     = m_meanPrev + (i - m_meanPrev) / m_count;
-          m_sCurr        = m_sPrev    + (i - m_meanPrev) * (i - m_meanCurr);
-          m_varianceCurr = m_sCurr / (m_count - 1);
+            // Update the current values.
+            m_meanCurr = m_meanPrev + (i - m_meanPrev) / m_count;
+            m_sCurr = m_sPrev + (i - m_meanPrev) * (i - m_meanCurr);
+            m_varianceCurr = m_sCurr / (m_count - 1);
         }
     }
-  // end MinMaxAvgTotalCalculator::Update
+    // end MinMaxAvgTotalCalculator::Update
 }
 
 template <typename T>
 void
-MinMaxAvgTotalCalculator<T>::Reset ()
+MinMaxAvgTotalCalculator<T>::Reset()
 {
-  m_count = 0;
+    m_count = 0;
 
-  m_total       = 0;
-  m_squareTotal = 0;
+    m_total = 0;
+    m_squareTotal = 0;
 
-  m_meanCurr     = NaN;
-  m_sCurr        = NaN;
-  m_varianceCurr = NaN;
+    m_meanCurr = NaN;
+    m_sCurr = NaN;
+    m_varianceCurr = NaN;
 
-  m_meanPrev     = NaN;
-  m_sPrev        = NaN;
-  // end MinMaxAvgTotalCalculator::Reset
+    m_meanPrev = NaN;
+    m_sPrev = NaN;
+    // end MinMaxAvgTotalCalculator::Reset
 }
 
 template <typename T>
 void
-MinMaxAvgTotalCalculator<T>::Output (DataOutputCallback &callback) const
+MinMaxAvgTotalCalculator<T>::Output(DataOutputCallback& callback) const
 {
-  callback.OutputStatistic (m_context, m_key, this);
+    callback.OutputStatistic(m_context, m_key, this);
 }
-
 
 /**
  * \ingroup stats
+ * \class CounterCalculator
+ * \brief Template class CounterCalculator
  *
  */
 //------------------------------------------------------------
 //--------------------------------------------
-template <typename T  = uint32_t>
-class CounterCalculator : public DataCalculator {
-public:
-  CounterCalculator();
-  virtual ~CounterCalculator();
+template <typename T = uint32_t>
+class CounterCalculator : public DataCalculator
+{
+  public:
+    CounterCalculator();
+    ~CounterCalculator() override;
 
-  void Update ();
-  void Update (const T i);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  T GetCount () const;
+    /**
+     * Increments count by 1
+     */
+    void Update();
+    /**
+     * Increments count by i
+     * \param i value of type T to increment count
+     */
+    void Update(const T i);
 
-  virtual void Output (DataOutputCallback &callback) const;
+    /**
+     * Returns the count of the CounterCalculator
+     * \return Count as a value of type T
+     */
+    T GetCount() const;
 
-protected:
-  virtual void DoDispose (void);
+    /**
+     * Outputs the data based on the provided callback
+     * \param callback
+     */
+    void Output(DataOutputCallback& callback) const override;
 
-  T m_count;
+  protected:
+    /**
+     * Dispose of this Object.
+     */
+    void DoDispose() override;
 
-  // end CounterCalculator
+    T m_count; //!< Count value of CounterCalculator
+
+    // end CounterCalculator
 };
-
 
 //--------------------------------------------
 template <typename T>
-CounterCalculator<T>::CounterCalculator() :
-  m_count (0)
+CounterCalculator<T>::CounterCalculator()
+    : m_count(0)
 {
 }
 
@@ -234,52 +353,73 @@ template <typename T>
 CounterCalculator<T>::~CounterCalculator()
 {
 }
+
+/* static */
 template <typename T>
-void
-CounterCalculator<T>::DoDispose (void)
+TypeId
+CounterCalculator<T>::GetTypeId()
 {
-  DataCalculator::DoDispose ();
-  // CounterCalculator::DoDispose
+    static TypeId tid = TypeId("ns3::CounterCalculator<" + TypeNameGet<T>() + ">")
+                            .SetParent<Object>()
+                            .SetGroupName("Stats")
+                            .AddConstructor<CounterCalculator<T>>();
+    return tid;
 }
 
 template <typename T>
 void
-CounterCalculator<T>::Update ()
+CounterCalculator<T>::DoDispose()
 {
-  if (m_enabled) {
-      m_count++;
-    }
-  // end CounterCalculator::Update
+    DataCalculator::DoDispose();
+    // CounterCalculator::DoDispose
 }
 
 template <typename T>
 void
-CounterCalculator<T>::Update (const T i)
+CounterCalculator<T>::Update()
 {
-  if (m_enabled) {
-      m_count += i;
+    if (m_enabled)
+    {
+        m_count++;
     }
-  // end CounterCalculator::Update
+    // end CounterCalculator::Update
+}
+
+template <typename T>
+void
+CounterCalculator<T>::Update(const T i)
+{
+    if (m_enabled)
+    {
+        m_count += i;
+    }
+    // end CounterCalculator::Update
 }
 
 template <typename T>
 T
-CounterCalculator<T>::GetCount () const
+CounterCalculator<T>::GetCount() const
 {
-  return m_count;
-  // end CounterCalculator::GetCount
+    return m_count;
+    // end CounterCalculator::GetCount
 }
 
 template <typename T>
 void
-CounterCalculator<T>::Output (DataOutputCallback &callback) const
+CounterCalculator<T>::Output(DataOutputCallback& callback) const
 {
-  callback.OutputSingleton (m_context, m_key, m_count);
-  // end CounterCalculator::Output
+    callback.OutputSingleton(m_context, m_key, m_count);
+    // end CounterCalculator::Output
 }
 
-// end namespace ns3
-};
+// The following explicit template instantiation declaration prevents modules
+// including this header file from implicitly instantiating CounterCalculator<uint32_t>.
+// This would cause some examples on Windows to crash at runtime with the
+// following error message: "Trying to allocate twice the same UID:
+// ns3::CounterCalculator<uint32_t>"
+extern template class CounterCalculator<uint32_t>;
 
+// end namespace ns3
+}; // namespace ns3
 
 #endif /* BASIC_DATA_CALCULATORS_H */

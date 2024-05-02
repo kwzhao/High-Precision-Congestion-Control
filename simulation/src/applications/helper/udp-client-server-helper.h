@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -20,162 +19,196 @@
 #ifndef UDP_CLIENT_SERVER_HELPER_H
 #define UDP_CLIENT_SERVER_HELPER_H
 
-#include <stdint.h>
 #include "ns3/application-container.h"
+#include "ns3/ipv4-address.h"
 #include "ns3/node-container.h"
 #include "ns3/object-factory.h"
-#include "ns3/ipv4-address.h"
-#include "ns3/udp-server.h"
 #include "ns3/udp-client.h"
-namespace ns3 {
+#include "ns3/udp-server.h"
+
+#include <stdint.h>
+
+namespace ns3
+{
 /**
- * \brief Create a server application which waits for input udp packets
+ * \ingroup udpclientserver
+ * \brief Create a server application which waits for input UDP packets
  *        and uses the information carried into their payload to compute
  *        delay and to determine if some packets are lost.
  */
 class UdpServerHelper
 {
-public:
-  /**
-   * Create UdpServerHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server application.
-   *
-   */
-  UdpServerHelper ();
+  public:
+    /**
+     * Create UdpServerHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server application.
+     *
+     */
+    UdpServerHelper();
 
-  /**
-   * Create UdpServerHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server application.
-   *
-   * \param port The port the server will wait on for incoming packets
-   */
-  UdpServerHelper (uint16_t port);
+    /**
+     * Create UdpServerHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server application.
+     *
+     * \param port The port the server will wait on for incoming packets
+     */
+    UdpServerHelper(uint16_t port);
 
-  /**
-   * Record an attribute to be set in each Application after it is is created.
-   *
-   * \param name the name of the attribute to set
-   * \param value the value of the attribute to set
-   */
-  void SetAttribute (std::string name, const AttributeValue &value);
+    /**
+     * Record an attribute to be set in each Application after it is is created.
+     *
+     * \param name the name of the attribute to set
+     * \param value the value of the attribute to set
+     */
+    void SetAttribute(std::string name, const AttributeValue& value);
 
-  /**
-   * Create one udp server application on each of the Nodes in the
-   * NodeContainer.
-   *
-   * \param c The nodes on which to create the Applications.  The nodes
-   *          are specified by a NodeContainer.
-   * \returns The applications created, one Application per Node in the
-   *          NodeContainer.
-   */
-  ApplicationContainer Install (NodeContainer c);
-  Ptr<UdpServer> GetServer (void);
-private:
-  ObjectFactory m_factory;
-  Ptr<UdpServer> m_server;
+    /**
+     * Create one UDP server application on each of the Nodes in the
+     * NodeContainer.
+     *
+     * \param c The nodes on which to create the Applications.  The nodes
+     *          are specified by a NodeContainer.
+     * \returns The applications created, one Application per Node in the
+     *          NodeContainer.
+     */
+    ApplicationContainer Install(NodeContainer c);
+
+    /**
+     * \brief Return the last created server.
+     *
+     * This function is mainly used for testing.
+     *
+     * \returns a Ptr to the last created server application
+     */
+    Ptr<UdpServer> GetServer();
+
+  private:
+    ObjectFactory m_factory; //!< Object factory.
+    Ptr<UdpServer> m_server; //!< The last created server application
 };
 
 /**
- * \brief Create a client application which sends udp packets carrying
+ * \ingroup udpclientserver
+ * \brief Create a client application which sends UDP packets carrying
  *  a 32bit sequence number and a 64 bit time stamp.
  *
  */
 class UdpClientHelper
 {
+  public:
+    /**
+     * Create UdpClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server.
+     *
+     */
+    UdpClientHelper();
 
-public:
-  /**
-   * Create UdpClientHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server.
-   *
-   */
-  UdpClientHelper ();
+    /**
+     *  Create UdpClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server. Use this variant with
+     * addresses that do not include a port value (e.g., Ipv4Address and
+     * Ipv6Address).
+     *
+     * \param ip The IP address of the remote UDP server
+     * \param port The port number of the remote UDP server
+     */
 
-  /**
-   *  Create UdpClientHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server.
-   *
-   * \param ip The IP address of the remote udp server
-   * \param port The port number of the remote udp server
-   */
+    UdpClientHelper(Address ip, uint16_t port);
+    /**
+     *  Create UdpClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server. Use this variant with
+     * addresses that do include a port value (e.g., InetSocketAddress and
+     * Inet6SocketAddress).
+     *
+     * \param addr The address of the remote UDP server
+     */
 
-  UdpClientHelper (Ipv4Address ip, uint16_t port);
-  UdpClientHelper (Ipv4Address ip, uint16_t port, uint16_t pg);
-  UdpClientHelper (Ipv6Address ip, uint16_t port);
-  UdpClientHelper (Address ip, uint16_t port);
+    UdpClientHelper(Address addr);
 
-  /**
-   * Record an attribute to be set in each Application after it is is created.
-   *
-   * \param name the name of the attribute to set
-   * \param value the value of the attribute to set
-   */
-  void SetAttribute (std::string name, const AttributeValue &value);
+    /**
+     * Record an attribute to be set in each Application after it is is created.
+     *
+     * \param name the name of the attribute to set
+     * \param value the value of the attribute to set
+     */
+    void SetAttribute(std::string name, const AttributeValue& value);
 
-  /**
+    /**
      * \param c the nodes
      *
-     * Create one udp client application on each of the input nodes
+     * Create one UDP client application on each of the input nodes
      *
      * \returns the applications created, one application per input node.
      */
-  ApplicationContainer Install (NodeContainer c);
+    ApplicationContainer Install(NodeContainer c);
 
-private:
-  ObjectFactory m_factory;
+  private:
+    ObjectFactory m_factory; //!< Object factory.
 };
+
 /**
- * Create udpTraceClient application which sends udp packets based on a trace
+ * \ingroup udpclientserver
+ * Create UdpTraceClient application which sends UDP packets based on a trace
  * file of an MPEG4 stream. Trace files could be downloaded form :
- * http://www.tkn.tu-berlin.de/research/trace/ltvt.html (the 2 first lines of
- * the file should be removed)
+ * https://web.archive.org/web/20190907061916/http://www2.tkn.tu-berlin.de/research/trace/ltvt.html
+ * (the 2 first lines of the file should be removed)
  * A valid trace file is a file with 4 columns:
- * -1- the first one represents the frame index
- * -2- the second one indicates the type of the frame: I, P or B
- * -3- the third one indicates the time on which the frame was generated by the encoder
- * -4- the fourth one indicates the frame size in byte
-*/
+ * \li -1- the first one represents the frame index
+ * \li -2- the second one indicates the type of the frame: I, P or B
+ * \li -3- the third one indicates the time on which the frame was generated by the encoder
+ * \li -4- the fourth one indicates the frame size in byte
+ */
 class UdpTraceClientHelper
 {
-public:
-  /**
-   * Create UdpTraceClientHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server.
-   *
-   */
-  UdpTraceClientHelper ();
+  public:
+    /**
+     * Create UdpTraceClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server.
+     *
+     */
+    UdpTraceClientHelper();
 
-  /**
-   * Create UdpTraceClientHelper which will make life easier for people trying
-   * to set up simulations with udp-client-server.
-   *
-   * \param ip The IP address of the remote udp server
-   * \param port The port number of the remote udp server
-   * \param filename the file from which packet traces will be loaded
-   */
-  UdpTraceClientHelper (Address ip, uint16_t port, std::string filename);
-  UdpTraceClientHelper (Ipv4Address ip, uint16_t port, std::string filename);
-  UdpTraceClientHelper (Ipv6Address ip, uint16_t port, std::string filename);
+    /**
+     * Create UdpTraceClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server. Use this variant with
+     * addresses that do not include a port value (e.g., Ipv4Address and
+     * Ipv6Address).
+     *
+     * \param ip The IP address of the remote UDP server
+     * \param port The port number of the remote UDP server
+     * \param filename the file from which packet traces will be loaded
+     */
+    UdpTraceClientHelper(Address ip, uint16_t port, std::string filename);
+    /**
+     * Create UdpTraceClientHelper which will make life easier for people trying
+     * to set up simulations with udp-client-server. Use this variant with
+     * addresses that do include a port value (e.g., InetSocketAddress and
+     * Inet6SocketAddress).
+     *
+     * \param addr The address of the remote UDP server
+     * \param filename the file from which packet traces will be loaded
+     */
+    UdpTraceClientHelper(Address addr, std::string filename);
 
-  /**
-    * Record an attribute to be set in each Application after it is is created.
-    *
-    * \param name the name of the attribute to set
-    * \param value the value of the attribute to set
-    */
-  void SetAttribute (std::string name, const AttributeValue &value);
+    /**
+     * Record an attribute to be set in each Application after it is is created.
+     *
+     * \param name the name of the attribute to set
+     * \param value the value of the attribute to set
+     */
+    void SetAttribute(std::string name, const AttributeValue& value);
 
-  /**
-    * \param c the nodes
-    *
-    * Create one udp trace client application on each of the input nodes
-    *
-    * \returns the applications created, one application per input node.
-    */
-  ApplicationContainer Install (NodeContainer c);
+    /**
+     * \param c the nodes
+     *
+     * Create one UDP trace client application on each of the input nodes
+     *
+     * \returns the applications created, one application per input node.
+     */
+    ApplicationContainer Install(NodeContainer c);
 
-private:
-  ObjectFactory m_factory;
+  private:
+    ObjectFactory m_factory; //!< Object factory.
 };
 
 } // namespace ns3

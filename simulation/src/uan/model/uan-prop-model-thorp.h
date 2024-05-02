@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
@@ -23,33 +22,53 @@
 
 #include "uan-prop-model.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 class UanTxMode;
 
 /**
- * \class UanPropModelThorp
- * \brief Uses Thorp's approximation to compute pathloss.  Assumes implulse PDP.
+ * \ingroup uan
+ *
+ * Uses Thorp's approximation to compute pathloss.  Assumes implulse PDP.
  */
 class UanPropModelThorp : public UanPropModel
 {
-public:
-  UanPropModelThorp ();
-  virtual ~UanPropModelThorp ();
+  public:
+    /** Default constructor. */
+    UanPropModelThorp();
+    /** Destructor */
+    ~UanPropModelThorp() override;
 
-  static TypeId GetTypeId (void);
+    /**
+     * Register this type.
+     * \return The object TypeId.
+     */
+    static TypeId GetTypeId();
 
-  virtual double GetPathLossDb (Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode);
-  virtual UanPdp GetPdp (Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode);
-  virtual Time GetDelay (Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode);
+    // Inherited methods
+    double GetPathLossDb(Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode) override;
+    UanPdp GetPdp(Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode) override;
+    Time GetDelay(Ptr<MobilityModel> a, Ptr<MobilityModel> b, UanTxMode mode) override;
 
-private:
-  double GetAttenDbKyd (double freqKhz);
-  double GetAttenDbKm (double freqKhz);
+  private:
+    /**
+     * Get the attenuation in dB / 1000 yards.
+     * \param freqKhz The channel center frequency, in kHz.
+     * \return The attenuation, in dB / 1000 yards.
+     */
+    double GetAttenDbKyd(double freqKhz);
+    /**
+     * Get the attenuation in dB / km.
+     * \param freqKhz The channel center frequency, in kHz.
+     * \return The attenuation, in dB/km.
+     */
+    double GetAttenDbKm(double freqKhz);
 
-  double m_SpreadCoef;
-};
+    double m_SpreadCoef; //!< Spreading coefficient used in calculation of Thorp's approximation.
 
-}
+}; // class UanPropModelThorp
+
+} // namespace ns3
 
 #endif /* UAN_PROP_MODEL_THORP_H */

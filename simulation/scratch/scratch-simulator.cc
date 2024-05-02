@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -16,12 +15,17 @@
 
 #include "ns3/core-module.h"
 
-NS_LOG_COMPONENT_DEFINE ("ScratchSimulator");
-
 using namespace ns3;
 
-int 
-main (int argc, char *argv[])
+NS_LOG_COMPONENT_DEFINE("ScratchSimulator");
+
+int
+main(int argc, char* argv[])
 {
-  NS_LOG_UNCOND ("Scratch Simulator");
+    NS_LOG_UNCOND("Scratch Simulator");
+
+    Simulator::Run();
+    Simulator::Destroy();
+
+    return 0;
 }

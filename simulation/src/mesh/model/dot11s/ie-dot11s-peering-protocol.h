@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008,2009 IITP RAS
  *
@@ -27,22 +26,28 @@ namespace ns3
 {
 namespace dot11s
 {
+
+/**
+ * \ingroup dot11s
+ *
+ * \brief Mesh Peering Protocol Identifier information element
+ * Note that it does not permit to set any value besides zero
+ * (corresponding to mesh peering management protocol)
+ */
 class IePeeringProtocol : public WifiInformationElement
 {
-public:
-  IePeeringProtocol ();
-  /**
-   * \name Inherited from WifiInformationElement
-   * \{
-   */
-  virtual WifiInformationElementId ElementId () const;
-  virtual uint8_t GetInformationFieldSize () const;
-  virtual void SerializeInformationField (Buffer::Iterator i) const;
-  virtual uint8_t DeserializeInformationField (Buffer::Iterator i, uint8_t length);
-  virtual void Print (std::ostream& os) const;
-  ///\}
-private:
-  uint8_t m_protocol;
+  public:
+    IePeeringProtocol();
+
+    // Inherited from WifiInformationElement
+    WifiInformationElementId ElementId() const override;
+    uint16_t GetInformationFieldSize() const override;
+    void SerializeInformationField(Buffer::Iterator i) const override;
+    uint16_t DeserializeInformationField(Buffer::Iterator i, uint16_t length) override;
+    void Print(std::ostream& os) const override;
+
+  private:
+    uint8_t m_protocol; ///< the protocol
 };
 } // namespace dot11s
 } // namespace ns3

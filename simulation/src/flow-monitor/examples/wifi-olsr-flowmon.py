@@ -1,61 +1,51 @@
 # -*-  Mode: Python; -*-
 #  Copyright (c) 2009 INESC Porto
-# 
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License version 2 as
 #  published by the Free Software Foundation;
-# 
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-# 
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-# 
+#
 #  Authors: Gustavo Carneiro <gjc@inescporto.pt>
 
+from __future__ import print_function
 import sys
 
-import ns.applications
-import ns.core
-import ns.flow_monitor
-import ns.internet
-import ns.mobility
-import ns.network
-import ns.olsr
-import ns.wifi
-try:
-    import ns.visualizer
-except ImportError:
-    pass
+from ns import ns
 
-DISTANCE = 100 # (m)
+DISTANCE = 20 # (m)
 NUM_NODES_SIDE = 3
+
 
 def main(argv):
 
-    cmd = ns.core.CommandLine()
+    from ctypes import c_int, c_bool, c_char_p, create_string_buffer
+    NumNodesSide = c_int(2)
+    Plot = c_bool(False)
+    BUFFLEN = 4096
+    ResultsBuffer = create_string_buffer(b"output.xml", BUFFLEN)
+    Results = c_char_p(ResultsBuffer.raw)
 
-    cmd.NumNodesSide = None
-    cmd.AddValue("NumNodesSide", "Grid side number of nodes (total number of nodes will be this number squared)")
-
-    cmd.Results = None
-    cmd.AddValue("Results", "Write XML results to file")
-
-    cmd.Plot = None
-    cmd.AddValue("Plot", "Plot the results using the matplotlib python module")
-
+    cmd = ns.CommandLine(__file__)
+    cmd.AddValue("NumNodesSide", "Grid side number of nodes (total number of nodes will be this number squared)", NumNodesSide)
+    cmd.AddValue("Results", "Write XML results to file", Results, BUFFLEN)
+    cmd.AddValue("Plot", "Plot the results using the matplotlib python module", Plot)
     cmd.Parse(argv)
 
-    wifi = ns.wifi.WifiHelper.Default()
-    wifiMac = ns.wifi.NqosWifiMacHelper.Default()
-    wifiPhy = ns.wifi.YansWifiPhyHelper.Default()
+    wifi = ns.CreateObject("WifiHelper")
+    wifiMac = ns.CreateObject("WifiMacHelper")
+    wifiPhy = ns.CreateObject("YansWifiPhyHelper")
     wifiChannel = ns.wifi.YansWifiChannelHelper.Default()
     wifiPhy.SetChannel(wifiChannel.Create())
     ssid = ns.wifi.Ssid("wifi-default")
-    wifi.SetRemoteStationManager("ns3::ArfWifiManager")
     wifiMac.SetType ("ns3::AdhocWifiMac",
                      "Ssid", ns.wifi.SsidValue(ssid))
 
@@ -71,8 +61,8 @@ def main(argv):
     ipv4Addresses.SetBase(ns.network.Ipv4Address("10.0.0.0"), ns.network.Ipv4Mask("255.255.255.0"))
 
     port = 9   # Discard port(RFC 863)
-    onOffHelper = ns.applications.OnOffHelper("ns3::UdpSocketFactory",
-                                  ns.network.Address(ns.network.InetSocketAddress(ns.network.Ipv4Address("10.0.0.1"), port)))
+    inetAddress = ns.network.InetSocketAddress(ns.network.Ipv4Address("10.0.0.1"), port)
+    onOffHelper = ns.applications.OnOffHelper("ns3::UdpSocketFactory", inetAddress.ConvertTo())
     onOffHelper.SetAttribute("DataRate", ns.network.DataRateValue(ns.network.DataRate("100kbps")))
     onOffHelper.SetAttribute("OnTime", ns.core.StringValue ("ns3::ConstantRandomVariable[Constant=1]"))
     onOffHelper.SetAttribute("OffTime", ns.core.StringValue ("ns3::ConstantRandomVariable[Constant=0]"))
@@ -80,34 +70,38 @@ def main(argv):
     addresses = []
     nodes = []
 
-    if cmd.NumNodesSide is None:
+    if NumNodesSide.value == 2:
         num_nodes_side = NUM_NODES_SIDE
     else:
-        num_nodes_side = int(cmd.NumNodesSide)
+        num_nodes_side = NumNodesSide.value
 
+    nodes = ns.NodeContainer(num_nodes_side*num_nodes_side)
+    accumulator = 0
     for xi in range(num_nodes_side):
         for yi in range(num_nodes_side):
 
-            node = ns.network.Node()
-            nodes.append(node)
+            node = nodes.Get(accumulator)
+            accumulator += 1
+            container = ns.network.NodeContainer(node)
+            internet.Install(container)
 
-            internet.Install(ns.network.NodeContainer(node))
-
-            mobility = ns.mobility.ConstantPositionMobilityModel()
+            mobility = ns.CreateObject("ConstantPositionMobilityModel")
             mobility.SetPosition(ns.core.Vector(xi*DISTANCE, yi*DISTANCE, 0))
             node.AggregateObject(mobility)
-            
-            devices = wifi.Install(wifiPhy, wifiMac, node)
-            ipv4_interfaces = ipv4Addresses.Assign(devices)
+
+            device = wifi.Install(wifiPhy, wifiMac, node)
+            ipv4_interfaces = ipv4Addresses.Assign(device)
             addresses.append(ipv4_interfaces.GetAddress(0))
 
-    for i, node in enumerate(nodes):
+    for i, node in [(i, nodes.Get(i)) for i in range(nodes.GetN())]:
         destaddr = addresses[(len(addresses) - 1 - i) % len(addresses)]
-        #print i, destaddr
-        onOffHelper.SetAttribute("Remote", ns.network.AddressValue(ns.network.InetSocketAddress(destaddr, port)))
-        app = onOffHelper.Install(ns.network.NodeContainer(node))
-        urv = ns.core.UniformRandomVariable()
-        app.Start(ns.core.Seconds(urv.GetValue(20, 30)))
+        #print (i, destaddr)
+        onOffHelper.SetAttribute("Remote", ns.network.AddressValue(ns.network.InetSocketAddress(destaddr, port).ConvertTo()))
+        container = ns.network.NodeContainer(node)
+        app = onOffHelper.Install(container)
+        urv = ns.CreateObject("UniformRandomVariable")#ns.cppyy.gbl.get_rng()
+        startDelay = ns.Seconds(urv.GetValue(20, 30))
+        app.Start(startDelay)
 
     #internet.EnablePcapAll("wifi-olsr")
     flowmon_helper = ns.flow_monitor.FlowMonitorHelper()
@@ -122,50 +116,51 @@ def main(argv):
     ns.core.Simulator.Run()
 
     def print_stats(os, st):
-        print >> os, "  Tx Bytes: ", st.txBytes
-        print >> os, "  Rx Bytes: ", st.rxBytes
-        print >> os, "  Tx Packets: ", st.txPackets
-        print >> os, "  Rx Packets: ", st.rxPackets
-        print >> os, "  Lost Packets: ", st.lostPackets
+        print ("  Tx Bytes: ", st.txBytes, file=os)
+        print ("  Rx Bytes: ", st.rxBytes, file=os)
+        print ("  Tx Packets: ", st.txPackets, file=os)
+        print ("  Rx Packets: ", st.rxPackets, file=os)
+        print ("  Lost Packets: ", st.lostPackets, file=os)
         if st.rxPackets > 0:
-            print >> os, "  Mean{Delay}: ", (st.delaySum.GetSeconds() / st.rxPackets)
-	    print >> os, "  Mean{Jitter}: ", (st.jitterSum.GetSeconds() / (st.rxPackets-1))
-            print >> os, "  Mean{Hop Count}: ", float(st.timesForwarded) / st.rxPackets + 1
+            print ("  Mean{Delay}: ", (st.delaySum.GetSeconds() / st.rxPackets), file=os)
+            print ("  Mean{Jitter}: ", (st.jitterSum.GetSeconds() / (st.rxPackets-1)), file=os)
+            print ("  Mean{Hop Count}: ", float(st.timesForwarded) / st.rxPackets + 1, file=os)
 
         if 0:
-            print >> os, "Delay Histogram"
+            print ("Delay Histogram", file=os)
             for i in range(st.delayHistogram.GetNBins () ):
-              print >> os, " ",i,"(", st.delayHistogram.GetBinStart (i), "-", \
-                  st.delayHistogram.GetBinEnd (i), "): ", st.delayHistogram.GetBinCount (i)
-            print >> os, "Jitter Histogram"
+              print (" ",i,"(", st.delayHistogram.GetBinStart (i), "-", \
+                  st.delayHistogram.GetBinEnd (i), "): ", st.delayHistogram.GetBinCount (i), file=os)
+            print ("Jitter Histogram", file=os)
             for i in range(st.jitterHistogram.GetNBins () ):
-              print >> os, " ",i,"(", st.jitterHistogram.GetBinStart (i), "-", \
-                  st.jitterHistogram.GetBinEnd (i), "): ", st.jitterHistogram.GetBinCount (i)
-            print >> os, "PacketSize Histogram"
+              print (" ",i,"(", st.jitterHistogram.GetBinStart (i), "-", \
+                  st.jitterHistogram.GetBinEnd (i), "): ", st.jitterHistogram.GetBinCount (i), file=os)
+            print ("PacketSize Histogram", file=os)
             for i in range(st.packetSizeHistogram.GetNBins () ):
-              print >> os, " ",i,"(", st.packetSizeHistogram.GetBinStart (i), "-", \
-                  st.packetSizeHistogram.GetBinEnd (i), "): ", st.packetSizeHistogram.GetBinCount (i)
+              print (" ",i,"(", st.packetSizeHistogram.GetBinStart (i), "-", \
+                  st.packetSizeHistogram.GetBinEnd (i), "): ", st.packetSizeHistogram.GetBinCount (i), file=os)
 
         for reason, drops in enumerate(st.packetsDropped):
-            print "  Packets dropped by reason %i: %i" % (reason, drops)
+            print ("  Packets dropped by reason %i: %i" % (reason, drops), file=os)
         #for reason, drops in enumerate(st.bytesDropped):
         #    print "Bytes dropped by reason %i: %i" % (reason, drops)
 
     monitor.CheckForLostPackets()
     classifier = flowmon_helper.GetClassifier()
 
-    if cmd.Results is None:
+    if Results.value != b"output.xml":
         for flow_id, flow_stats in monitor.GetFlowStats():
             t = classifier.FindFlow(flow_id)
             proto = {6: 'TCP', 17: 'UDP'} [t.protocol]
-            print "FlowID: %i (%s %s/%s --> %s/%i)" % \
-                (flow_id, proto, t.sourceAddress, t.sourcePort, t.destinationAddress, t.destinationPort)
+            print ("FlowID: %i (%s %s/%s --> %s/%i)" % \
+                (flow_id, proto, t.sourceAddress, t.sourcePort, t.destinationAddress, t.destinationPort))
             print_stats(sys.stdout, flow_stats)
     else:
-        print monitor.SerializeToXmlFile(cmd.Results, True, True)
+        res = monitor.SerializeToXmlFile(Results.value.decode("utf-8"), True, True)
+        print (res)
 
 
-    if cmd.Plot is not None:
+    if Plot.value:
         import pylab
         delays = []
         for flow_id, flow_stats in monitor.GetFlowStats():

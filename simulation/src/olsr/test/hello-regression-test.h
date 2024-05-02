@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 IITP RAS
  *
@@ -21,21 +20,25 @@
 #ifndef HELLO_REGRESSION_TEST_H
 #define HELLO_REGRESSION_TEST_H
 
-#include "ns3/test.h"
-#include "ns3/nstime.h"
+#include "ns3/ipv4-raw-socket-impl.h"
 #include "ns3/node-container.h"
+#include "ns3/nstime.h"
+#include "ns3/socket.h"
+#include "ns3/test.h"
 
 namespace ns3
 {
 namespace olsr
 {
 /**
- * \ingroup olsr
+ * \ingroup olsr-test
+ * \ingroup tests
+ *
  * \brief Trivial (still useful) test of OLSR operation
- * 
- * This test creates 2 stations with point-to-point link and runs OLSR without any extra traffic. 
+ *
+ * This test creates 2 stations with point-to-point link and runs OLSR without any extra traffic.
  * It is expected that only HELLO messages will be sent.
- * 
+ *
  * Expected trace (5 seconds):
    \verbatim
     1       2
@@ -45,27 +48,42 @@ namespace olsr
     |<------|   HELLO (Link type: Asymmetric link, Neighbor address: 10.1.1.1) src = 10.1.1.2
     |------>|   HELLO (Link type: Symmetric link, Neighbor address: 10.1.1.2) src = 10.1.1.1
     |<------|   HELLO (Link type: Symmetric link, Neighbor address: 10.1.1.1) src = 10.1.1.2
-   \endverbatim 
+   \endverbatim
  */
 class HelloRegressionTest : public TestCase
 {
-public:
-  HelloRegressionTest (); 
-  ~HelloRegressionTest ();
-private:
-  /// Unique PCAP files prefix for this test
-  static const char * const PREFIX;
-  /// Total simulation time
-  const Time m_time;
-  /// Create & configure test network
-  void CreateNodes ();
-  /// Compare traces with reference ones
-  void CheckResults ();
-  /// Go
-  void DoRun ();
+  public:
+    HelloRegressionTest();
+    ~HelloRegressionTest() override;
+
+  private:
+    /// Total simulation time
+    const Time m_time;
+    /// Create & configure test network
+    void CreateNodes();
+    void DoRun() override;
+
+    /**
+     * Receive raw data on node A
+     * \param socket receiving socket
+     */
+    void ReceivePktProbeA(Ptr<Socket> socket);
+    /// Packet counter on node A
+    uint8_t m_countA;
+    /// Receiving socket on node A
+    Ptr<Ipv4RawSocketImpl> m_rxSocketA;
+    /**
+     * Receive raw data on node B
+     * \param socket receiving socket
+     */
+    void ReceivePktProbeB(Ptr<Socket> socket);
+    /// Packet counter on node B
+    uint8_t m_countB;
+    /// Receiving socket on node B
+    Ptr<Ipv4RawSocketImpl> m_rxSocketB;
 };
 
-}
-}
+} // namespace olsr
+} // namespace ns3
 
 #endif /* HELLO_REGRESSION_TEST_H */

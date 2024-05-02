@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
@@ -17,1093 +16,1133 @@
  */
 
 #include "test.h"
-#include "assert.h"
+
 #include "abort.h"
-#include "system-path.h"
+#include "assert.h"
+#include "des-metrics.h"
 #include "log.h"
-#include "config.h"
+#include "singleton.h"
+#include "system-path.h"
+
 #include <cmath>
 #include <cstring>
-#include <vector>
 #include <list>
 #include <map>
+#include <vector>
 
+/**
+ * \file
+ * \ingroup testing
+ * \brief ns3::TestCase, ns3::TestSuite, ns3::TestRunner implementations,
+ */
 
-namespace ns3 {
+namespace ns3
+{
 
-NS_LOG_COMPONENT_DEFINE ("Test");
+NS_LOG_COMPONENT_DEFINE("Test");
 
 bool
-TestDoubleIsEqual (const double x1, const double x2, const double epsilon)
+TestDoubleIsEqual(const double x1, const double x2, const double epsilon)
 {
-  NS_LOG_FUNCTION (x1 << x2 << epsilon);
-  int exponent;
-  double delta, difference;
+    NS_LOG_FUNCTION(x1 << x2 << epsilon);
+    int exponent;
+    double delta;
+    double difference;
 
-  //
-  // Find exponent of largest absolute value
-  //
-  {
-    double max = (std::fabs (x1) > std::fabs (x2)) ? x1 : x2;
-    (void)std::frexp (max, &exponent);
-  }
-
-  //
-  // Form a neighborhood of size  2 * delta
-  //
-  delta = std::ldexp (epsilon, exponent);
-  difference = x1 - x2;
-
-  if (difference > delta || difference < -delta)
+    //
+    // Find exponent of largest absolute value
+    //
     {
-      return false;
+        double max = (std::fabs(x1) > std::fabs(x2)) ? x1 : x2;
+        std::frexp(max, &exponent);
     }
-  return true;
-} 
 
+    //
+    // Form a neighborhood of size  2 * delta
+    //
+    delta = std::ldexp(epsilon, exponent);
+    difference = x1 - x2;
+
+    return difference <= delta && difference >= -delta;
+}
+
+/**
+ * \ingroup testingimpl
+ * Container for details of a test failure.
+ */
 struct TestCaseFailure
 {
-  TestCaseFailure (std::string _cond, std::string _actual, 
-                   std::string _limit, std::string _message, 
-                   std::string _file, int32_t _line);
-  std::string cond;
-  std::string actual;
-  std::string limit;
-  std::string message; 
-  std::string file;
-  int32_t line;
+    /**
+     * Constructor.
+     *
+     * \param [in] _cond    The name of the condition being tested.
+     * \param [in] _actual  The actual value returned by the test.
+     * \param [in] _limit   The expected value.
+     * \param [in] _message The associated message.
+     * \param [in] _file    The source file.
+     * \param [in] _line    The source line.
+     */
+    TestCaseFailure(std::string _cond,
+                    std::string _actual,
+                    std::string _limit,
+                    std::string _message,
+                    std::string _file,
+                    int32_t _line);
+    std::string cond;    /**< The name of the condition being tested. */
+    std::string actual;  /**< The actual value returned by the test. */
+    std::string limit;   /**< The expected value. */
+    std::string message; /**< The associated message. */
+    std::string file;    /**< The source file. */
+    int32_t line;        /**< The source line. */
 };
+
+/**
+ * Output streamer for TestCaseFailure.
+ *
+ * \param [in,out] os The output stream.
+ * \param [in] failure The TestCaseFailure to print.
+ * \returns The stream.
+ */
+std::ostream&
+operator<<(std::ostream& os, const TestCaseFailure& failure)
+{
+    os << "    test=\"" << failure.cond << "\" actual=\"" << failure.actual << "\" limit=\""
+       << failure.limit << "\" in=\"" << failure.file << ":" << failure.line << "\" "
+       << failure.message;
+
+    return os;
+}
+
+/**
+ * \ingroup testingimpl
+ * Container for results from a TestCase.
+ */
 struct TestCase::Result
 {
-  Result ();
-#ifndef WIN32
-  SystemWallClockMs clock;
-#endif
-  std::vector<TestCaseFailure> failure;
-  bool childrenFailed;
+    /** Constructor. */
+    Result();
+
+    /** Test running time. */
+    SystemWallClockMs clock;
+    /** TestCaseFailure records for each child. */
+    std::vector<TestCaseFailure> failure;
+    /** \c true if any child TestCases failed. */
+    bool childrenFailed;
 };
 
-class TestRunnerImpl
+/**
+ * \ingroup testingimpl
+ * Container for all tests.
+ * \todo Move TestRunnerImpl to separate file.
+ */
+class TestRunnerImpl : public Singleton<TestRunnerImpl>
 {
-public:
-  void AddTestSuite (TestSuite *testSuite);
-  void StartTestCase (std::string name);
-  void EndTestCase (void);
-  void ReportTestFailure (std::string cond, std::string actual, 
-                      std::string limit, std::string message, 
-                      std::string file, int32_t line);
-  bool MustAssertOnFailure (void) const;
-  bool MustContinueOnFailure (void) const;
-  bool MustUpdateData (void) const;
-  std::string GetTopLevelSourceDir (void) const;
-  std::string GetTempDir (void) const;
+  public:
+    /** Constructor. */
+    TestRunnerImpl();
 
-  int Run (int argc, char *argv[]);
+    /**
+     * Add a new top-level TestSuite.
+     * \param [in] testSuite The new TestSuite.
+     */
+    void AddTestSuite(TestSuite* testSuite);
+    /** \copydoc TestCase::MustAssertOnFailure() */
+    bool MustAssertOnFailure() const;
+    /** \copydoc TestCase::MustContinueOnFailure() */
+    bool MustContinueOnFailure() const;
+    /**
+     * Check if this run should update the reference data.
+     * \return \c true if we should update the reference data.
+     */
+    bool MustUpdateData() const;
+    /**
+     * Get the path to the root of the source tree.
+     *
+     * The root directory is defined by the presence of two files:
+     * "VERSION" and "LICENSE".
+     *
+     * \returns The path to the root.
+     */
+    std::string GetTopLevelSourceDir() const;
+    /**
+     * Get the path to temporary directory.
+     * \return The temporary directory path.
+     */
+    std::string GetTempDir() const;
+    /** \copydoc TestRunner::Run() */
+    int Run(int argc, char* argv[]);
 
-  static TestRunnerImpl *Instance (void);
+  private:
+    /**
+     * Check if this is the root of the source tree.
+     * \param [in] path The path to test.
+     * \returns \c true if \pname{path} is the root.
+     */
+    bool IsTopLevelSourceDir(std::string path) const;
+    /**
+     * Clean up characters not allowed in XML.
+     *
+     * XML files have restrictions on certain characters that may be present in
+     * data.  We need to replace these characters with their alternate
+     * representation on the way into the XML file.
+     *
+     * Specifically, we make these replacements:
+     *    Raw Source | Replacement
+     *    :--------: | :---------:
+     *    '<'        | "&lt;"
+     *    '>'        | "&gt;"
+     *    '&'        | "&amp;"
+     *    '"'        | "&39;"
+     *    '\'        | "&quot;"
+     *
+     * \param [in] xml The raw string.
+     * \returns The sanitized string.
+     */
+    std::string ReplaceXmlSpecialCharacters(std::string xml) const;
+    /**
+     * Print the test report.
+     *
+     * \param [in] test The TestCase to print.
+     * \param [in,out] os The output stream.
+     * \param [in] xml Generate XML output if \c true.
+     * \param [in] level Indentation level.
+     */
+    void PrintReport(TestCase* test, std::ostream* os, bool xml, int level);
+    /**
+     * Print the list of all requested test suites.
+     *
+     * \param [in] begin Iterator to the first TestCase to print.
+     * \param [in] end Iterator to the end of the list.
+     * \param [in] printTestType Prepend the test type label if \c true.
+     */
+    void PrintTestNameList(std::list<TestCase*>::const_iterator begin,
+                           std::list<TestCase*>::const_iterator end,
+                           bool printTestType) const;
+    /** Print the list of test types. */
+    void PrintTestTypeList() const;
+    /**
+     * Print the help text.
+     * \param [in] programName The name of the invoking program.
+     */
+    void PrintHelp(const char* programName) const;
+    /**
+     * Generate the list of tests matching the constraints.
+     *
+     * Test name and type constraints are or'ed.  The duration constraint
+     * is and'ed.
+     *
+     * \param [in] testName Include a specific test by name.
+     * \param [in] testType Include all tests of give type.
+     * \param [in] maximumTestDuration Restrict to tests shorter than this.
+     * \returns The list of tests matching the filter constraints.
+     */
+    std::list<TestCase*> FilterTests(std::string testName,
+                                     TestSuite::Type testType,
+                                     TestCase::TestDuration maximumTestDuration);
 
-private:
-  TestRunnerImpl ();
-  ~TestRunnerImpl ();
+    /** Container type for the test. */
+    typedef std::vector<TestSuite*> TestSuiteVector;
 
-  bool IsTopLevelSourceDir (std::string path) const;
-  std::string ReplaceXmlSpecialCharacters (std::string xml) const;
-  void PrintReport (TestCase *test, std::ostream *os, bool xml, int level);
-  void PrintTestNameList (std::list<TestCase *>::const_iterator begin, 
-                          std::list<TestCase *>::const_iterator end,
-                          bool printTestType) const;
-  void PrintTestTypeList (void) const;
-  void PrintHelp (const char *programName) const;
-  std::list<TestCase *> FilterTests (std::string testName,
-                                     enum TestSuite::Type testType,
-                                     enum TestCase::TestDuration maximumTestDuration);
-
-
-  typedef std::vector<TestSuite *> TestSuiteVector;
-
-  TestSuiteVector m_suites;
-  std::string m_tempDir;
-  bool m_verbose;
-  bool m_assertOnFailure;
-  bool m_continueOnFailure;
-  bool m_updateData;
+    TestSuiteVector m_suites; //!< The list of tests.
+    std::string m_tempDir;    //!< The temporary directory.
+    bool m_verbose;           //!< Produce verbose output.
+    bool m_assertOnFailure;   //!< \c true if we should assert on failure.
+    bool m_continueOnFailure; //!< \c true if we should continue on failure.
+    bool m_updateData;        //!< \c true if we should update reference data.
 };
 
-
-
-TestCaseFailure::TestCaseFailure (std::string _cond, std::string _actual, 
-                                  std::string _limit, std::string _message, 
-                                  std::string _file, int32_t _line)
-  : cond (_cond), actual (_actual), limit (_limit),
-    message (_message), file (_file), line (_line)
+TestCaseFailure::TestCaseFailure(std::string _cond,
+                                 std::string _actual,
+                                 std::string _limit,
+                                 std::string _message,
+                                 std::string _file,
+                                 int32_t _line)
+    : cond(_cond),
+      actual(_actual),
+      limit(_limit),
+      message(_message),
+      file(_file),
+      line(_line)
 {
-  NS_LOG_FUNCTION (this << _cond << _actual << _limit << _message << _file << _line);
-}
-TestCase::Result::Result ()
-  : childrenFailed (false)
-{
-  NS_LOG_FUNCTION (this);
-}
-
-
-
-TestCase::TestCase (std::string name)
-  : m_parent (0),
-    m_dataDir (""),
-    m_runner (0),
-    m_result (0),
-    m_name (name),
-    m_duration (TestCase::QUICK)
-{
-  NS_LOG_FUNCTION (this << name);
+    NS_LOG_FUNCTION(this << _cond << _actual << _limit << _message << _file << _line);
 }
 
-TestCase::~TestCase ()
+TestCase::Result::Result()
+    : childrenFailed(false)
 {
-  NS_LOG_FUNCTION (this);
-  NS_ASSERT (m_runner == 0);
-  m_parent = 0;
-  delete m_result;
-  for (std::vector<TestCase *>::const_iterator i = m_children.begin (); i != m_children.end (); ++i)
+    NS_LOG_FUNCTION(this);
+}
+
+TestCase::TestCase(std::string name)
+    : m_parent(nullptr),
+      m_dataDir(""),
+      m_runner(nullptr),
+      m_result(nullptr),
+      m_name(name),
+      m_duration(TestCase::QUICK)
+{
+    NS_LOG_FUNCTION(this << name);
+}
+
+TestCase::~TestCase()
+{
+    NS_LOG_FUNCTION(this);
+    NS_ASSERT(m_runner == nullptr);
+    m_parent = nullptr;
+    delete m_result;
+    for (std::vector<TestCase*>::const_iterator i = m_children.begin(); i != m_children.end(); ++i)
     {
-      delete *i;
+        delete *i;
     }
-  m_children.clear ();
+    m_children.clear();
 }
 
 void
-TestCase::AddTestCase (TestCase *testCase)
+TestCase::AddTestCase(TestCase* testCase, TestCase::TestDuration duration)
 {
-  AddTestCase (testCase, TestCase::QUICK);
-}
+    NS_LOG_FUNCTION(&testCase << duration);
 
-void
-TestCase::AddTestCase (TestCase *testCase, enum TestCase::TestDuration duration)
-{
-  // Record this for use later when all test cases are run.
-  testCase->m_duration = duration;
+    // Test names are used to create temporary directories,
+    // so we test for illegal characters.
+    //
+    // Windows: <>:"/\|?*
+    //   http://msdn.microsoft.com/en-us/library/aa365247(v=vs.85).aspx
+    // Mac:     : (deprecated, was path separator in Mac OS Classic, pre X)
+    // Unix:    / (and .. may give trouble?)
+    //
+    // The Windows list is too restrictive:  we like to label
+    // tests with "val = v1 * v2" or "v1 < 3" or "case: foo --> bar"
+    // So we allow ':<>*"
 
-  NS_LOG_FUNCTION (&testCase);
-  m_children.push_back (testCase);
-  testCase->m_parent = this;
+    std::string badchars = "\"/\\|?";
+    // Badchar Class  Regex          Count of failing test names
+    // All            ":<>\"/\\|?*"  611
+    // Allow ':'      "<>\"/\\|?*"   128
+    // Allow ':<>'    "\"/\\|?*"      12
+    // Allow ':<>*'    "\"/\\|?"       0
 
-  std::string::size_type slash, antislash;
-  slash = testCase->m_name.find ("/");
-  antislash = testCase->m_name.find ("\\");
-  if (slash != std::string::npos || antislash != std::string::npos)
+    std::string::size_type badch = testCase->m_name.find_first_of(badchars);
+    if (badch != std::string::npos)
     {
-      std::string fullname = testCase->m_name;
-      TestCase *current = testCase->m_parent;
-      while (current != 0)
-        {
-          fullname = current->m_name + "/" + fullname;
-          current = current->m_parent;
-        }
-      if (slash != std::string::npos)
-        {
-          NS_FATAL_ERROR ("Invalid test name: cannot contain slashes: \"" << fullname << "\"");
-        }
-      if (antislash != std::string::npos)
-        {
-          NS_FATAL_ERROR ("Invalid test name: cannot contain antislashes: \"" << fullname << "\"");
-        }
+        /*
+          To count the bad test names, use NS_LOG_UNCOND instead
+          of NS_FATAL_ERROR, and the command
+          $ ./ns3 run "test-runner --list" 2>&1 | grep "^Invalid" | wc
+        */
+        NS_LOG_UNCOND("Invalid test name: cannot contain any of '" << badchars
+                                                                   << "': " << testCase->m_name);
     }
+
+    testCase->m_duration = duration;
+    testCase->m_parent = this;
+    m_children.push_back(testCase);
 }
 
 bool
-TestCase::IsFailed (void) const
+TestCase::IsFailed() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_result->childrenFailed || !m_result->failure.empty ();
+    NS_LOG_FUNCTION(this);
+    return m_result->childrenFailed || !m_result->failure.empty();
 }
 
-void 
-TestCase::Run (TestRunnerImpl *runner)
+void
+TestCase::Run(TestRunnerImpl* runner)
 {
-  NS_LOG_FUNCTION (this << runner);
-  m_result = new Result ();
-  m_runner = runner;
-  DoSetup ();
-#ifndef WIN32
-  m_result->clock.Start ();
-#endif
-  for (std::vector<TestCase *>::const_iterator i = m_children.begin (); i != m_children.end (); ++i)
+    NS_LOG_FUNCTION(this << runner);
+    m_result = new Result();
+    m_runner = runner;
+    DoSetup();
+    m_result->clock.Start();
+    for (std::vector<TestCase*>::const_iterator i = m_children.begin(); i != m_children.end(); ++i)
     {
-      TestCase *test = *i;
-	  //std::cout << "Running: " << test->GetName() << std::endl;
-      test->Run (runner);
-      if (IsFailed ())
+        TestCase* test = *i;
+        test->Run(runner);
+        if (IsFailed())
         {
-          goto out;
+            goto out;
         }
     }
-  DoRun ();
+    DoRun();
 out:
-#ifndef WIN32
-  m_result->clock.End ();
-#endif
-  DoTeardown ();
-  m_runner = 0;
-}
-std::string 
-TestCase::GetName (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_name;
-}
-void
-TestCase::ReportTestFailure (std::string cond, std::string actual, 
-                             std::string limit, std::string message, 
-                             std::string file, int32_t line)
-{
-  NS_LOG_FUNCTION (this << cond << actual << limit << message << file << line);
-  m_result->failure.push_back (TestCaseFailure (cond, actual, limit,
-                                                message, file, line));
-  // set childrenFailed flag on parents.
-  TestCase *current = m_parent;
-  while (current != 0)
-    {
-      current->m_result->childrenFailed = true;
-      current = current->m_parent;
-    }
-
-}
-bool 
-TestCase::MustAssertOnFailure (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_runner->MustAssertOnFailure ();
-}
-bool 
-TestCase::MustContinueOnFailure (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_runner->MustContinueOnFailure ();
+    m_result->clock.End();
+    DoTeardown();
+    m_runner = nullptr;
 }
 
-std::string 
-TestCase::CreateDataDirFilename (std::string filename)
-{
-  NS_LOG_FUNCTION (this << filename);
-  const TestCase *current = this;
-  while (current != 0 && current->m_dataDir == "")
-    {
-      current = current->m_parent;
-    }
-  if (current == 0)
-    {
-      NS_FATAL_ERROR ("No one called SetDataDir prior to calling this function");
-    }
-
-  std::string a = SystemPath::Append (m_runner->GetTopLevelSourceDir (), current->m_dataDir);
-  std::string b = SystemPath::Append (a, filename);
-  return b;
-}
-std::string 
-TestCase::CreateTempDirFilename (std::string filename)
-{
-  NS_LOG_FUNCTION (this << filename);
-  if (m_runner->MustUpdateData ())
-    {
-      return CreateDataDirFilename (filename);
-    }
-  else
-    {
-      std::list<std::string> names;
-      const TestCase *current = this;
-      while (current != 0)
-        {
-          names.push_front (current->m_name);
-          current = current->m_parent;
-        }
-#ifdef WIN32
-	  names.pop_back();
-#endif
-      std::string tempDir = SystemPath::Append (m_runner->GetTempDir (), SystemPath::Join (names.begin (), names.end ()));
-      SystemPath::MakeDirectories (tempDir);
-      return SystemPath::Append (tempDir, filename);
-    }
-}
-bool 
-TestCase::GetErrorStatus (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return IsStatusFailure ();
-}
-bool 
-TestCase::IsStatusFailure (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return !IsStatusSuccess ();
-}
-bool 
-TestCase::IsStatusSuccess (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_result->failure.empty ();
-}
-
-void 
-TestCase::SetDataDir (std::string directory)
-{
-  NS_LOG_FUNCTION (this << directory);
-  m_dataDir = directory;
-}
-
-void 
-TestCase::DoSetup (void)
-{
-  NS_LOG_FUNCTION (this);
-}
-void 
-TestCase::DoTeardown (void)
-{
-  NS_LOG_FUNCTION (this);
-}
-
-
-TestSuite::TestSuite (std::string name, TestSuite::Type type)
-  : TestCase (name), 
-    m_type (type)
-{
-  NS_LOG_FUNCTION (this << name << type);
-  TestRunnerImpl::Instance ()->AddTestSuite (this);
-}
-
-TestSuite::Type 
-TestSuite::GetTestType (void)
-{
-  NS_LOG_FUNCTION (this);
-  return m_type;
-}
-
-void 
-TestSuite::DoRun (void)
-{
-  NS_LOG_FUNCTION (this);
-}
-
-TestRunnerImpl::TestRunnerImpl ()
- : m_tempDir (""),
-   m_assertOnFailure (false),
-   m_continueOnFailure (true),
-   m_updateData (false)
-{
-  NS_LOG_FUNCTION (this);
-}
-
-TestRunnerImpl::~TestRunnerImpl ()
-{
-  NS_LOG_FUNCTION (this);
-}
-
-
-
-TestRunnerImpl *
-TestRunnerImpl::Instance (void)
-{
-  NS_LOG_FUNCTION_NOARGS ();
-  static TestRunnerImpl runner;
-  return &runner;
-}
-
-void
-TestRunnerImpl::AddTestSuite (TestSuite *testSuite)
-{
-  NS_LOG_FUNCTION (this << testSuite);
-  m_suites.push_back (testSuite);
-}
-
-
-bool 
-TestRunnerImpl::MustAssertOnFailure (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_assertOnFailure;
-}
-bool 
-TestRunnerImpl::MustContinueOnFailure (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_continueOnFailure;
-}
-
-bool 
-TestRunnerImpl::MustUpdateData (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_updateData;
-}
 std::string
-TestRunnerImpl::GetTempDir (void) const
+TestCase::GetName() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_tempDir;
+    NS_LOG_FUNCTION(this);
+    return m_name;
 }
+
+TestCase*
+TestCase::GetParent() const
+{
+    return m_parent;
+}
+
+void
+TestCase::ReportTestFailure(std::string cond,
+                            std::string actual,
+                            std::string limit,
+                            std::string message,
+                            std::string file,
+                            int32_t line)
+{
+    NS_LOG_FUNCTION(this << cond << actual << limit << message << file << line);
+    m_result->failure.emplace_back(cond, actual, limit, message, file, line);
+    // set childrenFailed flag on parents.
+    TestCase* current = m_parent;
+    while (current != nullptr)
+    {
+        current->m_result->childrenFailed = true;
+        current = current->m_parent;
+    }
+}
+
 bool
-TestRunnerImpl::IsTopLevelSourceDir (std::string path) const
+TestCase::MustAssertOnFailure() const
 {
-  NS_LOG_FUNCTION (this << path);
-  bool haveVersion = false;
-  bool haveLicense = false;
-  
-  //
-  // If there's a file named VERSION and a file named LICENSE in this
-  // directory, we assume it's our top level source directory.
-  //
-
-  std::list<std::string> files = SystemPath::ReadFiles (path);
-  for (std::list<std::string>::const_iterator i = files.begin (); i != files.end (); ++i)
-    {
-      if (*i == "VERSION")
-        {
-          haveVersion = true;
-        }
-      else if (*i == "LICENSE")
-        {
-          haveLicense = true;
-        }
-    }
-  
-  return haveVersion && haveLicense;
+    NS_LOG_FUNCTION(this);
+    return m_runner->MustAssertOnFailure();
 }
 
-std::string 
-TestRunnerImpl::GetTopLevelSourceDir (void) const
+bool
+TestCase::MustContinueOnFailure() const
 {
-  NS_LOG_FUNCTION (this);
-  std::string self = SystemPath::FindSelfDirectory ();
-  std::list<std::string> elements = SystemPath::Split (self);
-  while (!elements.empty ())
+    NS_LOG_FUNCTION(this);
+    return m_runner->MustContinueOnFailure();
+}
+
+std::string
+TestCase::CreateDataDirFilename(std::string filename)
+{
+    NS_LOG_FUNCTION(this << filename);
+    const TestCase* current = this;
+    while (current != nullptr && current->m_dataDir.empty())
     {
-      std::string path = SystemPath::Join (elements.begin (), elements.end ());
-      if (IsTopLevelSourceDir (path))
-        {
-          return path;
-        }
-      elements.pop_back ();
+        current = current->m_parent;
     }
-  NS_FATAL_ERROR ("Could not find source directory from self=" << self);
+    if (current == nullptr)
+    {
+        NS_FATAL_ERROR("No one called SetDataDir prior to calling this function");
+    }
+
+    std::string a = SystemPath::Append(m_runner->GetTopLevelSourceDir(), current->m_dataDir);
+    std::string b = SystemPath::Append(a, filename);
+    return b;
+}
+
+std::string
+TestCase::CreateTempDirFilename(std::string filename)
+{
+    NS_LOG_FUNCTION(this << filename);
+    if (m_runner->MustUpdateData())
+    {
+        return CreateDataDirFilename(filename);
+    }
+    else
+    {
+        std::list<std::string> names;
+        const TestCase* current = this;
+        while (current != nullptr)
+        {
+            names.push_front(current->m_name);
+            current = current->m_parent;
+        }
+        std::string tempDir = SystemPath::Append(m_runner->GetTempDir(),
+                                                 SystemPath::Join(names.begin(), names.end()));
+        tempDir = SystemPath::CreateValidSystemPath(tempDir);
+
+        SystemPath::MakeDirectories(tempDir);
+        return SystemPath::Append(tempDir, filename);
+    }
+}
+
+bool
+TestCase::IsStatusFailure() const
+{
+    NS_LOG_FUNCTION(this);
+    return !IsStatusSuccess();
+}
+
+bool
+TestCase::IsStatusSuccess() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_result->failure.empty();
+}
+
+void
+TestCase::SetDataDir(std::string directory)
+{
+    NS_LOG_FUNCTION(this << directory);
+    m_dataDir = directory;
+}
+
+void
+TestCase::DoSetup()
+{
+    NS_LOG_FUNCTION(this);
+}
+
+void
+TestCase::DoTeardown()
+{
+    NS_LOG_FUNCTION(this);
+}
+
+TestSuite::TestSuite(std::string name, TestSuite::Type type)
+    : TestCase(name),
+      m_type(type)
+{
+    NS_LOG_FUNCTION(this << name << type);
+    TestRunnerImpl::Get()->AddTestSuite(this);
+}
+
+TestSuite::Type
+TestSuite::GetTestType()
+{
+    NS_LOG_FUNCTION(this);
+    return m_type;
+}
+
+void
+TestSuite::DoRun()
+{
+    NS_LOG_FUNCTION(this);
+}
+
+TestRunnerImpl::TestRunnerImpl()
+    : m_tempDir(""),
+      m_assertOnFailure(false),
+      m_continueOnFailure(true),
+      m_updateData(false)
+{
+    NS_LOG_FUNCTION(this);
+}
+
+void
+TestRunnerImpl::AddTestSuite(TestSuite* testSuite)
+{
+    NS_LOG_FUNCTION(this << testSuite);
+    m_suites.push_back(testSuite);
+}
+
+bool
+TestRunnerImpl::MustAssertOnFailure() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_assertOnFailure;
+}
+
+bool
+TestRunnerImpl::MustContinueOnFailure() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_continueOnFailure;
+}
+
+bool
+TestRunnerImpl::MustUpdateData() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_updateData;
+}
+
+std::string
+TestRunnerImpl::GetTempDir() const
+{
+    NS_LOG_FUNCTION(this);
+    return m_tempDir;
+}
+
+bool
+TestRunnerImpl::IsTopLevelSourceDir(std::string path) const
+{
+    NS_LOG_FUNCTION(this << path);
+    bool haveVersion = false;
+    bool haveLicense = false;
+
+    //
+    // If there's a file named VERSION and a file named LICENSE in this
+    // directory, we assume it's our top level source directory.
+    //
+
+    std::list<std::string> files = SystemPath::ReadFiles(path);
+    for (std::list<std::string>::const_iterator i = files.begin(); i != files.end(); ++i)
+    {
+        if (*i == "VERSION")
+        {
+            haveVersion = true;
+        }
+        else if (*i == "LICENSE")
+        {
+            haveLicense = true;
+        }
+    }
+
+    return haveVersion && haveLicense;
+}
+
+std::string
+TestRunnerImpl::GetTopLevelSourceDir() const
+{
+    NS_LOG_FUNCTION(this);
+    std::string self = SystemPath::FindSelfDirectory();
+    std::list<std::string> elements = SystemPath::Split(self);
+    while (!elements.empty())
+    {
+        std::string path = SystemPath::Join(elements.begin(), elements.end());
+        if (IsTopLevelSourceDir(path))
+        {
+            return path;
+        }
+        elements.pop_back();
+    }
+    NS_FATAL_ERROR("Could not find source directory from self=" << self);
+    return self;
 }
 
 //
 // XML files have restrictions on certain characters that may be present in
-// data.  We need to replace these characters with their alternate 
+// data.  We need to replace these characters with their alternate
 // representation on the way into the XML file.
 //
 std::string
-TestRunnerImpl::ReplaceXmlSpecialCharacters (std::string xml) const
+TestRunnerImpl::ReplaceXmlSpecialCharacters(std::string xml) const
 {
-  NS_LOG_FUNCTION (this << xml);
-  typedef std::map <char, std::string> specials_map;
-  specials_map specials;
-  specials['<'] = "&lt;";
-  specials['>'] = "&gt;";
-  specials['&'] = "&amp;";
-  specials['"'] = "&#39;";
-  specials['\''] = "&quot;";
+    NS_LOG_FUNCTION(this << xml);
+    typedef std::map<char, std::string> specials_map;
+    specials_map specials;
+    specials['<'] = "&lt;";
+    specials['>'] = "&gt;";
+    specials['&'] = "&amp;";
+    specials['"'] = "&#39;";
+    specials['\''] = "&quot;";
 
-  std::string result;
-  std::size_t length = xml.length ();
+    std::string result;
+    std::size_t length = xml.length();
 
-  for (size_t i = 0; i < length; ++i)
+    for (size_t i = 0; i < length; ++i)
     {
-      char character = xml[i];
+        char character = xml[i];
 
-      specials_map::const_iterator it = specials.find (character);
+        specials_map::const_iterator it = specials.find(character);
 
-      if (it == specials.end ())
+        if (it == specials.end())
         {
-          result.push_back (character);
+            result.push_back(character);
         }
-      else
+        else
         {
-          result += it->second;
+            result += it->second;
         }
     }
-  return result;
+    return result;
 }
 
+/** Helper to indent output a specified number of steps. */
 struct Indent
 {
-  Indent (int level);
-  int level;
+    /**
+     * Constructor.
+     * \param [in] level The number of steps.  A step is "  ".
+     */
+    Indent(int level);
+    /** The number of steps. */
+    int level;
 };
-Indent::Indent (int _level)
-  : level (_level)
+
+Indent::Indent(int _level)
+    : level(_level)
 {
-  NS_LOG_FUNCTION (this << _level);
-}
-std::ostream &operator << (std::ostream &os, const Indent &val)
-{
-  for (int i = 0; i < val.level; i++)
-    {
-      os << "  ";
-    }
-  return os;
+    NS_LOG_FUNCTION(this << _level);
 }
 
-void
-TestRunnerImpl::PrintReport (TestCase *test, std::ostream *os, bool xml, int level)
+/**
+ * Output streamer for Indent.
+ * \param [in,out] os The output stream.
+ * \param [in] val The Indent object.
+ * \returns The stream.
+ */
+std::ostream&
+operator<<(std::ostream& os, const Indent& val)
 {
-  NS_LOG_FUNCTION (this << test << os << xml << level);
-  if (test->m_result == 0)
+    for (int i = 0; i < val.level; i++)
     {
-      // Do not print reports for tests that were not run.
-      return;
+        os << "  ";
     }
-  // Report times in seconds, from ms timer
-  const double MS_PER_SEC = 1000.;
-#ifndef WIN32
-  double real = test->m_result->clock.GetElapsedReal () / MS_PER_SEC;
-  double user = test->m_result->clock.GetElapsedUser () / MS_PER_SEC;
-  double system = test->m_result->clock.GetElapsedSystem () / MS_PER_SEC;
-#endif
-  std::streamsize oldPrecision = (*os).precision (3);
-  *os << std::fixed;
-
-  std::string statusString = test->IsFailed ()?"FAIL":"PASS";
-  if (xml)
-    {
-      *os << Indent (level) << "<Test>" << std::endl;
-      *os << Indent (level+1) << "<Name>" << ReplaceXmlSpecialCharacters (test->m_name)
-          << "</Name>" << std::endl;
-      *os << Indent (level+1) << "<Result>" << statusString << "</Result>" << std::endl;
-#ifndef WIN32
-	  *os << Indent (level+1) << "<Time real=\"" << real << "\" user=\"" << user 
-          << "\" system=\"" << system << "\"/>" << std::endl;
-#endif
-      for (uint32_t i = 0; i < test->m_result->failure.size (); i++)
-        {
-          TestCaseFailure failure = test->m_result->failure[i];
-          *os << Indent (level+2) << "<FailureDetails>" << std::endl
-              << Indent (level+3) << "<Condition>" 
-              << ReplaceXmlSpecialCharacters (failure.cond) << "</Condition>" << std::endl
-              << Indent (level+3) << "<Actual>" 
-              << ReplaceXmlSpecialCharacters (failure.actual) << "</Actual>" << std::endl
-              << Indent (level+3) << "<Limit>" 
-              << ReplaceXmlSpecialCharacters (failure.limit) << "</Limit>" << std::endl
-              << Indent (level+3) << "<Message>" 
-              << ReplaceXmlSpecialCharacters (failure.message) << "</Message>" << std::endl
-              << Indent (level+3) << "<File>" 
-              << ReplaceXmlSpecialCharacters (failure.file) << "</File>" << std::endl
-              << Indent (level+3) << "<Line>" << failure.line << "</Line>" << std::endl
-              << Indent (level+2) << "</FailureDetails>" << std::endl;
-        }
-      for (uint32_t i = 0; i < test->m_children.size (); i++)
-        {
-          TestCase *child = test->m_children[i];
-          PrintReport (child, os, xml, level + 1);
-        }
-      *os << Indent (level) << "</Test>" << std::endl;
-    }
-  else
-    {
-#ifndef WIN32
-      *os << Indent (level) << statusString << " " << test->GetName () 
-          << " " << real << " s" << std::endl;
-#endif
-      if (m_verbose)
-        {
-          for (uint32_t i = 0; i < test->m_result->failure.size (); i++)
-            {
-              TestCaseFailure failure = test->m_result->failure[i];
-              *os << Indent (level) << "    got=\"" << failure.cond << "\" expected=\"" 
-                  << failure.actual << "\" in=\"" << failure.file << ":" << failure.line 
-                  << "\" " << failure.message << std::endl;
-            }
-          for (uint32_t i = 0; i < test->m_children.size (); i++)
-            {
-              TestCase *child = test->m_children[i];
-              PrintReport (child, os, xml, level + 1);
-            }
-        }
-    }
-
-  (*os).unsetf(std::ios_base::floatfield);
-  (*os).precision (oldPrecision);
-}
-  
-void
-TestRunnerImpl::PrintHelp (const char *program_name) const
-{
-  NS_LOG_FUNCTION (this << program_name);
-  std::cout << "Usage: " << program_name << " [OPTIONS]" << std::endl
-            << std::endl
-            << "Options: " << std::endl
-            << "  --help                 : print these options" << std::endl
-            << "  --print-test-name-list : print the list of names of tests available" << std::endl
-            << "  --list                 : an alias for --print-test-name-list" << std::endl
-            << "  --print-test-types     : print the type of tests along with their names" << std::endl
-            << "  --print-test-type-list : print the list of types of tests available" << std::endl
-            << "  --print-temp-dir       : print name of temporary directory before running " << std::endl
-            << "                           the tests" << std::endl
-            << "  --test-type=TYPE       : process only tests of type TYPE" << std::endl
-            << "  --test-name=NAME       : process only test whose name matches NAME" << std::endl
-            << "  --suite=NAME           : an alias (here for compatibility reasons only) " << std::endl
-            << "                           for --test-name=NAME" << std::endl
-            << "  --assert-on-failure    : when a test fails, crash immediately (useful" << std::endl
-            << "                           when running under a debugger" << std::endl
-            << "  --stop-on-failure      : when a test fails, stop immediately" << std::endl
-            << "  --fullness=FULLNESS    : choose the duration of tests to run: QUICK, " << std::endl
-            << "                           EXTENSIVE, or TAKES_FOREVER, where EXTENSIVE " << std::endl
-            << "                           includes QUICK and TAKES_FOREVER includes " << std::endl
-            << "                           QUICK and EXTENSIVE (only QUICK tests are " << std::endl
-            << "                           run by default)" << std::endl
-            << "  --verbose              : print details of test execution" << std::endl
-            << "  --xml                  : format test run output as xml" << std::endl
-            << "  --tempdir=DIR          : set temp dir for tests to store output files" << std::endl
-            << "  --datadir=DIR          : set data dir for tests to read reference files" << std::endl
-            << "  --out=FILE             : send test result to FILE instead of standard "
-            << "output" << std::endl
-            << "  --append=FILE          : append test result to FILE instead of standard "
-            << "output" << std::endl
-    ;  
+    return os;
 }
 
 void
-TestRunnerImpl::PrintTestNameList (std::list<TestCase *>::const_iterator begin, 
-                                   std::list<TestCase *>::const_iterator end,
-                                   bool printTestType) const
+TestRunnerImpl::PrintReport(TestCase* test, std::ostream* os, bool xml, int level)
 {
-  NS_LOG_FUNCTION (this << &begin << &end << printTestType);
-  std::map<TestSuite::Type, std::string> label;
-
-  label[TestSuite::ALL]         = "all          ";
-  label[TestSuite::BVT]         = "bvt          ";
-  label[TestSuite::UNIT]        = "unit         ";
-  label[TestSuite::SYSTEM]      = "system       ";
-  label[TestSuite::EXAMPLE]     = "example      ";
-  label[TestSuite::PERFORMANCE] = "performance  ";
-
-  for (std::list<TestCase *>::const_iterator i = begin; i != end; ++i)
+    NS_LOG_FUNCTION(this << test << os << xml << level);
+    if (test->m_result == nullptr)
     {
-      TestSuite * test= dynamic_cast<TestSuite *>(*i);
-      NS_ASSERT (test != 0);
-      if (printTestType)
+        // Do not print reports for tests that were not run.
+        return;
+    }
+    // Report times in seconds, from ms timer
+    const double MS_PER_SEC = 1000.;
+    double real = test->m_result->clock.GetElapsedReal() / MS_PER_SEC;
+    double user = test->m_result->clock.GetElapsedUser() / MS_PER_SEC;
+    double system = test->m_result->clock.GetElapsedSystem() / MS_PER_SEC;
+
+    std::streamsize oldPrecision = (*os).precision(3);
+    *os << std::fixed;
+
+    std::string statusString = test->IsFailed() ? "FAIL" : "PASS";
+    if (xml)
+    {
+        *os << Indent(level) << "<Test>" << std::endl;
+        *os << Indent(level + 1) << "<Name>" << ReplaceXmlSpecialCharacters(test->m_name)
+            << "</Name>" << std::endl;
+        *os << Indent(level + 1) << "<Result>" << statusString << "</Result>" << std::endl;
+        *os << Indent(level + 1) << "<Time real=\"" << real << "\" user=\"" << user
+            << "\" system=\"" << system << "\"/>" << std::endl;
+        for (uint32_t i = 0; i < test->m_result->failure.size(); i++)
         {
-          std::cout << label[test->GetTestType ()];
+            TestCaseFailure failure = test->m_result->failure[i];
+            *os << Indent(level + 2) << "<FailureDetails>" << std::endl
+                << Indent(level + 3) << "<Condition>" << ReplaceXmlSpecialCharacters(failure.cond)
+                << "</Condition>" << std::endl
+                << Indent(level + 3) << "<Actual>" << ReplaceXmlSpecialCharacters(failure.actual)
+                << "</Actual>" << std::endl
+                << Indent(level + 3) << "<Limit>" << ReplaceXmlSpecialCharacters(failure.limit)
+                << "</Limit>" << std::endl
+                << Indent(level + 3) << "<Message>" << ReplaceXmlSpecialCharacters(failure.message)
+                << "</Message>" << std::endl
+                << Indent(level + 3) << "<File>" << ReplaceXmlSpecialCharacters(failure.file)
+                << "</File>" << std::endl
+                << Indent(level + 3) << "<Line>" << failure.line << "</Line>" << std::endl
+                << Indent(level + 2) << "</FailureDetails>" << std::endl;
         }
-      std::cout << test->GetName () << std::endl;
+        for (uint32_t i = 0; i < test->m_children.size(); i++)
+        {
+            TestCase* child = test->m_children[i];
+            PrintReport(child, os, xml, level + 1);
+        }
+        *os << Indent(level) << "</Test>" << std::endl;
+    }
+    else
+    {
+        *os << Indent(level) << statusString << " " << test->GetName() << " " << real << " s"
+            << std::endl;
+        if (m_verbose)
+        {
+            for (uint32_t i = 0; i < test->m_result->failure.size(); i++)
+            {
+                *os << Indent(level) << test->m_result->failure[i] << std::endl;
+            }
+            for (uint32_t i = 0; i < test->m_children.size(); i++)
+            {
+                TestCase* child = test->m_children[i];
+                PrintReport(child, os, xml, level + 1);
+            }
+        }
+    }
+
+    (*os).unsetf(std::ios_base::floatfield);
+    (*os).precision(oldPrecision);
+}
+
+void
+TestRunnerImpl::PrintHelp(const char* program_name) const
+{
+    NS_LOG_FUNCTION(this << program_name);
+    std::cout
+        << "Usage: " << program_name << " [OPTIONS]" << std::endl
+        << std::endl
+        << "Options: " << std::endl
+        << "  --help                 : print these options" << std::endl
+        << "  --print-test-name-list : print the list of names of tests available" << std::endl
+        << "  --list                 : an alias for --print-test-name-list" << std::endl
+        << "  --print-test-types     : print the type of tests along with their names" << std::endl
+        << "  --print-test-type-list : print the list of types of tests available" << std::endl
+        << "  --print-temp-dir       : print name of temporary directory before running "
+        << std::endl
+        << "                           the tests" << std::endl
+        << "  --test-type=TYPE       : process only tests of type TYPE" << std::endl
+        << "  --test-name=NAME       : process only test whose name matches NAME" << std::endl
+        << "  --suite=NAME           : an alias (here for compatibility reasons only) " << std::endl
+        << "                           for --test-name=NAME" << std::endl
+        << "  --assert-on-failure    : when a test fails, crash immediately (useful" << std::endl
+        << "                           when running under a debugger" << std::endl
+        << "  --stop-on-failure      : when a test fails, stop immediately" << std::endl
+        << "  --fullness=FULLNESS    : choose the duration of tests to run: QUICK, " << std::endl
+        << "                           EXTENSIVE, or TAKES_FOREVER, where EXTENSIVE " << std::endl
+        << "                           includes QUICK and TAKES_FOREVER includes " << std::endl
+        << "                           QUICK and EXTENSIVE (only QUICK tests are " << std::endl
+        << "                           run by default)" << std::endl
+        << "  --verbose              : print details of test execution" << std::endl
+        << "  --xml                  : format test run output as xml" << std::endl
+        << "  --tempdir=DIR          : set temp dir for tests to store output files" << std::endl
+        << "  --datadir=DIR          : set data dir for tests to read reference files" << std::endl
+        << "  --out=FILE             : send test result to FILE instead of standard "
+        << "output" << std::endl
+        << "  --append=FILE          : append test result to FILE instead of standard "
+        << "output" << std::endl;
+}
+
+void
+TestRunnerImpl::PrintTestNameList(std::list<TestCase*>::const_iterator begin,
+                                  std::list<TestCase*>::const_iterator end,
+                                  bool printTestType) const
+{
+    NS_LOG_FUNCTION(this << &begin << &end << printTestType);
+    std::map<TestSuite::Type, std::string> label;
+
+    label[TestSuite::ALL] = "all          ";
+    label[TestSuite::UNIT] = "unit         ";
+    label[TestSuite::SYSTEM] = "system       ";
+    label[TestSuite::EXAMPLE] = "example      ";
+    label[TestSuite::PERFORMANCE] = "performance  ";
+
+    for (std::list<TestCase*>::const_iterator i = begin; i != end; ++i)
+    {
+        TestSuite* test = dynamic_cast<TestSuite*>(*i);
+        NS_ASSERT(test != nullptr);
+        if (printTestType)
+        {
+            std::cout << label[test->GetTestType()];
+        }
+        std::cout << test->GetName() << std::endl;
     }
 }
 
 void
-TestRunnerImpl::PrintTestTypeList (void) const
+TestRunnerImpl::PrintTestTypeList() const
 {
-  NS_LOG_FUNCTION (this);
-  std::cout << "  bvt:         Build Verification Tests (to see if build completed successfully)" << std::endl;
-  std::cout << "  core:        Run all TestSuite-based tests (exclude examples)" << std::endl;
-  std::cout << "  example:     Examples (to see if example programs run successfully)" << std::endl;
-  std::cout << "  performance: Performance Tests (check to see if the system is as fast as expected)" << std::endl;
-  std::cout << "  system:      System Tests (spans modules to check integration of modules)" << std::endl;
-  std::cout << "  unit:        Unit Tests (within modules to check basic functionality)" << std::endl;
+    NS_LOG_FUNCTION(this);
+    std::cout << "  core:        Run all TestSuite-based tests (exclude examples)" << std::endl;
+    std::cout << "  example:     Examples (to see if example programs run successfully)"
+              << std::endl;
+    std::cout
+        << "  performance: Performance Tests (check to see if the system is as fast as expected)"
+        << std::endl;
+    std::cout << "  system:      System Tests (spans modules to check integration of modules)"
+              << std::endl;
+    std::cout << "  unit:        Unit Tests (within modules to check basic functionality)"
+              << std::endl;
 }
 
-
-std::list<TestCase *>
-TestRunnerImpl::FilterTests (std::string testName,
-                             enum TestSuite::Type testType,
-                             enum TestCase::TestDuration maximumTestDuration)
+std::list<TestCase*>
+TestRunnerImpl::FilterTests(std::string testName,
+                            TestSuite::Type testType,
+                            TestCase::TestDuration maximumTestDuration)
 {
-  NS_LOG_FUNCTION (this << testName << testType);
-  std::list<TestCase *> tests;
-  for (uint32_t i = 0; i < m_suites.size (); ++i)
+    NS_LOG_FUNCTION(this << testName << testType);
+    std::list<TestCase*> tests;
+    for (uint32_t i = 0; i < m_suites.size(); ++i)
     {
-      TestSuite *test = m_suites[i];
-      if (testType != TestSuite::ALL && test->GetTestType () != testType)
+        TestSuite* test = m_suites[i];
+        if (testType != TestSuite::ALL && test->GetTestType() != testType)
         {
-          // skip test
-          continue;
+            // skip test
+            continue;
         }
-      if (testName != "" && test->GetName () != testName)
+        if (!testName.empty() && test->GetName() != testName)
         {
-          // skip test
-          continue;
+            // skip test
+            continue;
         }
 
-      // Remove any test cases that should be skipped.
-      std::vector<TestCase *>::iterator j;
-      for (j = test->m_children.begin (); j != test->m_children.end ();)
+        // Remove any test cases that should be skipped.
+        std::vector<TestCase*>::iterator j;
+        for (j = test->m_children.begin(); j != test->m_children.end();)
         {
-          TestCase *testCase = *j;
+            TestCase* testCase = *j;
 
-          // If this test case takes longer than the maximum test
-          // duration that should be run, then don't run it.
-          if (testCase->m_duration > maximumTestDuration)
+            // If this test case takes longer than the maximum test
+            // duration that should be run, then don't run it.
+            if (testCase->m_duration > maximumTestDuration)
             {
-              // Free this test case's memory.
-              delete *j;
+                // Free this test case's memory.
+                delete *j;
 
-              // Remove this test case from the test suite.
-              j = test->m_children.erase (j);
+                // Remove this test case from the test suite.
+                j = test->m_children.erase(j);
             }
-          else
+            else
             {
-              // Only advance through the vector elements if this test
-              // case wasn't deleted.
-              ++j;
+                // Only advance through the vector elements if this test
+                // case wasn't deleted.
+                ++j;
             }
         }
 
-      // Add this test suite.
-      tests.push_back (test);
+        // Add this test suite.
+        tests.push_back(test);
     }
-  return tests;
+    return tests;
 }
 
-#ifdef WIN32
-#include <Windows.h>
-//the goal of this code is to avoid having to use test.py which relies on waf
-//at the same time the goal is to reuse as much as possible which is already here
-//Written as a seperate function to avoid one large function littered with #ifdefs
-int 
-TestRunnerImpl::Run (int argc, char *argv[])
+int
+TestRunnerImpl::Run(int argc, char* argv[])
 {
-	NS_LOG_FUNCTION (this << argc << argv);
+    NS_LOG_FUNCTION(this << argc << argv);
+    std::string testName = "";
+    std::string testTypeString = "";
+    std::string out = "";
+    std::string fullness = "";
+    bool xml = false;
+    bool append = false;
+    bool printTempDir = false;
+    bool printTestTypeList = false;
+    bool printTestNameList = false;
+    bool printTestTypeAndName = false;
+    TestCase::TestDuration maximumTestDuration = TestCase::QUICK;
+    char* progname = argv[0];
 
-	std::string testName = "";
-	enum TestCase::TestDuration maximumTestDuration = TestCase::QUICK;
-	enum TestSuite::Type testType = TestSuite::ALL;
-	bool xml = false;
-	std::string out = "";
-	bool mainProgram = true;
-	std::stringstream arguments;
+    char** argi = argv;
+    ++argi;
 
-	char *progname = argv[0];
-	if (strncmp(progname, "--suite=", strlen("--suite=")) != 0)
-      argv++;
-
-	while (*argv != 0)
-	{
-		char *arg = *argv;
-
-		arguments << arg << " ";
-
-		if (strncmp(arg, "--suite=", strlen("--suite=")) == 0)
-        {
-			testName = arg + strlen("--suite=");
-			mainProgram = false;
-        }
-		else if (strncmp(arg, "--out=", strlen("--out=")) == 0)
-        {
-			out = arg + strlen("--out=");
-        }
-		else if (strcmp (arg, "--verbose") == 0)
-        {
-			m_verbose = true;
-        }
-		argv++;
-	}
-
-	std::list<TestCase *> tests = FilterTests (testName, testType, maximumTestDuration);
-
-	if(mainProgram)
-	{
-		std::cout << "Running ns-3 tests." << std::endl;
-		for (std::list<TestCase *>::const_iterator i = tests.begin (); i != tests.end (); ++i)
-		{
-			std::stringstream programArgs;
-			TestCase* test = *i;
-
-			programArgs << arguments.str() << "--suite=" << test->GetName();
-
-			std::cout << test->GetName() << " : ";
-
-			//call the program
-			PROCESS_INFORMATION processInformation = {0};
-			STARTUPINFO startupInfo = {0};
-			startupInfo.cb = sizeof(startupInfo);
-
-			BOOL result = CreateProcess(progname, const_cast<char*>(programArgs.str().c_str()), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL, NULL, &startupInfo, &processInformation);
-
-			if(!result) //create process failed
-			{
-				std::cout << "ERROR!" << std::endl;
-				NS_ASSERT("ERROR!");
-			}
-
-			//wait for it to exit
-			WaitForSingleObject(processInformation.hProcess, INFINITE);
-
-			//get exit code
-			DWORD exitCode;
-			result = GetExitCodeProcess(processInformation.hProcess, &exitCode);
-
-			//cleanup
-			CloseHandle(processInformation.hProcess);
-			CloseHandle(processInformation.hThread);
-
-			//report result on screen
-			std::cout << (!exitCode ? "PASSED!" : "FAILED") << std::endl;		
-		}
-	}
-	else
-	{
-		bool failed = false;
-
-		std::ofstream testDetails;
-		testDetails.open("testDetails.txt", std::ios::out | std::ios::app);
-
-		std::ofstream output;
-		output.open("testResults.txt", std::ios::out | std::ios::app);
-
-		m_tempDir = SystemPath::MakeTemporaryDirectoryName ();
-
-		//this should always only be one test
-		for (std::list<TestCase *>::const_iterator i = tests.begin (); i != tests.end (); ++i)
-		{
-			TestCase *test = *i;
-			test->Run (this);
-			PrintReport (test, &testDetails, xml, 0);
-			if (test->IsFailed ())
-			{
-				output << "Test: " << test->GetName() << " FAILED!" << std::endl;
-				failed = true;
-			}
-			else
-			{
-				output << "Test: " << test->GetName() << " PASSED!" << std::endl;
-			}
-		}
-		
-		output.close();
-		testDetails.close();
-
-		return failed?1:0;
-	}
-}
-
-#else
-
-int 
-TestRunnerImpl::Run (int argc, char *argv[])
-{
-  NS_LOG_FUNCTION (this << argc << argv);
-  std::string testName = "";
-  std::string testTypeString = "";
-  std::string out = "";
-  std::string fullness = "";
-  bool xml = false;
-  bool append = false;
-  bool printTempDir = false;
-  bool printTestTypeList = false;
-  bool printTestNameList = false;
-  bool printTestTypeAndName = false;
-  enum TestCase::TestDuration maximumTestDuration = TestCase::QUICK;
-  char *progname = argv[0];
-
-  argv++;
-
-  while (*argv != 0)
+    while (*argi != nullptr)
     {
-      char *arg = *argv;
+        std::string arg = *argi;
 
-      if (strcmp(arg, "--assert-on-failure") == 0)
+        if (arg == "--assert-on-failure")
         {
-          m_assertOnFailure = true;
+            m_assertOnFailure = true;
         }
-      else if (strcmp (arg, "--stop-on-failure") == 0)
+        else if (arg == "--stop-on-failure")
         {
-          m_continueOnFailure = false;
+            m_continueOnFailure = false;
         }
-      else if (strcmp (arg, "--verbose") == 0)
+        else if (arg == "--verbose")
         {
-          m_verbose = true;
+            m_verbose = true;
         }
-      else if (strcmp (arg, "--print-temp-dir") == 0)
+        else if (arg == "--print-temp-dir")
         {
-          printTempDir = true;
+            printTempDir = true;
         }
-      else if (strcmp (arg, "--update-data") == 0)
+        else if (arg == "--update-data")
         {
-          m_updateData = true;
+            m_updateData = true;
         }
-      else if (strcmp (arg, "--help") == 0)
+        else if (arg == "--help")
         {
-          PrintHelp (progname);
-          return 0;
+            PrintHelp(progname);
+            return 0;
         }
-      else if (strcmp (arg, "--print-test-name-list") == 0 ||
-               strcmp(arg, "--list") == 0)
+        else if (arg == "--print-test-name-list" || arg == "--list")
         {
-          printTestNameList = true;
+            printTestNameList = true;
         }
-      else if (strcmp (arg, "--print-test-types") == 0)
+        else if (arg == "--print-test-types")
         {
-          printTestTypeAndName = true;
+            printTestTypeAndName = true;
         }
-      else if (strcmp (arg, "--print-test-type-list") == 0)
+        else if (arg == "--print-test-type-list")
         {
-          printTestTypeList = true;
+            printTestTypeList = true;
         }
-     else if (strcmp(arg, "--append") == 0)
+        else if (arg == "--append")
         {
-          append = true;
+            append = true;
         }
-      else if (strcmp(arg, "--xml") == 0)
+        else if (arg == "--xml")
         {
-          xml = true;
+            xml = true;
         }
-      else if (strncmp(arg, "--test-type=", strlen("--test-type=")) == 0)
+        else if (arg.find("--test-type=") != std::string::npos)
         {
-          testTypeString = arg + strlen("--test-type=");
+            testTypeString = arg.substr(arg.find_first_of('=') + 1);
         }
-      else if (strncmp(arg, "--test-name=", strlen("--test-name=")) == 0)
+        else if (arg.find("--test-name=") != std::string::npos)
         {
-          testName = arg + strlen("--test-name=");
+            testName = arg.substr(arg.find_first_of('=') + 1);
         }
-      else if (strncmp(arg, "--suite=", strlen("--suite=")) == 0)
+        else if (arg.find("--suite=") != std::string::npos)
         {
-          testName = arg + strlen("--suite=");
+            testName = arg.substr(arg.find_first_of('=') + 1);
         }
-      else if (strncmp(arg, "--tempdir=", strlen("--tempdir=")) == 0)
+        else if (arg.find("--tempdir=") != std::string::npos)
         {
-          m_tempDir = arg + strlen("--tempdir=");
+            m_tempDir = arg.substr(arg.find_first_of('=') + 1);
         }
-      else if (strncmp(arg, "--out=", strlen("--out=")) == 0)
+        else if (arg.find("--out=") != std::string::npos)
         {
-          out = arg + strlen("--out=");
+            out = arg.substr(arg.find_first_of('=') + 1);
         }
-      else if (strncmp(arg, "--fullness=", strlen("--fullness=")) == 0)
+        else if (arg.find("--fullness=") != std::string::npos)
         {
-          fullness = arg + strlen("--fullness=");
+            fullness = arg.substr(arg.find_first_of('=') + 1);
 
-          // Set the maximum test length allowed.
-          if (fullness == "EXTENSIVE")
+            // Set the maximum test length allowed.
+            if (fullness == "QUICK")
             {
-              maximumTestDuration = TestCase::EXTENSIVE;
+                maximumTestDuration = TestCase::QUICK;
             }
-          else if (fullness == "TAKES_FOREVER")
+            else if (fullness == "EXTENSIVE")
             {
-              maximumTestDuration = TestCase::TAKES_FOREVER;
+                maximumTestDuration = TestCase::EXTENSIVE;
             }
-          else
+            else if (fullness == "TAKES_FOREVER")
             {
-              maximumTestDuration = TestCase::QUICK;
+                maximumTestDuration = TestCase::TAKES_FOREVER;
+            }
+            else
+            {
+                // Wrong fullness option
+                PrintHelp(progname);
+                return 3;
             }
         }
-      else
+        else
         {
-          // un-recognized command-line argument
-          PrintHelp (progname);
-          return 0;
+            // un-recognized command-line argument
+            PrintHelp(progname);
+            return 0;
         }
-      argv++;
+        argi++;
     }
-  enum TestSuite::Type testType;
-  if (testTypeString == "")
+    TestSuite::Type testType;
+    if (testTypeString.empty())
     {
-      testType = TestSuite::ALL;
+        testType = TestSuite::ALL;
     }
-  else if (testTypeString == "bvt")
+    else if (testTypeString == "core")
     {
-      testType = TestSuite::BVT;
+        testType = TestSuite::ALL;
     }
-  else if (testTypeString == "core")
+    else if (testTypeString == "example")
     {
-      testType = TestSuite::ALL;
+        testType = TestSuite::EXAMPLE;
     }
-  else if (testTypeString == "example")
+    else if (testTypeString == "unit")
     {
-      testType = TestSuite::EXAMPLE;
+        testType = TestSuite::UNIT;
     }
-  else if (testTypeString == "unit")
+    else if (testTypeString == "system")
     {
-      testType = TestSuite::UNIT;
+        testType = TestSuite::SYSTEM;
     }
-  else if (testTypeString == "system")
+    else if (testTypeString == "performance")
     {
-      testType = TestSuite::SYSTEM;
+        testType = TestSuite::PERFORMANCE;
     }
-  else if (testTypeString == "performance")
+    else
     {
-      testType = TestSuite::PERFORMANCE;
-    }
-  else
-    {
-      std::cout << "Invalid test type specified: " << testTypeString << std::endl;
-      PrintTestTypeList ();
-      return 1;
+        std::cout << "Invalid test type specified: " << testTypeString << std::endl;
+        PrintTestTypeList();
+        return 1;
     }
 
-  std::list<TestCase *> tests = FilterTests (testName, testType, maximumTestDuration);
+    std::list<TestCase*> tests = FilterTests(testName, testType, maximumTestDuration);
 
-  if (m_tempDir == "")
+    if (m_tempDir.empty())
     {
-      m_tempDir = SystemPath::MakeTemporaryDirectoryName ();
+        m_tempDir = SystemPath::MakeTemporaryDirectoryName();
     }
-  if (printTempDir)
+    if (printTempDir)
     {
-      std::cout << m_tempDir << std::endl;
+        std::cout << m_tempDir << std::endl;
     }
-  if (printTestNameList)
+    if (printTestNameList)
     {
-      PrintTestNameList (tests.begin (), tests.end (), printTestTypeAndName);
-      return 0;
+        PrintTestNameList(tests.begin(), tests.end(), printTestTypeAndName);
+        return 0;
     }
-  if (printTestTypeList)
+    if (printTestTypeList)
     {
-      PrintTestTypeList ();
-      return 0;
+        PrintTestTypeList();
+        return 0;
     }
-  
 
-  std::ostream *os;
-  if (out != "")
+    std::ostream* os;
+    if (!out.empty())
     {
-      std::ofstream *ofs;
-      ofs = new std::ofstream();
-      std::ios_base::openmode mode = std::ios_base::out;
-      if (append)
+        std::ofstream* ofs;
+        ofs = new std::ofstream();
+        std::ios_base::openmode mode = std::ios_base::out;
+        if (append)
         {
-          mode |= std::ios_base::app;
+            mode |= std::ios_base::app;
         }
-      else
+        else
         {
-          mode |= std::ios_base::trunc;
+            mode |= std::ios_base::trunc;
         }
-      ofs->open (out.c_str (), mode);
-      os = ofs;
+        ofs->open(out, mode);
+        os = ofs;
     }
-  else
+    else
     {
-      os = &std::cout;
+        os = &std::cout;
     }
 
-  // let's run our tests now.
-  bool failed = false;
-  for (std::list<TestCase *>::const_iterator i = tests.begin (); i != tests.end (); ++i)
+    // let's run our tests now.
+    bool failed = false;
+    if (tests.empty())
     {
-      TestCase *test = *i;
-      test->Run (this);
-      PrintReport (test, os, xml, 0);
-      if (test->IsFailed ())
+        std::cerr << "Error:  no tests match the requested string" << std::endl;
+        return 1;
+    }
+    else if (tests.size() > 1)
+    {
+        std::cerr << "Error:  tests should be launched separately (one at a time)" << std::endl;
+        return 1;
+    }
+
+    for (std::list<TestCase*>::const_iterator i = tests.begin(); i != tests.end(); ++i)
+    {
+        TestCase* test = *i;
+
+#ifdef ENABLE_DES_METRICS
         {
-          failed = true;
-          if (!m_continueOnFailure)
+            /*
+              Reorganize argv
+              Since DES Metrics uses argv[0] for the trace file name,
+              grab the test name and put it in argv[0],
+              with test-runner as argv[1]
+              then the rest of the original arguments.
+            */
+            std::string testname = test->GetName();
+            std::string runner = "[" + SystemPath::Split(argv[0]).back() + "]";
+
+            std::vector<std::string> desargs;
+            desargs.push_back(testname);
+            desargs.push_back(runner);
+            for (int i = 1; i < argc; ++i)
             {
-              return 1;
+                desargs.push_back(argv[i]);
             }
+
+            DesMetrics::Get()->Initialize(desargs, m_tempDir);
         }
-
-  if (out != "")
-    {
-      delete os;
-    }
-
-    }
-  return failed?1:0;
-}
-
 #endif
 
-int 
-TestRunner::Run (int argc, char *argv[])
-{
-  NS_LOG_FUNCTION (argc << argv);
-  return TestRunnerImpl::Instance ()->Run (argc, argv);
+        test->Run(this);
+        PrintReport(test, os, xml, 0);
+        if (test->IsFailed())
+        {
+            failed = true;
+            if (!m_continueOnFailure)
+            {
+                return 1;
+            }
+        }
+    }
+
+    if (!out.empty())
+    {
+        delete os;
+    }
+
+    return failed ? 1 : 0;
 }
 
+int
+TestRunner::Run(int argc, char* argv[])
+{
+    NS_LOG_FUNCTION(argc << argv);
+    return TestRunnerImpl::Get()->Run(argc, argv);
+}
 
 } // namespace ns3

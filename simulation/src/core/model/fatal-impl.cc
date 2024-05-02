@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2010 NICTA
  *
@@ -18,188 +17,216 @@
  * Author: Quincy Tse <quincy.tse@nicta.com.au>
  */
 #include "fatal-impl.h"
+
 #include "log.h"
 
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <list>
 
-#include <cstdlib>
-#include <cstdio>
+#ifdef __WIN32__
+struct sigaction
+{
+    void (*sa_handler)(int);
+    int sa_flags;
+    int sa_mask;
+};
 
-#include <csignal>
-
-NS_LOG_COMPONENT_DEFINE ("FatalImpl");
-
-namespace ns3 {
-namespace FatalImpl {
+int
+sigaction(int sig, struct sigaction* action, struct sigaction* old)
+{
+    if (sig == -1)
+    {
+        return 0;
+    }
+    if (old == nullptr)
+    {
+        if (signal(sig, SIG_DFL) == SIG_ERR)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if (signal(sig, action->sa_handler) == SIG_ERR)
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+#endif
 
 /**
- * Note on implementation: the singleton pattern we use here is tricky because
- * it has to deal with:
- *   - make sure that whoever calls Register (potentially before main enters and 
- *     before any constructor run in this file) succeeds
- *   - make sure that whoever calls Unregister (potentially before FlushStream runs
- *     but also after it runs) succeeds
- *   - make sure that the memory allocated with new is deallocated with delete before
- *     the program exits so that valgrind reports no leaks
+ * \file
+ * \ingroup fatalimpl
+ * \brief ns3::FatalImpl::RegisterStream(), ns3::FatalImpl::UnregisterStream(),
+ * and ns3::FatalImpl::FlushStreams() implementations;
+ * see Implementation note!
+ *
+ * \note Implementation.
+ *
+ * The singleton pattern we use here is tricky because we have to ensure:
+ *
+ *   - RegisterStream() succeeds, even if called before \c main() enters and
+ *     before any constructor run in this file.
+ *
+ *   - UnregisterStream() succeeds, whether or not FlushStreams() has
+ *     been called.
+ *
+ *   - All memory allocated with \c new is deleted properly before program exit.
  *
  * This is why we go through all the painful hoops below.
  */
 
-/* File-scope */
-namespace {
-std::list<std::ostream*> **PeekStreamList (void)
+namespace ns3
 {
-  NS_LOG_FUNCTION_NOARGS ();
-  static std::list<std::ostream*> *streams = 0;
-  return &streams;
+
+NS_LOG_COMPONENT_DEFINE("FatalImpl");
+
+namespace FatalImpl
+{
+
+/**
+ * \ingroup fatalimpl
+ * Unnamed namespace for fatal streams memory implementation
+ * and signal handler.
+ */
+namespace
+{
+
+/**
+ * \ingroup fatalimpl
+ * \brief Static variable pointing to the list of output streams
+ * to be flushed on fatal errors.
+ *
+ * \returns The address of the static pointer.
+ */
+std::list<std::ostream*>**
+PeekStreamList()
+{
+    NS_LOG_FUNCTION_NOARGS();
+    static std::list<std::ostream*>* streams = nullptr;
+    return &streams;
 }
-std::list<std::ostream*> *GetStreamList (void)
+
+/**
+ * \ingroup fatalimpl
+ * \brief Get the stream list, initializing it if necessary.
+ *
+ * \returns The stream list.
+ */
+std::list<std::ostream*>*
+GetStreamList()
 {
-  NS_LOG_FUNCTION_NOARGS ();
-  std::list<std::ostream*> **pstreams = PeekStreamList ();
-  if (*pstreams == 0)
+    NS_LOG_FUNCTION_NOARGS();
+    std::list<std::ostream*>** pstreams = PeekStreamList();
+    if (*pstreams == nullptr)
     {
-      *pstreams = new std::list<std::ostream*> ();
+        *pstreams = new std::list<std::ostream*>();
     }
-  return *pstreams;
+    return *pstreams;
 }
-struct destructor
+
+} // unnamed namespace
+
+void
+RegisterStream(std::ostream* stream)
 {
-  ~destructor ()
-  {
-    NS_LOG_FUNCTION (this);
-    std::list<std::ostream*> **pstreams = PeekStreamList ();
-    delete *pstreams;
-    *pstreams = 0;
-  }
-};
+    NS_LOG_FUNCTION(stream);
+    GetStreamList()->push_back(stream);
 }
 
 void
-RegisterStream (std::ostream* stream)
+UnregisterStream(std::ostream* stream)
 {
-  NS_LOG_FUNCTION (stream);
-  GetStreamList ()->push_back (stream);
+    NS_LOG_FUNCTION(stream);
+    std::list<std::ostream*>** pl = PeekStreamList();
+    if (*pl == nullptr)
+    {
+        return;
+    }
+    (*pl)->remove(stream);
+    if ((*pl)->empty())
+    {
+        delete *pl;
+        *pl = nullptr;
+    }
 }
+
+/**
+ * \ingroup fatalimpl
+ * Unnamed namespace for fatal streams signal handler.
+ *
+ * This is private to the fatal implementation.
+ */
+namespace
+{
+
+/**
+ * \ingroup fatalimpl
+ * \brief Overrides normal SIGSEGV handler once the HandleTerminate
+ * function is run.
+ *
+ * This is private to the fatal implementation.
+ *
+ * \param [in] sig The signal condition.
+ */
+void
+sigHandler(int sig)
+{
+    NS_LOG_FUNCTION(sig);
+    FlushStreams();
+    std::abort();
+}
+} // unnamed namespace
 
 void
-UnregisterStream (std::ostream* stream)
+FlushStreams()
 {
-  NS_LOG_FUNCTION (stream);
-  std::list<std::ostream*> **pl = PeekStreamList ();
-  if (*pl == 0)
+    NS_LOG_FUNCTION_NOARGS();
+    std::list<std::ostream*>** pl = PeekStreamList();
+    if (*pl == nullptr)
     {
-      return;
+        return;
     }
-  (*pl)->remove (stream);
-  if ((*pl)->empty ())
+
+    /* Override default SIGSEGV handler - will flush subsequent
+     * streams even if one of the stream pointers is bad.
+     * The SIGSEGV override should only be active for the
+     * duration of this function. */
+    struct sigaction hdl;
+    hdl.sa_handler = sigHandler;
+    sigaction(SIGSEGV, &hdl, nullptr);
+
+    std::list<std::ostream*>* l = *pl;
+
+    /* Need to do it this way in case any of the ostream* causes SIGSEGV */
+    while (!l->empty())
     {
-      delete *pl;
-      *pl = 0;
+        std::ostream* s(l->front());
+        l->pop_front();
+        s->flush();
     }
+
+    /* Restore default SIGSEGV handler (Not that it matters anyway) */
+    hdl.sa_handler = SIG_DFL;
+    sigaction(SIGSEGV, &hdl, nullptr);
+
+    /* Flush all opened FILE* */
+    std::fflush(nullptr);
+
+    /* Flush stdandard streams - shouldn't be required (except for clog) */
+    std::cout.flush();
+    std::cerr.flush();
+    std::clog.flush();
+
+    delete l;
+    *pl = nullptr;
 }
 
+} // namespace FatalImpl
 
-namespace {
-/* Overrides normal SIGSEGV handler once the
- * HandleTerminate function is run. */
-void sigHandler (int sig)
-{
-  NS_LOG_FUNCTION (sig);
-  FlushStreams ();
-  std::abort ();
-}
-}
-
-#ifndef WIN32
-void 
-FlushStreams (void)
-{
-  NS_LOG_FUNCTION_NOARGS ();
-  std::list<std::ostream*> **pl = PeekStreamList ();
-  if (*pl == 0)
-    {
-      return;
-    }
-
-
-  /* Override default SIGSEGV handler - will flush subsequent
-   * streams even if one of the stream pointers is bad.
-   * The SIGSEGV override should only be active for the
-   * duration of this function. */
-  struct sigaction hdl;
-  hdl.sa_handler=sigHandler;
-  sigaction (SIGSEGV, &hdl, 0);
-
-  std::list<std::ostream*> *l = *pl;
-
-  /* Need to do it this way in case any of the ostream* causes SIGSEGV */
-  while (!l->empty ())
-    {
-      std::ostream* s (l->front ());
-      l->pop_front ();
-      s->flush ();
-    }
-
-  /* Restore default SIGSEGV handler (Not that it matters anyway) */
-  hdl.sa_handler=SIG_DFL;
-  sigaction (SIGSEGV, &hdl, 0);
-
-  /* Flush all opened FILE* */
-  std::fflush (0);
-
-  /* Flush stdandard streams - shouldn't be required (except for clog) */
-  std::cout.flush ();
-  std::cerr.flush ();
-  std::clog.flush ();
-
-  delete l;
-  *pl = 0;
-}
-#else
-void 
-FlushStreams (void)
-{
-  std::list<std::ostream*> **pl = PeekStreamList ();
-  if (pl == 0)
-    {
-      return;
-    }
-
-
-  /* Override default SIGSEGV handler - will flush subsequent
-   * streams even if one of the stream pointers is bad.
-   * The SIGSEGV override should only be active for the
-   * duration of this function. */
-  typedef void (*SignalHandlerPointer) (int);
-  SignalHandlerPointer previousHandler;
-  previousHandler = signal(SIGSEGV, sigHandler);
-  std::list<std::ostream*> *l = *pl;
-
-  /* Need to do it this way in case any of the ostream* causes SIGSEGV */
-  while (!l->empty ())
-    {
-      std::ostream* s (l->front ());
-      l->pop_front ();
-      s->flush ();
-    }
-
-  /* Restore default SIGSEGV handler (Not that it matters anyway) */
-  signal(SIGSEGV, previousHandler);
-
-  /* Flush all opened FILE* */
-  std::fflush (0);
-
-  /* Flush stdandard streams - shouldn't be required (except for clog) */
-  std::cout.flush ();
-  std::cerr.flush ();
-  std::clog.flush ();
-
-  delete l;
-  *pl = 0;
-}
-#endif
-
-} //FatalImpl
-} //ns3
+} // namespace ns3

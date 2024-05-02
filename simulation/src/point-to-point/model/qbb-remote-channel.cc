@@ -25,7 +25,7 @@
 #include "ns3/packet.h"
 #include "ns3/simulator.h"
 #include "ns3/log.h"
-#include "ns3/mpi-interface.h"
+// #include "ns3/mpi-interface.h"
 
 using namespace std;
 
@@ -69,8 +69,9 @@ QbbRemoteChannel::TransmitStart (
 
 #ifdef NS3_MPI
   // Calculate the rxTime (absolute)
-  Time rxTime = Simulator::Now () + txTime + GetDelay ();
-  MpiInterface::SendPacket (p, rxTime, dst->GetNode ()->GetId (), dst->GetIfIndex ());
+  // Time rxTime = Simulator::Now () + txTime + GetDelay ();
+  // MpiInterface::SendPacket (p, rxTime, dst->GetNode ()->GetId (), dst->GetIfIndex ());
+  NS_FATAL_ERROR ("MPI Issue");
 #else
   NS_FATAL_ERROR ("Can't use distributed simulator without MPI compiled in");
 #endif

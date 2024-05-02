@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Adrian Sai-wah Tam
  *
@@ -16,87 +15,108 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: Adrian Sai-wah Tam <adrian.sw.tam@gmail.com>
+ * Documentation, test cases: Natale Patriciello <natale.patriciello@gmail.com>
  */
 
 #include "tcp-option-winscale.h"
 
-namespace ns3 {
+#include "ns3/log.h"
 
-NS_OBJECT_ENSURE_REGISTERED (TcpOptionWinScale);
+namespace ns3
+{
 
-uint8_t TcpOptionWinScale::WinScaleLength = 3;
+NS_LOG_COMPONENT_DEFINE("TcpOptionWinScale");
 
-TcpOptionWinScale::TcpOptionWinScale ()
-  : m_scale (0)
+NS_OBJECT_ENSURE_REGISTERED(TcpOptionWinScale);
+
+TcpOptionWinScale::TcpOptionWinScale()
+    : TcpOption(),
+      m_scale(0)
 {
 }
 
-TcpOptionWinScale::~TcpOptionWinScale ()
+TcpOptionWinScale::~TcpOptionWinScale()
 {
-}
-
-TypeId
-TcpOptionWinScale::GetTypeId (void)
-{
-  static TypeId tid = TypeId ("ns3::TcpOptionWinScale")
-    .SetParent<TcpOption> ()
-  ;
-  return tid;
 }
 
 TypeId
-TcpOptionWinScale::GetInstanceTypeId (void) const
+TcpOptionWinScale::GetTypeId()
 {
-  return GetTypeId ();
+    static TypeId tid = TypeId("ns3::TcpOptionWinScale")
+                            .SetParent<TcpOption>()
+                            .SetGroupName("Internet")
+                            .AddConstructor<TcpOptionWinScale>();
+    return tid;
 }
 
-std::string
-TcpOptionWinScale::Str (void) const
+TypeId
+TcpOptionWinScale::GetInstanceTypeId() const
 {
-  std::ostringstream os;
-  os << "Window Scale " << m_scale;
-  return os.str();
-}
-
-uint32_t
-TcpOptionWinScale::GetSerializedSize (void) const
-{
-  return WinScaleLength;
+    return GetTypeId();
 }
 
 void
-TcpOptionWinScale::Serialize (Buffer::Iterator &start) const
+TcpOptionWinScale::Print(std::ostream& os) const
 {
-  start.WriteU8 (TcpOption::WINDOW_SCALE); // Kind
-  start.WriteU8 (WinScaleLength); // Length
-  start.WriteU8 (m_scale); // Max segment size
+    os << static_cast<int>(m_scale);
 }
 
 uint32_t
-TcpOptionWinScale::DoDeserialize (Buffer::Iterator &start)
+TcpOptionWinScale::GetSerializedSize() const
 {
-  uint8_t size = start.ReadU8 ();
-  NS_ASSERT (size == WinScaleLength);
-  m_scale = start.ReadU8 ();
-  return WinScaleLength;
+    return 3;
 }
 
-TcpOption::Kind
-TcpOptionWinScale::GetKind (void) const
+void
+TcpOptionWinScale::Serialize(Buffer::Iterator start) const
 {
-  return TcpOption::WINDOW_SCALE;
+    Buffer::Iterator i = start;
+    i.WriteU8(GetKind()); // Kind
+    i.WriteU8(3);         // Length
+    i.WriteU8(m_scale);   // Max segment size
+}
+
+uint32_t
+TcpOptionWinScale::Deserialize(Buffer::Iterator start)
+{
+    Buffer::Iterator i = start;
+
+    uint8_t readKind = i.ReadU8();
+    if (readKind != GetKind())
+    {
+        NS_LOG_WARN("Malformed Window Scale option");
+        return 0;
+    }
+    uint8_t size = i.ReadU8();
+    if (size != 3)
+    {
+        NS_LOG_WARN("Malformed Window Scale option");
+        return 0;
+    }
+    m_scale = i.ReadU8();
+    return GetSerializedSize();
 }
 
 uint8_t
-TcpOptionWinScale::GetScale (void) const
+TcpOptionWinScale::GetKind() const
 {
-  return m_scale;
+    return TcpOption::WINSCALE;
+}
+
+uint8_t
+TcpOptionWinScale::GetScale() const
+{
+    NS_ASSERT(m_scale <= 14);
+
+    return m_scale;
 }
 
 void
-TcpOptionWinScale::SetScale (uint8_t scale)
+TcpOptionWinScale::SetScale(uint8_t scale)
 {
-  m_scale = scale;
+    NS_ASSERT(scale <= 14);
+
+    m_scale = scale;
 }
 
 } // namespace ns3

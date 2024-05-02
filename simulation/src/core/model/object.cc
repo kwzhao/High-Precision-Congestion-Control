@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007 INRIA, Gustavo Carneiro
  *
@@ -20,350 +19,355 @@
  */
 
 #include "object.h"
-#include "object-factory.h"
+
 #include "assert.h"
-#include "singleton.h"
 #include "attribute.h"
 #include "log.h"
+#include "object-factory.h"
 #include "string.h"
-#include <vector>
-#include <sstream>
+
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
+#include <vector>
 
+/**
+ * \file
+ * \ingroup object
+ * ns3::Object class implementation.
+ */
 
+namespace ns3
+{
 
-NS_LOG_COMPONENT_DEFINE ("Object");
-
-namespace ns3 {
+NS_LOG_COMPONENT_DEFINE("Object");
 
 /*********************************************************************
  *         The Object implementation
  *********************************************************************/
 
-NS_OBJECT_ENSURE_REGISTERED (Object);
+NS_OBJECT_ENSURE_REGISTERED(Object);
 
-Object::AggregateIterator::AggregateIterator ()
-  : m_object (0),
-    m_current (0)
+Object::AggregateIterator::AggregateIterator()
+    : m_object(nullptr),
+      m_current(0)
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 }
 
 bool
-Object::AggregateIterator::HasNext (void) const
+Object::AggregateIterator::HasNext() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_current < m_object->m_aggregates->n;
+    NS_LOG_FUNCTION(this);
+    return m_current < m_object->m_aggregates->n;
 }
+
 Ptr<const Object>
-Object::AggregateIterator::Next (void)
+Object::AggregateIterator::Next()
 {
-  NS_LOG_FUNCTION (this);
-  Object *object = m_object->m_aggregates->buffer[m_current];
-  m_current++;
-  return object;
-}
-Object::AggregateIterator::AggregateIterator (Ptr<const Object> object)
-  : m_object (object),
-    m_current (0)
-{
-  NS_LOG_FUNCTION (this << object);
+    NS_LOG_FUNCTION(this);
+    Object* object = m_object->m_aggregates->buffer[m_current];
+    m_current++;
+    return object;
 }
 
-
-TypeId
-Object::GetInstanceTypeId (void) const
+Object::AggregateIterator::AggregateIterator(Ptr<const Object> object)
+    : m_object(object),
+      m_current(0)
 {
-  NS_LOG_FUNCTION (this);
-  return m_tid;
+    NS_LOG_FUNCTION(this << object);
 }
 
 TypeId
-Object::GetTypeId (void)
+Object::GetInstanceTypeId() const
 {
-  static TypeId tid = TypeId ("ns3::Object")
-    .SetParent<ObjectBase> ()
-  ;
-  return tid;
+    NS_LOG_FUNCTION(this);
+    return m_tid;
 }
 
-
-Object::Object ()
-  : m_tid (Object::GetTypeId ()),
-    m_disposed (false),
-    m_initialized (false),
-    m_aggregates ((struct Aggregates *) std::malloc (sizeof (struct Aggregates))),
-    m_getObjectCount (0)
+TypeId
+Object::GetTypeId()
 {
-  NS_LOG_FUNCTION (this);
-  m_aggregates->n = 1;
-  m_aggregates->buffer[0] = this;
+    static TypeId tid = TypeId("ns3::Object").SetParent<ObjectBase>().SetGroupName("Core");
+    return tid;
 }
-Object::~Object () 
+
+Object::Object()
+    : m_tid(Object::GetTypeId()),
+      m_disposed(false),
+      m_initialized(false),
+      m_aggregates((Aggregates*)std::malloc(sizeof(Aggregates))),
+      m_getObjectCount(0)
 {
-  // remove this object from the aggregate list
-  NS_LOG_FUNCTION (this);
-  uint32_t n = m_aggregates->n;
-  for (uint32_t i = 0; i < n; i++)
+    NS_LOG_FUNCTION(this);
+    m_aggregates->n = 1;
+    m_aggregates->buffer[0] = this;
+}
+
+Object::~Object()
+{
+    // remove this object from the aggregate list
+    NS_LOG_FUNCTION(this);
+    uint32_t n = m_aggregates->n;
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      if (current == this)
+        Object* current = m_aggregates->buffer[i];
+        if (current == this)
         {
-          std::memmove (&m_aggregates->buffer[i], 
-                   &m_aggregates->buffer[i+1],
-                   sizeof (Object *)*(m_aggregates->n - (i+1)));
-          m_aggregates->n--;
+            std::memmove(&m_aggregates->buffer[i],
+                         &m_aggregates->buffer[i + 1],
+                         sizeof(Object*) * (m_aggregates->n - (i + 1)));
+            m_aggregates->n--;
         }
     }
-  // finally, if all objects have been removed from the list,
-  // delete the aggregate list
-  if (m_aggregates->n == 0)
+    // finally, if all objects have been removed from the list,
+    // delete the aggregate list
+    if (m_aggregates->n == 0)
     {
-      std::free (m_aggregates);
+        std::free(m_aggregates);
     }
-  m_aggregates = 0;
+    m_aggregates = nullptr;
 }
-Object::Object (const Object &o)
-  : m_tid (o.m_tid),
-    m_disposed (false),
-    m_initialized (false),
-    m_aggregates ((struct Aggregates *) std::malloc (sizeof (struct Aggregates))),
-    m_getObjectCount (0)
+
+Object::Object(const Object& o)
+    : m_tid(o.m_tid),
+      m_disposed(false),
+      m_initialized(false),
+      m_aggregates((Aggregates*)std::malloc(sizeof(Aggregates))),
+      m_getObjectCount(0)
 {
-  m_aggregates->n = 1;
-  m_aggregates->buffer[0] = this;
+    m_aggregates->n = 1;
+    m_aggregates->buffer[0] = this;
 }
+
 void
-Object::Construct (const AttributeConstructionList &attributes)
+Object::Construct(const AttributeConstructionList& attributes)
 {
-  NS_LOG_FUNCTION (this << &attributes);
-  ConstructSelf (attributes);
+    NS_LOG_FUNCTION(this << &attributes);
+    ConstructSelf(attributes);
 }
 
 Ptr<Object>
-Object::DoGetObject (TypeId tid) const
+Object::DoGetObject(TypeId tid) const
 {
-  NS_LOG_FUNCTION (this << tid);
-  NS_ASSERT (CheckLoose ());
+    NS_LOG_FUNCTION(this << tid);
+    NS_ASSERT(CheckLoose());
 
-  uint32_t n = m_aggregates->n;
-  TypeId objectTid = Object::GetTypeId ();
-  for (uint32_t i = 0; i < n; i++)
+    uint32_t n = m_aggregates->n;
+    TypeId objectTid = Object::GetTypeId();
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      TypeId cur = current->GetInstanceTypeId ();
-      while (cur != tid && cur != objectTid)
+        Object* current = m_aggregates->buffer[i];
+        TypeId cur = current->GetInstanceTypeId();
+        while (cur != tid && cur != objectTid)
         {
-          cur = cur.GetParent ();
+            cur = cur.GetParent();
         }
-      if (cur == tid)
+        if (cur == tid)
         {
-          // This is an attempt to 'cache' the result of this lookup.
-          // the idea is that if we perform a lookup for a TypeId on this object,
-          // we are likely to perform the same lookup later so, we make sure
-          // that the aggregate array is sorted by the number of accesses
-          // to each object.
+            // This is an attempt to 'cache' the result of this lookup.
+            // the idea is that if we perform a lookup for a TypeId on this object,
+            // we are likely to perform the same lookup later so, we make sure
+            // that the aggregate array is sorted by the number of accesses
+            // to each object.
 
-          // first, increment the access count
-          current->m_getObjectCount++;
-          // then, update the sort
-          UpdateSortedArray (m_aggregates, i);
-          // finally, return the match
-          return const_cast<Object *> (current);
+            // first, increment the access count
+            current->m_getObjectCount++;
+            // then, update the sort
+            UpdateSortedArray(m_aggregates, i);
+            // finally, return the match
+            return const_cast<Object*>(current);
         }
     }
-  return 0;
+    return nullptr;
 }
 
 void
-Object::Start(void)
+Object::Initialize()
 {
-	Initialize();
-}
-
-void
-Object::Initialize (void)
-{
-  /**
-   * Note: the code here is a bit tricky because we need to protect ourselves from
-   * modifications in the aggregate array while DoInitialize is called. The user's
-   * implementation of the DoInitialize method could call GetObject (which could
-   * reorder the array) and it could call AggregateObject which would add an 
-   * object at the end of the array. To be safe, we restart iteration over the 
-   * array whenever we call some user code, just in case.
-   */
-  NS_LOG_FUNCTION (this);
+    /**
+     * Note: the code here is a bit tricky because we need to protect ourselves from
+     * modifications in the aggregate array while DoInitialize is called. The user's
+     * implementation of the DoInitialize method could call GetObject (which could
+     * reorder the array) and it could call AggregateObject which would add an
+     * object at the end of the array. To be safe, we restart iteration over the
+     * array whenever we call some user code, just in case.
+     */
+    NS_LOG_FUNCTION(this);
 restart:
-  uint32_t n = m_aggregates->n;
-  for (uint32_t i = 0; i < n; i++)
+    uint32_t n = m_aggregates->n;
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      if (!current->m_initialized)
+        Object* current = m_aggregates->buffer[i];
+        if (!current->m_initialized)
         {
-          current->DoStart ();
-          current->m_initialized = true;
-          goto restart;
+            current->DoInitialize();
+            current->m_initialized = true;
+            goto restart;
         }
     }
 }
-void 
-Object::Dispose (void)
+
+bool
+Object::IsInitialized() const
 {
-  /**
-   * Note: the code here is a bit tricky because we need to protect ourselves from
-   * modifications in the aggregate array while DoDispose is called. The user's
-   * DoDispose implementation could call GetObject (which could reorder the array) 
-   * and it could call AggregateObject which would add an object at the end of the array.
-   * So, to be safe, we restart the iteration over the array whenever we call some
-   * user code.
-   */
-  NS_LOG_FUNCTION (this);
-restart:
-  uint32_t n = m_aggregates->n;
-  for (uint32_t i = 0; i < n; i++)
-    {
-      Object *current = m_aggregates->buffer[i];
-      if (!current->m_disposed)
-        {
-          current->DoDispose ();
-          current->m_disposed = true;
-          goto restart;
-        }
-    }
+    NS_LOG_FUNCTION(this);
+    return m_initialized;
 }
+
 void
-Object::UpdateSortedArray (struct Aggregates *aggregates, uint32_t j) const
+Object::Dispose()
 {
-  NS_LOG_FUNCTION (this << aggregates << j);
-  while (j > 0 && 
-         aggregates->buffer[j]->m_getObjectCount > aggregates->buffer[j-1]->m_getObjectCount)
+    /**
+     * Note: the code here is a bit tricky because we need to protect ourselves from
+     * modifications in the aggregate array while DoDispose is called. The user's
+     * DoDispose implementation could call GetObject (which could reorder the array)
+     * and it could call AggregateObject which would add an object at the end of the array.
+     * So, to be safe, we restart the iteration over the array whenever we call some
+     * user code.
+     */
+    NS_LOG_FUNCTION(this);
+restart:
+    uint32_t n = m_aggregates->n;
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *tmp = aggregates->buffer[j-1];
-      aggregates->buffer[j-1] = aggregates->buffer[j];
-      aggregates->buffer[j] = tmp;
-      j--;
+        Object* current = m_aggregates->buffer[i];
+        if (!current->m_disposed)
+        {
+            current->DoDispose();
+            current->m_disposed = true;
+            goto restart;
+        }
     }
 }
-void 
-Object::AggregateObject (Ptr<Object> o)
+
+void
+Object::UpdateSortedArray(Aggregates* aggregates, uint32_t j) const
 {
-  NS_LOG_FUNCTION (this << o);
-  NS_ASSERT (!m_disposed);
-  NS_ASSERT (!o->m_disposed);
-  NS_ASSERT (CheckLoose ());
-  NS_ASSERT (o->CheckLoose ());
-
-  if (DoGetObject (o->GetInstanceTypeId ()))
+    NS_LOG_FUNCTION(this << aggregates << j);
+    while (j > 0 &&
+           aggregates->buffer[j]->m_getObjectCount > aggregates->buffer[j - 1]->m_getObjectCount)
     {
-      NS_FATAL_ERROR ("Object::AggregateObject(): "
-                      "Multiple aggregation of objects of type " << 
-                      o->GetInstanceTypeId ().GetName ());
+        Object* tmp = aggregates->buffer[j - 1];
+        aggregates->buffer[j - 1] = aggregates->buffer[j];
+        aggregates->buffer[j] = tmp;
+        j--;
     }
-
-  Object *other = PeekPointer (o);
-  // first create the new aggregate buffer.
-  uint32_t total = m_aggregates->n + other->m_aggregates->n;
-  struct Aggregates *aggregates = 
-    (struct Aggregates *)std::malloc (sizeof(struct Aggregates)+(total-1)*sizeof(Object*));
-  aggregates->n = total;
-
-  // copy our buffer to the new buffer
-  std::memcpy (&aggregates->buffer[0], 
-          &m_aggregates->buffer[0], 
-          m_aggregates->n*sizeof(Object*));
-
-  // append the other buffer into the new buffer too
-  for (uint32_t i = 0; i < other->m_aggregates->n; i++)
-    {
-      aggregates->buffer[m_aggregates->n+i] = other->m_aggregates->buffer[i];
-      UpdateSortedArray (aggregates, m_aggregates->n + i);
-    }
-
-  // keep track of the old aggregate buffers for the iteration
-  // of NotifyNewAggregates
-  struct Aggregates *a = m_aggregates;
-  struct Aggregates *b = other->m_aggregates;
-
-  // Then, assign the new aggregation buffer to every object
-  uint32_t n = aggregates->n;
-  for (uint32_t i = 0; i < n; i++)
-    {
-      Object *current = aggregates->buffer[i];
-      current->m_aggregates = aggregates;
-    }
-
-  // Finally, call NotifyNewAggregate on all the objects aggregates together.
-  // We purposedly use the old aggregate buffers to iterate over the objects
-  // because this allows us to assume that they will not change from under 
-  // our feet, even if our users call AggregateObject from within their
-  // NotifyNewAggregate method.
-  for (uint32_t i = 0; i < a->n; i++)
-    {
-      Object *current = a->buffer[i];
-      current->NotifyNewAggregate ();
-    }
-  for (uint32_t i = 0; i < b->n; i++)
-    {
-      Object *current = b->buffer[i];
-      current->NotifyNewAggregate ();
-    }
-
-  // Now that we are done with them, we can free our old aggregate buffers
-  std::free (a);
-  std::free (b);
 }
+
+void
+Object::AggregateObject(Ptr<Object> o)
+{
+    NS_LOG_FUNCTION(this << o);
+    NS_ASSERT(!m_disposed);
+    NS_ASSERT(!o->m_disposed);
+    NS_ASSERT(CheckLoose());
+    NS_ASSERT(o->CheckLoose());
+
+    Object* other = PeekPointer(o);
+    // first create the new aggregate buffer.
+    uint32_t total = m_aggregates->n + other->m_aggregates->n;
+    Aggregates* aggregates =
+        (Aggregates*)std::malloc(sizeof(Aggregates) + (total - 1) * sizeof(Object*));
+    aggregates->n = total;
+
+    // copy our buffer to the new buffer
+    std::memcpy(&aggregates->buffer[0],
+                &m_aggregates->buffer[0],
+                m_aggregates->n * sizeof(Object*));
+
+    // append the other buffer into the new buffer too
+    for (uint32_t i = 0; i < other->m_aggregates->n; i++)
+    {
+        aggregates->buffer[m_aggregates->n + i] = other->m_aggregates->buffer[i];
+        const TypeId typeId = other->m_aggregates->buffer[i]->GetInstanceTypeId();
+        if (DoGetObject(typeId))
+        {
+            NS_FATAL_ERROR("Object::AggregateObject(): "
+                           "Multiple aggregation of objects of type "
+                           << other->GetInstanceTypeId() << " on objects of type " << typeId);
+        }
+        UpdateSortedArray(aggregates, m_aggregates->n + i);
+    }
+
+    // keep track of the old aggregate buffers for the iteration
+    // of NotifyNewAggregates
+    Aggregates* a = m_aggregates;
+    Aggregates* b = other->m_aggregates;
+
+    // Then, assign the new aggregation buffer to every object
+    uint32_t n = aggregates->n;
+    for (uint32_t i = 0; i < n; i++)
+    {
+        Object* current = aggregates->buffer[i];
+        current->m_aggregates = aggregates;
+    }
+
+    // Finally, call NotifyNewAggregate on all the objects aggregates together.
+    // We purposely use the old aggregate buffers to iterate over the objects
+    // because this allows us to assume that they will not change from under
+    // our feet, even if our users call AggregateObject from within their
+    // NotifyNewAggregate method.
+    for (uint32_t i = 0; i < a->n; i++)
+    {
+        Object* current = a->buffer[i];
+        current->NotifyNewAggregate();
+    }
+    for (uint32_t i = 0; i < b->n; i++)
+    {
+        Object* current = b->buffer[i];
+        current->NotifyNewAggregate();
+    }
+
+    // Now that we are done with them, we can free our old aggregate buffers
+    std::free(a);
+    std::free(b);
+}
+
 /**
  * This function must be implemented in the stack that needs to notify
  * other stacks connected to the node of their presence in the node.
  */
 void
-Object::NotifyNewAggregate ()
+Object::NotifyNewAggregate()
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 }
 
-Object::AggregateIterator 
-Object::GetAggregateIterator (void) const
+Object::AggregateIterator
+Object::GetAggregateIterator() const
 {
-  NS_LOG_FUNCTION (this);
-  return AggregateIterator (this);
-}
-
-void 
-Object::SetTypeId (TypeId tid)
-{
-  NS_LOG_FUNCTION (this << tid);
-  NS_ASSERT (Check ());
-  m_tid = tid;
+    NS_LOG_FUNCTION(this);
+    return AggregateIterator(this);
 }
 
 void
-Object::DoDispose (void)
+Object::SetTypeId(TypeId tid)
 {
-  NS_LOG_FUNCTION (this);
-  NS_ASSERT (!m_disposed);
-}
-
-
-void
-Object::DoStart(void)
-{
-	DoInitialize();
+    NS_LOG_FUNCTION(this << tid);
+    NS_ASSERT(Check());
+    m_tid = tid;
 }
 
 void
-Object::DoInitialize (void)
+Object::DoDispose()
 {
-  NS_LOG_FUNCTION (this);
-  NS_ASSERT (!m_initialized);
+    NS_LOG_FUNCTION(this);
+    NS_ASSERT(!m_disposed);
 }
 
-bool 
-Object::Check (void) const
+void
+Object::DoInitialize()
 {
-  NS_LOG_FUNCTION (this);
-  return (GetReferenceCount () > 0);
+    NS_LOG_FUNCTION(this);
+    NS_ASSERT(!m_initialized);
+}
+
+bool
+Object::Check() const
+{
+    NS_LOG_FUNCTION(this);
+    return (GetReferenceCount() > 0);
 }
 
 /* In some cases, when an event is scheduled against a subclass of
@@ -373,58 +377,62 @@ Object::Check (void) const
  * manipulating an object with a refcount of zero.  So, instead we
  * check the aggregate reference count.
  */
-bool 
-Object::CheckLoose (void) const
+bool
+Object::CheckLoose() const
 {
-  NS_LOG_FUNCTION (this);
-  uint32_t refcount = 0;
-  uint32_t n = m_aggregates->n;
-  for (uint32_t i = 0; i < n; i++)
+    NS_LOG_FUNCTION(this);
+    bool nonZeroRefCount = false;
+    uint32_t n = m_aggregates->n;
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      refcount += current->GetReferenceCount ();
+        Object* current = m_aggregates->buffer[i];
+        if (current->GetReferenceCount())
+        {
+            nonZeroRefCount = true;
+            break;
+        }
     }
-  return (refcount > 0);
+    return nonZeroRefCount;
 }
+
 void
-Object::DoDelete (void)
+Object::DoDelete()
 {
-  // check if we really need to die
-  NS_LOG_FUNCTION (this);
-  for (uint32_t i = 0; i < m_aggregates->n; i++)
+    // check if we really need to die
+    NS_LOG_FUNCTION(this);
+    for (uint32_t i = 0; i < m_aggregates->n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      if (current->GetReferenceCount () > 0)
+        Object* current = m_aggregates->buffer[i];
+        if (current->GetReferenceCount() > 0)
         {
-          return;
+            return;
         }
     }
 
-  // Now, we know that we are alone to use this aggregate so, 
-  // we can dispose and delete everything safely.
+    // Now, we know that we are alone to use this aggregate so,
+    // we can dispose and delete everything safely.
 
-  uint32_t n = m_aggregates->n;
-  // Ensure we are disposed.
-  for (uint32_t i = 0; i < n; i++)
+    uint32_t n = m_aggregates->n;
+    // Ensure we are disposed.
+    for (uint32_t i = 0; i < n; i++)
     {
-      Object *current = m_aggregates->buffer[i];
-      if (!current->m_disposed)
+        Object* current = m_aggregates->buffer[i];
+        if (!current->m_disposed)
         {
-          current->DoDispose ();
+            current->DoDispose();
         }
     }
 
-  // Now, actually delete all objects
-  struct Aggregates *aggregates = m_aggregates;
-  for (uint32_t i = 0; i < n; i++)
+    // Now, actually delete all objects
+    Aggregates* aggregates = m_aggregates;
+    for (uint32_t i = 0; i < n; i++)
     {
-      // There is a trick here: each time we call delete below,
-      // the deleted object is removed from the aggregate buffer
-      // in the destructor so, the index of the next element to 
-      // lookup is always zero
-      Object *current = aggregates->buffer[0];
-      delete current;
+        // There is a trick here: each time we call delete below,
+        // the deleted object is removed from the aggregate buffer
+        // in the destructor so, the index of the next element to
+        // lookup is always zero
+        Object* current = aggregates->buffer[0];
+        delete current;
     }
 }
 } // namespace ns3
-

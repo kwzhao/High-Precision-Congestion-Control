@@ -24,42 +24,42 @@
 #include "ns3/simulator.h"
 #include "drop-tail-queue.h"
 #include "broadcom-egress-queue.h"
+#include "ns3/packet.h"
 
-NS_LOG_COMPONENT_DEFINE("BEgressQueue");
 
 namespace ns3 {
+    NS_LOG_COMPONENT_DEFINE("BEgressQueue");
 
 	NS_OBJECT_ENSURE_REGISTERED(BEgressQueue);
 
 	TypeId BEgressQueue::GetTypeId(void)
 	{
 		static TypeId tid = TypeId("ns3::BEgressQueue")
-			.SetParent<Queue>()
+			.SetParent<Queue<Packet>>()
 			.AddConstructor<BEgressQueue>()
 			.AddAttribute("MaxBytes",
 				"The maximum number of bytes accepted by this BEgressQueue.",
 				DoubleValue(1000.0 * 1024 * 1024),
 				MakeDoubleAccessor(&BEgressQueue::m_maxBytes),
 				MakeDoubleChecker<double>())
-			.AddTraceSource ("BeqEnqueue", "Enqueue a packet in the BEgressQueue. Multiple queue",
-					MakeTraceSourceAccessor (&BEgressQueue::m_traceBeqEnqueue))
-			.AddTraceSource ("BeqDequeue", "Dequeue a packet in the BEgressQueue. Multiple queue",
-					MakeTraceSourceAccessor (&BEgressQueue::m_traceBeqDequeue))
 			;
 
 		return tid;
 	}
 
 	BEgressQueue::BEgressQueue() :
-		Queue()
+		Queue(), NS_LOG_TEMPLATE_DEFINE("BEgressQueue")
 	{
 		NS_LOG_FUNCTION_NOARGS();
 		m_bytesInQueueTotal = 0;
+		m_rxBytes= 0;
 		m_rrlast = 0;
 		for (uint32_t i = 0; i < fCnt; i++)
 		{
 			m_bytesInQueue[i] = 0;
-			m_queues.push_back(CreateObject<DropTailQueue>());
+			m_queues.push_back(CreateObjectWithAttributes<DropTailQueue<Packet> >
+                          ("MaxSize", QueueSizeValue (QueueSize(BYTES,uint32_t(1000.0 * 1024 * 1024)))));
+			// m_queues[i]->SetMaxSize(QueueSize(BYTES,m_maxBytes));
 		}
 	}
 
@@ -69,22 +69,32 @@ namespace ns3 {
 	}
 
 	bool
-		BEgressQueue::DoEnqueue(Ptr<Packet> p, uint32_t qIndex)
-	{
-		NS_LOG_FUNCTION(this << p);
-
-		if (m_bytesInQueueTotal + p->GetSize() < m_maxBytes)  //infinite queue
+			BEgressQueue::DoEnqueue(Ptr<Packet> p, uint32_t qIndex)
 		{
-			m_queues[qIndex]->Enqueue(p);
-			m_bytesInQueueTotal += p->GetSize();
-			m_bytesInQueue[qIndex] += p->GetSize();
+			NS_LOG_FUNCTION(this << p);
+			// std::cout << "maxsizeBE " << uint32_t(m_queues[qIndex]->GetMaxSize().GetValue()) << " m_maxBytes " << uint32_t(m_maxBytes) << " double " << m_maxBytes << std::endl;
+			// NS_ABORT_MSG("debug");
+			// std::cout << "debug: enqueue size " << m_bytesInQueueTotal << std::endl;
+			// std::cout << "debug " << "qIndex " << qIndex << std::endl;
+			if (m_bytesInQueueTotal + p->GetSize() < m_maxBytes)  //infinite queue
+			{
+				if(!m_queues[qIndex]->Enqueue(p)) {
+					std::cout << "currentSize " << m_bytesInQueueTotal << " MaxSize " << m_queues[qIndex]->GetMaxSize().GetValue() << std::endl;
+					NS_ABORT_MSG("BEgressQueue implementation error: must not drop here");
+				}
+				m_bytesInQueueTotal += p->GetSize();
+				m_bytesInQueue[qIndex] += p->GetSize();
+				m_rxBytes+= p->GetSize();
+			}
+			else
+			{
+				std::cout << "currentSize " << m_bytesInQueueTotal << " MaxSize " << m_queues[qIndex]->GetMaxSize().GetValue() << std::endl;
+				NS_ABORT_MSG("BEgressQueue implementation error: must not drop here");
+				return false;
+			}
+			// std::cout << "done with BEgressQueue" << std::endl;
+			return true;
 		}
-		else
-		{
-			return false;
-		}
-		return true;
-	}
 
 	Ptr<Packet>
 		BEgressQueue::DoDequeueRR(bool paused[]) //this is for switch only
@@ -132,6 +142,9 @@ namespace ns3 {
 			m_qlast = qIndex;
 			NS_LOG_LOGIC("Popped " << p);
 			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+			// vamsi
+			numTxBytes+=p->GetSize();
+//			std::cout << "numBytes" << numTxBytes << std::endl;
 			return p;
 		}
 		NS_LOG_LOGIC("Nothing can be sent");
@@ -146,19 +159,19 @@ namespace ns3 {
 		// If DoEnqueue fails, Queue::Drop is called by the subclass
 		//
 		bool retval = DoEnqueue(p, qIndex);
-		if (retval)
-		{
-			NS_LOG_LOGIC("m_traceEnqueue (p)");
-			m_traceEnqueue(p);
-			m_traceBeqEnqueue(p, qIndex);
+		// if (retval)
+		// {
+		// 	NS_LOG_LOGIC("m_traceEnqueue (p)");
+		// 	m_traceEnqueue(p);
+		// 	m_traceBeqEnqueue(p, qIndex);
 
-			uint32_t size = p->GetSize();
-			m_nBytes += size;
-			m_nTotalReceivedBytes += size;
+		// 	uint32_t size = p->GetSize();
+		// 	m_nBytes += size;
+		// 	m_nTotalReceivedBytes += size;
 
-			m_nPackets++;
-			m_nTotalReceivedPackets++;
-		}
+		// 	m_nPackets++;
+		// 	m_nTotalReceivedPackets++;
+		// }
 		return retval;
 	}
 
@@ -167,15 +180,15 @@ namespace ns3 {
 	{
 		NS_LOG_FUNCTION(this);
 		Ptr<Packet> packet = DoDequeueRR(paused);
-		if (packet != 0)
-		{
-			NS_ASSERT(m_nBytes >= packet->GetSize());
-			NS_ASSERT(m_nPackets > 0);
-			m_nBytes -= packet->GetSize();
-			m_nPackets--;
-			NS_LOG_LOGIC("m_traceDequeue (packet)");
-			m_traceDequeue(packet);
-		}
+//		if (packet != 0)
+		// {
+		// 	NS_ASSERT(m_nBytes >= packet->GetSize());
+		// 	NS_ASSERT(m_nPackets > 0);
+		// 	m_nBytes -= packet->GetSize();
+		// 	m_nPackets--;
+		// 	NS_LOG_LOGIC("m_traceDequeue (packet)");
+		// 	m_traceDequeue(packet);
+		// }
 		return packet;
 	}
 
@@ -190,6 +203,7 @@ namespace ns3 {
 			m_queues[qIndex]->Enqueue(p);
 			m_bytesInQueueTotal += p->GetSize();
 			m_bytesInQueue[qIndex] += p->GetSize();
+			m_rxBytes+= p->GetSize();
 		}
 		else
 		{
@@ -234,6 +248,12 @@ namespace ns3 {
 	{
 		return m_bytesInQueueTotal;
 	}
+
+	uint32_t
+			BEgressQueue::GetNBytesRxTotal() const
+		{
+			return m_rxBytes;
+		}
 
 	uint32_t
 		BEgressQueue::GetLastQueue()

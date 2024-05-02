@@ -31,7 +31,8 @@
 #include "ns3/rdma-queue-pair.h"
 #include <vector>
 #include<map>
-#include <ns3/rdma.h>
+// #include <ns3/rdma.h>
+// #define ENABLE_QP 1
 
 namespace ns3 {
 
@@ -39,9 +40,10 @@ class RdmaEgressQueue : public Object{
 public:
 	static const uint32_t qCnt = 8;
 	static uint32_t ack_q_idx;
+	static uint32_t tcpip_q_idx;
 	int m_qlast;
 	uint32_t m_rrlast;
-	Ptr<DropTailQueue> m_ackQ; // highest priority queue
+	Ptr<DropTailQueue<Packet>> m_ackQ; // highest priority queue
 	Ptr<RdmaQueuePairGroup> m_qpGrp; // queue pairs
 
 	// callback for get next packet
@@ -62,6 +64,10 @@ public:
 
 	TracedCallback<Ptr<const Packet>, uint32_t> m_traceRdmaEnqueue;
 	TracedCallback<Ptr<const Packet>, uint32_t> m_traceRdmaDequeue;
+
+	Ptr<QbbNetDevice> qb_dev;
+	bool dummy_paused[8];
+	uint64_t hostDequeueIndex;
 };
 
 /**
@@ -100,6 +106,11 @@ public:
    */
   virtual bool Send(Ptr<Packet> packet, const Address &dest, uint16_t protocolNumber);
   virtual bool SwitchSend (uint32_t qIndex, Ptr<Packet> packet, CustomHeader &ch);
+  Address GetRemote (void) const;
+  virtual void SetReceiveCallback (NetDevice::ReceiveCallback cb);
+
+
+  DataRate GetDataRate();
 
   /**
    * Get the size of Tx buffer available in the device
@@ -120,6 +131,10 @@ public:
 
    void SetQueue (Ptr<BEgressQueue> q);
    Ptr<BEgressQueue> GetQueue ();
+
+   void SetQueueFifo (Ptr<DropTailQueue<Packet>> q);
+   Ptr<DropTailQueue<Packet>> GetQueueFifo ();
+
    virtual bool IsQbb(void) const;
    void NewQp(Ptr<RdmaQueuePair> qp);
    void ReassignedQp(Ptr<RdmaQueuePair> qp);
@@ -131,6 +146,33 @@ public:
 	TracedCallback<Ptr<const Packet>, uint32_t> m_traceDequeue;
 	TracedCallback<Ptr<const Packet>, uint32_t> m_traceDrop;
 	TracedCallback<uint32_t> m_tracePfc; // 0: resume, 1: pause
+	uint64_t getTxBytes(){
+				uint64_t temp=numTxBytes;
+				numTxBytes=0;
+				return temp;
+			}
+	uint64_t numTxBytes=0;
+	uint64_t numTxBytesLast=0;
+	uint64_t totalBytesSent=0;
+
+	uint64_t getNumTxBytes(){
+		uint64_t temp;
+		temp = totalBytesSent-numTxBytesLast;
+		numTxBytesLast=totalBytesSent;
+		return temp;
+	}
+
+	uint64_t numRxBytes=0;
+	uint64_t numRxBytesLast=0;
+	uint64_t totalBytesRcvd=0;
+	
+	uint64_t getNumRxBytes(){
+		uint64_t temp;
+		temp = totalBytesRcvd-numRxBytesLast;
+		numRxBytesLast=totalBytesRcvd;
+		return temp;
+	}
+
 protected:
 
 	//Ptr<Node> m_node;
@@ -148,12 +190,21 @@ protected:
   /// Resume a paused queue and call DequeueAndTransmit()
   virtual void Resume(unsigned qIndex);
 
+  bool ProcessHeader (Ptr<Packet> p, uint16_t& param);
+
+    static uint16_t PppToEther (uint16_t proto);
+
+    static uint16_t EtherToPpp (uint16_t proto);
+
   /**
    * The queues for each priority class.
    * @see class Queue
    * @see class InfiniteQueue
    */
   Ptr<BEgressQueue> m_queue;
+
+  Ptr<DropTailQueue<Packet>> m_queueFifo;
+
 
   Ptr<QbbChannel> m_channel;
   
@@ -163,6 +214,7 @@ protected:
   bool m_dynamicth;
   uint32_t m_pausetime;	//< Time for each Pause
   bool m_paused[qCnt];	//< Whether a queue paused
+  bool dummy_paused[qCnt];
 
   //qcn
 
@@ -202,6 +254,8 @@ public:
 	void UpdateNextAvail(Time t);
 
 	TracedCallback<Ptr<const Packet>, Ptr<RdmaQueuePair> > m_traceQpDequeue; // the trace for printing dequeue
+
+	uint64_t hostDequeueIndex;
 };
 
 } // namespace ns3

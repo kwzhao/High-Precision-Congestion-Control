@@ -1,4 +1,3 @@
-// -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*-
 //
 // Copyright (c) 2009 INESC Porto
 //
@@ -24,87 +23,152 @@
 #include "ns3/ipv4-flow-classifier.h"
 #include "ns3/ipv4-flow-probe.h"
 #include "ns3/ipv4-l3-protocol.h"
-#include "ns3/node.h"
+#include "ns3/ipv6-flow-classifier.h"
+#include "ns3/ipv6-flow-probe.h"
+#include "ns3/ipv6-l3-protocol.h"
 #include "ns3/node-list.h"
+#include "ns3/node.h"
 
-
-namespace ns3 {
-
-FlowMonitorHelper::FlowMonitorHelper ()
+namespace ns3
 {
-  m_monitorFactory.SetTypeId ("ns3::FlowMonitor");
+
+FlowMonitorHelper::FlowMonitorHelper()
+{
+    m_monitorFactory.SetTypeId("ns3::FlowMonitor");
 }
 
-void 
-FlowMonitorHelper::SetMonitorAttribute (std::string n1, const AttributeValue &v1)
+FlowMonitorHelper::~FlowMonitorHelper()
 {
-  m_monitorFactory.Set (n1, v1);
+    if (m_flowMonitor)
+    {
+        m_flowMonitor->Dispose();
+        m_flowMonitor = nullptr;
+        m_flowClassifier4 = nullptr;
+        m_flowClassifier6 = nullptr;
+    }
 }
 
+void
+FlowMonitorHelper::SetMonitorAttribute(std::string n1, const AttributeValue& v1)
+{
+    m_monitorFactory.Set(n1, v1);
+}
 
 Ptr<FlowMonitor>
-FlowMonitorHelper::GetMonitor ()
+FlowMonitorHelper::GetMonitor()
 {
-  if (!m_flowMonitor)
+    if (!m_flowMonitor)
     {
-      m_flowMonitor = m_monitorFactory.Create<FlowMonitor> ();
-      m_flowClassifier = Create<Ipv4FlowClassifier> ();
-      m_flowMonitor->SetFlowClassifier (m_flowClassifier);
+        m_flowMonitor = m_monitorFactory.Create<FlowMonitor>();
+        m_flowClassifier4 = Create<Ipv4FlowClassifier>();
+        m_flowMonitor->AddFlowClassifier(m_flowClassifier4);
+        m_flowClassifier6 = Create<Ipv6FlowClassifier>();
+        m_flowMonitor->AddFlowClassifier(m_flowClassifier6);
     }
-  return m_flowMonitor;
+    return m_flowMonitor;
 }
-
 
 Ptr<FlowClassifier>
-FlowMonitorHelper::GetClassifier ()
+FlowMonitorHelper::GetClassifier()
 {
-  if (!m_flowClassifier)
+    if (!m_flowClassifier4)
     {
-      m_flowClassifier = Create<Ipv4FlowClassifier> ();
+        m_flowClassifier4 = Create<Ipv4FlowClassifier>();
     }
-  return m_flowClassifier;
+    return m_flowClassifier4;
 }
 
-
-Ptr<FlowMonitor>
-FlowMonitorHelper::Install (Ptr<Node> node)
+Ptr<FlowClassifier>
+FlowMonitorHelper::GetClassifier6()
 {
-  Ptr<FlowMonitor> monitor = GetMonitor ();
-  Ptr<FlowClassifier> classifier = GetClassifier ();
-  Ptr<Ipv4FlowProbe> probe = Create<Ipv4FlowProbe> (monitor,
-                                                    DynamicCast<Ipv4FlowClassifier> (classifier),
-                                                    node);
-  return m_flowMonitor;
-}
-
-
-Ptr<FlowMonitor>
-FlowMonitorHelper::Install (NodeContainer nodes)
-{
-  for (NodeContainer::Iterator i = nodes.Begin (); i != nodes.End (); ++i)
+    if (!m_flowClassifier6)
     {
-      Ptr<Node> node = *i;
-      if (node->GetObject<Ipv4L3Protocol> ())
+        m_flowClassifier6 = Create<Ipv6FlowClassifier>();
+    }
+    return m_flowClassifier6;
+}
+
+Ptr<FlowMonitor>
+FlowMonitorHelper::Install(Ptr<Node> node)
+{
+    Ptr<FlowMonitor> monitor = GetMonitor();
+    Ptr<FlowClassifier> classifier = GetClassifier();
+    Ptr<Ipv4L3Protocol> ipv4 = node->GetObject<Ipv4L3Protocol>();
+    if (ipv4)
+    {
+        Ptr<Ipv4FlowProbe> probe =
+            Create<Ipv4FlowProbe>(monitor, DynamicCast<Ipv4FlowClassifier>(classifier), node);
+    }
+    Ptr<FlowClassifier> classifier6 = GetClassifier6();
+    Ptr<Ipv6L3Protocol> ipv6 = node->GetObject<Ipv6L3Protocol>();
+    if (ipv6)
+    {
+        Ptr<Ipv6FlowProbe> probe6 =
+            Create<Ipv6FlowProbe>(monitor, DynamicCast<Ipv6FlowClassifier>(classifier6), node);
+    }
+    return m_flowMonitor;
+}
+
+Ptr<FlowMonitor>
+FlowMonitorHelper::Install(NodeContainer nodes)
+{
+    for (NodeContainer::Iterator i = nodes.Begin(); i != nodes.End(); ++i)
+    {
+        Ptr<Node> node = *i;
+        if (node->GetObject<Ipv4L3Protocol>() || node->GetObject<Ipv6L3Protocol>())
         {
-          Install (node);
+            Install(node);
         }
     }
-  return m_flowMonitor;
+    return m_flowMonitor;
 }
 
 Ptr<FlowMonitor>
-FlowMonitorHelper::InstallAll ()
+FlowMonitorHelper::InstallAll()
 {
-  for (NodeList::Iterator i = NodeList::Begin (); i != NodeList::End (); ++i)
+    for (NodeList::Iterator i = NodeList::Begin(); i != NodeList::End(); ++i)
     {
-      Ptr<Node> node = *i;
-      if (node->GetObject<Ipv4L3Protocol> ())
+        Ptr<Node> node = *i;
+        if (node->GetObject<Ipv4L3Protocol>() || node->GetObject<Ipv6L3Protocol>())
         {
-          Install (node);
+            Install(node);
         }
     }
-  return m_flowMonitor;
+    return m_flowMonitor;
 }
 
+void
+FlowMonitorHelper::SerializeToXmlStream(std::ostream& os,
+                                        uint16_t indent,
+                                        bool enableHistograms,
+                                        bool enableProbes)
+{
+    if (m_flowMonitor)
+    {
+        m_flowMonitor->SerializeToXmlStream(os, indent, enableHistograms, enableProbes);
+    }
+}
+
+std::string
+FlowMonitorHelper::SerializeToXmlString(uint16_t indent, bool enableHistograms, bool enableProbes)
+{
+    std::ostringstream os;
+    if (m_flowMonitor)
+    {
+        m_flowMonitor->SerializeToXmlStream(os, indent, enableHistograms, enableProbes);
+    }
+    return os.str();
+}
+
+void
+FlowMonitorHelper::SerializeToXmlFile(std::string fileName,
+                                      bool enableHistograms,
+                                      bool enableProbes)
+{
+    if (m_flowMonitor)
+    {
+        m_flowMonitor->SerializeToXmlFile(fileName, enableHistograms, enableProbes);
+    }
+}
 
 } // namespace ns3

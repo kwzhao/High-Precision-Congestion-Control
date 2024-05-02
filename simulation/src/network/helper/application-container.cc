@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -18,86 +17,107 @@
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 
-#include "ns3/names.h"
 #include "application-container.h"
 
-namespace ns3 {
+#include "ns3/log.h"
+#include "ns3/names.h"
 
-ApplicationContainer::ApplicationContainer ()
+namespace ns3
 {
-}
 
-ApplicationContainer::ApplicationContainer (Ptr<Application> app)
-{
-  m_applications.push_back (app);
-}
+NS_LOG_COMPONENT_DEFINE("ApplicationContainer");
 
-ApplicationContainer::ApplicationContainer (std::string name)
+ApplicationContainer::ApplicationContainer()
 {
-  Ptr<Application> app = Names::Find<Application> (name);
-  m_applications.push_back (app);
 }
 
-
-ApplicationContainer::Iterator 
-ApplicationContainer::Begin (void) const
+ApplicationContainer::ApplicationContainer(Ptr<Application> app)
 {
-  return m_applications.begin ();
-}
-ApplicationContainer::Iterator 
-ApplicationContainer::End (void) const
-{
-  return m_applications.end ();
+    m_applications.push_back(app);
 }
 
-uint32_t 
-ApplicationContainer::GetN (void) const
+ApplicationContainer::ApplicationContainer(std::string name)
 {
-  return m_applications.size ();
+    Ptr<Application> app = Names::Find<Application>(name);
+    m_applications.push_back(app);
 }
-Ptr<Application> 
-ApplicationContainer::Get (uint32_t i) const
+
+ApplicationContainer::Iterator
+ApplicationContainer::Begin() const
 {
-  return m_applications[i];
+    return m_applications.begin();
 }
-void 
-ApplicationContainer::Add (ApplicationContainer other)
+
+ApplicationContainer::Iterator
+ApplicationContainer::End() const
 {
-  for (Iterator i = other.Begin (); i != other.End (); i++)
+    return m_applications.end();
+}
+
+uint32_t
+ApplicationContainer::GetN() const
+{
+    return m_applications.size();
+}
+
+Ptr<Application>
+ApplicationContainer::Get(uint32_t i) const
+{
+    return m_applications[i];
+}
+
+void
+ApplicationContainer::Add(ApplicationContainer other)
+{
+    for (Iterator i = other.Begin(); i != other.End(); i++)
     {
-      m_applications.push_back (*i);
-    }
-}
-void 
-ApplicationContainer::Add (Ptr<Application> application)
-{
-  m_applications.push_back (application);
-}
-void 
-ApplicationContainer::Add (std::string name)
-{
-  Ptr<Application> application = Names::Find<Application> (name);
-  m_applications.push_back (application);
-}
-
-void 
-ApplicationContainer::Start (Time start)
-{
-  for (Iterator i = Begin (); i != End (); ++i)
-    {
-      Ptr<Application> app = *i;
-      app->SetStartTime (start);
-    }
-}
-void 
-ApplicationContainer::Stop (Time stop)
-{
-  for (Iterator i = Begin (); i != End (); ++i)
-    {
-      Ptr<Application> app = *i;
-      app->SetStopTime (stop);
+        m_applications.push_back(*i);
     }
 }
 
+void
+ApplicationContainer::Add(Ptr<Application> application)
+{
+    m_applications.push_back(application);
+}
+
+void
+ApplicationContainer::Add(std::string name)
+{
+    Ptr<Application> application = Names::Find<Application>(name);
+    m_applications.push_back(application);
+}
+
+void
+ApplicationContainer::Start(Time start) const
+{
+    for (Iterator i = Begin(); i != End(); ++i)
+    {
+        Ptr<Application> app = *i;
+        app->SetStartTime(start);
+    }
+}
+
+void
+ApplicationContainer::StartWithJitter(Time start, Ptr<RandomVariableStream> rv) const
+{
+    for (Iterator i = Begin(); i != End(); ++i)
+    {
+        Ptr<Application> app = *i;
+        double value = rv->GetValue();
+        NS_LOG_DEBUG("Start application at time " << start.GetSeconds() + value << "s");
+        app->SetStartTime(start + Seconds(value));
+    }
+}
+
+void
+ApplicationContainer::Stop(Time stop) const
+{
+    for (Iterator i = Begin(); i != End(); ++i)
+    {
+        Ptr<Application> app = *i;
+        app->SetStopTime(stop);
+    }
+}
 
 } // namespace ns3

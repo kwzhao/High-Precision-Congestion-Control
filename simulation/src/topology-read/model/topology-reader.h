@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2010 Universita' di Firenze, Italy
  *
@@ -22,15 +21,23 @@
 #ifndef TOPOLOGY_READER_H
 #define TOPOLOGY_READER_H
 
-#include <string>
-#include <map>
-#include <list>
-
+#include "ns3/node.h"
 #include "ns3/object.h"
-#include "ns3/node-container.h"
 
+#include <list>
+#include <map>
+#include <string>
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup topology
+ * ns3::TopologyReader declaration.
+ */
+
+namespace ns3
+{
+
+class NodeContainer;
 
 /**
  * \ingroup topology
@@ -42,171 +49,183 @@ namespace ns3 {
  */
 class TopologyReader : public Object
 {
-
-public:
-  /**
-   * \brief Inner class holding the details about a link between two nodes.
-   *
-   * The link is not described in terms of technology. Rather it is only stating
-   * an association between two nodes. The nodes are characterized also with names
-   * reflecting how the nodes are called in the original topology file.
-   */
-  class Link
-  {
-public:
-  /**
-   * \brief Constant iterator to scan the map of link attributes.
-   */
-    typedef std::map<std::string, std::string>::const_iterator ConstAttributesIterator;
-
+  public:
     /**
-     * \brief Constructor
-     * \param fromPtr Ptr to the node the link is orginating from
-     * \param fromName name of the node the link is orginating from
-     * \param toPtr Ptr to the node the link is directed to
-     * \param toName name of the node the link is directed to
-     */
-    Link ( Ptr<Node> fromPtr, const std::string &fromName, Ptr<Node> toPtr, const std::string &toName );
-
-    /**
-     * \brief Returns a Ptr<Node> to the "from" node of the link
-     * \return a Ptr<Node> to the "from" node of the link
-     */
-    Ptr<Node> GetFromNode (void) const;
-    /**
-     * \brief Returns the name of the "from" node of the link
-     * \return the name of the "from" node of the link
-     */
-    std::string GetFromNodeName (void) const;
-    /**
-     * \brief Returns a Ptr<Node> to the "to" node of the link
-     * \return a Ptr<Node> to the "to" node of the link
-     */
-    Ptr<Node> GetToNode (void) const;
-    /**
-     * \brief Returns the name of the "to" node of the link
-     * \return the name of the "to" node of the link
-     */
-    std::string GetToNodeName (void) const;
-    /**
-     * \brief Returns the value of a link attribute. The attribute must exist.
+     * \brief Inner class holding the details about a link between two nodes.
      *
-     * \param name the name of the attribute
+     * The link is not described in terms of technology. Rather it is only stating
+     * an association between two nodes. The nodes are characterized also with names
+     * reflecting how the nodes are called in the original topology file.
+     */
+    class Link
+    {
+      public:
+        /**
+         * \brief Constant iterator to scan the map of link attributes.
+         */
+        typedef std::map<std::string, std::string>::const_iterator ConstAttributesIterator;
+
+        /**
+         * \brief Constructor.
+         * \param [in] fromPtr Ptr to the node the link is originating from.
+         * \param [in] fromName Name of the node the link is originating from.
+         * \param [in] toPtr Ptr to the node the link is directed to.
+         * \param [in] toName Name of the node the link is directed to.
+         */
+        Link(Ptr<Node> fromPtr,
+             const std::string& fromName,
+             Ptr<Node> toPtr,
+             const std::string& toName);
+
+        /**
+         * \brief Returns a Ptr<Node> to the "from" node of the link.
+         * \return A Ptr<Node> to the "from" node of the link.
+         */
+        Ptr<Node> GetFromNode() const;
+        /**
+         * \brief Returns the name of the "from" node of the link.
+         * \return The name of the "from" node of the link.
+         */
+        std::string GetFromNodeName() const;
+        /**
+         * \brief Returns a Ptr<Node> to the "to" node of the link.
+         * \return A Ptr<Node> to the "to" node of the link.
+         */
+        Ptr<Node> GetToNode() const;
+        /**
+         * \brief Returns the name of the "to" node of the link.
+         * \return The name of the "to" node of the link.
+         */
+        std::string GetToNodeName() const;
+        /**
+         * \brief Returns the value of a link attribute. The attribute must exist.
+         * \param [in] name the name of the attribute.
+         * \return The value of the attribute.
+         */
+        std::string GetAttribute(const std::string& name) const;
+        /**
+         * \brief Returns the value of a link attribute.
+         * \param [in] name The name of the attribute.
+         * \param [out] value The value of the attribute.
+         *
+         * \return True if the attribute was defined, false otherwise.
+         */
+        bool GetAttributeFailSafe(const std::string& name, std::string& value) const;
+        /**
+         * \brief Sets an arbitrary link attribute.
+         * \param [in] name The name of the attribute.
+         * \param [in] value The value of the attribute.
+         */
+        void SetAttribute(const std::string& name, const std::string& value);
+        /**
+         * \brief Returns an iterator to the begin of the attributes.
+         * \return A const iterator to the first attribute of a link.
+         */
+        ConstAttributesIterator AttributesBegin() const;
+        /**
+         * \brief Returns an iterator to the end of the attributes.
+         * \return A const iterator to the last attribute of a link.
+         */
+        ConstAttributesIterator AttributesEnd() const;
+
+      private:
+        Link();
+        std::string m_fromName; //!< Name of the node the links originates from.
+        Ptr<Node> m_fromPtr;    //!< The node the links originates from.
+        std::string m_toName;   //!< Name of the node the links is directed to.
+        Ptr<Node> m_toPtr;      //!< The node the links is directed to.
+        std::map<std::string, std::string>
+            m_linkAttr; //!< Container of the link attributes (if any).
+    };
+
+    /**
+     * \brief Constant iterator to the list of the links.
+     */
+    typedef std::list<Link>::const_iterator ConstLinksIterator;
+
+    /**
+     * \brief Get the type ID.
+     * \return The object TypeId.
+     */
+    static TypeId GetTypeId();
+
+    TopologyReader();
+    ~TopologyReader() override;
+
+    // Delete copy constructor and assignment operator to avoid misuse
+    TopologyReader(const TopologyReader&) = delete;
+    TopologyReader& operator=(const TopologyReader&) = delete;
+
+    /**
+     * \brief Main topology reading function.
      *
-     * \return the value of the attribute
-     */
-    std::string GetAttribute (const std::string &name) const;
-    /**
-     * \brief Returns the value of a link attribute.
-     * \param name the name of the attribute
-     * \param value the value of the attribute
+     * The data is parsed and the results are returned in the passed lists.
+     * The rationale behind this choice is to allow non-progressive node IDs
+     * in the topology files, as well as to separate the topology
+     * reader from the choices about actual IP number assignment and
+     * kind of links between nodes.
      *
-     * \return true if the attribute was defined, false otherwise.
+     * \return The container of the nodes created (or null if there was an error).
      */
-    bool GetAttributeFailSafe (const std::string &name, std::string &value) const;
+    virtual NodeContainer Read() = 0;
+
     /**
-     * \brief Sets an arbitrary link attribute.
-     * \param name the name of the attribute
-     * \param value the value of the attribute
+     * \brief Sets the input file name.
+     * \param [in] fileName The input file name.
      */
-    void SetAttribute (const std::string &name, const std::string &value);
+    void SetFileName(const std::string& fileName);
+
     /**
-     * \brief Returns an iterator to the begin of the attributes.
-     * \return a const iterator to the first attribute of a link.
+     * \brief Returns the input file name.
+     * \return The input file name.
      */
-    ConstAttributesIterator AttributesBegin (void);
+    std::string GetFileName() const;
+
     /**
-     * \brief Returns an iterator to the end of the attributes.
-     * \return a const iterator to the last attribute of a link.
+     * \brief Returns an iterator to the the first link in this block.
+     * \return A const iterator to the first link in this block.
      */
-    ConstAttributesIterator AttributesEnd (void);
+    ConstLinksIterator LinksBegin() const;
 
-private:
-    Link ();
-    std::string m_fromName;
-    Ptr< Node > m_fromPtr;
-    std::string m_toName;
-    Ptr< Node > m_toPtr;
-    std::map<std::string, std::string> m_linkAttr;
-  };
+    /**
+     * \brief Returns an iterator to the the last link in this block.
+     * \return A const iterator to the last link in this block.
+     */
+    ConstLinksIterator LinksEnd() const;
 
-  /**
-   * \brief Constant iterator to the list of the links.
-   */
-  typedef std::list< Link >::const_iterator ConstLinksIterator;
+    /**
+     * \brief Returns the number of links in this block.
+     * \return The number of links in this block.
+     */
+    int LinksSize() const;
 
-  static TypeId GetTypeId (void);
+    /**
+     * \brief Checks if the block contains any links.
+     * \return True if there are no links in this block, false otherwise.
+     */
+    bool LinksEmpty() const;
 
-  TopologyReader ();
-  virtual ~TopologyReader ();
+    /**
+     * \brief Adds a link to the topology.
+     * \param link [in] The link to be added.
+     */
+    void AddLink(Link link);
 
-  /**
-   * \brief Main topology reading function.
-   *
-   * The data is parsed and the results are returned in the passed lists.
-   * The rationale behind this choice is to allow non-progressive node IDs
-   * in the topology files, as well as to separate the topology
-   * reader from the choices about actual IP number assignment and
-   * kind of links between nodes.
-   *
-   * \return the container of the nodes created (or null if there was an error)
-   */
-  virtual NodeContainer Read (void) = 0;
+  private:
+    /**
+     * The name of the input file.
+     */
+    std::string m_fileName;
 
-  /**
-   * \brief Sets the input file name.
-   * \param fileName the input file name.
-   */
-  void SetFileName (const std::string &fileName);
+    /**
+     * The container of the links between the nodes.
+     */
+    std::list<Link> m_linksList;
 
-  /**
-   * \brief Returns the input file name.
-   * \return the input file name.
-   */
-  std::string GetFileName (void) const;
-
-  /**
-   * \brief Returns an iterator to the the first link in this block.
-   * \return a const iterator to the first link in this block.
-   */
-  ConstLinksIterator LinksBegin (void) const;
-
-  /**
-   * \brief Returns an iterator to the the last link in this block.
-   * \return a const iterator to the last link in this block.
-   */
-  ConstLinksIterator LinksEnd (void) const;
-
-  /**
-   * \brief Returns the number of links in this block.
-   * \return the number of links in this block.
-   */
-  int LinksSize (void) const;
-
-  /**
-   * \brief Checks if the block contains any links.
-   * \return true if there are no links in this block, false otherwise.
-   */
-  bool LinksEmpty (void) const;
-
-  /**
-   * \brief Adds a link to the topology.
-   * \param link the link to be added.
-   */
-  void AddLink (Link link);
-
-private:
-  TopologyReader (const TopologyReader&);
-  TopologyReader& operator= (const TopologyReader&);
-
-  std::string m_fileName;
-  std::list<Link> m_linksList;
-
-  // end class TopologyReader
+    // end class TopologyReader
 };
 
 // end namespace ns3
-};
-
+}; // namespace ns3
 
 #endif /* TOPOLOGY_READER_H */

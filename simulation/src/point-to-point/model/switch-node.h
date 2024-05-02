@@ -22,6 +22,7 @@ class SwitchNode : public Node{
 	
 	uint64_t m_txBytes[pCnt]; // counter of tx bytes
 
+
 	uint32_t m_lastPktSize[pCnt];
 	uint64_t m_lastPktTs[pCnt]; // ns
 	double m_u[pCnt];
@@ -32,6 +33,9 @@ protected:
 	uint64_t m_maxRtt;
 
 	uint32_t m_ackHighPrio; // set high priority for ACK/NACK
+
+	// vamsi
+	bool PowerEnabled;
 
 private:
 	int GetOutDev(Ptr<const Packet>, CustomHeader &ch);

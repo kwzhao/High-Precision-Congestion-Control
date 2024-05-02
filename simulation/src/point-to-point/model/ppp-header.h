@@ -45,7 +45,7 @@ namespace ns3 {
  * to the packet.  The ns-3 way to do this is via a class that inherits from
  * class Header.
  */
-class PppHeader : public Header 
+class PppHeader : public Header
 {
 public:
 

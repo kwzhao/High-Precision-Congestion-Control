@@ -1,4 +1,5 @@
 .. include:: replace.txt
+.. highlight:: cpp
 
 .. _Sockets-APIs:
 
@@ -10,11 +11,11 @@ is a long-standing API used by user-space applications to access
 network services in the kernel.  A *socket* is an abstraction, like
 a Unix file handle, that allows applications to connect to other
 Internet hosts and exchange reliable byte streams and unreliable
-datagrams, among other services.   
+datagrams, among other services.
 
 |ns3| provides two types of sockets APIs, and it is important to
 understand the differences between them.  The first is a *native*
-|ns3| API, while the second uses the services of the native API to 
+|ns3| API, while the second uses the services of the native API to
 provide a `POSIX-like <http://en.wikipedia.org/wiki/POSIX>`_
 API as part of an overall application process.  Both APIs strive
 to be close to the typical sockets API that application writers
@@ -27,7 +28,7 @@ ns-3 sockets API
 The native sockets API for ns-3 provides an interface to various
 types of transport protocols (TCP, UDP) as well as to packet sockets
 and, in the future, Netlink-like sockets.  However, users are cautioned
-to understand that the semantics are *not* the exact same as 
+to understand that the semantics are *not* the exact same as
 one finds in a real system (for an API which is very much aligned
 to real systems, see the next section).
 
@@ -47,7 +48,7 @@ we have tried to align with a Posix sockets API.  However, note that:
 * the C-style socket address structures are not used;
 
 * the API is not a complete sockets API, such as supporting
-  all socket options or all function variants; 
+  all socket options or all function variants;
 
 * many calls use :cpp:class:`ns3::Packet` class to transfer data
   between application and socket.  This may seem peculiar to
@@ -81,7 +82,7 @@ one type of socket, and if sockets of a particular type are able to
 be created on a given node, then a factory that can create such sockets
 must be aggregated to the Node::
 
-  static Ptr<Socket> CreateSocket (Ptr<Node> node, TypeId tid);
+  static Ptr<Socket> CreateSocket(Ptr<Node> node, TypeId tid);
 
 Examples of TypeIds to pass to this method are :cpp:class:`ns3::TcpSocketFactory`,
 :cpp:class:`ns3::PacketSocketFactory`, and :cpp:class:`ns3::UdpSocketFactory`.
@@ -91,8 +92,8 @@ example::
 
   Ptr<Node> n0;
   // Do some stuff to build up the Node's internet stack
-  Ptr<Socket> localSocket = 
-     Socket::CreateSocket (n0, TcpSocketFactory::GetTypeId ());
+  Ptr<Socket> localSocket =
+     Socket::CreateSocket(n0, TcpSocketFactory::GetTypeId());
 
 In some ns-3 code, sockets will not be explicitly created by user's
 main programs, if an ns-3 application does it.  For instance, for
@@ -104,39 +105,39 @@ Using sockets
 =============
 
 Below is a typical sequence of socket calls for a TCP client in a
-real implementation:
+real implementation::
 
-* ``sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);``
-* ``bind(sock, ...);``
-* ``connect(sock, ...);``
-* ``send(sock, ...);``
-* ``recv(sock, ...);``
-* ``close(sock);``
+    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    bind(sock, ...);
+    connect(sock, ...);
+    send(sock, ...);
+    recv(sock, ...);
+    close(sock);
 
-There are analogs to all of these calls in ns-3, but we will focus on  
-two aspects here.  First, most usage of sockets in real systems 
-requires a way to manage I/O between the application and kernel.  
+There are analogs to all of these calls in ns-3, but we will focus on
+two aspects here.  First, most usage of sockets in real systems
+requires a way to manage I/O between the application and kernel.
 These models include *blocking sockets*, *signal-based I/O*,
 and *non-blocking sockets* with polling.  In ns-3, we make use
-of the callback mechanisms to support a fourth mode, which is 
+of the callback mechanisms to support a fourth mode, which is
 analogous to POSIX *asynchronous I/O*.
 
 In this model, on the sending side, if the :c:func:`send()` call were to
 fail because of insufficient buffers, the application suspends the
-sending of more data until a function registered at the 
-:cpp:func:`ns3::Socket::SetSendCallback` callback is invoked.  
-An application can also ask the socket how much space is available 
-by calling :cpp:func:`ns3::Socket::GetTxAvailable`.  A typical sequence 
-of events for sending data (ignoring connection setup) might be:::
+sending of more data until a function registered at the
+:cpp:func:`ns3::Socket::SetSendCallback` callback is invoked.
+An application can also ask the socket how much space is available
+by calling :cpp:func:`ns3::Socket::GetTxAvailable`.  A typical sequence
+of events for sending data (ignoring connection setup) might be::
 
-    * ``SetSendCallback (MakeCallback(&HandleSendCallback));``
-    * ``Send ();``
-    * ``Send ();``
-    * ...
-    * Send fails because buffer is full
-    * wait until :cpp:func:`HandleSendCallback` is called
-    * :cpp:func:`HandleSendCallback` is called by socket, since space now available
-    * ``Send (); // Start sending again``
+    SetSendCallback(MakeCallback(&HandleSendCallback));
+    Send();
+    Send();
+    ...
+    // Send fails because buffer is full
+    // Wait until HandleSendCallback is called
+    // HandleSendCallback is called by socket, since space now available
+    Send(); // Start sending again
 
 Similarly, on the receive side, the socket user does not block on
 a call to ``recv()``.  Instead, the application sets a callback
@@ -151,18 +152,18 @@ Packet vs. buffer variants
 
 There are two basic variants of ``Send()`` and ``Recv()`` supported::
 
-  virtual int Send (Ptr<Packet> p) = 0;
-  int Send (const uint8_t* buf, uint32_t size);
+  virtual int Send(Ptr<Packet> p) = 0;
+  int Send(const uint8_t* buf, uint32_t size);
 
-  Ptr<Packet> Recv (void);
-  int Recv (uint8_t* buf, uint32_t size);
+  Ptr<Packet> Recv();
+  int Recv(uint8_t* buf, uint32_t size);
 
 The non-Packet variants are provided for legacy API reasons.  When calling
 the raw buffer variant of :cpp:func:`ns3::Socket::Send`, the buffer is immediately
 written into a Packet and the packet variant is invoked.
 
 Users may find it semantically odd to pass a Packet to a stream socket
-such as TCP.  However, do not let the name bother you; think of 
+such as TCP.  However, do not let the name bother you; think of
 :cpp:class:`ns3::Packet` to be a fancy byte buffer.  There are a few reasons why
 the Packet variants are more likely to be preferred in ns-3:
 
@@ -170,7 +171,7 @@ the Packet variants are more likely to be preferred in ns-3:
   a flow ID or other helper data at the application layer.
 
 * Users can exploit the copy-on-write implementation to avoid
-  memory copies (on the receive side, the conversion back to a 
+  memory copies (on the receive side, the conversion back to a
   ``uint8_t* buf`` may sometimes incur an additional copy).
 
 * Use of Packet is more aligned with the rest of the ns-3 API
@@ -188,10 +189,150 @@ variants has the same effect.  Note that, if some subsequent code tries
 to read the Packet data buffer, the fake buffer will be converted to
 a real (zeroed) buffer on the spot, and the efficiency will be lost there.
 
+.. _Socket-options:
+
+Use of Send() vs. SendTo()
+**************************
+
+There are two variants of methods used to send data to the socket::
+
+  virtual int Send(Ptr<Packet> p, uint32_t flags) = 0;
+
+  virtual int SendTo(Ptr<Packet> p, uint32_t flags,
+                      const Address &toAddress) = 0;
+
+The first method is used if the socket has already been connected
+(``Socket::Connect()``) to a peer address.  In the case of stream-based
+sockets like TCP, the connect call is required to bind the socket to
+a peer address, and thereafter, ``Send()`` is typically used.  In the case of
+datagram-based sockets like UDP, the socket is not required to
+be connected to a peer address before sending, and the socket may be used to
+send data to different destination addresses; in this case, the
+``SendTo()`` method is used to specify the destination address for
+the datagram.
+
 Socket options
 **************
 
-*to be completed*
+.. _Type-of-service:
+
+ToS (Type of Service)
+======================
+
+The native sockets API for ns-3 provides two public methods
+(of the Socket base class)::
+
+    void SetIpTos(uint8_t ipTos);
+    uint8_t GetIpTos() const;
+
+to set and get, respectively, the type of service associated with the socket.
+These methods are equivalent to using the IP_TOS option of BSD sockets.
+Clearly, setting the type of service only applies to sockets using the IPv4 protocol.
+However, users typically do not set the type of service associated with a socket
+through :cpp:func:`ns3::Socket::SetIpTos` because sockets are normally created
+by application helpers and users cannot get a pointer to the sockets.
+Instead, users can create an address of type :cpp:class:`ns3::InetSocketAddress`
+with the desired type of service value and pass it to the application helpers::
+
+    InetSocketAddress destAddress(ipv4Address, udpPort);
+    destAddress.SetTos(tos);
+    OnOffHelper onoff("ns3::UdpSocketFactory", destAddress);
+
+For this to work, the application must eventually call the
+:cpp:func:`ns3::Socket::Connect()` method to connect to the provided
+destAddress and the Connect method of the particular socket type must
+support setting the type of service associated with a socket (by using
+the :cpp:func:`ns3::Socket::SetIpTos()` method). Currently, the socket
+types that support setting the type of service in such a way are
+:cpp:class:`ns3::UdpSocketImpl` and :cpp:class:`ns3::TcpSocketBase`.
+
+The type of service associated with a socket is then used to determine the value
+of the Type of Service field (renamed as Differentiated Services field by RFC
+2474) of the IPv4 header of the packets sent through that socket, as detailed
+in the next sections.
+
+
+Setting the ToS with UDP sockets
+#################################
+
+For IPv4 packets, the ToS field is set according to the following rules:
+
+* If the socket is connected, the ToS field is set to the ToS value associated
+  with the socket.
+
+* If the socket is not connected, the ToS field is set to the value specified
+  in the destination address (of type :cpp:class:`ns3::InetSocketAddress`) passed
+  to :cpp:func:`ns3::Socket::SendTo`, and the ToS value associated with the
+  socket is ignored.
+
+Setting the ToS with TCP sockets
+#################################
+
+For IPv4 packets, the ToS field is set to the ToS value associated with the
+socket.
+
+Priority
+=========
+
+The native sockets API for ns-3 provides two public methods
+(of the Socket base class)::
+
+    void SetPriority(uint8_t priority);
+    uint8_t GetPriority() const;
+
+to set and get, respectively, the priority associated with the socket.
+These methods are equivalent to using the SO_PRIORITY option of BSD sockets.
+Only values in the range 0..6 can be set through the above method.
+
+Note that setting the type of service associated with a socket (by calling
+:cpp:func:`ns3::Socket::SetIpTos()`) also sets the priority for the socket
+to the value that the :cpp:func:`ns3::Socket::IpTos2Priority()` function
+returns when it is passed the type of service value. This function
+is implemented after the Linux rt_tos2priority function, which takes
+an 8-bit value as input and returns a value which is a function of bits 3-6
+(where bit 0 is the most significant bit) of the input value:
+
+=========  ====================
+Bits 3-6   Priority
+=========  ====================
+ 0 to 3    0 (Best Effort)
+ 4 to 7    2 (Bulk)
+ 8 to 11   6 (Interactive)
+ 12 to 15  4 (Interactive Bulk)
+=========  ====================
+
+The rationale is that bits 3-6 of the Type of Service field were interpreted
+as the TOS subfield by (the obsolete) RFC 1349. Readers can refer to the
+doxygen documentation of :cpp:func:`ns3::Socket::IpTos2Priority()`
+for more information, including how DSCP values map onto priority values.
+
+The priority set for a socket (as described above) is then used to determine
+the priority of the packets sent through that socket, as detailed in the next
+sections. Currently, the socket types that support setting the packet priority
+are :cpp:class:`ns3::UdpSocketImpl`, :cpp:class:`ns3::TcpSocketBase` and
+:cpp:class:`ns3::PacketSocket`. The packet priority is used, e.g., by queuing
+disciplines such as the default PfifoFastQueueDisc to classify packets into
+distinct queues.
+
+Setting the priority with UDP sockets
+######################################
+
+If the packet is an IPv4 packet and the value to be inserted in the ToS field
+is not null, then the packet is assigned a priority based on such ToS value
+(according to the :cpp:func:`ns3::Socket::IpTos2Priority` function). Otherwise,
+the priority associated with the socket is assigned to the packet.
+
+Setting the priority with TCP sockets
+######################################
+
+Every packet is assigned a priority equal to the priority associated with the
+socket.
+
+Setting the priority with packet sockets
+#########################################
+
+Every packet is assigned a priority equal to the priority associated with the
+socket.
 
 Socket errno
 ************

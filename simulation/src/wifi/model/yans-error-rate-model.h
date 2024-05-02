@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2005,2006 INRIA
  *
@@ -17,15 +16,14 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
+
 #ifndef YANS_ERROR_RATE_MODEL_H
 #define YANS_ERROR_RATE_MODEL_H
 
-#include <stdint.h>
-#include "wifi-mode.h"
 #include "error-rate-model.h"
-#include "dsss-error-rate-model.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 /**
  * \brief Model the error rate for different modulations.
@@ -41,12 +39,12 @@ namespace ns3 {
  *
  * The 802.11b modulations:
  *    - 1 Mbps mode is based on DBPSK. BER is from equation 5.2-69 from John G. Proakis
- *      Digitial Communications, 2001 edition
+ *      Digital Communications, 2001 edition
  *    - 2 Mbps model is based on DQPSK. Equation 8 from "Tight bounds and accurate
- *      approximations for dqpsk transmission bit error rate", G. Ferrari and G.E. Corazza
+ *      approximations for DQPSK transmission bit error rate", G. Ferrari and G.E. Corazza
  *      ELECTRONICS LETTERS, 40(20):1284-1285, September 2004
  *    - 5.5 Mbps and 11 Mbps are based on equations (18) and (17) from "Properties and
- *      performance of the ieee 802.11b complementarycode-key signal sets",
+ *      performance of the IEEE 802.11b complementary code-key signal sets",
  *      Michael B. Pursley and Thomas C. Royster. IEEE TRANSACTIONS ON COMMUNICATIONS,
  *      57(2):440-449, February 2009.
  *    - More detailed description and validation can be found in
@@ -54,32 +52,120 @@ namespace ns3 {
  */
 class YansErrorRateModel : public ErrorRateModel
 {
-public:
-  static TypeId GetTypeId (void);
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  YansErrorRateModel ();
+    YansErrorRateModel();
 
-  virtual double GetChunkSuccessRate (WifiMode mode, double snr, uint32_t nbits) const;
-
-private:
-  double Log2 (double val) const;
-  double GetBpskBer (double snr, uint32_t signalSpread, uint32_t phyRate) const;
-  double GetQamBer (double snr, unsigned int m, uint32_t signalSpread, uint32_t phyRate) const;
-  uint32_t Factorial (uint32_t k) const;
-  double Binomial (uint32_t k, double p, uint32_t n) const;
-  double CalculatePdOdd (double ber, unsigned int d) const;
-  double CalculatePdEven (double ber, unsigned int d) const;
-  double CalculatePd (double ber, unsigned int d) const;
-  double GetFecBpskBer (double snr, double nbits,
-                        uint32_t signalSpread, uint32_t phyRate,
-                        uint32_t dFree, uint32_t adFree) const;
-  double GetFecQamBer (double snr, uint32_t nbits,
-                       uint32_t signalSpread,
-                       uint32_t phyRate,
-                       uint32_t m, uint32_t dfree,
-                       uint32_t adFree, uint32_t adFreePlusOne) const;
+  private:
+    double DoGetChunkSuccessRate(WifiMode mode,
+                                 const WifiTxVector& txVector,
+                                 double snr,
+                                 uint64_t nbits,
+                                 uint8_t numRxAntennas,
+                                 WifiPpduField field,
+                                 uint16_t staId) const override;
+    /**
+     * Return BER of BPSK with the given parameters.
+     *
+     * \param snr SNR ratio (not dB)
+     * \param signalSpread
+     * \param phyRate
+     *
+     * \return BER of BPSK at the given SNR
+     */
+    double GetBpskBer(double snr, uint32_t signalSpread, uint64_t phyRate) const;
+    /**
+     * Return BER of QAM-m with the given parameters.
+     *
+     * \param snr SNR ratio (not dB)
+     * \param m
+     * \param signalSpread
+     * \param phyRate
+     *
+     * \return BER of BPSK at the given SNR
+     */
+    double GetQamBer(double snr, unsigned int m, uint32_t signalSpread, uint64_t phyRate) const;
+    /**
+     * Return k!
+     *
+     * \param k
+     *
+     * \return k!
+     */
+    uint32_t Factorial(uint32_t k) const;
+    /**
+     * Return Binomial distribution for a given k, p, and n
+     *
+     * \param k
+     * \param p
+     * \param n
+     *
+     * \return a Binomial distribution
+     */
+    double Binomial(uint32_t k, double p, uint32_t n) const;
+    /**
+     * \param ber
+     * \param d
+     *
+     * \return double
+     */
+    double CalculatePdOdd(double ber, unsigned int d) const;
+    /**
+     * \param ber
+     * \param d
+     *
+     * \return double
+     */
+    double CalculatePdEven(double ber, unsigned int d) const;
+    /**
+     * \param ber
+     * \param d
+     *
+     * \return double
+     */
+    double CalculatePd(double ber, unsigned int d) const;
+    /**
+     * \param snr SNR ratio (not dB)
+     * \param nbits
+     * \param signalSpread
+     * \param phyRate
+     * \param dFree
+     * \param adFree
+     *
+     * \return double
+     */
+    double GetFecBpskBer(double snr,
+                         uint64_t nbits,
+                         uint32_t signalSpread,
+                         uint64_t phyRate,
+                         uint32_t dFree,
+                         uint32_t adFree) const;
+    /**
+     * \param snr SNR ratio (not dB)
+     * \param nbits
+     * \param signalSpread
+     * \param phyRate
+     * \param m
+     * \param dfree
+     * \param adFree
+     * \param adFreePlusOne
+     *
+     * \return double
+     */
+    double GetFecQamBer(double snr,
+                        uint64_t nbits,
+                        uint32_t signalSpread,
+                        uint64_t phyRate,
+                        uint32_t m,
+                        uint32_t dfree,
+                        uint32_t adFree,
+                        uint32_t adFreePlusOne) const;
 };
-
 
 } // namespace ns3
 

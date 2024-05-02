@@ -19,11 +19,11 @@ Framework description
 Simulation scripts
 ~~~~~~~~~~~~~~~~~~
 
-The simulation script used for all the E-UTRAN results showed in this documentation is located at ``src/lte/examples/lena-profiling.cc``. It uses the complete PHY and MAC UE/eNodeB implementation with a simplified RLC implementation on top. This script generates a squared grid topology, placing a eNodeB at the centre of each square. UEs attached to this node are scattered randomly across the square (using a random uniform distribution along X and Y axis). If *BuildingPropagationModel* is used, the squares are replaced by rooms. To generate the UL and DL traffic, the RLC implementation always report data to be transfered.
+The simulation script used for all the E-UTRAN results showed in this documentation is located at ``src/lte/examples/lena-profiling.cc``. It uses the complete PHY and MAC UE/eNodeB implementation with a simplified RLC implementation on top. This script generates a squared grid topology, placing a eNodeB at the centre of each square. UEs attached to this node are scattered randomly across the square (using a random uniform distribution along X and Y axis). If *BuildingPropagationModel* is used, the squares are replaced by rooms. To generate the UL and DL traffic, the RLC implementation always report data to be transferred.
 
 .. _fig-eutranProfilingScenario:
 
-.. figure:: figures/eutran-profiling-scenario.*                 
+.. figure:: figures/eutran-profiling-scenario.*
    :align: center
    :width: 80%
 
@@ -33,7 +33,7 @@ For the EPC results, the script is ``src/lte/examples/lena-simple-epc.cc``. It u
 
 .. _fig-epcProfilingScenario:
 
-.. figure:: figures/epc-profiling-scenario.*                 
+.. figure:: figures/epc-profiling-scenario.*
    :align: center
    :width: 80%
 
@@ -44,10 +44,10 @@ RLC and MAC traces are enabled for all UEs and all eNodeBs and those traces are 
 Simulation input parameters
 ---------------------------
 
-The *lena-profiling* simulation script accepts the following input parameters: 
+The *lena-profiling* simulation script accepts the following input parameters:
 
  * ``simTime``: time to simulate (in seconds)
- * ``nUe``: number of UEs attached to each eNodeB 
+ * ``nUe``: number of UEs attached to each eNodeB
  * ``nEnb``: number of eNodeB composing the grid per floor
  * ``nFloors``: number of floors, 0 for *Friis propagation model* (no walls), 1 or greater for *Building propagation model* generating a nFloors-storey building.
  * ``traceDirectory``: destination directory where simulation traces will be stored
@@ -65,24 +65,32 @@ Running time is measured using default Linux shell command **time**. This comman
 Perl script
 ~~~~~~~~~~~
 
-To simplify the process of running the profiling script for a wide range of values and collecting its timing data, a simple Perl script to automate the complete process is provided. It is placed in ``src/lte/test/lte-test-run-time.pl`` for *lena-profiling* and in ``src/lte/epc-test-run-time.pl`` for *lena-simple-epc*. It simply runs a batch of simulations with a range of parameters and stores the timing results in a CSV file called *times.csv* and *epcTimes.csv* respectively. The range of values each parameter sweeps can be modified editing the corresponding script.
+To simplify the process of running the profiling script for a wide range of values and collecting its timing data, a simple Perl script to automate the complete process is provided. It is placed in ``src/lte/test/lte-test-run-time.pl`` for *lena-profiling* and in ``src/lte/epc-test-run-time.pl`` for *lena-simple-epc*. It simply runs a batch of simulations with a range of parameters and stores the timing results in a CSV file called *lteTimes.csv* and *epcTimes.csv* respectively. The range of values each parameter sweeps can be modified editing the corresponding script.
 
 Requirements
 ------------
 
 The following Perl modules are required to use the provided script, all of them available from CPAN:
-* IO::CaptureOutput 
-* Statistics::Descriptive
-* Cwd
+ * IO::CaptureOutput
+ * Statistics::Descriptive
+
+For installing the modules, simply use the following command:
+
+``perl -MCPAN -e 'install moduleName'``
+
+Plotting results
+----------------
+
+To plot the results obtained from running the Perl scripts, two gnuplot scripts are provided, in ``src/lte/test/lte-test-run-plot`` and ``src/lte/test/epc-test-run-plot``. Most of the plots available in this documentation can be reproduced with those, typing the commands ``gnuplot < src/lte/test/lte-test-run-plot``  and  ``gnuplot < src/lte/test/epc-test-run-plot``.
 
 Reference software and equipment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All timing tests had been run in a Intel Pentium IV 3.00 GHz machine with 512 Mb of RAM memory running Fedora Core 10 with a 2.6.27.41-170.2.117 kernel, storing the traces directly to the hard disk.
 
-Also, as a reference configuration, the build has been configured static and optimized. The exact ``waf`` command issued is:
+Also, as a reference configuration, the build has been configured static and optimized. The exact ``ns3`` command issued is:
 
-``CXXFLAGS="-O3 -w" ./waf -d optimized configure --enable-static --enable-examples --enable-modules=lte``
+``CXXFLAGS="-O3 -w" ./ns3 configure -d optimized --enable-static --enable-examples --enable-modules=lte``
 
 
 Results
@@ -100,7 +108,7 @@ This scenario, evaluates the running time for a fixed simulation time (10s) and 
 
 .. _fig-runTime:
 
-.. figure:: figures/runningTime10s.*                 
+.. figure:: figures/runningTime10s.*
    :align: center
    :width: 80%
 
@@ -111,11 +119,11 @@ The figure shows the expected behaviour, since it increases linearly respect the
 Propagation model
 -----------------
 
-The objective of this scenario is to evaluate the impact of the propagation model complexity in the overall run time figures. Therefore, the same scenario is simulated twice: once using the more simple Friis model, once with the more complex Building model. The rest of the parameters (e.g. number of eNodeB and of UE attached per eNodeB) were mantained. The timing results for both models are compared in the following figure.
+The objective of this scenario is to evaluate the impact of the propagation model complexity in the overall run time figures. Therefore, the same scenario is simulated twice: once using the more simple Friis model, once with the more complex Building model. The rest of the parameters (e.g. number of eNodeB and of UE attached per eNodeB) were maintained. The timing results for both models are compared in the following figure.
 
 .. _fig-propagationModel:
 
-.. figure:: figures/propagationModel.*                 
+.. figure:: figures/propagationModel.*
    :align: center
    :width: 80%
 
@@ -131,7 +139,7 @@ In this scenario, for a fixed set of UEs per eNodeB, different simulation times 
 
 .. _fig-simulationTime:
 
-.. figure:: figures/simulationTime.*                 
+.. figure:: figures/simulationTime.*
    :align: center
    :width: 80%
 
@@ -168,7 +176,7 @@ Running time evolution is quadratic since we increase at the same time the numbe
 
    Running time
 
-To estimate the additional complexity of the upper LTE Radio Protocol Stack model and the EPC model, we compare two scenarios using the simplified E-UTRAN version (using only PHY, MAC and the simplified RLC/SM, with no EPC and no ns-3 applications) against the complete E-UTRAN + EPC (with UM RLC, PDCP, end-to-end IP networking and regular ns-3 applications). Both configuration have been tested with the same number of UEs per eNodeB, the same number of eNodeBs, and approximately the same volume of transmitted data (an exact match was not possible due to the different ways in which packets are generated in the two configurations). 
+To estimate the additional complexity of the upper LTE Radio Protocol Stack model and the EPC model, we compare two scenarios using the simplified E-UTRAN version (using only PHY, MAC and the simplified RLC/SM, with no EPC and no ns-3 applications) against the complete E-UTRAN + EPC (with UM RLC, PDCP, end-to-end IP networking and regular ns-3 applications). Both configuration have been tested with the same number of UEs per eNodeB, the same number of eNodeBs, and approximately the same volume of transmitted data (an exact match was not possible due to the different ways in which packets are generated in the two configurations).
 
 .. _fig-epcEutranRunTime:
 
@@ -188,7 +196,7 @@ Finally, again the linearity of the running time as the simulation time increase
 
 .. _fig-epcSimTime:
 
-.. figure:: figures/epcSimulationTime.*                 
+.. figure:: figures/epcSimulationTime.*
    :align: center
    :width: 80%
 

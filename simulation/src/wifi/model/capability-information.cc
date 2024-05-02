@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006 INRIA
  *
@@ -17,78 +16,124 @@
  *
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
+
 #include "capability-information.h"
 
-namespace ns3 {
+namespace ns3
+{
 
-CapabilityInformation::CapabilityInformation ()
-  : m_capability (0)
+CapabilityInformation::CapabilityInformation()
+    : m_capability(0)
 {
 }
 
 void
-CapabilityInformation::SetEss (void)
+CapabilityInformation::SetEss()
 {
-  Set (0);
-  Clear (1);
+    Set(0);
+    Clear(1);
 }
+
 void
-CapabilityInformation::SetIbss (void)
+CapabilityInformation::SetIbss()
 {
-  Clear (0);
-  Set (1);
+    Clear(0);
+    Set(1);
+}
+
+void
+CapabilityInformation::SetShortPreamble(bool shortPreamble)
+{
+    if (shortPreamble)
+    {
+        Set(5);
+    }
+}
+
+void
+CapabilityInformation::SetShortSlotTime(bool shortSlotTime)
+{
+    if (shortSlotTime)
+    {
+        Set(10);
+    }
+}
+
+void
+CapabilityInformation::SetCfPollable()
+{
+    Set(2);
 }
 
 bool
-CapabilityInformation::IsEss (void) const
+CapabilityInformation::IsEss() const
 {
-  return Is (0);
-}
-bool
-CapabilityInformation::IsIbss (void) const
-{
-  return Is (1);
-}
-
-void
-CapabilityInformation::Set (uint8_t n)
-{
-  uint32_t mask = 1 << n;
-  m_capability |= mask;
-}
-
-void
-CapabilityInformation::Clear (uint8_t n)
-{
-  uint32_t mask = 1 << n;
-  m_capability &= ~mask;
+    return Is(0);
 }
 
 bool
-CapabilityInformation::Is (uint8_t n) const
+CapabilityInformation::IsIbss() const
 {
-  uint32_t mask = 1 << n;
-  return (m_capability & mask) == mask;
+    return Is(1);
 }
 
+bool
+CapabilityInformation::IsShortPreamble() const
+{
+    return Is(5);
+}
+
+bool
+CapabilityInformation::IsShortSlotTime() const
+{
+    return Is(10);
+}
+
+bool
+CapabilityInformation::IsCfPollable() const
+{
+    return Is(2);
+}
+
+void
+CapabilityInformation::Set(uint8_t n)
+{
+    uint32_t mask = 1 << n;
+    m_capability |= mask;
+}
+
+void
+CapabilityInformation::Clear(uint8_t n)
+{
+    uint32_t mask = 1 << n;
+    m_capability &= ~mask;
+}
+
+bool
+CapabilityInformation::Is(uint8_t n) const
+{
+    uint32_t mask = 1 << n;
+    return (m_capability & mask) == mask;
+}
 
 uint32_t
-CapabilityInformation::GetSerializedSize (void) const
+CapabilityInformation::GetSerializedSize() const
 {
-  return 2;
-}
-Buffer::Iterator
-CapabilityInformation::Serialize (Buffer::Iterator start) const
-{
-  start.WriteHtolsbU16 (m_capability);
-  return start;
-}
-Buffer::Iterator
-CapabilityInformation::Deserialize (Buffer::Iterator start)
-{
-  m_capability = start.ReadLsbtohU16 ();
-  return start;
+    return 2;
 }
 
+Buffer::Iterator
+CapabilityInformation::Serialize(Buffer::Iterator start) const
+{
+    start.WriteHtolsbU16(m_capability);
+    return start;
+}
+
+Buffer::Iterator
+CapabilityInformation::Deserialize(Buffer::Iterator start)
+{
+    m_capability = start.ReadLsbtohU16();
+    return start;
+}
 
 } // namespace ns3

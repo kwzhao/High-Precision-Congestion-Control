@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006, 2009 INRIA
  * Copyright (c) 2009 MIRKO BANCHI
@@ -16,176 +15,222 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
- * Author: Mirko Banchi <mk.banchi@gmail.com>
+ * Authors: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
+ *          Mirko Banchi <mk.banchi@gmail.com>
  */
+
 #include "adhoc-wifi-mac.h"
 
-#include "ns3/pointer.h"
+#include "qos-txop.h"
+
+#include "ns3/eht-capabilities.h"
+#include "ns3/he-capabilities.h"
+#include "ns3/ht-capabilities.h"
 #include "ns3/log.h"
-#include "ns3/string.h"
-#include "ns3/boolean.h"
-#include "ns3/trace-source-accessor.h"
+#include "ns3/packet.h"
+#include "ns3/vht-capabilities.h"
 
-#include "qos-tag.h"
-#include "mac-low.h"
-#include "dcf-manager.h"
-#include "mac-rx-middle.h"
-#include "mac-tx-middle.h"
-#include "msdu-aggregator.h"
-#include "amsdu-subframe-header.h"
-#include "mgt-headers.h"
+namespace ns3
+{
 
-NS_LOG_COMPONENT_DEFINE ("AdhocWifiMac");
+NS_LOG_COMPONENT_DEFINE("AdhocWifiMac");
 
-namespace ns3 {
-
-NS_OBJECT_ENSURE_REGISTERED (AdhocWifiMac);
+NS_OBJECT_ENSURE_REGISTERED(AdhocWifiMac);
 
 TypeId
-AdhocWifiMac::GetTypeId (void)
+AdhocWifiMac::GetTypeId()
 {
-  static TypeId tid = TypeId ("ns3::AdhocWifiMac")
-    .SetParent<RegularWifiMac> ()
-    .AddConstructor<AdhocWifiMac> ()
-  ;
-  return tid;
+    static TypeId tid = TypeId("ns3::AdhocWifiMac")
+                            .SetParent<WifiMac>()
+                            .SetGroupName("Wifi")
+                            .AddConstructor<AdhocWifiMac>();
+    return tid;
 }
 
-AdhocWifiMac::AdhocWifiMac ()
+AdhocWifiMac::AdhocWifiMac()
 {
-  NS_LOG_FUNCTION (this);
-
-  // Let the lower layers know that we are acting in an IBSS
-  SetTypeOfStation (ADHOC_STA);
+    NS_LOG_FUNCTION(this);
+    // Let the lower layers know that we are acting in an IBSS
+    SetTypeOfStation(ADHOC_STA);
 }
 
-AdhocWifiMac::~AdhocWifiMac ()
+AdhocWifiMac::~AdhocWifiMac()
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 }
 
-void
-AdhocWifiMac::SetAddress (Mac48Address address)
+bool
+AdhocWifiMac::CanForwardPacketsTo(Mac48Address to) const
 {
-  // In an IBSS, the BSSID is supposed to be generated per Section
-  // 11.1.3 of IEEE 802.11. We don't currently do this - instead we
-  // make an IBSS STA a bit like an AP, with the BSSID for frames
-  // transmitted by each STA set to that STA's address.
-  //
-  // This is why we're overriding this method.
-  RegularWifiMac::SetAddress (address);
-  RegularWifiMac::SetBssid (address);
+    return true;
 }
 
 void
-AdhocWifiMac::Enqueue (Ptr<const Packet> packet, Mac48Address to)
+AdhocWifiMac::Enqueue(Ptr<Packet> packet, Mac48Address to)
 {
-  NS_LOG_FUNCTION (this << packet << to);
-  if (m_stationManager->IsBrandNew (to))
+    NS_LOG_FUNCTION(this << packet << to);
+    if (GetWifiRemoteStationManager()->IsBrandNew(to))
     {
-      // In ad hoc mode, we assume that every destination supports all
-      // the rates we support.
-      for (uint32_t i = 0; i < m_phy->GetNModes (); i++)
+        // In ad hoc mode, we assume that every destination supports all the rates we support.
+        if (GetHtSupported())
         {
-          m_stationManager->AddSupportedMode (to, m_phy->GetMode (i));
+            GetWifiRemoteStationManager()->AddAllSupportedMcs(to);
+            GetWifiRemoteStationManager()->AddStationHtCapabilities(
+                to,
+                GetHtCapabilities(SINGLE_LINK_OP_ID));
         }
-      m_stationManager->RecordDisassociated (to);
-    }
-
-  WifiMacHeader hdr;
-
-  // If we are not a QoS STA then we definitely want to use AC_BE to
-  // transmit the packet. A TID of zero will map to AC_BE (through \c
-  // QosUtilsMapTidToAc()), so we use that as our default here.
-  uint8_t tid = 0;
-
-  // For now, a STA that supports QoS does not support non-QoS
-  // associations, and vice versa. In future the STA model should fall
-  // back to non-QoS if talking to a peer that is also non-QoS. At
-  // that point there will need to be per-station QoS state maintained
-  // by the association state machine, and consulted here.
-  if (m_qosSupported)
-    {
-      hdr.SetType (WIFI_MAC_QOSDATA);
-      hdr.SetQosAckPolicy (WifiMacHeader::NORMAL_ACK);
-      hdr.SetQosNoEosp ();
-      hdr.SetQosNoAmsdu ();
-      // Transmission of multiple frames in the same TXOP is not
-      // supported for now
-      hdr.SetQosTxopLimit (0);
-
-      // Fill in the QoS control field in the MAC header
-      tid = QosUtilsGetTidForPacket (packet);
-      // Any value greater than 7 is invalid and likely indicates that
-      // the packet had no QoS tag, so we revert to zero, which'll
-      // mean that AC_BE is used.
-      if (tid >= 7)
+        if (GetVhtSupported(SINGLE_LINK_OP_ID))
         {
-          tid = 0;
+            GetWifiRemoteStationManager()->AddStationVhtCapabilities(
+                to,
+                GetVhtCapabilities(SINGLE_LINK_OP_ID));
         }
-      hdr.SetQosTid (tid);
-    }
-  else
-    {
-      hdr.SetTypeData ();
+        if (GetHeSupported())
+        {
+            GetWifiRemoteStationManager()->AddStationHeCapabilities(
+                to,
+                GetHeCapabilities(SINGLE_LINK_OP_ID));
+        }
+        if (GetEhtSupported())
+        {
+            GetWifiRemoteStationManager()->AddStationEhtCapabilities(
+                to,
+                GetEhtCapabilities(SINGLE_LINK_OP_ID));
+        }
+        GetWifiRemoteStationManager()->AddAllSupportedModes(to);
+        GetWifiRemoteStationManager()->RecordDisassociated(to);
     }
 
-  hdr.SetAddr1 (to);
-  hdr.SetAddr2 (m_low->GetAddress ());
-  hdr.SetAddr3 (GetBssid ());
-  hdr.SetDsNotFrom ();
-  hdr.SetDsNotTo ();
+    WifiMacHeader hdr;
 
-  if (m_qosSupported)
+    // If we are not a QoS STA then we definitely want to use AC_BE to
+    // transmit the packet. A TID of zero will map to AC_BE (through \c
+    // QosUtilsMapTidToAc()), so we use that as our default here.
+    uint8_t tid = 0;
+
+    // For now, a STA that supports QoS does not support non-QoS
+    // associations, and vice versa. In future the STA model should fall
+    // back to non-QoS if talking to a peer that is also non-QoS. At
+    // that point there will need to be per-station QoS state maintained
+    // by the association state machine, and consulted here.
+    if (GetQosSupported())
     {
-      // Sanity check that the TID is valid
-      NS_ASSERT (tid < 8);
-      m_edca[QosUtilsMapTidToAc (tid)]->Queue (packet, hdr);
+        hdr.SetType(WIFI_MAC_QOSDATA);
+        hdr.SetQosAckPolicy(WifiMacHeader::NORMAL_ACK);
+        hdr.SetQosNoEosp();
+        hdr.SetQosNoAmsdu();
+        // Transmission of multiple frames in the same TXOP is not
+        // supported for now
+        hdr.SetQosTxopLimit(0);
+
+        // Fill in the QoS control field in the MAC header
+        tid = QosUtilsGetTidForPacket(packet);
+        // Any value greater than 7 is invalid and likely indicates that
+        // the packet had no QoS tag, so we revert to zero, which will
+        // mean that AC_BE is used.
+        if (tid > 7)
+        {
+            tid = 0;
+        }
+        hdr.SetQosTid(tid);
     }
-  else
+    else
     {
-      m_dca->Queue (packet, hdr);
+        hdr.SetType(WIFI_MAC_DATA);
+    }
+
+    if (GetHtSupported())
+    {
+        hdr.SetNoOrder(); // explicitly set to 0 for the time being since HT control field is not
+                          // yet implemented (set it to 1 when implemented)
+    }
+    hdr.SetAddr1(to);
+    hdr.SetAddr2(GetAddress());
+    hdr.SetAddr3(GetBssid(0));
+    hdr.SetDsNotFrom();
+    hdr.SetDsNotTo();
+
+    if (GetQosSupported())
+    {
+        // Sanity check that the TID is valid
+        NS_ASSERT(tid < 8);
+        GetQosTxop(tid)->Queue(packet, hdr);
+    }
+    else
+    {
+        GetTxop()->Queue(packet, hdr);
     }
 }
 
 void
-AdhocWifiMac::SetLinkUpCallback (Callback<void> linkUp)
+AdhocWifiMac::SetLinkUpCallback(Callback<void> linkUp)
 {
-  NS_LOG_FUNCTION (this);
-  RegularWifiMac::SetLinkUpCallback (linkUp);
+    NS_LOG_FUNCTION(this << &linkUp);
+    WifiMac::SetLinkUpCallback(linkUp);
 
-  // The approach taken here is that, from the point of view of a STA
-  // in IBSS mode, the link is always up, so we immediately invoke the
-  // callback if one is set
-  linkUp ();
+    // The approach taken here is that, from the point of view of a STA
+    // in IBSS mode, the link is always up, so we immediately invoke the
+    // callback if one is set
+    linkUp();
 }
 
 void
-AdhocWifiMac::Receive (Ptr<Packet> packet, const WifiMacHeader *hdr)
+AdhocWifiMac::Receive(Ptr<const WifiMpdu> mpdu, uint8_t linkId)
 {
-  NS_LOG_FUNCTION (this << packet << hdr);
-  NS_ASSERT (!hdr->IsCtl ());
-  Mac48Address from = hdr->GetAddr2 ();
-  Mac48Address to = hdr->GetAddr1 ();
-  if (hdr->IsData ())
+    NS_LOG_FUNCTION(this << *mpdu << +linkId);
+    const WifiMacHeader* hdr = &mpdu->GetHeader();
+    NS_ASSERT(!hdr->IsCtl());
+    Mac48Address from = hdr->GetAddr2();
+    Mac48Address to = hdr->GetAddr1();
+    if (GetWifiRemoteStationManager()->IsBrandNew(from))
     {
-      if (hdr->IsQosData () && hdr->IsQosAmsdu ())
+        // In ad hoc mode, we assume that every destination supports all the rates we support.
+        if (GetHtSupported())
         {
-          NS_LOG_DEBUG ("Received A-MSDU from" << from);
-          DeaggregateAmsduAndForward (packet, hdr);
+            GetWifiRemoteStationManager()->AddAllSupportedMcs(from);
+            GetWifiRemoteStationManager()->AddStationHtCapabilities(
+                from,
+                GetHtCapabilities(SINGLE_LINK_OP_ID));
         }
-      else
+        if (GetVhtSupported(SINGLE_LINK_OP_ID))
         {
-          ForwardUp (packet, from, to);
+            GetWifiRemoteStationManager()->AddStationVhtCapabilities(
+                from,
+                GetVhtCapabilities(SINGLE_LINK_OP_ID));
         }
-      return;
+        if (GetHeSupported())
+        {
+            GetWifiRemoteStationManager()->AddStationHeCapabilities(
+                from,
+                GetHeCapabilities(SINGLE_LINK_OP_ID));
+        }
+        if (GetEhtSupported())
+        {
+            GetWifiRemoteStationManager()->AddStationEhtCapabilities(
+                from,
+                GetEhtCapabilities(SINGLE_LINK_OP_ID));
+        }
+        GetWifiRemoteStationManager()->AddAllSupportedModes(from);
+        GetWifiRemoteStationManager()->RecordDisassociated(from);
+    }
+    if (hdr->IsData())
+    {
+        if (hdr->IsQosData() && hdr->IsQosAmsdu())
+        {
+            NS_LOG_DEBUG("Received A-MSDU from" << from);
+            DeaggregateAmsduAndForward(mpdu);
+        }
+        else
+        {
+            ForwardUp(mpdu->GetPacket()->Copy(), from, to);
+        }
+        return;
     }
 
-  // Invoke the receive handler of our parent class to deal with any
-  // other frames. Specifically, this will handle Block Ack-related
-  // Management Action frames.
-  RegularWifiMac::Receive (packet, hdr);
+    // Invoke the receive handler of our parent class to deal with any
+    // other frames. Specifically, this will handle Block Ack-related
+    // Management Action frames.
+    WifiMac::Receive(mpdu, linkId);
 }
 
 } // namespace ns3

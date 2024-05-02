@@ -1,3 +1,5 @@
+/* Modification */
+// Taken straight from HPCC repo.
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007,2008,2009 INRIA, UDCAST
@@ -79,6 +81,8 @@ private:
   uint16_t m_sport, m_dport;
   uint32_t m_win; // bound of on-the-fly packets
   uint64_t m_baseRtt; // base Rtt
+
+  Time stopTime;
 };
 
 } // namespace ns3

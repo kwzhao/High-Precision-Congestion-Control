@@ -1,4 +1,5 @@
 .. include:: replace.txt
+.. highlight:: cpp
 
 Packets
 -------
@@ -36,12 +37,12 @@ One problem that this design choice raises is that it is difficult to
 pretty-print the packet headers without context. The packet metadata describes
 the type of the headers and trailers which were serialized in the byte buffer.
 The maintenance of metadata is optional and disabled by default. To enable it,
-you must call Packet::EnableMetadata() and this will allow you to get non-empty
+you must call Packet::EnablePrinting() and this will allow you to get non-empty
 output from Packet::Print and Packet::Print.
 
 Also, developers often want to store data in packet objects that is not found
 in the real packets (such as timestamps or flow-ids). The Packet class
-deals with this requirement by storing a set of tags (class Tag).  
+deals with this requirement by storing a set of tags (class Tag).
 We have found two classes of use cases for these tags, which leads to
 two different types of tags. So-called 'byte' tags are used to tag a subset of
 the bytes in the packet byte buffer while 'packet' tags are used to tag the
@@ -54,7 +55,7 @@ written once, read many times, and removed exactly once. An example of a 'byte'
 tag is a FlowIdTag which contains a flow id and is set by the application
 generating traffic. An example of a 'packet' tag is a cross-layer QoS class id
 set by an application and processed by a lower-level MAC layer.
- 
+
 Memory management of Packet objects is entirely automatic and extremely
 efficient: memory for the application-level payload can be modeled by a virtual
 buffer of zero-filled bytes for which memory is never allocated unless
@@ -67,7 +68,7 @@ Packets (messages) are fundamental objects in the simulator and
 their design is important from a performance and resource management
 perspective. There are various ways to design the simulation packet, and
 tradeoffs among the different approaches. In particular, there is a tension
-between ease-of-use, performance, and safe interface design. 
+between ease-of-use, performance, and safe interface design.
 
 Packet design overview
 **********************
@@ -87,12 +88,12 @@ packet Tags, and a PacketMetadata object:
   data structures in the packet.  Each Tag is uniquely identified by its type;
   only one instance of each type of data structure is allowed in a list of tags.
   These tags typically contain per-packet cross-layer information or flow
-  identifiers (i.e., things that you wouldn't find in the bits on the wire). 
+  identifiers (i.e., things that you wouldn't find in the bits on the wire).
 
 .. _packets:
 
 .. figure:: figures/packet.*
-   
+
    Implementation overview of Packet class.
 
 Figure :ref:`packets` is a high-level overview of the Packet implementation;
@@ -112,7 +113,7 @@ designed to avoid the overhead of a vtable in class Packet.
 
 The Packet class is designed to be copied cheaply; the overall design
 is based on Copy on Write (COW).  When there are multiple references
-to a packet object, and there is an operation on one of them, only 
+to a packet object, and there is an operation on one of them, only
 so-called "dirty" operations will trigger a deep copy of the packet:
 
 * ``ns3::Packet::AddHeader()``
@@ -130,7 +131,7 @@ virtual methods listed below:
 * ``ns3::Header::SerializeTo()``
 * ``ns3::Header::DeserializeFrom()``
 * ``ns3::Header::GetSerializedSize()``
-* ``ns3::Header::PrintTo()`` 
+* ``ns3::Header::PrintTo()``
 
 Basically, the first three functions are used to serialize and deserialize
 protocol control information to/from a Buffer. For example, one may define
@@ -146,7 +147,7 @@ output stream.
 Similarly, user-defined Tags can be appended to the packet. Unlike Headers,
 Tags are not serialized into a contiguous buffer but are stored in lists. Tags
 can be flexibly defined to be any type, but there can only be one instance of
-any particular object type in the Tags buffer at any time.  
+any particular object type in the Tags buffer at any time.
 
 Using the packet interface
 **************************
@@ -158,12 +159,12 @@ Creating a new packet
 
 The following command will create a new packet with a new unique Id.::
 
-  Ptr<Packet> pkt = Create<Packet> ();
+  Ptr<Packet> pkt = Create<Packet>();
 
 What is the Uid (unique Id)?  It is an internal id that the system uses to
-identify packets.  It can be fetched via the following method:::
+identify packets.  It can be fetched via the following method::
 
-  uint32_t uid = pkt->GetUid ();
+  uint32_t uid = pkt->GetUid();
 
 But please note the following. This uid is an internal uid and cannot be counted
 on to provide an accurate counter of how many "simulated packets" of a
@@ -179,30 +180,30 @@ payloads that do not actually require a memory allocation (i.e., the packet may
 behave, when delays such as serialization or transmission delays are computed,
 to have a certain number of payload bytes, but the bytes will only be allocated
 on-demand when needed).  The command to do this is, when the packet is
-created:::
+created::
 
-  Ptr<Packet> pkt = Create<Packet> (N);
+  Ptr<Packet> pkt = Create<Packet>(N);
 
-where N is a positive integer.  
+where N is a positive integer.
 
 The packet now has a size of N bytes, which can be verified by the GetSize()
-method:::
+method::
 
   /**
    * \returns the size in bytes of the packet (including the zero-filled
    *          initial payload)
    */
-  uint32_t GetSize (void) const;
+  uint32_t GetSize() const;
 
 You can also initialize a packet with a character buffer. The input
 data is copied and the input buffer is untouched. The constructor
-applied is:::
+applied is::
 
-  Packet (uint8_t const *buffer, uint32_t size);
+  Packet(uint8_t const *buffer, uint32_t size);
 
-Here is an example:::
+Here is an example::
 
-  Ptr<Packet> pkt1 = Create<Packet> (reinterpret_cast<const uint8_t*> ("hello"), 5);
+  Ptr<Packet> pkt1 = Create<Packet>(reinterpret_cast<const uint8_t*>("hello"), 5);
 
 Packets are freed when there are no more references to them, as with all |ns3|
 objects referenced by the Ptr class.
@@ -230,7 +231,7 @@ must inherit from class Header, and implement the following methods:
 
 To see a simple example of how these are done, look at the UdpHeader class
 headers src/internet/model/udp-header.cc. There are many other examples within
-the source code. 
+the source code.
 
 Once you have a header (or you have a preexisting header), the following
 Packet API can be used to add or remove such headers.::
@@ -238,20 +239,22 @@ Packet API can be used to add or remove such headers.::
   /**
    * Add header to this packet. This method invokes the
    * Header::GetSerializedSize and Header::Serialize
-   * methods to reserve space in the buffer and request the 
+   * methods to reserve space in the buffer and request the
    * header to serialize itself in the packet buffer.
    *
    * \param header a reference to the header to add to this packet.
    */
-  void AddHeader (const Header & header);
+  void AddHeader(const Header & header);
   /**
    * Deserialize and remove the header from the internal buffer.
-   * This method invokes Header::Deserialize.
+   *
+   * This method invokes Header::Deserialize(begin) and should be used for
+   * fixed-length headers.
    *
    * \param header a reference to the header to remove from the internal buffer.
    * \returns the number of bytes removed from the packet.
    */
-  uint32_t RemoveHeader (Header &header);
+  uint32_t RemoveHeader(Header &header);
   /**
    * Deserialize but does _not_ remove the header from the internal buffer.
    * This method invokes Header::Deserialize.
@@ -259,20 +262,42 @@ Packet API can be used to add or remove such headers.::
    * \param header a reference to the header to read from the internal buffer.
    * \returns the number of bytes read from the packet.
    */
-  uint32_t PeekHeader (Header &header) const;
+  uint32_t PeekHeader(Header &header) const;
 
 For instance, here are the typical operations to add and remove a UDP header.::
 
- // add header
- Ptr<Packet> packet = Create<Packet> ();
- UdpHeader udpHeader;
- // Fill out udpHeader fields appropriately
- packet->AddHeader (udpHeader);
- ...
- // remove header
- UdpHeader udpHeader;
- packet->RemoveHeader (udpHeader); 
- // Read udpHeader fields as needed
+  // add header
+  Ptr<Packet> packet = Create<Packet>();
+  UdpHeader udpHeader;
+  // Fill out udpHeader fields appropriately
+  packet->AddHeader(udpHeader);
+  ...
+  // remove header
+  UdpHeader udpHeader;
+  packet->RemoveHeader(udpHeader);
+  // Read udpHeader fields as needed
+
+If the header is variable-length, then another variant of RemoveHeader() is
+needed::
+
+  /**
+   * \brief Deserialize and remove the header from the internal buffer.
+   *
+   * This method invokes Header::Deserialize(begin, end) and should be
+   * used for variable-length headers (where the size is determined somehow
+   * by the caller).
+   *
+   * \param header a reference to the header to remove from the internal buffer.
+   * \param size number of bytes to deserialize
+   * \returns the number of bytes removed from the packet.
+   */
+  uint32_t RemoveHeader(Header &header, uint32_t size);
+
+In this case, the caller must figure out and provide the right 'size' as
+an argument (the Deserialization routine may not know when to stop).  An
+example of this type of header would be a series of Type-Length-Value (TLV)
+information elements, where the ending point of the series of TLVs can
+be deduced from the packet length.
 
 Adding and removing Tags
 ++++++++++++++++++++++++
@@ -290,9 +315,6 @@ tagged. However, if the next layer down inserts an IPv4 header, this ByteTag
 will not cover those bytes.  The converse is true for the PacketTag; it covers a
 packet despite the operations on it.
 
-PacketTags are limited in size to 20 bytes. This is a modifiable compile-time
-constant in ``src/network/model/packet-tag-list.h``. ByteTags have no such restriction.
-
 Each tag type must subclass ``ns3::Tag``, and only one instance of
 each Tag type may be in each tag list. Here are a few differences in the
 behavior of packet tags and byte tags.
@@ -309,19 +331,15 @@ behavior of packet tags and byte tags.
 * **Finding and Printing:** Both classes allow you to iterate over all of the
   tags and print them.
 * **Removal:** Users can add and remove the same packet tag multiple times on a
-  single packet (AddPacketTag () and RemovePacketTag ()). The packet However,
+  single packet (AddPacketTag() and RemovePacketTag()). The packet However,
   once a byte tag is added, it can only be removed by stripping all byte tags
   from the packet. Removing one of possibly multiple byte tags is not supported
-  by the current API.  
-
-As of *ns-3.5* and later, Tags are not serialized and deserialized to a buffer when
-``Packet::Serialize ()`` and ``Packet::Deserialize ()`` are called; this is an
-open bug.
+  by the current API.
 
 If a user wants to take an existing packet object and reuse it as a new packet,
 he or she should remove all byte tags and packet tags before doing so. An
 example is the UdpEchoServer class, which takes the received packet and "turns
-it around" to send back to the echo client. 
+it around" to send back to the echo client.
 
 The Packet API for byte tags is given below.::
 
@@ -331,7 +349,7 @@ The Packet API for byte tags is given below.::
    * Tag each byte included in this packet with the
    * new tag.
    *
-   * Note that adding a tag is a const operation which is pretty 
+   * Note that adding a tag is a const operation which is pretty
    * un-intuitive. The rationale is that the content and behavior of
    * a packet is _not_ changed when a tag is added to a packet: any
    * code which was not aware of the new tag is going to work just
@@ -342,24 +360,24 @@ The Packet API for byte tags is given below.::
    * totally evil to allow a trace sink to modify the content of a
    * packet).
    */
-  void AddByteTag (const Tag &tag) const;
+  void AddByteTag(const Tag &tag) const;
   /**
    * \returns an iterator over the set of byte tags included in this packet.
    */
-  ByteTagIterator GetByteTagIterator (void) const;
+  ByteTagIterator GetByteTagIterator() const;
   /**
    * \param tag the tag to search in this packet
    * \returns true if the requested tag type was found, false otherwise.
    *
-   * If the requested tag type is found, it is copied in the user's 
+   * If the requested tag type is found, it is copied in the user's
    * provided tag instance.
    */
-  bool FindFirstMatchingByteTag (Tag &tag) const;
-  
+  bool FindFirstMatchingByteTag(Tag &tag) const;
+
   /**
    * Remove all the tags stored in this packet.
    */
-  void RemoveAllByteTags (void);
+  void RemoveAllByteTags();
 
   /**
    * \param os output stream in which the data should be printed.
@@ -367,7 +385,7 @@ The Packet API for byte tags is given below.::
    * Iterate over the tags present in this packet, and
    * invoke the Print method of each tag stored in the packet.
    */
-  void PrintByteTags (std::ostream &os) const;
+  void PrintByteTags(std::ostream &os) const;
 
 The Packet API for packet tags is given below.::
 
@@ -381,7 +399,7 @@ The Packet API for packet tags is given below.::
    * modify the state of this packet, which is fairly
    * un-intuitive.
    */
-  void AddPacketTag (const Tag &tag) const;
+  void AddPacketTag(const Tag &tag) const;
   /**
    * \param tag the tag to remove from this packet
    * \returns true if the requested tag is found, false
@@ -390,7 +408,7 @@ The Packet API for packet tags is given below.::
    * Remove a tag from this packet. This method calls
    * Tag::Deserialize if the tag is found.
    */
-  bool RemovePacketTag (Tag &tag);
+  bool RemovePacketTag(Tag &tag);
   /**
    * \param tag the tag to search in this packet
    * \returns true if the requested tag is found, false
@@ -398,12 +416,12 @@ The Packet API for packet tags is given below.::
    *
    * Search a matching tag and call Tag::Deserialize if it is found.
    */
-  bool PeekPacketTag (Tag &tag) const;
+  bool PeekPacketTag(Tag &tag) const;
   /**
    * Remove all packet tags.
    */
-  void RemoveAllPacketTags (void);
-  
+  void RemoveAllPacketTags();
+
   /**
    * \param os the stream in which we want to print data.
    *
@@ -412,30 +430,30 @@ The Packet API for packet tags is given below.::
    * \sa Packet::AddPacketTag, Packet::RemovePacketTag, Packet::PeekPacketTag,
    *  Packet::RemoveAllPacketTags
    */
-  void PrintPacketTags (std::ostream &os) const;
-  
+  void PrintPacketTags(std::ostream &os) const;
+
   /**
    * \returns an object which can be used to iterate over the list of
    *  packet tags.
    */
-  PacketTagIterator GetPacketTagIterator (void) const;
+  PacketTagIterator GetPacketTagIterator() const;
 
 Here is a simple example illustrating the use of tags from the
-code in ``src/internet/model/udp-socket-impl.cc``:::
+code in ``src/internet/model/udp-socket-impl.cc``::
 
   Ptr<Packet> p;  // pointer to a pre-existing packet
   SocketIpTtlTag tag
-  tag.SetTtl (m_ipMulticastTtl); // Convey the TTL from UDP layer to IP layer
-  p->AddPacketTag (tag);
+  tag.SetTtl(m_ipMulticastTtl); // Convey the TTL from UDP layer to IP layer
+  p->AddPacketTag(tag);
 
-This tag is read at the IP layer, then stripped (``src/internet/model/ipv4-l3-protocol.cc``):::
+This tag is read at the IP layer, then stripped (``src/internet/model/ipv4-l3-protocol.cc``)::
 
   uint8_t ttl = m_defaultTtl;
   SocketIpTtlTag tag;
-  bool found = packet->RemovePacketTag (tag);
+  bool found = packet->RemovePacketTag(tag);
   if (found)
     {
-      ttl = tag.GetTtl ();
+      ttl = tag.GetTtl();
     }
 
 Fragmentation and concatenation
@@ -443,17 +461,17 @@ Fragmentation and concatenation
 
 Packets may be fragmented or merged together.  For example, to fragment a packet
 ``p`` of 90 bytes into two packets, one containing the first 10 bytes and the
-other containing the remaining 80, one may call the following code:::
+other containing the remaining 80, one may call the following code::
 
-  Ptr<Packet> frag0 = p->CreateFragment (0, 10);
-  Ptr<Packet> frag1 = p->CreateFragment (10, 90);
+  Ptr<Packet> frag0 = p->CreateFragment(0, 10);
+  Ptr<Packet> frag1 = p->CreateFragment(10, 90);
 
 As discussed above, the packet tags from ``p`` will follow to both packet
 fragments, and the byte tags will follow the byte ranges as needed.
 
-Now, to put them back together:::
+Now, to put them back together::
 
-  frag0->AddAtEnd (frag1);
+  frag0->AddAtEnd(frag1);
 
 Now frag0 should be equivalent to the original packet ``p``.  If, however, there
 were operations on the fragments before being reassembled (such as tag
@@ -480,10 +498,10 @@ present at the front of the packet. These errors will be detected and will abort
 the program.
 
 To enable this operation, users will typically insert one or both of these
-statements at the beginning of their programs:::
+statements at the beginning of their programs::
 
-  Packet::EnablePrinting ();
-  Packet::EnableChecking ();
+  Packet::EnablePrinting();
+  Packet::EnableChecking();
 
 Sample programs
 ***************
@@ -496,7 +514,7 @@ Implementation details
 Private member variables
 ++++++++++++++++++++++++
 
-A Packet object's interface provides access to some private data:::
+A Packet object's interface provides access to some private data::
 
   Buffer m_buffer;
   ByteTagList m_byteTagList;
@@ -536,7 +554,7 @@ The byte buffer is implemented as follows: ::
         uint32_t m_dirtyStart;
         uint32_t m_dirtySize;
         uint8_t m_data[1];
-    }; 
+    };
     struct BufferData *m_data;
     uint32_t m_zeroAreaSize;
     uint32_t m_start;
@@ -559,7 +577,7 @@ The byte buffer is implemented as follows: ::
 .. _buffer:
 
 .. figure:: figures/buffer.*
-   
+
    Implementation overview of a packet's byte Buffer.
 
 
@@ -575,10 +593,10 @@ Tags implementation
 
 (XXX revise me)
 
-Tags are implemented by a single pointer which points to the start of a 
-linked list ofTagData data structures. Each TagData structure points 
-to the next TagData in the list (its next pointer contains zero to 
-indicate the end of the linked list). Each TagData contains an integer 
+Tags are implemented by a single pointer which points to the start of a
+linked list ofTagData data structures. Each TagData structure points
+to the next TagData in the list (its next pointer contains zero to
+indicate the end of the linked list). Each TagData contains an integer
 unique id which identifies the type of the tag stored in the TagData.::
 
     struct TagData {
@@ -587,7 +605,7 @@ unique id which identifies the type of the tag stored in the TagData.::
         uint32_t m_count;
         uint8_t m_data[Tags::SIZE];
     };
-    class Tags {        
+    class Tags {
         struct TagData *m_next;
     };
 
@@ -600,8 +618,8 @@ copying the TagData head pointer and incrementing its reference count.
 
 Tags are found by the unique mapping between the Tag type and
 its underlying id. This is why at most one instance of any Tag
-can be stored in a packet. The mapping between Tag type and 
-underlying id is performed by a registration as follows:::
+can be stored in a packet. The mapping between Tag type and
+underlying id is performed by a registration as follows::
 
     /* A sample Tag implementation
      */
@@ -657,4 +675,3 @@ Dirty operations will always be slower than non-dirty operations, sometimes by
 several orders of magnitude. However, even the dirty operations have been
 optimized for common use-cases which means that most of the time, these
 operations will not trigger data copies and will thus be still very fast.
-

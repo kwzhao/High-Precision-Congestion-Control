@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Adrian Sai-wah Tam
  *
@@ -20,97 +19,140 @@
 
 #include "tcp-option-ts.h"
 
-namespace ns3 {
+#include "ns3/log.h"
 
-NS_OBJECT_ENSURE_REGISTERED (TcpOptionTS);
+namespace ns3
+{
 
-uint8_t TcpOptionTS::TimeStampLength = 10;
+NS_LOG_COMPONENT_DEFINE("TcpOptionTS");
 
-TcpOptionTS::TcpOptionTS ()
-  : m_timestamp (0), m_echo (0)
+NS_OBJECT_ENSURE_REGISTERED(TcpOptionTS);
+
+TcpOptionTS::TcpOptionTS()
+    : TcpOption(),
+      m_timestamp(0),
+      m_echo(0)
 {
 }
 
-TcpOptionTS::~TcpOptionTS ()
+TcpOptionTS::~TcpOptionTS()
 {
-}
-
-TypeId
-TcpOptionTS::GetTypeId (void)
-{
-  static TypeId tid = TypeId ("ns3::TcpOptionTS")
-    .SetParent<TcpOption> ()
-  ;
-  return tid;
 }
 
 TypeId
-TcpOptionTS::GetInstanceTypeId (void) const
+TcpOptionTS::GetTypeId()
 {
-  return GetTypeId ();
+    static TypeId tid = TypeId("ns3::TcpOptionTS")
+                            .SetParent<TcpOption>()
+                            .SetGroupName("Internet")
+                            .AddConstructor<TcpOptionTS>();
+    return tid;
 }
 
-std::string
-TcpOptionTS::Str (void) const
+TypeId
+TcpOptionTS::GetInstanceTypeId() const
 {
-  std::ostringstream os;
-  os << "Timestamp " << m_timestamp << " Echo " << m_echo;
-  return os.str();
-}
-
-uint32_t
-TcpOptionTS::GetSerializedSize (void) const
-{
-  return TimeStampLength;
+    return GetTypeId();
 }
 
 void
-TcpOptionTS::Serialize (Buffer::Iterator &start) const
+TcpOptionTS::Print(std::ostream& os) const
 {
-  start.WriteU8 (TcpOption::TIME_STAMP); // Kind
-  start.WriteU8 (TimeStampLength); // Length
-  start.WriteHtonU32 (m_timestamp); // Local timestamp
-  start.WriteHtonU32 (m_echo); // Echo timestamp
+    os << m_timestamp << ";" << m_echo;
 }
 
 uint32_t
-TcpOptionTS::DoDeserialize (Buffer::Iterator &start)
+TcpOptionTS::GetSerializedSize() const
 {
-  uint8_t size = start.ReadU8 ();
-  NS_ASSERT (size == TimeStampLength);
-  m_timestamp = start.ReadNtohU32 ();
-  m_echo = start.ReadNtohU32 ();
-  return TimeStampLength;
-}
-
-TcpOption::Kind
-TcpOptionTS::GetKind (void) const
-{
-  return TcpOption::TIME_STAMP;
-}
-
-uint32_t
-TcpOptionTS::GetTimestamp (void) const
-{
-  return m_timestamp;
-}
-
-uint32_t
-TcpOptionTS::GetEcho (void) const
-{
-  return m_echo;
+    return 10;
 }
 
 void
-TcpOptionTS::SetTimestamp (uint32_t ts)
+TcpOptionTS::Serialize(Buffer::Iterator start) const
 {
-  m_timestamp = ts;
+    Buffer::Iterator i = start;
+    i.WriteU8(GetKind());        // Kind
+    i.WriteU8(10);               // Length
+    i.WriteHtonU32(m_timestamp); // Local timestamp
+    i.WriteHtonU32(m_echo);      // Echo timestamp
+}
+
+uint32_t
+TcpOptionTS::Deserialize(Buffer::Iterator start)
+{
+    Buffer::Iterator i = start;
+
+    uint8_t readKind = i.ReadU8();
+    if (readKind != GetKind())
+    {
+        NS_LOG_WARN("Malformed Timestamp option");
+        return 0;
+    }
+
+    uint8_t size = i.ReadU8();
+    if (size != 10)
+    {
+        NS_LOG_WARN("Malformed Timestamp option");
+        return 0;
+    }
+    m_timestamp = i.ReadNtohU32();
+    m_echo = i.ReadNtohU32();
+    return GetSerializedSize();
+}
+
+uint8_t
+TcpOptionTS::GetKind() const
+{
+    return TcpOption::TS;
+}
+
+uint32_t
+TcpOptionTS::GetTimestamp() const
+{
+    return m_timestamp;
+}
+
+uint32_t
+TcpOptionTS::GetEcho() const
+{
+    return m_echo;
 }
 
 void
-TcpOptionTS::SetEcho (uint32_t ts)
+TcpOptionTS::SetTimestamp(uint32_t ts)
 {
-  m_echo = ts;
+    m_timestamp = ts;
+}
+
+void
+TcpOptionTS::SetEcho(uint32_t ts)
+{
+    m_echo = ts;
+}
+
+uint32_t
+TcpOptionTS::NowToTsValue()
+{
+    uint64_t now = (uint64_t)Simulator::Now().GetMilliSeconds();
+
+    // high: (now & 0xFFFFFFFF00000000ULL) >> 32;
+    // low: now & 0xFFFFFFFF
+    return (now & 0xFFFFFFFF);
+}
+
+Time
+TcpOptionTS::ElapsedTimeFromTsValue(uint32_t echoTime)
+{
+    uint64_t now64 = (uint64_t)Simulator::Now().GetMilliSeconds();
+    uint32_t now32 = now64 & 0xFFFFFFFF;
+
+    Time ret = Seconds(0.0);
+    if (now32 > echoTime)
+    {
+        ret = MilliSeconds(now32 - echoTime);
+    }
+
+    return ret;
 }
 
 } // namespace ns3

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -20,136 +19,193 @@
 #ifndef GLOBAL_VALUE_H
 #define GLOBAL_VALUE_H
 
+#include "attribute.h"
+#include "ptr.h"
+
 #include <string>
 #include <vector>
-#include "ptr.h"
-#include "attribute.h"
 
+/**
+ * \file
+ * \ingroup core
+ * ns3::GlobalValue declaration.
+ */
 
-namespace ns3 {
+namespace ns3
+{
+
+/* Forward declaration */
+namespace tests
+{
+class GlobalValueTestCase;
+}
 
 /**
  * \ingroup Core
  *
- * \brief hold a so-called 'global value'.
+ * \brief Hold a so-called 'global value'.
  *
- * Instances of this class are expected to be allocated as static 
+ * A GlobalValue will get its value from (in order):
+ *   - The initial value configured where it is defined,
+ *   - From the \c NS_GLOBAL_VALUE environment variable,
+ *   - From the command line,
+ *   - By explicit call to SetValue() or Bind().
+ *
+ * Instances of this class are expected to be allocated as static
  * global variables and should be used to store configurable global state.
- * GlobalValues can be set directly by calling ns3::GlobalValue::SetValue
- * but they can also be set through the NS_GLOBAL_VALUE environment variable.
- * For example, NS_GLOBAL_VALUE='Name=Value;OtherName=OtherValue;' would set
- * global values Name and OtherName to Value and OtherValue respectively. 
+ * For example:
+ * \code
+ *   // source.cc:
+ *   static GlobalValue g_myGlobal =
+ *     GlobalValue ("myGlobal", "My global value for ...",
+ *                  IntegerValue (12),
+ *                  MakeIntegerChecker ());
+ * \endcode
  *
- * Users of the ns3::CommandLine class also get the ability to set global 
- * values through commandline arguments to their program: --Name=Value will
- * set global value Name to Value.
+ * GlobalValues can be set directly by calling GlobalValue::SetValue()
+ * but they can also be set through the \c NS_GLOBAL_VALUE environment variable.
+ * For example, \c NS_GLOBAL_VALUE='Name=Value;OtherName=OtherValue;' would set
+ * global values \c Name and \c OtherName to \c Value and \c OtherValue,
+ * respectively.
+ *
+ * Users of the CommandLine class also get the ability to set global
+ * values through command line arguments to their program:
+ * \c --Name=Value will set global value \c Name to \c Value.
  */
 class GlobalValue
 {
-  typedef std::vector<GlobalValue *> Vector;
-public:
-  typedef Vector::const_iterator Iterator;
+    /** Container type for holding all the GlobalValues. */
+    typedef std::vector<GlobalValue*> Vector;
 
-  /**
-   * \param name the name of this global value.
-   * \param help some help text which describes the purpose of this
-   *        global value.
-   * \param initialValue the value to assign to this global value
-   *        during construction.
-   * \param checker a pointer to an AttributeChecker which can verify
-   *        that any user-supplied value to override the initial
-   *        value matches the requested type constraints.
-   */
-  GlobalValue (std::string name, std::string help,
-               const AttributeValue &initialValue,
-               Ptr<const AttributeChecker> checker);
+  public:
+    /** Iterator type for the list of all global values. */
+    typedef Vector::const_iterator Iterator;
 
-  /**
-   * \returns the name of this GlobalValue.
-   */
-  std::string GetName (void) const;
-  /**
-   * \returns the help text of this GlobalValue.
-   */
-  std::string GetHelp (void) const;
-  /**
-   * \returns the current value of this GlobalValue.
-   */
-  void GetValue (AttributeValue &value) const;
-  /**
-   * \returns the checker associated to this GlobalValue.
-   */
-  Ptr<const AttributeChecker> GetChecker (void) const;
-  /**
-   * \param value the new value to set in this GlobalValue.
-   */
-  bool SetValue (const AttributeValue &value);
+    /**
+     * Constructor.
+     * \param [in] name the name of this global value.
+     * \param [in] help some help text which describes the purpose of this
+     *        global value.
+     * \param [in] initialValue the value to assign to this global value
+     *        during construction.
+     * \param [in] checker a pointer to an AttributeChecker which can verify
+     *        that any user-supplied value to override the initial
+     *        value matches the requested type constraints.
+     */
+    GlobalValue(std::string name,
+                std::string help,
+                const AttributeValue& initialValue,
+                Ptr<const AttributeChecker> checker);
 
-  void ResetInitialValue (void);
+    /**
+     * Get the name.
+     * \returns The name of this GlobalValue.
+     */
+    std::string GetName() const;
+    /**
+     * Get the help string.
+     * \returns The help text of this GlobalValue.
+     */
+    std::string GetHelp() const;
+    /**
+     * Get the value.
+     * \param [out] value The AttributeValue to set to the value
+     *                    of this GlobalValue
+     */
+    void GetValue(AttributeValue& value) const;
+    /**
+     * Get the AttributeChecker.
+     * \returns The checker associated to this GlobalValue.
+     */
+    Ptr<const AttributeChecker> GetChecker() const;
+    /**
+     * Set the value of this GlobalValue.
+     * \param [in] value the new value to set in this GlobalValue.
+     * \returns \c true if the Global Value was set successfully.
+     */
+    bool SetValue(const AttributeValue& value);
 
-  /**
-   * \param name the name of the global value
-   * \param value the value to set in the requested global value.
-   *
-   * Iterate over the set of GlobalValues until a matching name is found
-   * and then set its value with GlobalValue::SetValue.
-   *
-   * This method cannot fail. It will crash if the input is not valid.
-   */
-  static void Bind (std::string name, const AttributeValue &value);
+    /** Reset to the initial value. */
+    void ResetInitialValue();
 
-  /**
-   * \param name the name of the global value
-   * \param value the value to set in the requested global value.
-   * \returns true if the value could be set successfully, false otherwise.
-   *
-   * Iterate over the set of GlobalValues until a matching name is found
-   * and then set its value with GlobalValue::SetValue.
-   */
-  static bool BindFailSafe (std::string name, const AttributeValue &value);
+    /**
+     * Iterate over the set of GlobalValues until a matching name is found
+     * and then set its value with GlobalValue::SetValue.
+     *
+     * \param [in] name the name of the global value
+     * \param [in] value the value to set in the requested global value.
+     *
+     * This method cannot fail. It will crash if the input is not valid.
+     */
+    static void Bind(std::string name, const AttributeValue& value);
 
-  /**
-   * \returns an iterator which represents a pointer to the first GlobalValue registered.
-   */
-  static Iterator Begin (void);
-  /**
-   * \returns an iterator which represents a pointer to the last GlobalValue registered.
-   */
-  static Iterator End (void);
+    /**
+     * Iterate over the set of GlobalValues until a matching name is found
+     * and then set its value with GlobalValue::SetValue.
+     *
+     * \param [in] name the name of the global value
+     * \param [in] value the value to set in the requested global value.
+     * \returns \c true if the value could be set successfully,
+     *          \c false otherwise.
+     */
+    static bool BindFailSafe(std::string name, const AttributeValue& value);
 
+    /**
+     * The Begin iterator.
+     * \returns An iterator which represents a pointer to the first GlobalValue registered.
+     */
+    static Iterator Begin();
+    /**
+     * The End iterator.
+     * \returns An iterator which represents a pointer to the last GlobalValue registered.
+     */
+    static Iterator End();
 
-  /** 
-   * finds the GlobalValue with the given name and returns its value
-   * 
-   * @param name the name of the GlobalValue to be found
-   * @param value where to store the value of the found GlobalValue
-   * 
-   * @return true if the GlobalValue was found, false otherwise
-   */
-  static bool GetValueByNameFailSafe (std::string name, AttributeValue &value);
+    /**
+     * Finds the GlobalValue with the given name and returns its value
+     *
+     * \param [in] name the name of the GlobalValue to be found
+     * \param [out] value where to store the value of the found GlobalValue
+     *
+     * \return \c true if the GlobalValue was found, \c false otherwise
+     */
+    static bool GetValueByNameFailSafe(std::string name, AttributeValue& value);
 
-  /** 
-   * finds the GlobalValue with the given name and returns its
-   * value. This method cannot fail, i.e., it will trigger a
-   * NS_FATAL_ERROR if the requested GlobalValue is not found.
-   * 
-   * @param name the name of the GlobalValue to be found
-   * @param value where to store the value of the found GlobalValue
-   * 
-   */
-  static void GetValueByName (std::string name, AttributeValue &value);
+    /**
+     * Finds the GlobalValue with the given name and returns its
+     * value.
+     *
+     * This method cannot fail, i.e., it will trigger a
+     * NS_FATAL_ERROR if the requested GlobalValue is not found.
+     *
+     * \param [in] name the name of the GlobalValue to be found
+     * \param [out] value where to store the value of the found GlobalValue
+     */
+    static void GetValueByName(std::string name, AttributeValue& value);
 
+  private:
+    /** Test case needs direct access to GetVector() */
+    friend class tests::GlobalValueTestCase;
 
-private:
-  friend class GlobalValueTestCase;
+    /**
+     * Get the static vector of all GlobalValues.
+     *
+     * \returns The vector.
+     */
+    static Vector* GetVector();
+    /** Initialize from the \c NS_GLOBAL_VALUE environment variable. */
+    void InitializeFromEnv();
 
-  static Vector *GetVector (void);
-  void InitializeFromEnv (void);
-  std::string m_name;
-  std::string m_help;
-  Ptr<AttributeValue> m_initialValue;
-  Ptr<AttributeValue> m_currentValue;
-  Ptr<const AttributeChecker> m_checker;
+    /** The name of this GlobalValue. */
+    std::string m_name;
+    /** The help string. */
+    std::string m_help;
+    /** The initial value. */
+    Ptr<AttributeValue> m_initialValue;
+    /** The current value. */
+    Ptr<AttributeValue> m_currentValue;
+    /** The AttributeChecker for this GlobalValue. */
+    Ptr<const AttributeChecker> m_checker;
 };
 
 } // namespace ns3

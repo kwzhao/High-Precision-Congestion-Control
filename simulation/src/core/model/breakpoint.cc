@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006,2007 INRIA, INESC Porto
  *
@@ -20,42 +19,51 @@
  */
 
 #include "breakpoint.h"
-#include "ns3/core-config.h"
+
 #include "log.h"
+
+#include "ns3/core-config.h"
 #ifdef HAVE_SIGNAL_H
-# include <signal.h>
+#include <signal.h>
 #endif
 
-NS_LOG_COMPONENT_DEFINE ("Breakpoint");
+namespace ns3
+{
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup breakpoint
+ * ns3::BreakpointFallback function implementation.
+ */
 
-#if defined (HAVE_SIGNAL_H) && defined (SIGTRAP)
+NS_LOG_COMPONENT_DEFINE("Breakpoint");
+
+#if defined(HAVE_SIGNAL_H) && defined(SIGTRAP)
 
 void
-BreakpointFallback (void)
+BreakpointFallback()
 {
-  NS_LOG_FUNCTION_NOARGS ();
+    NS_LOG_FUNCTION_NOARGS();
 
-  raise (SIGTRAP);
+    raise(SIGTRAP);
 }
 
 #else
 
 void
-BreakpointFallback (void)
+BreakpointFallback()
 {
-  //NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION_NOARGS();
 
-  int *a = 0;
-  /**
-   * we test here to allow a debugger to change the value of
-   * the variable 'a' to allow the debugger to avoid the 
-   * subsequent segfault.
-   */
-  if (a == 0)
+    int* a = nullptr;
+    /**
+     * we test here to allow a debugger to change the value of
+     * the variable 'a' to allow the debugger to avoid the
+     * subsequent segfault.
+     */
+    if (a == nullptr)
     {
-      *a = 0;
+        *a = 0;
     }
 }
 

@@ -1,3 +1,5 @@
+/* Modification */
+// Taken straight from HPCC repo.
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007,2008,2009 INRIA, UDCAST
@@ -87,11 +89,15 @@ RdmaClient::GetTypeId (void)
                    UintegerValue (0),
                    MakeUintegerAccessor (&RdmaClient::m_baseRtt),
                    MakeUintegerChecker<uint64_t> ())
-    .AddAttribute ("FlowId",
+  .AddAttribute ("FlowId",
                    "Flow ID",
                    UintegerValue (0),
                    MakeUintegerAccessor (&RdmaClient::m_flowId),
                    MakeUintegerChecker<uint32_t> ())
+	.AddAttribute ("stopTime", "stopTime", TimeValue (Simulator::GetMaximumSimulationTime()),
+				                      MakeTimeAccessor (&RdmaClient::stopTime),
+				                      MakeTimeChecker ())
+
   ;
   return tid;
 }
@@ -150,6 +156,15 @@ void RdmaClient::StartApplication (void)
   rdma->AddQueuePair(m_flowId, m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
 }
 
+// void RdmaClient::StartApplication (void)
+// {
+//   NS_LOG_FUNCTION_NOARGS ();
+//   // get RDMA driver and add up queue pair
+//   Ptr<Node> node = GetNode();
+//   Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
+//   rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this),stopTime);
+// }
+
 void RdmaClient::StopApplication ()
 {
   NS_LOG_FUNCTION_NOARGS ();
@@ -157,3 +172,4 @@ void RdmaClient::StopApplication ()
 }
 
 } // Namespace ns3
+/* Modification */

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
@@ -23,26 +22,37 @@
 
 #include "ns3/object.h"
 
-namespace ns3 {
+namespace ns3
+{
 
+/**
+ * \ingroup uan
+ *
+ * UAN Noise Model base class.
+ */
 class UanNoiseModel : public Object
 {
-public:
-  static TypeId GetTypeId (void);
+  public:
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
-  /**
-   * \param fKhz Frequency in kHz
-   * \returns Noise power in dB re 1uPa/Hz
-   */
-  virtual double GetNoiseDbHz (double fKhz) const = 0;
+    /**
+     * Compute the noise power at a given frequency.
+     *
+     * \param fKhz Frequency in kHz.
+     * \return Noise power in dB re 1uPa/Hz.
+     */
+    virtual double GetNoiseDbHz(double fKhz) const = 0;
 
-  /**
-   * Clears all pointer references
-   */
-  virtual void Clear (void);
+    /** Clear all pointer references. */
+    virtual void Clear();
 
-  virtual void DoDispose (void);
-};
+    void DoDispose() override;
+
+}; // class UanNoiseModel
 
 } // namespace ns3
 

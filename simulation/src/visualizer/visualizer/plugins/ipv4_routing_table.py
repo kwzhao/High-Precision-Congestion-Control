@@ -1,64 +1,78 @@
-import gtk
+from gi.repository import Gtk
 
-import ns.core
-import ns.network
-import ns.internet
+try:
+    from ns3.visualizer.base import InformationWindow
+except ModuleNotFoundError:
+    from visualizer.base import InformationWindow
 
-from visualizer.base import InformationWindow
-
+## ShowIpv4RoutingTable class
 class ShowIpv4RoutingTable(InformationWindow):
+    ## @var win
+    #  window
+    ## @var visualizer
+    #  visualizer
+    ## @var node_index
+    #  node index
+    ## @var table_model
+    #  table model
     (
         COLUMN_DESTINATION,
         COLUMN_NEXT_HOP,
         COLUMN_INTERFACE,
         COLUMN_TYPE,
         COLUMN_PRIO
-        ) = range(5)
+    ) = range(5)
 
     def __init__(self, visualizer, node_index):
+        """!
+        Initializer
+        @param self this object
+        @param visualizer visualizer object
+        @param node_index the node index
+        """
         InformationWindow.__init__(self)
-        self.win = gtk.Dialog(parent=visualizer.window,
-                              flags=gtk.DIALOG_DESTROY_WITH_PARENT|gtk.DIALOG_NO_SEPARATOR,
-                              buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        self.win = Gtk.Dialog(parent=visualizer.window,
+                              flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                              buttons=("_Close", Gtk.ResponseType.CLOSE))
         self.win.connect("response", self._response_cb)
-        self.win.set_title("IPv4 routing table for node %i" % node_index) 
+        self.win.set_title("IPv4 routing table for node %i" % node_index)
         self.visualizer = visualizer
         self.node_index = node_index
 
-        self.table_model = gtk.ListStore(str, str, str, str, int)
+        self.table_model = Gtk.ListStore(str, str, str, str, int)
 
-        treeview = gtk.TreeView(self.table_model)
+        treeview = Gtk.TreeView(self.table_model)
         treeview.show()
-        sw = gtk.ScrolledWindow()
-        sw.set_properties(hscrollbar_policy=gtk.POLICY_AUTOMATIC,
-                          vscrollbar_policy=gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_properties(hscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
+                          vscrollbar_policy=Gtk.PolicyType.AUTOMATIC)
         sw.show()
         sw.add(treeview)
         self.win.vbox.add(sw)
         self.win.set_default_size(600, 300)
-        
+
         # Dest.
-        column = gtk.TreeViewColumn('Destination', gtk.CellRendererText(),
+        column = Gtk.TreeViewColumn('Destination', Gtk.CellRendererText(),
                                     text=self.COLUMN_DESTINATION)
         treeview.append_column(column)
 
         # Next hop
-        column = gtk.TreeViewColumn('Next hop', gtk.CellRendererText(),
+        column = Gtk.TreeViewColumn('Next hop', Gtk.CellRendererText(),
                                     text=self.COLUMN_NEXT_HOP)
         treeview.append_column(column)
 
         # Interface
-        column = gtk.TreeViewColumn('Interface', gtk.CellRendererText(),
+        column = Gtk.TreeViewColumn('Interface', Gtk.CellRendererText(),
                                     text=self.COLUMN_INTERFACE)
         treeview.append_column(column)
 
         # Type
-        column = gtk.TreeViewColumn('Type', gtk.CellRendererText(),
+        column = Gtk.TreeViewColumn('Type', Gtk.CellRendererText(),
                                     text=self.COLUMN_TYPE)
         treeview.append_column(column)
 
         # Prio
-        column = gtk.TreeViewColumn('Prio', gtk.CellRendererText(),
+        column = Gtk.TreeViewColumn('Prio', Gtk.CellRendererText(),
                                     text=self.COLUMN_PRIO)
         treeview.append_column(column)
 
@@ -66,27 +80,39 @@ class ShowIpv4RoutingTable(InformationWindow):
         self.win.show()
 
     def _response_cb(self, win, response):
+        """!
+        Response callback function
+        @param self this object
+        @param win the window
+        @param response the response
+        @return none
+        """
         self.win.destroy()
         self.visualizer.remove_information_window(self)
-    
+
     def update(self):
-        node = ns.network.NodeList.GetNode(self.node_index)
-        ipv4 = node.GetObject(ns.internet.Ipv4.GetTypeId())
+        """!
+        Update function
+        @param self this object
+        @return none
+        """
+        node = ns.NodeList.GetNode(self.node_index)
+        ipv4 = ns.cppyy.gbl.getNodeIpv4(node)
         routing = ipv4.GetRoutingProtocol()
         if routing is None:
             return
 
         routing_protocols = [] # list of (protocol, type_string, priority)
 
-        if isinstance(routing, ns.internet.Ipv4StaticRouting):
+        if isinstance(routing, ns.Ipv4StaticRouting):
             ipv4_routing = routing_protocols.append((routing, "static", 0))
-        elif isinstance(routing, ns.internet.Ipv4ListRouting):
+        elif isinstance(routing, ns.Ipv4ListRouting):
             list_routing = routing
             for rI in range(list_routing.GetNRoutingProtocols()):
                 routing, prio = list_routing.GetRoutingProtocol(rI)
-                if isinstance(routing, ns.internet.Ipv4StaticRouting):
+                if isinstance(routing, ns.Ipv4StaticRouting):
                     routing_protocols.append((routing, "static", prio))
-                elif isinstance(routing, ns.internet.Ipv4GlobalRouting):
+                elif isinstance(routing, ns.Ipv4GlobalRouting):
                     routing_protocols.append((routing, "global", prio))
         if not routing_protocols:
             return
@@ -100,7 +126,7 @@ class ShowIpv4RoutingTable(InformationWindow):
                 if netdevice is None:
                     interface_name = 'lo'
                 else:
-                    interface_name = ns.core.Names.FindName(netdevice)
+                    interface_name = ns.Names.FindName(netdevice)
                     if not interface_name:
                         interface_name = "(interface %i)" % route.GetInterface()
                 self.table_model.set(tree_iter,
@@ -112,7 +138,7 @@ class ShowIpv4RoutingTable(InformationWindow):
 
 
 def populate_node_menu(viz, node, menu):
-    menu_item = gtk.MenuItem("Show IPv4 Routing Table")
+    menu_item = Gtk.MenuItem("Show IPv4 Routing Table")
     menu_item.show()
 
     def _show_ipv4_routing_table(dummy_menu_item):

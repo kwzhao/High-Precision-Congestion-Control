@@ -10,22 +10,24 @@ FIGURES = $(SOURCE)/figures
 IMAGES_EPS = ${FIGURES}/antenna-coordinate-system.eps
 
 # specify figures for build process (all eps figures)
-GRAPHS_EPS = 
+GRAPHS_EPS =
 
 # rescale pdf figures as necessary
 $(FIGURES)/antenna-coordinate-system.pdf_width = 3in
 
 IMAGES_PNG = ${IMAGES_EPS:.eps=.png}
-IMAGES_PDF = ${IMAGES_EPS:.eps=.pdf} 
+IMAGES_PDF = ${IMAGES_EPS:.eps=.pdf}
 
 IMAGES = $(IMAGES_EPS) $(IMAGES_PNG) $(IMAGES_PDF)
+
+RESCALE = ../../../utils/rescale-pdf.sh
 
 %.eps : %.dia; $(DIA) -t eps $< -e $@
 %.png : %.dia; $(DIA) -t png $< -e $@
 %.png : %.eps; $(CONVERT) $< $@
 %.pdf : %.eps
 	$(EPSTOPDF) $< -o=$@
-	if test x$($@_width) != x; then ./rescale-pdf.sh $($@_width) $@ ; fi
+	@if test x$($@_width) != x; then $(RESCALE) $($@_width) $@ ; fi
 
 GRAPHS_PNG = ${GRAPHS_EPS:.eps=.png}
 GRAPHS_PDF = ${GRAPHS_EPS:.eps=.pdf}
@@ -35,7 +37,7 @@ GRAPHS = $(GRAPHS_EPS) $(GRAPHS_PNG) $(GRAPHS_PDF)
 %.png : %.eps; $(CONVERT) $< $@
 %.pdf : %.eps
 	$(EPSTOPDF) $< -o=$@
-	if test x$($@_width) != x; then ./rescale-pdf.sh $($@_width) $@ ; fi
+	@if test x$($@_width) != x; then $(RESCALE) $($@_width) $@ ; fi
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
@@ -46,7 +48,7 @@ BUILDDIR      = build
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) $(SOURCE) 
+ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) $(SOURCE)
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
 

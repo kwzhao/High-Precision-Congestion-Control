@@ -7,46 +7,71 @@ Queues
    ============= Subsection (#.#.#)
    ############# Paragraph (no number)
 
-This section documents a few queue objects, typically associated with
-NetDevice models, that are maintained as part of the ``network`` module:
+This section documents the queue object, which is typically used by NetDevices
+and QueueDiscs to store packets.
 
-* DropTail
-* Random Early Detection 
+Packets stored in a queue can be managed according to different policies.
+Currently, only the DropTail policy is available.
 
 Model Description
 *****************
 
 The source code for the new module lives in the directory ``src/network/utils``.
 
-ns-3 provides a couple of classic queue models and the ability to
-trace certain queue operations such as enqueuing, dequeuing, and dropping.
-These may be added to certain NetDevice objects that take a Ptr<Queue>
-pointer.
+ns3::Queue has been redesigned as a template class object to allow us to
+instantiate queues storing different types of items. The unique template
+type parameter specifies the type of items stored in the queue.
+The only requirement on the item type is that it must provide a GetSize ()
+method which returns the size of the packet included in the item.
+Currently, queue items can be objects of the following classes:
 
-Note that not all device models use these queue models.  
-In particular, WiFi, WiMax, and LTE use specialized device queues.
-The queue models described here are more often used with simpler ns-3 
-device models such as PointToPoint and Csma.
+* Packet
+* QueueItem and subclasses (e.g., QueueDiscItem)
+* WifiMacQueueItem
+
+The internal queues of the queue discs are of type Queue<QueueDiscItem>
+(an alias of which being InternalQueue). A number of network devices
+(SimpleNetDevice, PointToPointNetDevice, CsmaNetDevice) use a Queue<Packet>
+to store packets to be transmitted. WifiNetDevices use instead queues of
+type WifiMacQueue, which is a subclass of Queue storing objects of
+type WifiMacQueueItem. Other devices, such as WiMax and LTE, use specialized
+queues.
 
 Design
 ======
 
-An abstract base class, class Queue, is typically used and subclassed
-for specific scheduling and drop policies.  Common operations
-include:
+The Queue class derives from the QueueBase class, which is a non-template
+class providing all the methods that are independent of the type of the items
+stored in the queue. The Queue class provides instead all the operations that
+depend on the item type, such as enqueue, dequeue, peek and remove. The Queue
+class also provides the ability to trace certain queue operations such as
+enqueuing, dequeuing, and dropping.
 
-* ``bool Enqueue (Ptr<Packet> p)``:  Enqueue a packet
-* ``Ptr<Packet> Dequeue (void)``:  Dequeue a packet
-* ``uint32_t GetNPackets (void)``:  Get the queue depth, in packets
-* ``uint32_t GetNBytes (void)``:  Get the queue depth, in packets
+Queue is an abstract base class and is subclassed for specific scheduling and
+drop policies. Subclasses need to define the following public methods:
 
-as well as tracking some statistics on queue operations.
+* ``bool Enqueue (Ptr<Item> item)``:  Enqueue a packet
+* ``Ptr<Item> Dequeue ()``:  Dequeue a packet
+* ``Ptr<Item> Remove ()``:  Remove a packet
+* ``Ptr<const Item> Peek ()``:  Peek a packet
 
-There are three trace sources that may be hooked:
+The Enqueue method does not allow to store a packet if the queue capacity is exceeded.
+Subclasses may also define specialized public methods. For instance, the
+WifiMacQueue class provides a method to dequeue a packet based on its tid
+and MAC address.
+
+There are five trace sources that may be hooked:
 
 * ``Enqueue``
 * ``Dequeue``
 * ``Drop``
+* ``DropBeforeEnqueue``
+* ``DropAfterDequeue``
+
+Also, the QueueBase class defines two additional trace sources:
+
+* ``PacketsInQueue``
+* ``BytesInQueue``
 
 DropTail
 ########
@@ -54,26 +79,9 @@ DropTail
 This is a basic first-in-first-out (FIFO) queue that performs a tail drop
 when the queue is full.
 
-Random Early Detection
-######################
+The DropTailQueue class defines one attribute:
 
-Random Early Detection (RED) is a queue variant that aims to provide
-early signals to transport protocol congestion control (e.g. TCP) that
-congestion is imminent, so that they back off their rate gracefully
-rather than with a bunch of tail-drop losses (possibly incurring
-TCP timeout).  The model in ns-3 is a port of Sally Floyd's ns-2
-RED model.
-
-Scope and Limitations
-=====================
-
-The RED model just supports default RED.  Adaptive RED is not supported.
-
-References
-==========
-
-The RED queue aims to be close to the results cited in:
-S.Floyd, K.Fall http://icir.org/floyd/papers/redsims.ps
+* ``MaxSize``: the maximum queue size
 
 Usage
 *****
@@ -82,67 +90,48 @@ Helpers
 =======
 
 A typical usage pattern is to create a device helper and to configure
-the queue type and attributes from the helper, such as this example
-from ``src/network/examples/red-tests.cc``:
+the queue type and attributes from the helper, such as this example:
 
-:: 
+.. sourcecode:: cpp
 
   PointToPointHelper p2p;
 
-  p2p.SetQueue ("ns3::DropTailQueue");
-  p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
-  p2p.SetChannelAttribute ("Delay", StringValue ("2ms"));
-  NetDeviceContainer devn0n2 = p2p.Install (n0n2);
+  p2p.SetQueue("ns3::DropTailQueue");
+  p2p.SetDeviceAttribute("DataRate", StringValue("10Mbps"));
+  p2p.SetChannelAttribute("Delay", StringValue("2ms"));
+  NetDeviceContainer devn0n2 = p2p.Install(n0n2);
 
-  p2p.SetQueue ("ns3::DropTailQueue");
-  p2p.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
-  p2p.SetChannelAttribute ("Delay", StringValue ("3ms"));
-  NetDeviceContainer devn1n2 = p2p.Install (n1n2);
+  p2p.SetQueue("ns3::DropTailQueue");
+  p2p.SetDeviceAttribute("DataRate", StringValue("10Mbps"));
+  p2p.SetChannelAttribute("Delay", StringValue("3ms"));
+  NetDeviceContainer devn1n2 = p2p.Install(n1n2);
 
-  p2p.SetQueue ("ns3::RedQueue", // only backbone link has RED queue
-                "LinkBandwidth", StringValue (redLinkDataRate),
-                "LinkDelay", StringValue (redLinkDelay));
-  p2p.SetDeviceAttribute ("DataRate", StringValue (redLinkDataRate));
-  p2p.SetChannelAttribute ("Delay", StringValue (redLinkDelay));
-  NetDeviceContainer devn2n3 = p2p.Install (n2n3);
+  p2p.SetQueue("ns3::DropTailQueue",
+               "MaxSize", StringValue("50p"));
+  p2p.SetDeviceAttribute("DataRate", StringValue(linkDataRate));
+  p2p.SetChannelAttribute("Delay", StringValue(linkDelay));
+  NetDeviceContainer devn2n3 = p2p.Install(n2n3);
 
-
-Attributes
-==========
-
-The RED queue contains a number of attributes that control the RED
-policies:
-
-* Mode (bytes or packets)
-* MeanPktSize
-* IdlePktSize
-* Wait (time)
-* Gentle mode
-* MinTh, MaxTh
-* QueueLimit
-* Queue weight
-* LInterm
-* LinkBandwidth
-* LinkDelay
-
-Consult the ns-3 documentation for explanation of these attributes.
+Please note that the SetQueue method of the PointToPointHelper class allows
+to specify "ns3::DropTailQueue" instead of "ns3::DropTailQueue<Packet>". The
+same holds for CsmaHelper, SimpleNetDeviceHelper and TrafficControlHelper.
 
 Output
 ======
 
 The ns-3 ascii trace helpers used by many of the NetDevices will hook
-the Enqueue, Dequeue, and Drop traces of these queues and print out 
+the Enqueue, Dequeue, and Drop traces of these queues and print out
 trace statements, such as the following from ``examples/udp/udp-echo.cc``:
 
-::
+.. sourcecode:: text
 
-  + 2 /NodeList/0/DeviceList/1/$ns3::CsmaNetDevice/TxQueue/Enqueue ns3::EthernetHeader 
-  ( length/type=0x806, source=00:00:00:00:00:01, destination=ff:ff:ff:ff:ff:ff) 
-  ns3::ArpHeader (request source mac: 00-06-00:00:00:00:00:01 source ipv4: 10.1.1.1 
+  + 2 /NodeList/0/DeviceList/1/$ns3::CsmaNetDevice/TxQueue/Enqueue ns3::EthernetHeader
+  ( length/type=0x806, source=00:00:00:00:00:01, destination=ff:ff:ff:ff:ff:ff)
+  ns3::ArpHeader (request source mac: 00-06-00:00:00:00:00:01 source ipv4: 10.1.1.1
   dest ipv4: 10.1.1.2) Payload (size=18) ns3::EthernetTrailer (fcs=0)
-  - 2 /NodeList/0/DeviceList/1/$ns3::CsmaNetDevice/TxQueue/Dequeue ns3::EthernetHeader 
-  ( length/type=0x806, source=00:00:00:00:00:01, destination=ff:ff:ff:ff:ff:ff) 
-  ns3::ArpHeader (request source mac: 00-06-00:00:00:00:00:01 source ipv4: 10.1.1.1 
+  - 2 /NodeList/0/DeviceList/1/$ns3::CsmaNetDevice/TxQueue/Dequeue ns3::EthernetHeader
+  ( length/type=0x806, source=00:00:00:00:00:01, destination=ff:ff:ff:ff:ff:ff)
+  ns3::ArpHeader (request source mac: 00-06-00:00:00:00:00:01 source ipv4: 10.1.1.1
   dest ipv4: 10.1.1.2) Payload (size=18) ns3::EthernetTrailer (fcs=0)
 
 which shows an enqueue "+" and dequeue "-" event at time 2 seconds.
@@ -153,13 +142,5 @@ these trace sources.
 Examples
 ========
 
-The drop-tail queue is used in several examples, such as 
-``examples/udp/udp-echo.cc``.  The RED queue example is found at
-``src/network/examples/red-tests.cc``.
-
-Validation
-**********
-
-The RED model has been validated and the report is currently stored
-at: https://github.com/downloads/talau/ns-3-tcp-red/report-red-ns3.pdf 
-
+The drop-tail queue is used in several examples, such as
+``examples/udp/udp-echo.cc``.

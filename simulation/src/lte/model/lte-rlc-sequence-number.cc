@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2012 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *
@@ -18,17 +17,22 @@
  * Author: Manuel Requena <manuel.requena@cttc.es>
  */
 
-#include "ns3/lte-rlc-sequence-number.h"
+#include "lte-rlc-sequence-number.h"
 
-namespace ns3 {
-
-
-std::ostream &
-operator<< (std::ostream& os, const SequenceNumber10 &val)
+namespace ns3
 {
-  os << val.m_value;
-  return os;
-}
 
+/**
+ * Ostream output function
+ * \param os the output stream
+ * \param val the sequence number
+ * \returns the os
+ */
+std::ostream&
+operator<<(std::ostream& os, const SequenceNumber10& val)
+{
+    os << val.m_value;
+    return os;
+}
 
 } // namespace ns3

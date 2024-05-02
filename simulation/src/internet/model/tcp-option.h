@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Adrian Sai-wah Tam
  *
@@ -21,62 +20,130 @@
 #ifndef TCP_OPTION_H
 #define TCP_OPTION_H
 
-#include <stdint.h>
-#include "ns3/object.h"
 #include "ns3/buffer.h"
+#include "ns3/object-factory.h"
+#include "ns3/object.h"
 
-namespace ns3 {
+#include <stdint.h>
+
+namespace ns3
+{
 
 /**
+ * \ingroup tcp
+ *
  * Base class for all kinds of TCP options
  */
-
 class TcpOption : public Object
 {
-public:
-  TcpOption ();
-  virtual ~TcpOption ();
+  public:
+    TcpOption();
+    ~TcpOption() override;
 
-  static TypeId GetTypeId (void);
-  virtual TypeId GetInstanceTypeId (void) const;
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  enum Kind {
-    END_OF_OPTION_LIST          = 0x0,
-    NO_OP,
-    MAX_SEGMENT_SIZE,
-    WINDOW_SCALE,
-    SACK_PERMITED,
-    SACK,
-    TIME_STAMP                  = 0x8,
-    SKEETER                     = 0x10,
-    BUBBA,
-    TRAILER_CHECKSUM,
-    SCPS_CAPABILITY             = 0x14,
-    SELECTIVE_NACK,
-    RECORD_BOUNDRIES,
-    CORRUPTION_EXPERIENCED,
-    SNAP,
-    TCP_COMPRESSION_FILTER      = 0x1A,
-    QUICK_START_RESPONSE,
-    USER_TIMEOUT,
-    TCP_AUTHENTICATION,
-    MULTIPATH_TCP,
-    EXPERIMENTAL1               = 0xFD,
-    EXPERIMENTAL2
-  };
+    TypeId GetInstanceTypeId() const override;
 
-  virtual std::string Str (void) const = 0;
-  virtual void Serialize (Buffer::Iterator &start) const = 0;
-  static Ptr<TcpOption> Deserialize (Buffer::Iterator &start, uint32_t &optionLen); // Factory method for all options
+    /**
+     * The option Kind, as defined in the respective RFCs.
+     */
+    enum Kind
+    {
+        // Remember to extend IsKindKnown() with new value, when adding values here
+        //
+        END = 0,           //!< END
+        NOP = 1,           //!< NOP
+        MSS = 2,           //!< MSS
+        WINSCALE = 3,      //!< WINSCALE
+        SACKPERMITTED = 4, //!< SACKPERMITTED
+        SACK = 5,          //!< SACK
+        TS = 8,            //!< TS
+        UNKNOWN = 255      //!< not a standardized value; for unknown recv'd options
+    };
 
-  virtual Kind GetKind (void) const = 0; // Get the `kind' (as in RFC793) of this option
-  virtual uint32_t GetSerializedSize (void) const = 0; // Get the total length of this option, >= 1
-private:
-  /*
-   * DoDesearialize must also calculate the first byte that was stripped down,
-   * so the TCP Option type could be deducted
-   */
-  virtual uint32_t DoDeserialize (Buffer::Iterator &start) = 0;
+    /**
+     * \brief Print the Option contents
+     * \param os the output stream
+     */
+    virtual void Print(std::ostream& os) const = 0;
+    /**
+     * \brief Serialize the Option to a buffer iterator
+     * \param start the buffer iterator
+     */
+    virtual void Serialize(Buffer::Iterator start) const = 0;
+
+    /**
+     * \brief Deserialize the Option from a buffer iterator
+     * \param start the buffer iterator
+     * \returns the number of deserialized bytes
+     */
+    virtual uint32_t Deserialize(Buffer::Iterator start) = 0;
+
+    /**
+     * \brief Get the `kind' (as in \RFC{793}) of this option
+     * \return the Option Kind
+     */
+    virtual uint8_t GetKind() const = 0;
+    /**
+     * \brief Returns number of bytes required for Option
+     * serialization.
+     *
+     * \returns number of bytes required for Option
+     * serialization
+     */
+    virtual uint32_t GetSerializedSize() const = 0;
+
+    /**
+     * \brief Creates an option
+     * \param kind the option kind
+     * \return the requested option or an ns3::UnknownOption if the option is not supported
+     */
+    static Ptr<TcpOption> CreateOption(uint8_t kind);
+
+    /**
+     * \brief Check if the option is implemented
+     * \param kind the Option kind
+     * \return true if the option is known
+     */
+    static bool IsKindKnown(uint8_t kind);
+};
+
+/**
+ * \ingroup tcp
+ *
+ * \brief An unknown TCP option.
+ *
+ * An unknown option can be deserialized and (only if deserialized previously)
+ * serialized again.
+ */
+class TcpOptionUnknown : public TcpOption
+{
+  public:
+    TcpOptionUnknown();
+    ~TcpOptionUnknown() override;
+
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
+    TypeId GetInstanceTypeId() const override;
+
+    void Print(std::ostream& os) const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
+
+    uint8_t GetKind() const override;
+    uint32_t GetSerializedSize() const override;
+
+  private:
+    uint8_t m_kind;        //!< The unknown option kind
+    uint32_t m_size;       //!< The unknown option size
+    uint8_t m_content[40]; //!< The option data
 };
 
 } // namespace ns3

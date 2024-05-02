@@ -1,6 +1,6 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Adrian Sai-wah Tam
+ * Copyright (c) 2015 ResiliNets, ITTC, University of Kansas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -15,40 +15,51 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Adrian Sai-wah Tam <adrian.sw.tam@gmail.com>
+ * Original Author: Adrian Sai-wah Tam <adrian.sw.tam@gmail.com>
+ * Documentation, test cases: Truc Anh N. Nguyen   <annguyen@ittc.ku.edu>
+ *                            ResiliNets Research Group   https://resilinets.org/
+ *                            The University of Kansas
+ *                            James P.G. Sterbenz <jpgs@ittc.ku.edu>, director
  */
 
 #ifndef TCP_OPTION_SACK_PERMITTED_H
 #define TCP_OPTION_SACK_PERMITTED_H
 
-#include "tcp-option.h"
+#include "ns3/tcp-option.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 /**
- * Defines the TCP option of kind 4 (Selective Acknowledgement Permitted) as in RFC2018
+ * \brief Defines the TCP option of kind 4 (selective acknowledgment permitted
+ * option) as in \RFC{2018}
+ *
+ * TCP Sack-Permitted Option is 2-byte in length and sent in a SYN segment by a
+ * TCP host that can recognize and process SACK option during the lifetime of a
+ * connection.
  */
 
 class TcpOptionSackPermitted : public TcpOption
 {
-public:
-  TcpOptionSackPermitted ();
-  virtual ~TcpOptionSackPermitted ();
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
+    TypeId GetInstanceTypeId() const override;
 
-  static TypeId GetTypeId (void);
-  virtual TypeId GetInstanceTypeId (void) const;
+    TcpOptionSackPermitted();
+    ~TcpOptionSackPermitted() override;
 
-  virtual std::string Str (void) const;
-  virtual void Serialize (Buffer::Iterator &start) const;
+    void Print(std::ostream& os) const override;
+    void Serialize(Buffer::Iterator start) const override;
+    uint32_t Deserialize(Buffer::Iterator start) override;
 
-  virtual TcpOption::Kind GetKind (void) const;
-  virtual uint32_t GetSerializedSize (void) const;
-protected:
-  static uint8_t SackPermLength;
-private:
-  virtual uint32_t DoDeserialize (Buffer::Iterator &start);
+    uint8_t GetKind() const override;
+    uint32_t GetSerializedSize() const override;
 };
 
 } // namespace ns3
 
-#endif /* TCP_OPTION_SACK_PERMITTED_H */
+#endif /* TCP_OPTION_SACK_PERMITTED */

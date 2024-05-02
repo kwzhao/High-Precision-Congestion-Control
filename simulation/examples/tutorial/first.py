@@ -13,11 +13,14 @@
 #  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #  */
 
-import ns.applications
-import ns.core
-import ns.internet
-import ns.network
-import ns.point_to_point
+from ns import ns
+
+# // Default Network Topology
+# //
+# //       10.1.1.0
+# // n0 -------------- n1
+# //    point-to-point
+# //
 
 ns.core.LogComponentEnable("UdpEchoClientApplication", ns.core.LOG_LEVEL_INFO)
 ns.core.LogComponentEnable("UdpEchoServerApplication", ns.core.LOG_LEVEL_INFO)
@@ -35,9 +38,10 @@ stack = ns.internet.InternetStackHelper()
 stack.Install(nodes)
 
 address = ns.internet.Ipv4AddressHelper()
-address.SetBase(ns.network.Ipv4Address("10.1.1.0"), ns.network.Ipv4Mask("255.255.255.0"))
+address.SetBase(ns.network.Ipv4Address("10.1.1.0"),
+                ns.network.Ipv4Mask("255.255.255.0"))
 
-interfaces = address.Assign (devices);
+interfaces = address.Assign(devices)
 
 echoServer = ns.applications.UdpEchoServerHelper(9)
 
@@ -45,9 +49,10 @@ serverApps = echoServer.Install(nodes.Get(1))
 serverApps.Start(ns.core.Seconds(1.0))
 serverApps.Stop(ns.core.Seconds(10.0))
 
-echoClient = ns.applications.UdpEchoClientHelper(interfaces.GetAddress(1), 9)
+address = interfaces.GetAddress(1).ConvertTo()
+echoClient = ns.applications.UdpEchoClientHelper(address, 9)
 echoClient.SetAttribute("MaxPackets", ns.core.UintegerValue(1))
-echoClient.SetAttribute("Interval", ns.core.TimeValue(ns.core.Seconds (1.0)))
+echoClient.SetAttribute("Interval", ns.core.TimeValue(ns.core.Seconds(1.0)))
 echoClient.SetAttribute("PacketSize", ns.core.UintegerValue(1024))
 
 clientApps = echoClient.Install(nodes.Get(0))

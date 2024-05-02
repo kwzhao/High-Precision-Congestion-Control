@@ -3,18 +3,18 @@
 +++++++++++++++++++++++++++++++++++++
 
 In this section we describe the test suites included with the antenna
-module that verify its correct functionality. 
+module that verify its correct functionality.
 
 
 Angles
 ------
 
 The unit test suite ``angles`` verifies that the Angles class is
-constructed properly by correct conversion from 3D cartesian
+constructed properly by correct conversion from 3D Cartesian
 coordinates according to the available methods (construction from a
 single vector and from a pair of vectors). For each method, several
 test cases are provided that compare the values :math:`(\phi, \theta)`
-determied by the constructor to known reference values. The test
+determined by the constructor to known reference values. The test
 passes if for each case the values are equal to the reference up to a
 tolerance of :math:`10^{-10}` which accounts for numerical errors.
 
@@ -72,5 +72,5 @@ values.
 
 
 
- 
- 
+
+

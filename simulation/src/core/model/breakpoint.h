@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2006,2007 INESC Porto, INRIA
  *
@@ -21,7 +20,15 @@
 #ifndef BREAKPOINT_H
 #define BREAKPOINT_H
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup breakpoint
+ * NS_BREAKPOINT() macro definition and ns3::BreakpointFallback
+ * function declaration.
+ */
+
+namespace ns3
+{
 
 /* Hacker macro to place breakpoints for selected machines.
  * Actual use is strongly discouraged of course ;)
@@ -31,33 +38,50 @@ namespace ns3 {
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 /**
  * \ingroup debugging
+ * \defgroup breakpoint Breakpoints
+ *
+ * \brief Trigger a debugger breakpoint.
+ */
+
+/**
+ * \ingroup breakpoint
  *
  * Inserts a breakpoint instruction (or equivalent system call) into
- * the code for selected machines.  When an NS_ASSERT cannot verify its condition, 
- * this macro is used. Falls back to calling
- * AssertBreakpoint() for architectures where breakpoint assembly
+ * the code for selected machines.  When an NS_ASSERT cannot verify
+ * its condition, this macro is used. Falls back to calling
+ * ns3::BreakpointFallback() for architectures where breakpoint assembly
  * instructions are not supported.
  */
-#if (defined (__i386__) || defined (__amd64__) || defined (__x86_64__)) && defined (__GNUC__) && __GNUC__ >= 2
-#  define NS_BREAKPOINT() \
-  do { __asm__ __volatile__ ("int $03"); } while(false)
-#elif defined (_MSC_VER) && defined (_M_IX86)
-#  define NS_BREAKPOINT() \
-  do { __asm int 3h } while(false)
-#elif defined (__alpha__) && !defined(__osf__) && defined (__GNUC__) && __GNUC__ >= 2
-#  define NS_BREAKPOINT() \
-  do { __asm__ __volatile__ ("bpt"); } while(false)
-#else   /* !__i386__ && !__alpha__ */
-#  define NS_BREAKPOINT()    ns3::BreakpointFallback ()
+#if (defined(__i386__) || defined(__amd64__) || defined(__x86_64__)) && defined(__GNUC__) &&       \
+    __GNUC__ >= 2
+#define NS_BREAKPOINT()                                                                            \
+    do                                                                                             \
+    {                                                                                              \
+        __asm__ __volatile__("int $03");                                                           \
+    } while (false)
+#elif defined(_MSC_VER) && defined(_M_IX86)
+#define NS_BREAKPOINT()                                                                            \
+    do                                                                                             \
+    {                                                                                              \
+        __asm int 3h                                                                               \
+    } while (false)
+#elif defined(__alpha__) && !defined(__osf__) && defined(__GNUC__) && __GNUC__ >= 2
+#define NS_BREAKPOINT()                                                                            \
+    do                                                                                             \
+    {                                                                                              \
+        __asm__ __volatile__("bpt");                                                               \
+    } while (false)
+#else /* !__i386__ && !__alpha__ */
+#define NS_BREAKPOINT() ns3::BreakpointFallback()
 #endif
 
 /**
- * \ingroup debugging
+ * \ingroup breakpoint
  *
  * \brief fallback breakpoint function
  *
@@ -65,13 +89,11 @@ namespace ns3 {
  * for when breakpoint assembly instructions are not available.  It
  * attempts to halt program execution either by a raising SIGTRAP, on
  * unix systems, or by dereferencing a null pointer.
- * 
+ *
  * Normally you should not call this function directly.
  */
-void BreakpointFallback (void);
-
+void BreakpointFallback();
 
 } // namespace ns3
-
 
 #endif /* BREAKPOINT_H */

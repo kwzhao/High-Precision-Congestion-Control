@@ -25,15 +25,15 @@
 #include "ns3/simulator.h"
 #include "ns3/qbb-net-device.h"
 #include "ns3/point-to-point-channel.h"
-#include "ns3/point-to-point-remote-channel.h"
+// #include "ns3/point-to-point-remote-channel.h"
 #include "ns3/qbb-channel.h"
-#include "ns3/qbb-remote-channel.h"
+// #include "ns3/qbb-remote-channel.h"
 #include "ns3/queue.h"
 #include "ns3/config.h"
 #include "ns3/packet.h"
 #include "ns3/names.h"
-#include "ns3/mpi-interface.h"
-#include "ns3/mpi-receiver.h"
+// #include "ns3/mpi-interface.h"
+// #include "ns3/mpi-receiver.h"
 
 #include "ns3/trace-helper.h"
 #include "point-to-point-helper.h"
@@ -47,7 +47,7 @@ namespace ns3 {
 
 QbbHelper::QbbHelper ()
 {
-  m_queueFactory.SetTypeId ("ns3::DropTailQueue");
+  m_queueFactory.SetTypeId("ns3::DropTailQueue<Packet>");
   m_deviceFactory.SetTypeId ("ns3::QbbNetDevice");
   m_channelFactory.SetTypeId ("ns3::QbbChannel");
   m_remoteChannelFactory.SetTypeId ("ns3::QbbRemoteChannel");
@@ -77,7 +77,7 @@ void
 QbbHelper::SetChannelAttribute (std::string n1, const AttributeValue &v1)
 {
   m_channelFactory.Set (n1, v1);
-  m_remoteChannelFactory.Set (n1, v1);
+  // m_remoteChannelFactory.Set (n1, v1);
 }
 
 void 
@@ -255,30 +255,37 @@ QbbHelper::Install (Ptr<Node> a, Ptr<Node> b)
   //use a normal p2p channel, otherwise use a remote channel
   bool useNormalChannel = true;
   Ptr<QbbChannel> channel = 0;
-  if (MpiInterface::IsEnabled ())
-    {
-      uint32_t n1SystemId = a->GetSystemId ();
-      uint32_t n2SystemId = b->GetSystemId ();
-      uint32_t currSystemId = MpiInterface::GetSystemId ();
-      if (n1SystemId != currSystemId || n2SystemId != currSystemId) 
-        {
-          useNormalChannel = false;
-        }
-    }
+  // if (MpiInterface::IsEnabled ())
+  // //   {
+  // //     uint32_t n1SystemId = a->GetSystemId ();
+  // //     uint32_t n2SystemId = b->GetSystemId ();
+  // //     uint32_t currSystemId = MpiInterface::GetSystemId ();
+  // //     if (n1SystemId != currSystemId || n2SystemId != currSystemId) 
+  // //       {
+  // //         useNormalChannel = false;
+  // //       }
+  //   std:cout << "Can't use MPI. It was originally supported. Feel free to uncomment and start debugging Funtion QbbHelper::Install (Ptr<Node> a, Ptr<Node> b) /src/point-to-point/model/qbb-helper.cc"
+  //   NS_ASSERT(0);
+  //   }
   if (useNormalChannel)
     {
+
       channel = m_channelFactory.Create<QbbChannel> ();
     }
-  else
-    {
-      channel = m_remoteChannelFactory.Create<QbbRemoteChannel> ();
-      Ptr<MpiReceiver> mpiRecA = CreateObject<MpiReceiver> ();
-      Ptr<MpiReceiver> mpiRecB = CreateObject<MpiReceiver> ();
-      mpiRecA->SetReceiveCallback (MakeCallback (&QbbNetDevice::Receive, devA));
-      mpiRecB->SetReceiveCallback (MakeCallback (&QbbNetDevice::Receive, devB));
-      devA->AggregateObject (mpiRecA);
-      devB->AggregateObject (mpiRecB);
+    else{
+      std::cout << "Can't use MPI. It was originally supported. Feel free to uncomment and start debugging Funtion QbbHelper::Install (Ptr<Node> a, Ptr<Node> b) /src/point-to-point/model/qbb-helper.cc" << std::endl;
+      NS_ASSERT(0);
     }
+  // else
+  //   {
+  //     channel = m_remoteChannelFactory.Create<QbbRemoteChannel> ();
+  //     Ptr<MpiReceiver> mpiRecA = CreateObject<MpiReceiver> ();
+  //     Ptr<MpiReceiver> mpiRecB = CreateObject<MpiReceiver> ();
+  //     mpiRecA->SetReceiveCallback (MakeCallback (&QbbNetDevice::Receive, devA));
+  //     mpiRecB->SetReceiveCallback (MakeCallback (&QbbNetDevice::Receive, devB));
+  //     devA->AggregateObject (mpiRecA);
+  //     devB->AggregateObject (mpiRecB);
+  //   }
 
   devA->Attach (channel);
   devB->Attach (channel);
@@ -310,7 +317,7 @@ QbbHelper::Install (std::string aName, std::string bName)
   return Install (a, b);
 }
 
-void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, Event event, bool hasL2){
+void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, PEvent event, bool hasL2){
 	CustomHeader hdr((hasL2?CustomHeader::L2_Header:0) | CustomHeader::L3_Header | CustomHeader::L4_Header);
 	p->PeekHeader(hdr);
 
@@ -366,7 +373,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
 }
 
-void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, Event event, bool hasL2){
+void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, PEvent event, bool hasL2){
 	TraceFormat tr;
 	GetTraceFromPacket(tr, dev, p, qidx, event, hasL2);
 	tr.Serialize(file);

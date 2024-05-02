@@ -1,4 +1,3 @@
-/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Centre Tecnologic de Telecomunicacions de Catalunya (CTTC)
  *
@@ -24,48 +23,64 @@
 #include "ns3/simulator.h"
 #include "ns3/test.h"
 
-
-namespace ns3 {
-
+using namespace ns3;
 
 /**
- * This system test program creates different test cases with a single eNB and 
- * several UEs, all having the same Radio Bearer specification. In each test 
- * case, the UEs see the same SINR from the eNB; different test cases are 
- * implemented obtained by using different SINR values and different numbers of 
- * UEs. The test consists on checking that the obtained throughput performance 
- * is equal among users and matches a reference throughput value within a given 
+ * \ingroup lte-test
+ *
+ * \brief This system test program creates different test cases with a single eNB and
+ * This system test program creates different test cases with a single eNB and
+ * several UEs, all having the same Radio Bearer specification. In each test
+ * case, the UEs see the same SINR from the eNB; different test cases are
+ * implemented obtained by using different SINR values and different numbers of
+ * UEs. The test consists on checking that the obtained throughput performance
+ * is equal among users and matches a reference throughput value within a given
  * tolerance.
  */
 class LenaRrFfMacSchedulerTestCase : public TestCase
 {
-public:
-  LenaRrFfMacSchedulerTestCase (uint16_t nUser, uint16_t nLc, uint16_t dist, double thrRefDl, double thrRefUl);
-  virtual ~LenaRrFfMacSchedulerTestCase ();
+  public:
+    /**
+     * Constructor
+     *
+     * \param nUser the number of UE nodes
+     * \param dist the distance between nodes
+     * \param thrRefDl the DL throughput reference
+     * \param thrRefUl the UL throughput reference
+     * \param errorModelEnabled if true the error model is enabled
+     */
+    LenaRrFfMacSchedulerTestCase(uint16_t nUser,
+                                 double dist,
+                                 double thrRefDl,
+                                 double thrRefUl,
+                                 bool errorModelEnabled);
+    ~LenaRrFfMacSchedulerTestCase() override;
 
-private:
-  virtual void DoRun (void);
-  static std::string BuildNameString (uint16_t nUser, uint16_t dist);
-  uint16_t m_nUser;
-  uint16_t m_nLc;
-  uint16_t m_dist;
-  double m_thrRefDl;
-  double m_thrRefUl;
-
+  private:
+    void DoRun() override;
+    /**
+     * Builds the test name string based on provided parameter values
+     * \param nUser the number of UE nodes
+     * \param dist the distance between UE nodes and eNodeB
+     * \returns the name string
+     */
+    static std::string BuildNameString(uint16_t nUser, double dist);
+    uint16_t m_nUser;         ///< number of UE nodes
+    double m_dist;            ///< the distance between nodes
+    double m_thrRefDl;        ///< the DL throughput reference
+    double m_thrRefUl;        ///< the UL throughput reference
+    bool m_errorModelEnabled; ///< indicates whether the error model is enabled
 };
 
-
-
+/**
+ * \ingroup lte-test
+ *
+ * \brief Test suite for RrFfMacScheduler test
+ */
 class LenaTestRrFfMacSchedulerSuite : public TestSuite
 {
-public:
-  LenaTestRrFfMacSchedulerSuite ();
+  public:
+    LenaTestRrFfMacSchedulerSuite();
 };
-
-
-
-} // namespace ns3
-
-
 
 #endif /* LENA_TEST_RR_FF_MAC_SCHEDULER_H */

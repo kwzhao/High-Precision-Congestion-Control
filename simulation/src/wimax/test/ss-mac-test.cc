@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  *  Copyright (c) 2007,2008, 2009 INRIA, UDcast
  *
@@ -19,154 +18,158 @@
  *                              <amine.ismail@udcast.com>
  */
 #include "ns3/log.h"
-#include "ns3/abort.h"
-#include "ns3/test.h"
-#include "ns3/config.h"
-#include "ns3/string.h"
-#include "ns3/uinteger.h"
-#include "ns3/inet-socket-address.h"
-#include "ns3/point-to-point-helper.h"
-#include "ns3/internet-stack-helper.h"
-#include "ns3/ipv4-address-helper.h"
-#include "ns3/ipv4-header.h"
-#include "ns3/packet-sink-helper.h"
-#include "ns3/udp-client-server-helper.h"
-#include "ns3/udp-header.h"
+#include "ns3/net-device-container.h"
+#include "ns3/node-container.h"
 #include "ns3/simulator.h"
+#include "ns3/test.h"
 #include "ns3/wimax-helper.h"
-#include "ns3/mobility-helper.h"
-#include <iostream>
-#include "ns3/global-route-manager.h"
 
 using namespace ns3;
 
-/*
- * Test the network entry procedure.
+/**
+ * \ingroup wimax-test
+ * \ingroup tests
+ *
+ * \brief Test the network entry procedure.
  * Create a network with a BS and 10 SS and check that all the SS perform the
  * network entry correctly
  *
  */
 class Ns3WimaxNetworkEntryTestCase : public TestCase
 {
-public:
-  Ns3WimaxNetworkEntryTestCase ();
-  virtual ~Ns3WimaxNetworkEntryTestCase ();
+  public:
+    Ns3WimaxNetworkEntryTestCase();
+    ~Ns3WimaxNetworkEntryTestCase() override;
 
-private:
-  virtual void DoRun (void);
-
+  private:
+    void DoRun() override;
 };
 
-Ns3WimaxNetworkEntryTestCase::Ns3WimaxNetworkEntryTestCase ()
-  : TestCase ("Test the network entry procedure")
+Ns3WimaxNetworkEntryTestCase::Ns3WimaxNetworkEntryTestCase()
+    : TestCase("Test the network entry procedure")
 {
 }
 
-Ns3WimaxNetworkEntryTestCase::~Ns3WimaxNetworkEntryTestCase ()
+Ns3WimaxNetworkEntryTestCase::~Ns3WimaxNetworkEntryTestCase()
 {
 }
 
 void
-Ns3WimaxNetworkEntryTestCase::DoRun (void)
+Ns3WimaxNetworkEntryTestCase::DoRun()
 {
-  WimaxHelper::SchedulerType scheduler = WimaxHelper::SCHED_TYPE_SIMPLE;
-  NodeContainer ssNodes;
-  NodeContainer bsNodes;
+    WimaxHelper::SchedulerType scheduler = WimaxHelper::SCHED_TYPE_SIMPLE;
+    NodeContainer ssNodes;
+    NodeContainer bsNodes;
 
-  ssNodes.Create (10);
-  bsNodes.Create (1);
+    ssNodes.Create(10);
+    bsNodes.Create(1);
 
-  WimaxHelper wimax;
+    WimaxHelper wimax;
 
-  NetDeviceContainer ssDevs, bsDevs;
+    NetDeviceContainer ssDevs;
+    NetDeviceContainer bsDevs;
 
-  ssDevs = wimax.Install (ssNodes,
-                          WimaxHelper::DEVICE_TYPE_SUBSCRIBER_STATION,
-                          WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
-                          scheduler);
-  bsDevs = wimax.Install (bsNodes,
-                          WimaxHelper::DEVICE_TYPE_BASE_STATION,
-                          WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
-                          scheduler);
-  Simulator::Stop (Seconds (1));
-  Simulator::Run ();
-  for (int i = 0; i < 10; i++)
+    ssDevs = wimax.Install(ssNodes,
+                           WimaxHelper::DEVICE_TYPE_SUBSCRIBER_STATION,
+                           WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
+                           scheduler);
+    bsDevs = wimax.Install(bsNodes,
+                           WimaxHelper::DEVICE_TYPE_BASE_STATION,
+                           WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
+                           scheduler);
+    Simulator::Stop(Seconds(1));
+    Simulator::Run();
+    for (int i = 0; i < 10; i++)
     {
-      NS_TEST_EXPECT_MSG_EQ (ssDevs.Get (i)->GetObject<SubscriberStationNetDevice> ()->IsRegistered (),true,
-                             "SS[" << i << "] IsNotRegistered");
+        NS_TEST_EXPECT_MSG_EQ(
+            ssDevs.Get(i)->GetObject<SubscriberStationNetDevice>()->IsRegistered(),
+            true,
+            "SS[" << i << "] IsNotRegistered");
     }
-  Simulator::Destroy ();
+    Simulator::Destroy();
 }
 
-/*
- * Test if the management connections are correctly setup.
+/**
+ * \ingroup wimax-test
+ * \ingroup tests
+ *
+ * \brief Test if the management connections are correctly setup.
  * Create a network with a BS and 10 SS and check that the management
  * connections are correctly setup for all SS
  *
  */
-
 class Ns3WimaxManagementConnectionsTestCase : public TestCase
 {
-public:
-  Ns3WimaxManagementConnectionsTestCase ();
-  virtual ~Ns3WimaxManagementConnectionsTestCase ();
+  public:
+    Ns3WimaxManagementConnectionsTestCase();
+    ~Ns3WimaxManagementConnectionsTestCase() override;
 
-private:
-  virtual void DoRun (void);
-
+  private:
+    void DoRun() override;
 };
 
-Ns3WimaxManagementConnectionsTestCase::Ns3WimaxManagementConnectionsTestCase ()
-  : TestCase ("Test if the management connections are correctly setup")
+Ns3WimaxManagementConnectionsTestCase::Ns3WimaxManagementConnectionsTestCase()
+    : TestCase("Test if the management connections are correctly setup")
 {
 }
 
-Ns3WimaxManagementConnectionsTestCase::~Ns3WimaxManagementConnectionsTestCase ()
+Ns3WimaxManagementConnectionsTestCase::~Ns3WimaxManagementConnectionsTestCase()
 {
 }
 
 void
-Ns3WimaxManagementConnectionsTestCase::DoRun (void)
+Ns3WimaxManagementConnectionsTestCase::DoRun()
 {
-  WimaxHelper::SchedulerType scheduler = WimaxHelper::SCHED_TYPE_SIMPLE;
-  NodeContainer ssNodes;
-  NodeContainer bsNodes;
+    WimaxHelper::SchedulerType scheduler = WimaxHelper::SCHED_TYPE_SIMPLE;
+    NodeContainer ssNodes;
+    NodeContainer bsNodes;
 
-  ssNodes.Create (10);
-  bsNodes.Create (1);
+    ssNodes.Create(10);
+    bsNodes.Create(1);
 
-  WimaxHelper wimax;
+    WimaxHelper wimax;
 
-  NetDeviceContainer ssDevs, bsDevs;
+    NetDeviceContainer ssDevs;
+    NetDeviceContainer bsDevs;
 
-  ssDevs = wimax.Install (ssNodes,
-                          WimaxHelper::DEVICE_TYPE_SUBSCRIBER_STATION,
-                          WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
-                          scheduler);
-  bsDevs = wimax.Install (bsNodes,
-                          WimaxHelper::DEVICE_TYPE_BASE_STATION,
-                          WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
-                          scheduler);
-  Simulator::Stop (Seconds (1));
-  Simulator::Run ();
-  for (int i = 0; i < 10; i++)
+    ssDevs = wimax.Install(ssNodes,
+                           WimaxHelper::DEVICE_TYPE_SUBSCRIBER_STATION,
+                           WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
+                           scheduler);
+    bsDevs = wimax.Install(bsNodes,
+                           WimaxHelper::DEVICE_TYPE_BASE_STATION,
+                           WimaxHelper::SIMPLE_PHY_TYPE_OFDM,
+                           scheduler);
+    Simulator::Stop(Seconds(1));
+    Simulator::Run();
+    for (int i = 0; i < 10; i++)
     {
-      NS_TEST_EXPECT_MSG_EQ (ssDevs.Get (i)->GetObject<SubscriberStationNetDevice> ()->GetAreManagementConnectionsAllocated (),
-                             true, "Management connections for SS[" << i << "] are not allocated");
+        NS_TEST_EXPECT_MSG_EQ(ssDevs.Get(i)
+                                  ->GetObject<SubscriberStationNetDevice>()
+                                  ->GetAreManagementConnectionsAllocated(),
+                              true,
+                              "Management connections for SS[" << i << "] are not allocated");
     }
-  Simulator::Destroy ();
+    Simulator::Destroy();
 }
+
+/**
+ * \ingroup wimax-test
+ * \ingroup tests
+ *
+ * \brief Ns3 Wimax SS Mac Test Suite
+ */
 class Ns3WimaxSSMacTestSuite : public TestSuite
 {
-public:
-  Ns3WimaxSSMacTestSuite ();
+  public:
+    Ns3WimaxSSMacTestSuite();
 };
 
-Ns3WimaxSSMacTestSuite::Ns3WimaxSSMacTestSuite ()
-  : TestSuite ("wimax-ss-mac-layer", UNIT)
+Ns3WimaxSSMacTestSuite::Ns3WimaxSSMacTestSuite()
+    : TestSuite("wimax-ss-mac-layer", UNIT)
 {
-  AddTestCase (new Ns3WimaxNetworkEntryTestCase);
-  AddTestCase (new Ns3WimaxManagementConnectionsTestCase);
+    AddTestCase(new Ns3WimaxNetworkEntryTestCase, TestCase::QUICK);
+    AddTestCase(new Ns3WimaxManagementConnectionsTestCase, TestCase::QUICK);
 }
 
-static Ns3WimaxSSMacTestSuite ns3WimaxSSMacTestSuite;
+static Ns3WimaxSSMacTestSuite ns3WimaxSSMacTestSuite; ///< the test suite

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2005,2006,2007 INRIA
  *
@@ -21,263 +20,192 @@
 #ifndef TRACED_CALLBACK_H
 #define TRACED_CALLBACK_H
 
-#include <list>
 #include "callback.h"
 
-namespace ns3 {
+#include <list>
 
 /**
- * \brief forward calls to a chain of Callback
+ * \file
  * \ingroup tracing
- *
- * An ns3::TracedCallback has almost exactly the same API as a normal ns3::Callback but
- * instead of forwarding calls to a single function (as an ns3::Callback normally does),
- * it forwards calls to a chain of ns3::Callback. TracedCallback::Connect adds a ns3::Callback
- * at the end of the chain of callbacks. TracedCallback::Disconnect removes a ns3::Callback from
- * the chain of callbacks.
+ * ns3::TracedCallback declaration and template implementation.
  */
-template<typename T1 = empty, typename T2 = empty, 
-         typename T3 = empty, typename T4 = empty,
-         typename T5 = empty, typename T6 = empty,
-         typename T7 = empty, typename T8 = empty>
-class TracedCallback 
-{
-public:
-  TracedCallback ();
-  /**
-   * \param callback callback to add to chain of callbacks
-   *
-   * Append the input callback to the end of the internal list 
-   * of ns3::Callback.
-   */
-  void ConnectWithoutContext (const CallbackBase & callback);
-  /**
-   * \param callback callback to add to chain of callbacks
-   * \param path the path to send back to the user callback.
-   *
-   * Append the input callback to the end of the internal list 
-   * of ns3::Callback. This method also will make sure that the
-   * input path specified by the user will be give back to the
-   * user's callback as its first argument. 
-   */
-  void Connect (const CallbackBase & callback, std::string path);
-  /**
-   * \param callback callback to remove from the chain of callbacks.
-   *
-   * Remove the input callback from the internal list 
-   * of ns3::Callback. This method is really the symmetric
-   * of the TracedCallback::ConnectWithoutContext method.
-   */
-  void DisconnectWithoutContext (const CallbackBase & callback);
-  /**
-   * \param callback callback to remove from the chain of callbacks.
-   * \param path the path which is sent back to the user callback.
-   *
-   * Remove the input callback which has a matching path as first argument 
-   * from the internal list of ns3::Callback. This method is really the symmetric
-   * of the TracedCallback::Connect method.
-   */
-  void Disconnect (const CallbackBase & callback, std::string path);
-  void operator() (void) const;
-  void operator() (T1 a1) const;
-  void operator() (T1 a1, T2 a2) const;
-  void operator() (T1 a1, T2 a2, T3 a3) const;
-  void operator() (T1 a1, T2 a2, T3 a3, T4 a4) const;
-  void operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5) const;
-  void operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6) const;
-  void operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6, T7 a7) const;
-  void operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6, T7 a7, T8 a8) const;
 
-private:
-  typedef std::list<Callback<void,T1,T2,T3,T4,T5,T6,T7,T8> > CallbackList;
-  CallbackList m_callbackList;
+namespace ns3
+{
+
+/**
+ * \ingroup tracing
+ * \brief Forward calls to a chain of Callback
+ *
+ * A TracedCallback has almost exactly the same API as a normal
+ * Callback but instead of forwarding calls to a single function
+ * (as a Callback normally does), it forwards calls to a chain
+ * of Callback.  Connect adds a Callback at the end of the chain
+ * of callbacks.  Disconnect removes a Callback from the chain of callbacks.
+ *
+ * This is a functor: the chain of Callbacks is invoked by
+ * calling the \c operator() form with the appropriate
+ * number of arguments.
+ *
+ * \tparam Ts \explicit Types of the functor arguments.
+ */
+template <typename... Ts>
+class TracedCallback
+{
+  public:
+    /** Constructor. */
+    TracedCallback();
+    /**
+     * Append a Callback to the chain (without a context).
+     *
+     * \param [in] callback Callback to add to chain.
+     */
+    void ConnectWithoutContext(const CallbackBase& callback);
+    /**
+     * Append a Callback to the chain with a context.
+     *
+     * The context string will be provided as the first argument
+     * to the Callback.
+     *
+     * \param [in] callback Callback to add to chain.
+     * \param [in] path Context string to provide when invoking the Callback.
+     */
+    void Connect(const CallbackBase& callback, std::string path);
+    /**
+     * Remove from the chain a Callback which was connected without a context.
+     *
+     * \param [in] callback Callback to remove from the chain.
+     */
+    void DisconnectWithoutContext(const CallbackBase& callback);
+    /**
+     * Remove from the chain a Callback which was connected with a context.
+     *
+     * \param [in] callback Callback to remove from the chain.
+     * \param [in] path Context path which was used to connect the Callback.
+     */
+    void Disconnect(const CallbackBase& callback, std::string path);
+    /**
+     * \brief Functor which invokes the chain of Callbacks.
+     * \tparam Ts \deduced Types of the functor arguments.
+     * \param [in] args The arguments to the functor
+     */
+    void operator()(Ts... args) const;
+    /**
+     * \brief Checks if the Callbacks list is empty.
+     * \return true if the Callbacks list is empty.
+     */
+    bool IsEmpty() const;
+
+    /**
+     *  TracedCallback signature for POD.
+     *
+     * \param [in] value Value of the traced variable.
+     * @{
+     */
+    // Uint32Callback appears to be the only one used at the moment.
+    // Feel free to add typedef's for any other POD you need.
+    typedef void (*Uint32Callback)(const uint32_t value);
+    /**@}*/
+
+  private:
+    /**
+     * Container type for holding the chain of Callbacks.
+     *
+     * \tparam Ts \deduced Types of the functor arguments.
+     */
+    typedef std::list<Callback<void, Ts...>> CallbackList;
+    /** The chain of Callbacks. */
+    CallbackList m_callbackList;
 };
 
 } // namespace ns3
 
-// implementation below.
+/********************************************************************
+ *  Implementation of the templates declared above.
+ ********************************************************************/
 
-namespace ns3 {
+namespace ns3
+{
 
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::TracedCallback ()
-  : m_callbackList () 
+template <typename... Ts>
+TracedCallback<Ts...>::TracedCallback()
+    : m_callbackList()
 {
 }
-template<typename T1, typename T2,
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
+
+template <typename... Ts>
 void
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::ConnectWithoutContext (const CallbackBase & callback)
+TracedCallback<Ts...>::ConnectWithoutContext(const CallbackBase& callback)
 {
-  Callback<void,T1,T2,T3,T4,T5,T6,T7,T8> cb;
-  cb.Assign (callback);
-  m_callbackList.push_back (cb);
-}
-template<typename T1, typename T2,
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::Connect (const CallbackBase & callback, std::string path)
-{
-  Callback<void,std::string,T1,T2,T3,T4,T5,T6,T7,T8> cb;
-  cb.Assign (callback);
-  Callback<void,T1,T2,T3,T4,T5,T6,T7,T8> realCb = cb.Bind (path);
-  m_callbackList.push_back (realCb);
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::DisconnectWithoutContext (const CallbackBase & callback)
-{
-  for (typename CallbackList::iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); /* empty */)
+    Callback<void, Ts...> cb;
+    if (!cb.Assign(callback))
     {
-      if ((*i).IsEqual (callback))
+        NS_FATAL_ERROR_NO_MSG();
+    }
+    m_callbackList.push_back(cb);
+}
+
+template <typename... Ts>
+void
+TracedCallback<Ts...>::Connect(const CallbackBase& callback, std::string path)
+{
+    Callback<void, std::string, Ts...> cb;
+    if (!cb.Assign(callback))
+    {
+        NS_FATAL_ERROR("when connecting to " << path);
+    }
+    Callback<void, Ts...> realCb = cb.Bind(path);
+    m_callbackList.push_back(realCb);
+}
+
+template <typename... Ts>
+void
+TracedCallback<Ts...>::DisconnectWithoutContext(const CallbackBase& callback)
+{
+    for (typename CallbackList::iterator i = m_callbackList.begin(); i != m_callbackList.end();
+         /* empty */)
+    {
+        if ((*i).IsEqual(callback))
         {
-          i = m_callbackList.erase (i);
+            i = m_callbackList.erase(i);
         }
-      else
+        else
         {
-          i++;
+            i++;
         }
     }
 }
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::Disconnect (const CallbackBase & callback, std::string path)
+
+template <typename... Ts>
+void
+TracedCallback<Ts...>::Disconnect(const CallbackBase& callback, std::string path)
 {
-  Callback<void,std::string,T1,T2,T3,T4,T5,T6,T7,T8> cb;
-  cb.Assign (callback);
-  Callback<void,T1,T2,T3,T4,T5,T6,T7,T8> realCb = cb.Bind (path);
-  DisconnectWithoutContext (realCb);
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (void) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
+    Callback<void, std::string, Ts...> cb;
+    if (!cb.Assign(callback))
     {
-      (*i)();
+        NS_FATAL_ERROR("when disconnecting from " << path);
+    }
+    Callback<void, Ts...> realCb = cb.Bind(path);
+    DisconnectWithoutContext(realCb);
+}
+
+template <typename... Ts>
+void
+TracedCallback<Ts...>::operator()(Ts... args) const
+{
+    for (typename CallbackList::const_iterator i = m_callbackList.begin();
+         i != m_callbackList.end();
+         i++)
+    {
+        (*i)(args...);
     }
 }
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1) const
+
+template <typename... Ts>
+bool
+TracedCallback<Ts...>::IsEmpty() const
 {
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3, T4 a4) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3, a4);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3, a4, a5);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3, a4, a5, a6);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6, T7 a7) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3, a4, a5, a6, a7);
-    }
-}
-template<typename T1, typename T2, 
-         typename T3, typename T4,
-         typename T5, typename T6,
-         typename T7, typename T8>
-void 
-TracedCallback<T1,T2,T3,T4,T5,T6,T7,T8>::operator() (T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6, T7 a7, T8 a8) const
-{
-  for (typename CallbackList::const_iterator i = m_callbackList.begin ();
-       i != m_callbackList.end (); i++)
-    {
-      (*i)(a1, a2, a3, a4, a5, a6, a7, a8);
-    }
+    return m_callbackList.empty();
 }
 
 } // namespace ns3

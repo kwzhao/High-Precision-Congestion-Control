@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 IITP RAS
  *
@@ -18,24 +17,30 @@
  * Authors: Pavel Boyko <boyko@iitp.ru>
  */
 
+#include "bug780-test.h"
 #include "hello-regression-test.h"
 #include "tc-regression-test.h"
-#include "bug780-test.h"
 
-namespace ns3 {
-namespace olsr {
+using namespace ns3;
+using namespace olsr;
 
+/**
+ * \ingroup olsr-test
+ * \ingroup tests
+ *
+ * Various olsr regression tests
+ */
 class RegressionTestSuite : public TestSuite
 {
-public:
-  RegressionTestSuite () : TestSuite ("routing-olsr-regression", SYSTEM) 
-  {
-    SetDataDir (NS_TEST_SOURCEDIR);
-    AddTestCase (new HelloRegressionTest);
-    AddTestCase (new TcRegressionTest);
-    AddTestCase (new Bug780Test);
-  }
-} g_olsrRegressionTestSuite;
+  public:
+    RegressionTestSuite()
+        : TestSuite("routing-olsr-regression", SYSTEM)
+    {
+        SetDataDir(NS_TEST_SOURCEDIR);
+        AddTestCase(new HelloRegressionTest, TestCase::QUICK);
+        AddTestCase(new TcRegressionTest, TestCase::QUICK);
+        AddTestCase(new Bug780Test, TestCase::QUICK);
+    }
+};
 
-}
-}
+static RegressionTestSuite g_olsrRegressionTestSuite; //!< Static variable for test initialization

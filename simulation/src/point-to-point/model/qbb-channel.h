@@ -77,21 +77,23 @@ public:
    * \brief Get number of devices on this channel
    * \returns number of devices on this channel
    */
-  virtual uint32_t GetNDevices (void) const;
+  virtual std::size_t GetNDevices (void) const;
 
   /*
    * \brief Get QbbNetDevice corresponding to index i on this channel
    * \param i Index number of the device requested
    * \returns Ptr to QbbNetDevice requested
    */
-  Ptr<QbbNetDevice> GetQbbDevice (uint32_t i) const;
+  Ptr<QbbNetDevice> GetQbbDevice (std::size_t i) const;
+
+  Ptr<PointToPointNetDevice> GetPointToPointDevice (std::size_t i) const;
 
   /*
    * \brief Get NetDevice corresponding to index i on this channel
    * \param i Index number of the device requested
    * \returns Ptr to NetDevice requested
    */
-  virtual Ptr<NetDevice> GetDevice (uint32_t i) const;
+  virtual Ptr<NetDevice> GetDevice (std::size_t i) const;
 
   /*
    * \brief Get the delay associated with this channel
@@ -99,12 +101,7 @@ public:
    */
   Time GetDelay (void) const;
 
-protected:
-  /*
-   * \brief Check to make sure the link is initialized
-   * \returns true if initialized, asserts otherwise
-   */
-  bool IsInitialized (void) const;
+  std::set<uint32_t> GetFlowIdSet(uint32_t i);
 
   /*
    * \brief Get the net-device source 
@@ -121,6 +118,13 @@ protected:
    * the specified link
    */
   Ptr<QbbNetDevice> GetDestination (uint32_t i) const;
+  
+protected:
+  /*
+   * \brief Check to make sure the link is initialized
+   * \returns true if initialized, asserts otherwise
+   */
+  bool IsInitialized (void) const;
 
 private:
   // Each point to point link has exactly two net devices
@@ -129,6 +133,7 @@ private:
   Time          m_delay;
   int32_t       m_nDevices;
 
+  std::set<uint32_t> m_flowIdSet[N_DEVICES];
   /**
    * The trace source for the packet transmission animation events that the 
    * device can fire.

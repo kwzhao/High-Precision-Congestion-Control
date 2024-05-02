@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2010 Andrea Sacco
  *
@@ -22,14 +21,17 @@
 #define ACOUSTIC_MODEM_ENERGY_MODEL_H
 
 #include "ns3/device-energy-model.h"
-#include "ns3/nstime.h"
 #include "ns3/event-id.h"
+#include "ns3/nstime.h"
 #include "ns3/traced-value.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 /**
- * \brief WHOI micro-modem energy model
+ * \ingroup uan
+ *
+ * WHOI micro-modem energy model.
  *
  * Basing on the Device Energy Model interface, has been implemented a specific
  * energy model for the WHOI micro modem. The class follows pretty closely the
@@ -45,184 +47,198 @@ namespace ns3 {
  * Sleep         5.8 mW
  *
  * References:
- * [1] Freitag et al., The whoi micro-modem: an acoustic communications and navigation system for multiple platforms,
+ * [1] Freitag et al., The whoi micro-modem: an acoustic communications
+ *     and navigation system for multiple platforms,
  *     in In Proc. IEEE OCEANS05 Conf, 2005.
  *     URL: http://ieeexplore.ieee.org/iel5/10918/34367/01639901.pdf
  */
 class AcousticModemEnergyModel : public DeviceEnergyModel
 {
-public:
-  /**
-   * Callback type for energy depletion handling.
-   */
-  typedef Callback<void> AcousticModemEnergyDepletionCallback;
+  public:
+    /** Callback type for energy depletion handling. */
+    typedef Callback<void> AcousticModemEnergyDepletionCallback;
 
-public:
-  static TypeId GetTypeId (void);
-  AcousticModemEnergyModel ();
-  virtual ~AcousticModemEnergyModel ();
+    /** Callback type for energy recharge handling. */
+    typedef Callback<void> AcousticModemEnergyRechargeCallback;
 
-  /**
-   * \brief Sets pointer to node.
-   *
-   * \param node Pointer to node.
-   *
-   * Implements DeviceEnergyModel::SetNode.
-   */
-  virtual void SetNode (Ptr<Node> node);
+  public:
+    /**
+     * Register this type.
+     * \return The object TypeId.
+     */
+    static TypeId GetTypeId();
+    /** Constructor. */
+    AcousticModemEnergyModel();
+    /** Dummy destructor, see DoDispose */
+    ~AcousticModemEnergyModel() override;
 
-  /**
-   * \brief Gets pointer to node.
-   *
-   * \return Pointer to node.
-   *
-   * Implements DeviceEnergyModel::GetNode.
-   */
-  virtual Ptr<Node> GetNode (void) const;
+    /**
+     * Sets pointer to node.
+     *
+     * \param node Pointer to node.
+     */
+    virtual void SetNode(Ptr<Node> node);
 
-  /**
-   * \brief Sets pointer to EnergySouce installed on node.
-   *
-   * \param source Pointer to EnergySource installed on node.
-   *
-   * Implements DeviceEnergyModel::SetEnergySource.
-   */
-  virtual void SetEnergySource (Ptr<EnergySource> source);
+    /**
+     * Gets pointer to node.
+     *
+     * \return Pointer to node.
+     */
+    virtual Ptr<Node> GetNode() const;
 
-  /**
-   * \return Total energy consumption of the modem
-   *
-   * Implements DeviceEnergyModel::GetTotalEnergyConsumption.
-   */
-  virtual double GetTotalEnergyConsumption (void) const;
+    // Inherited methods.
+    void SetEnergySource(Ptr<EnergySource> source) override;
+    double GetTotalEnergyConsumption() const override;
 
-  /**
-   *
-   * \return The transmission power of the modem in Watts
-   */
-  double GetTxPowerW (void) const;
+    /**
+     * Get the transmission power of the modem.
+     *
+     * \return The transmission power in Watts.
+     */
+    double GetTxPowerW() const;
 
-  /**
-   * Set the transmission power of the modem
-   *
-   * \param txPowerW Transmission power of the modem in watts
-   */
-  void SetTxPowerW (double txPowerW);
+    /**
+     * Set the transmission power of the modem.
+     *
+     * \param txPowerW Transmission power in watts.
+     */
+    void SetTxPowerW(double txPowerW);
 
-  /**
-   *
-   * \return The receiving power of the modem in Watts
-   */
-  double GetRxPowerW (void) const;
+    /**
+     * Get the receiving power.
+     *
+     * \return The receiving power in Watts
+     */
+    double GetRxPowerW() const;
 
-  /**
-   * Set the receiving power of the modem
-   *
-   * \param rxPowerW Receiving power of the modem in watts
-   */
-  void SetRxPowerW (double rxPowerW);
+    /**
+     * Set the receiving power of the modem.
+     *
+     * \param rxPowerW Receiving power in watts
+     */
+    void SetRxPowerW(double rxPowerW);
 
-  /**
-   *
-   * \return The idle power of the modem in Watts
-   */
-  double GetIdlePowerW (void) const;
+    /**
+     *Get the idle power of the modem.
+     *
+     * \return The idle power in Watts
+     */
+    double GetIdlePowerW() const;
 
-  /**
-   * Set the idle power of the modem
-   *
-   * \param idlePowerW Idle power of the modem in watts
-   */
-  void SetIdlePowerW (double idlePowerW);
+    /**
+     * Set the idle state power of the modem.
+     *
+     * \param idlePowerW Idle power of the modem in watts.
+     */
+    void SetIdlePowerW(double idlePowerW);
 
-  /**
-   *
-   * \return The sleep power of the modem in Watts
-   */
-  double GetSleepPowerW (void) const;
+    /**
+     * Get the sleep state power of the modem.
+     *
+     * \return Sleep power of the modem in Watts
+     */
+    double GetSleepPowerW() const;
 
-  /**
-   * Set the sleep power of the modem
-   *
-   * \param sleepPowerW Sleep power of the modem in watts
-   */
-  void SetSleepPowerW (double sleepPowerW);
+    /**
+     * Set the sleep power of the modem.
+     *
+     * \param sleepPowerW Sleep power of the modem in watts.
+     */
+    void SetSleepPowerW(double sleepPowerW);
 
-  /**
-   * \return Current state.
-   */
-  int GetCurrentState (void) const;
+    /**
+     * Get the current state of the modem.
+     *
+     * \return Current state.
+     */
+    int GetCurrentState() const;
 
-  /**
-   * \param callback Callback function.
-   *
-   * Sets callback for energy depletion handling.
-   */
-  void SetEnergyDepletionCallback (AcousticModemEnergyDepletionCallback callback);
+    /**
+     * \param callback Callback function.
+     *
+     * Sets callback for energy depletion handling.
+     */
+    void SetEnergyDepletionCallback(AcousticModemEnergyDepletionCallback callback);
 
-  /**
-   * \brief Changes state of the AcousticModemEnergyModel.
-   *
-   * \param newState New state the modem is in.
-   *
-   * Implements DeviceEnergyModel::ChangeState.
-   */
-  virtual void ChangeState (int newState);
+    /**
+     * \param callback Callback function.
+     *
+     * Sets callback for energy recharge handling.
+     */
+    void SetEnergyRechargeCallback(AcousticModemEnergyRechargeCallback callback);
 
-  /**
-   * \brief Handles energy depletion.
-   *
-   * Implements DeviceEnergyModel::HandleEnergyDepletion
-   */
-  virtual void HandleEnergyDepletion (void);
+    /**
+     * Changes state of the AcousticModemEnergyModel.
+     *
+     * \param newState New state the modem is in.
+     */
+    void ChangeState(int newState) override;
 
+    /**
+     * \brief Handles energy depletion.
+     */
+    void HandleEnergyDepletion() override;
 
-private:
-  void DoDispose (void);
+    /**
+     * \brief Handles energy recharged.
+     */
+    void HandleEnergyRecharged() override;
 
-  /**
-   * \returns Current draw of device, at current state.
-   *
-   * Implements DeviceEnergyModel::GetCurrentA.
-   */
-  virtual double DoGetCurrentA (void) const;
+    /**
+     * \brief Handles energy changed.
+     *
+     * Not implemented
+     */
+    void HandleEnergyChanged() override;
 
-  /**
-   * \param destState Modem state to switch to.
-   * \return True if the transition is allowed.
-   *
-   * This function checks if a given modem state transition is allowed.
-   */
-  bool IsStateTransitionValid (const int destState);
+  private:
+    void DoDispose() override;
 
-  /**
-   * \param state New state the modem is currently in.
-   *
-   * Sets current state. This function is private so that only the energy model
-   * can change its own state.
-   */
-  void SetMicroModemState (const int state);
+    /**
+     * \return Current draw of device, at current state.
+     */
+    double DoGetCurrentA() const override;
 
-private:
-  Ptr<Node> m_node;
-  Ptr<EnergySource> m_source;
+    /**
+     * \param destState Modem state to switch to.
+     * \return True if the transition is allowed.
+     *
+     * This function checks if a given modem state transition is allowed.
+     */
+    bool IsStateTransitionValid(const int destState);
 
-  // Member variables for power consumption in different modem states.
-  double m_txPowerW;
-  double m_rxPowerW;
-  double m_idlePowerW;
-  double m_sleepPowerW;
+    /**
+     * \param state New state the modem is currently in.
+     *
+     * Sets current state. This function is private so that only the energy model
+     * can change its own state.
+     */
+    void SetMicroModemState(const int state);
 
-  // This variable keeps track of the total energy consumed by this model.
-  TracedValue<double> m_totalEnergyConsumption;
+  private:
+    Ptr<Node> m_node;           //!< The node hosting this transducer.
+    Ptr<EnergySource> m_source; //!< The energy source.
 
-  // State variables.
-  int m_currentState;  // current state the modem is in
-  Time m_lastUpdateTime;          // time stamp of previous energy update
+    // Member variables for power consumption in different modem states.
+    double m_txPowerW;    //!< The transmitter power, in watts.
+    double m_rxPowerW;    //!< The receiver power, in watts.
+    double m_idlePowerW;  //!< The idle power, in watts.
+    double m_sleepPowerW; //!< The sleep power, in watts.
 
-  // energy depletion callback
-  AcousticModemEnergyDepletionCallback m_energyDepletionCallback;
-};
+    /** The total energy consumed by this model. */
+    TracedValue<double> m_totalEnergyConsumption;
+
+    // State variables.
+    int m_currentState;    //!< Current modem state.
+    Time m_lastUpdateTime; //!< Time stamp of previous energy update.
+
+    /** Energy depletion callback. */
+    AcousticModemEnergyDepletionCallback m_energyDepletionCallback;
+
+    /** Energy recharge callback. */
+    AcousticModemEnergyRechargeCallback m_energyRechargeCallback;
+
+}; // class AcousticModemEnergyModel
 
 } // namespace ns3
 

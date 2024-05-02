@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -21,74 +20,103 @@
 #include "ns3/test.h"
 #include "ns3/uinteger.h"
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup core
+ * \ingroup core-tests
+ * \ingroup global-value-tests
+ * GlobalValue test suite
+ */
 
-// ===========================================================================
-// Test for the ability to get at a GlobalValue.
-// ===========================================================================
+/**
+ * \ingroup core-tests
+ * \defgroup global-value-tests GlobalValue test suite
+ */
+
+namespace ns3
+{
+
+namespace tests
+{
+
+/**
+ * \ingroup global-value-tests
+ * Test for the ability to get at a GlobalValue.
+ */
 class GlobalValueTestCase : public TestCase
 {
-public:
-  GlobalValueTestCase ();
-  virtual ~GlobalValueTestCase () {}
+  public:
+    /** Constructor. */
+    GlobalValueTestCase();
 
-private:
-  virtual void DoRun (void);
+    /** Destructor. */
+    ~GlobalValueTestCase() override
+    {
+    }
+
+  private:
+    void DoRun() override;
 };
 
-GlobalValueTestCase::GlobalValueTestCase ()
-  : TestCase ("Check GlobalValue mechanism")
+GlobalValueTestCase::GlobalValueTestCase()
+    : TestCase("Check GlobalValue mechanism")
 {
 }
 
 void
-GlobalValueTestCase::DoRun (void)
+GlobalValueTestCase::DoRun()
 {
-  //
-  // Typically these are static globals but we can make one on the stack to 
-  // keep it hidden from the documentation.
-  //
-  GlobalValue uint = GlobalValue ("TestUint", "help text",
-                                  UintegerValue (10),
-                                  MakeUintegerChecker<uint32_t> ());
+    //
+    // Typically these are static globals but we can make one on the stack to
+    // keep it hidden from the documentation.
+    //
+    GlobalValue uint =
+        GlobalValue("TestUint", "help text", UintegerValue(10), MakeUintegerChecker<uint32_t>());
 
-  //
-  // Make sure we can get at the value and that it was initialized correctly.
-  //
-  UintegerValue uv;
-  uint.GetValue (uv);
-  NS_TEST_ASSERT_MSG_EQ (uv.Get (), 10, "GlobalValue \"TestUint\" not initialized as expected");
+    //
+    // Make sure we can get at the value and that it was initialized correctly.
+    //
+    UintegerValue uv;
+    uint.GetValue(uv);
+    NS_TEST_ASSERT_MSG_EQ(uv.Get(), 10, "GlobalValue \"TestUint\" not initialized as expected");
 
-  //
-  // Remove the global value for a valgrind clean run
-  //
-  GlobalValue::Vector *vector = GlobalValue::GetVector ();
-  for (GlobalValue::Vector::iterator i = vector->begin (); i != vector->end (); ++i)
+    //
+    // Remove the global value for a valgrind clean run
+    //
+    GlobalValue::Vector* vector = GlobalValue::GetVector();
+    for (GlobalValue::Vector::iterator i = vector->begin(); i != vector->end(); ++i)
     {
-      if ((*i) == &uint)
+        if ((*i) == &uint)
         {
-          vector->erase (i);
-          break;
+            vector->erase(i);
+            break;
         }
     }
 }
 
-// ===========================================================================
-// The Test Suite that glues all of the Test Cases together.
-// ===========================================================================
+/**
+ * \ingroup global-value-tests
+ * The Test Suite that glues all of the Test Cases together.
+ */
 class GlobalValueTestSuite : public TestSuite
 {
-public:
-  GlobalValueTestSuite ();
+  public:
+    /** Constructor. */
+    GlobalValueTestSuite();
 };
 
-GlobalValueTestSuite::GlobalValueTestSuite ()
-  : TestSuite ("global-value", UNIT)
+GlobalValueTestSuite::GlobalValueTestSuite()
+    : TestSuite("global-value")
 {
-  AddTestCase (new GlobalValueTestCase);
+    AddTestCase(new GlobalValueTestCase);
 }
 
-static GlobalValueTestSuite globalValueTestSuite;
+/**
+ * \ingroup global-value-tests
+ * GlobalValueTestSuite instance variable.
+ */
+static GlobalValueTestSuite g_globalValueTestSuite;
+
+} // namespace tests
 
 } // namespace ns3
-

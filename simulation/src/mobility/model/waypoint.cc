@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 Phillip Sitbon
  *
@@ -19,36 +18,54 @@
  */
 #include "waypoint.h"
 
-namespace ns3 {
-
-ATTRIBUTE_HELPER_CPP (Waypoint);
-
-Waypoint::Waypoint (const Time &waypointTime, const Vector &waypointPosition)
-  : time (waypointTime),
-    position (waypointPosition)
+namespace ns3
 {
-}
-Waypoint::Waypoint ()
-  : time (Seconds (0.0)),
-    position (0,0,0)
+
+ATTRIBUTE_HELPER_CPP(Waypoint);
+
+Waypoint::Waypoint(const Time& waypointTime, const Vector& waypointPosition)
+    : time(waypointTime),
+      position(waypointPosition)
 {
 }
 
-std::ostream &operator << (std::ostream &os, const Waypoint &waypoint)
+Waypoint::Waypoint()
+    : time(Seconds(0.0)),
+      position(0, 0, 0)
 {
-  os << waypoint.time.GetSeconds () << "$" << waypoint.position;
-  return os;
 }
-std::istream &operator >> (std::istream &is, Waypoint &waypoint)
+
+/**
+ * \brief Stream insertion operator.
+ *
+ * \param os the stream
+ * \param waypoint the waypoint
+ * \returns a reference to the stream
+ */
+std::ostream&
+operator<<(std::ostream& os, const Waypoint& waypoint)
 {
-  char separator;
-  is >> waypoint.time >> separator >> waypoint.position;
-  if (separator != '$')
+    os << waypoint.time.GetSeconds() << "$" << waypoint.position;
+    return os;
+}
+
+/**
+ * \brief Stream extraction operator.
+ *
+ * \param is the stream
+ * \param waypoint the waypoint
+ * \returns a reference to the stream
+ */
+std::istream&
+operator>>(std::istream& is, Waypoint& waypoint)
+{
+    char separator;
+    is >> waypoint.time >> separator >> waypoint.position;
+    if (separator != '$')
     {
-      is.setstate (std::ios_base::failbit);
+        is.setstate(std::ios_base::failbit);
     }
-  return is;
+    return is;
 }
 
 } // namespace ns3
-

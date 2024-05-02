@@ -23,9 +23,9 @@
 #include "ns3/header.h"
 #include "ppp-header.h"
 
-NS_LOG_COMPONENT_DEFINE ("PppHeader");
-
 namespace ns3 {
+
+NS_LOG_COMPONENT_DEFINE ("PppHeader");
 
 NS_OBJECT_ENSURE_REGISTERED (PppHeader);
 
@@ -42,6 +42,7 @@ PppHeader::GetTypeId (void)
 {
   static TypeId tid = TypeId ("ns3::PppHeader")
     .SetParent<Header> ()
+    .SetGroupName ("PointToPoint")
     .AddConstructor<PppHeader> ()
   ;
   return tid;
@@ -75,25 +76,22 @@ PppHeader::Print (std::ostream &os) const
 uint32_t
 PppHeader::GetSerializedSize (void) const
 {
-	return GetStaticSize();
+  return GetStaticSize();
 }
 uint32_t PppHeader::GetStaticSize (void){
-	return 14;
+  return 14;
 }
 
 void
 PppHeader::Serialize (Buffer::Iterator start) const
 {
   start.WriteHtonU16 (m_protocol);
-  start.WriteU64(0);
-  start.WriteU32(0);
 }
 
 uint32_t
 PppHeader::Deserialize (Buffer::Iterator start)
 {
   m_protocol = start.ReadNtohU16 ();
-  start.Next(12);
   return GetSerializedSize ();
 }
 

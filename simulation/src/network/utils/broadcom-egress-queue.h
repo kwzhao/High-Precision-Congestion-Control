@@ -30,7 +30,7 @@ namespace ns3 {
 
 	class TraceContainer;
 
-	class BEgressQueue : public Queue {
+	class BEgressQueue : public Queue<Packet> {
 	public:
 		static TypeId GetTypeId(void);
 		static const unsigned fCnt = 128; //max number of queues, 128 for NICs
@@ -41,11 +41,23 @@ namespace ns3 {
 		Ptr<Packet> DequeueRR(bool paused[]);
 		uint32_t GetNBytes(uint32_t qIndex) const;
 		uint32_t GetNBytesTotal() const;
+		uint32_t GetNBytesRxTotal() const;
+
 		uint32_t GetLastQueue();
 
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqEnqueue;
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqDequeue;
 
+		uint64_t getTxBytes(){
+			uint64_t temp=numTxBytes;
+			numTxBytes=0;
+			return temp;
+		}
+
+		virtual bool Enqueue (Ptr<Packet> item){return true;};
+		virtual Ptr<Packet> Dequeue (void){return nullptr;};
+		virtual Ptr<Packet>  Remove (void){ return nullptr;};
+		virtual Ptr<const Packet> Peek (void) const{return nullptr;};
 	private:
 		bool DoEnqueue(Ptr<Packet> p, uint32_t qIndex);
 		Ptr<Packet> DoDequeueRR(bool paused[]);
@@ -56,11 +68,16 @@ namespace ns3 {
 		double m_maxBytes; //total bytes limit
 		uint32_t m_bytesInQueue[fCnt];
 		uint32_t m_bytesInQueueTotal;
+		uint64_t m_rxBytes;
 		uint32_t m_rrlast;
 		uint32_t m_qlast;
-		std::vector<Ptr<Queue> > m_queues; // uc queues
+		std::vector<Ptr<Queue<Packet>> > m_queues; // uc queues
+		// vamsi
+		uint64_t numTxBytes; // for throughput calculations
+
+        NS_LOG_TEMPLATE_DECLARE;
 	};
 
 } // namespace ns3
 
-#endif /* DROPTAIL_H */
+#endif /* BROADCOM_EGRESS_H */

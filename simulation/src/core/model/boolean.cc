@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -18,100 +17,110 @@
  * Authors: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 #include "boolean.h"
+
 #include "fatal-error.h"
 #include "log.h"
 
-NS_LOG_COMPONENT_DEFINE ("Boolean");
+/**
+ * \file
+ * \ingroup attribute_Boolean
+ * ns3::BooleanValue attribute value implementaation.
+ */
 
-namespace ns3 {
+namespace ns3
+{
 
-BooleanValue::BooleanValue ()
-  : m_value (false)
+NS_LOG_COMPONENT_DEFINE("Boolean");
+
+BooleanValue::BooleanValue()
+    : m_value(false)
 {
-  NS_LOG_FUNCTION (this);
+    NS_LOG_FUNCTION(this);
 }
-BooleanValue::BooleanValue (bool value)
-  : m_value (value)
+
+BooleanValue::BooleanValue(bool value)
+    : m_value(value)
 {
-  NS_LOG_FUNCTION (this << value);
+    NS_LOG_FUNCTION(this << value);
 }
+
 void
-BooleanValue::Set (bool value)
+BooleanValue::Set(bool value)
 {
-  NS_LOG_FUNCTION (this << value);
-  m_value = value;
+    NS_LOG_FUNCTION(this << value);
+    m_value = value;
 }
+
 bool
-BooleanValue::Get (void) const
+BooleanValue::Get() const
 {
-  NS_LOG_FUNCTION (this);
-  return m_value;
-}
-BooleanValue::operator bool () const
-{
-  return m_value;
+    NS_LOG_FUNCTION(this);
+    return m_value;
 }
 
-std::ostream & operator << (std::ostream &os, const BooleanValue &value)
+BooleanValue::operator bool() const
 {
-  if (value.Get ())
-    {
-      os << "true";
-    }
-  else
-    {
-      os << "false";
-    }
-  return os;
+    return m_value;
 }
 
-Ptr<AttributeValue> 
-BooleanValue::Copy (void) const
+std::ostream&
+operator<<(std::ostream& os, const BooleanValue& value)
 {
-  NS_LOG_FUNCTION (this);
-
-  return Create<BooleanValue> (*this);
+    if (value.Get())
+    {
+        os << "true";
+    }
+    else
+    {
+        os << "false";
+    }
+    return os;
 }
-std::string 
-BooleanValue::SerializeToString (Ptr<const AttributeChecker> checker) const
-{
-  NS_LOG_FUNCTION (this << checker);
 
-  if (m_value)
-    {
-      return "true";
-    } 
-  else
-    {
-      return "false";
-    }
+Ptr<AttributeValue>
+BooleanValue::Copy() const
+{
+    NS_LOG_FUNCTION(this);
+
+    return Create<BooleanValue>(*this);
 }
-bool 
-BooleanValue::DeserializeFromString (std::string value, Ptr<const AttributeChecker> checker)
-{
-  NS_LOG_FUNCTION (this << value << checker);
 
-  if (value == "true" ||
-      value == "1" ||
-      value == "t")
+std::string
+BooleanValue::SerializeToString(Ptr<const AttributeChecker> checker) const
+{
+    NS_LOG_FUNCTION(this << checker);
+
+    if (m_value)
     {
-      m_value = true;
-      return true;
+        return "true";
     }
-  else if (value == "false" ||
-           value == "0" ||
-           value == "f")
+    else
     {
-      m_value = false;
-      return true;
-    }
-  else
-    {
-      return false;
+        return "false";
     }
 }
 
+bool
+BooleanValue::DeserializeFromString(std::string value, Ptr<const AttributeChecker> checker)
+{
+    NS_LOG_FUNCTION(this << value << checker);
 
-ATTRIBUTE_CHECKER_IMPLEMENT_WITH_NAME (Boolean,"bool");
+    if (value == "true" || value == "1" || value == "t")
+    {
+        m_value = true;
+        return true;
+    }
+    else if (value == "false" || value == "0" || value == "f")
+    {
+        m_value = false;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+ATTRIBUTE_CHECKER_IMPLEMENT_WITH_NAME(Boolean, "bool");
 
 } // namespace ns3

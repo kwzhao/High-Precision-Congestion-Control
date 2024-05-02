@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2010 Hajime Tazaki
  *
@@ -21,11 +20,16 @@
 #ifndef ROCKETFUEL_TOPOLOGY_READER_H
 #define ROCKETFUEL_TOPOLOGY_READER_H
 
-#include "ns3/nstime.h"
 #include "topology-reader.h"
 
-namespace ns3 {
+/**
+ * \file
+ * \ingroup topology
+ * ns3::RocketfuelTopologyReader declaration.
+ */
 
+namespace ns3
+{
 
 // ------------------------------------------------------------
 // --------------------------------------------
@@ -42,49 +46,81 @@ namespace ns3 {
  */
 class RocketfuelTopologyReader : public TopologyReader
 {
-public:
-  static TypeId GetTypeId (void);
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return The object TypeId
+     */
+    static TypeId GetTypeId();
 
-  RocketfuelTopologyReader ();
-  virtual ~RocketfuelTopologyReader ();
+    RocketfuelTopologyReader();
+    ~RocketfuelTopologyReader() override;
 
-  /**
-   * \brief Main topology reading function.
-   *
-   * This method opens an input stream and reads the Rocketfuel-format file.
-   * Every row represents a topology link (the ids of a couple of nodes),
-   * so the input file is read line by line to figure out how many links
-   * and nodes are in the topology.
-   *
-   * \return the container of the nodes created (or empty container if there was an error)
-   */
-  virtual NodeContainer Read (void);
+    // Delete copy constructor and assignment operator to avoid misuse
+    RocketfuelTopologyReader(const RocketfuelTopologyReader&) = delete;
+    RocketfuelTopologyReader& operator=(const RocketfuelTopologyReader&) = delete;
 
-private:
-  RocketfuelTopologyReader (const RocketfuelTopologyReader&);
-  RocketfuelTopologyReader& operator= (const RocketfuelTopologyReader&);
-  // Parser for the *.cch file available at:
-  // http://www.cs.washington.edu/research/networking/rocketfuel/maps/rocketfuel_maps_cch.tar.gz
-  NodeContainer GenerateFromMapsFile (int argc, char *argv[]);
-  // Parser for the weights.* file available at:
-  // http://www.cs.washington.edu/research/networking/rocketfuel/maps/weights-dist.tar.gz
-  NodeContainer GenerateFromWeightsFile (int argc, char *argv[]);
+    /**
+     * \brief Main topology reading function.
+     *
+     * This method opens an input stream and reads the Rocketfuel-format file.
+     * Every row represents a topology link (the ids of a couple of nodes),
+     * so the input file is read line by line to figure out how many links
+     * and nodes are in the topology.
+     *
+     * \return The container of the nodes created (or empty container if there was an error)
+     */
+    NodeContainer Read() override;
 
-  enum RF_FileType
-  {
-    RF_MAPS,
-    RF_WEIGHTS,
-    RF_UNKNOWN
-  };
-  enum RF_FileType GetFileType (const char *);
+  private:
+    /**
+     * \brief Topology read function from a file containing the nodes map.
+     *
+     * Parser for the *.cch file available at:
+     * http://www.cs.washington.edu/research/networking/rocketfuel/maps/rocketfuel_maps_cch.tar.gz
+     *
+     * \param [in] argv Argument vector.
+     * \return The container of the nodes created (or empty container if there was an error).
+     */
+    NodeContainer GenerateFromMapsFile(const std::vector<std::string>& argv);
 
-  // end class RocketfuelTopologyReader
+    /**
+     * \brief Topology read function from a file containing the nodes weights.
+     *
+     * Parser for the weights.* file available at:
+     * http://www.cs.washington.edu/research/networking/rocketfuel/maps/weights-dist.tar.gz
+     *
+     * \param [in] argv Argument vector.
+     * \return The container of the nodes created (or empty container if there was an error).
+     */
+    NodeContainer GenerateFromWeightsFile(const std::vector<std::string>& argv);
+
+    /**
+     * \brief Enum of the possible file types.
+     */
+    enum RF_FileType
+    {
+        RF_MAPS,
+        RF_WEIGHTS,
+        RF_UNKNOWN
+    };
+
+    /**
+     * \brief Classifies the file type according to its content.
+     *
+     * \param buf the first line of the file being read
+     * \return The file type (RF_MAPS, RF_WEIGHTS, or RF_UNKNOWN)
+     */
+    RF_FileType GetFileType(const std::string& buf);
+
+    int m_linksNumber;                          //!< Number of links.
+    int m_nodesNumber;                          //!< Number of nodes.
+    std::map<std::string, Ptr<Node>> m_nodeMap; //!< Map of the nodes (name, node).
+
+    // end class RocketfuelTopologyReader
 };
 
 // end namespace ns3
-};
-
+}; // namespace ns3
 
 #endif /* ROCKETFUEL_TOPOLOGY_READER_H */
-
-

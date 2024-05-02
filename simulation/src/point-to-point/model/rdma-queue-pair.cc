@@ -15,13 +15,14 @@ namespace ns3 {
 TypeId RdmaQueuePair::GetTypeId (void)
 {
 	static TypeId tid = TypeId ("ns3::RdmaQueuePair")
-		.SetParent<Object> ()
-		;
+	                    .SetParent<Object> ()
+	                    ;
 	return tid;
 }
 
-RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport){
+RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport) {
 	startTime = Simulator::Now();
+	stopTime = Simulator::GetMaximumSimulationTime();
 	sip = _sip;
 	dip = _dip;
 	sport = _sport;
@@ -47,7 +48,7 @@ RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, ui
 	hp.m_incStage = 0;
 	hp.m_lastGap = 0;
 	hp.u = 1;
-	for (uint32_t i = 0; i < IntHeader::maxHop; i++){
+	for (uint32_t i = 0; i < IntHeader::maxHop; i++) {
 		hp.hopState[i].u = 1;
 		hp.hopState[i].incStage = 0;
 	}
@@ -68,23 +69,23 @@ RdmaQueuePair::RdmaQueuePair(uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, ui
 	hpccPint.m_incStage = 0;
 }
 
-void RdmaQueuePair::SetSize(uint64_t size){
+void RdmaQueuePair::SetSize(uint64_t size) {
 	m_size = size;
 }
 
-void RdmaQueuePair::SetWin(uint32_t win){
+void RdmaQueuePair::SetWin(uint32_t win) {
 	m_win = win;
 }
 
-void RdmaQueuePair::SetBaseRtt(uint64_t baseRtt){
+void RdmaQueuePair::SetBaseRtt(uint64_t baseRtt) {
 	m_baseRtt = baseRtt;
 }
 
-void RdmaQueuePair::SetVarWin(bool v){
+void RdmaQueuePair::SetVarWin(bool v) {
 	m_var_win = v;
 }
 
-void RdmaQueuePair::SetAppNotifyCallback(Callback<void> notifyAppFinish){
+void RdmaQueuePair::SetAppNotifyCallback(Callback<void> notifyAppFinish) {
 	m_notifyAppFinish = notifyAppFinish;
 }
 
@@ -92,12 +93,12 @@ void RdmaQueuePair::SetFlowId(uint32_t flowId) {
 	m_flowId = flowId;
 }
 
-uint64_t RdmaQueuePair::GetBytesLeft(){
+uint64_t RdmaQueuePair::GetBytesLeft() {
 	return m_size >= snd_nxt ? m_size - snd_nxt : 0;
 }
 
-uint32_t RdmaQueuePair::GetHash(void){
-	union{
+uint32_t RdmaQueuePair::GetHash(void) {
+	union {
 		struct {
 			uint32_t sip, dip;
 			uint16_t sport, dport;
@@ -111,51 +112,64 @@ uint32_t RdmaQueuePair::GetHash(void){
 	return Hash32(buf.c, 12);
 }
 
-void RdmaQueuePair::Acknowledge(uint64_t ack){
-	if (ack > snd_una){
+void RdmaQueuePair::Acknowledge(uint64_t ack) {
+	if (ack > snd_una) {
 		snd_una = ack;
 	}
 }
 
-uint64_t RdmaQueuePair::GetOnTheFly(){
+uint64_t RdmaQueuePair::GetOnTheFly() {
 	return snd_nxt - snd_una;
 }
 
-bool RdmaQueuePair::IsWinBound(){
+bool RdmaQueuePair::IsWinBound() {
 	uint64_t w = GetWin();
 	return w != 0 && GetOnTheFly() >= w;
 }
 
-uint64_t RdmaQueuePair::GetWin(){
-	if (m_win == 0)
-		return 0;
-	uint64_t w;
-	if (m_var_win){
-		w = m_win * m_rate.GetBitRate() / m_max_rate.GetBitRate();
-		if (w == 0)
-			w = 1; // must > 0
-	}else{
+uint64_t RdmaQueuePair::GetWin() {
+//	return m_win;
+	uint64_t w = 0;
+	if (powerEnabled && m_var_win) {
+		w = m_rate.GetBitRate() * m_baseRtt * 1e-9 / 8.0;
+	}
+	else if (powerEnabled && !m_var_win) {
 		w = m_win;
+	}
+	else {
+		if (m_win == 0)
+			return 0;
+		if (m_var_win) {
+			w = m_win * m_rate.GetBitRate() / m_max_rate.GetBitRate();
+			if (w == 0)
+				w = 1; // must > 0
+		} else {
+			w = m_win;
+		}
 	}
 	return w;
 }
 
-uint64_t RdmaQueuePair::HpGetCurWin(){
+uint64_t RdmaQueuePair::HpGetCurWin() {
 	if (m_win == 0)
 		return 0;
 	uint64_t w;
-	if (m_var_win){
+	if (m_var_win) {
 		w = m_win * hp.m_curRate.GetBitRate() / m_max_rate.GetBitRate();
 		if (w == 0)
 			w = 1; // must > 0
-	}else{
+	} else {
 		w = m_win;
 	}
 	return w;
 }
 
-bool RdmaQueuePair::IsFinished(){
-	return snd_una >= m_size;
+bool RdmaQueuePair::IsFinished() {
+
+	if (Simulator::Now() > stopTime)
+		return true;
+	else
+		return snd_una >= m_size;
 }
 
 /*********************
@@ -164,12 +178,12 @@ bool RdmaQueuePair::IsFinished(){
 TypeId RdmaRxQueuePair::GetTypeId (void)
 {
 	static TypeId tid = TypeId ("ns3::RdmaRxQueuePair")
-		.SetParent<Object> ()
-		;
+	                    .SetParent<Object> ()
+	                    ;
 	return tid;
 }
 
-RdmaRxQueuePair::RdmaRxQueuePair(){
+RdmaRxQueuePair::RdmaRxQueuePair() {
 	sip = dip = sport = dport = 0;
 	m_ipid = 0;
 	ReceiverNextExpectedSeq = 0;
@@ -178,8 +192,8 @@ RdmaRxQueuePair::RdmaRxQueuePair(){
 	m_lastNACK = 0;
 }
 
-uint32_t RdmaRxQueuePair::GetHash(void){
-	union{
+uint32_t RdmaRxQueuePair::GetHash(void) {
+	union {
 		struct {
 			uint32_t sip, dip;
 			uint16_t sport, dport;
@@ -199,37 +213,37 @@ uint32_t RdmaRxQueuePair::GetHash(void){
 TypeId RdmaQueuePairGroup::GetTypeId (void)
 {
 	static TypeId tid = TypeId ("ns3::RdmaQueuePairGroup")
-		.SetParent<Object> ()
-		;
+	                    .SetParent<Object> ()
+	                    ;
 	return tid;
 }
 
-RdmaQueuePairGroup::RdmaQueuePairGroup(void){
+RdmaQueuePairGroup::RdmaQueuePairGroup(void) {
 }
 
-uint32_t RdmaQueuePairGroup::GetN(void){
+uint32_t RdmaQueuePairGroup::GetN(void) {
 	return m_qps.size();
 }
 
-Ptr<RdmaQueuePair> RdmaQueuePairGroup::Get(uint32_t idx){
+Ptr<RdmaQueuePair> RdmaQueuePairGroup::Get(uint32_t idx) {
 	return m_qps[idx];
 }
 
-Ptr<RdmaQueuePair> RdmaQueuePairGroup::operator[](uint32_t idx){
+Ptr<RdmaQueuePair> RdmaQueuePairGroup::operator[](uint32_t idx) {
 	return m_qps[idx];
 }
 
-void RdmaQueuePairGroup::AddQp(Ptr<RdmaQueuePair> qp){
+void RdmaQueuePairGroup::AddQp(Ptr<RdmaQueuePair> qp) {
 	m_qps.push_back(qp);
 }
 
 #if 0
-void RdmaQueuePairGroup::AddRxQp(Ptr<RdmaRxQueuePair> rxQp){
+void RdmaQueuePairGroup::AddRxQp(Ptr<RdmaRxQueuePair> rxQp) {
 	m_rxQps.push_back(rxQp);
 }
 #endif
 
-void RdmaQueuePairGroup::Clear(void){
+void RdmaQueuePairGroup::Clear(void) {
 	m_qps.clear();
 }
 

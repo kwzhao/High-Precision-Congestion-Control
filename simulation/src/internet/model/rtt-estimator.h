@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 //
 // Copyright (c) 2006 Georgia Tech Research Corporation
 //
@@ -21,176 +20,91 @@
 // Georgia Tech Network Simulator - Round Trip Time Estimation Class
 // George F. Riley.  Georgia Tech, Spring 2002
 
-
 #ifndef RTT_ESTIMATOR_H
 #define RTT_ESTIMATOR_H
 
-#include <deque>
-#include "ns3/sequence-number.h"
 #include "ns3/nstime.h"
 #include "ns3/object.h"
 
-namespace ns3 {
-
-/**
- * \ingroup tcp
- *
- * \brief Helper class to store RTT measurements
- */
-class RttHistory {
-public:
-  RttHistory (SequenceNumber32 s, uint64_t c, Time t, uint64_t marked, uint64_t unmarked);
-  RttHistory (const RttHistory& h); // Copy constructor
-public:
-  SequenceNumber32  seq;  // First sequence number in packet sent
-  uint64_t        count;  // Number of bytes sent
-  Time            time;   // Time this one was sent
-  uint64_t        nonMarked; // Number of unmarked packets (needed for DCTCP)
-  uint64_t        marked;   // Number of marked packets (needed for DCTCP)
-  bool            retx;   // True if this has been retransmitted
-};
-
-typedef std::deque<RttHistory> RttHistory_t;
+namespace ns3
+{
 
 /**
  * \ingroup tcp
  *
  * \brief Base class for all RTT Estimators
+ *
+ * The RTT Estimator class computes an estimate of the round trip time
+ * observed in a series of Time measurements.  The estimate is provided in
+ * the form of an estimate and a sample variation.  Subclasses can implement
+ * different algorithms to provide values for the estimate and variation.
  */
-class RttEstimator : public Object {
-public:
-  static TypeId GetTypeId (void);
+class RttEstimator : public Object
+{
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  RttEstimator();
-  RttEstimator (const RttEstimator&);
+    RttEstimator();
+    /**
+     * \brief Copy constructor
+     * \param r the object to copy
+     */
+    RttEstimator(const RttEstimator& r);
 
-  virtual ~RttEstimator();
+    ~RttEstimator() override;
 
-  /**
-   * \brief Note that a particular sequence has been sent
-   * \param seq the packet sequence number.
-   * \param size the packet size.
-   * \param number of unmarked packet so far (needed for DCTCP)
-   * \param number of marked packets so far (needed for DCTCP)
-   */
-  virtual void SentSeq (SequenceNumber32 seq, uint32_t size);
+    TypeId GetInstanceTypeId() const override;
 
-  /**
-   * \brief Note that a particular ack sequence has been received
-   * \param ackSeq the ack sequence number.
-   * \param flag is the packet was marked (needed for DCTCP)
-   * \param reference to number of unmarked packets so far (needed for DCTCP)
-   * \param reference to number of marked packets so far (needed for DCTCP)
-   * \param g parameter (needed for DCTCP)
-   * \param calculated alpha parameter (needed for DCTCP)
-   * \return The measured RTT for this ack.
-   */
-  virtual Time AckSeq (SequenceNumber32 ackSeq, bool markedFlag);
+    /**
+     * \brief Add a new measurement to the estimator. Pure virtual function.
+     * \param t the new RTT measure.
+     */
+    virtual void Measurement(Time t) = 0;
 
-  /**
-   * \brief Clear all history entries
-   */
-  virtual void ClearSent ();
+    /**
+     * \brief Copy object (including current internal state)
+     * \returns a copy of itself
+     */
+    virtual Ptr<RttEstimator> Copy() const = 0;
 
-  /**
-   * \brief Add a new measurement to the estimator. Pure virtual function.
-   * \param t the new RTT measure.
-   */
-  virtual void  Measurement (Time t) = 0;
+    /**
+     * \brief Resets the estimation to its initial state.
+     */
+    virtual void Reset();
 
-  /**
-   * \brief Returns the estimated RTO. Pure virtual function.
-   * \return the estimated RTO.
-   */
-  virtual Time RetransmitTimeout () = 0;
+    /**
+     * \brief gets the RTT estimate.
+     * \return The RTT estimate.
+     */
+    Time GetEstimate() const;
 
-  virtual Ptr<RttEstimator> Copy () const = 0;
+    /**
+     * Note that this is not a formal statistical variance; it has the
+     * the same units as the estimate.  Mean deviation or standard deviation
+     * are example quantities that could be provided here.
+     *
+     * \brief gets the RTT estimate variation.
+     * \return The RTT estimate variation.
+     */
+    Time GetVariation() const;
 
-  /**
-   * \brief Increase the estimation multiplier up to MaxMultiplier.
-   */
-  virtual void IncreaseMultiplier ();
+    /**
+     * \brief gets the number of samples used in the estimates
+     * \return the number of samples used in the estimates
+     */
+    uint32_t GetNSamples() const;
 
-  /**
-   * \brief Resets the estimation multiplier to 1.
-   */
-  virtual void ResetMultiplier ();
+  private:
+    Time m_initialEstimatedRtt; //!< Initial RTT estimation
 
-  /**
-   * \brief Resets the estimation to its initial state.
-   */
-  virtual void Reset (SequenceNumber32 seq);
-
-  /**
-   * \brief Sets the Minimum RTO.
-   * \param minRto The minimum RTO returned by the estimator.
-   */
-  void SetMinRto (Time minRto);
-
-  /**
-   * \brief Get the Minimum RTO.
-   * \return The minimum RTO returned by the estimator.
-   */
-  Time GetMinRto (void) const;
-
-  /**
-   * \brief Sets the current RTT estimate (forcefully).
-   * \param estimate The current RTT estimate.
-   */
-  void SetCurrentEstimate (Time estimate);
-
-  /**
-   * \brief gets the current RTT estimate.
-   * \return The current RTT estimate.
-   */
-  Time GetCurrentEstimate (void) const;
-
-  /**
-   * \brief gets the current Alpha value.
-   * \return The current Alpha value.
-   */
-  double GetAlpha (void) const;
-
-  /**
-   * \brief gets the current DCTCP weight value.
-   * \return The current parameter g value.
-   */
-  double GetG (void) const;
-
-  /**
-   * \brief sets the current DCTCP weight value.
-   * \return The current parameter g value.
-   */
-  void SetG (double g);
-
-  /**
-   * \brief get the number of bytes sent so far
-   * \return number of bytes sent
-   */
-  uint64_t GetBytesSent (void) const;
-
-  void SetExpectedNextSeq(SequenceNumber32 seq)
-  {
-    m_next = seq;
-  }
-
-private:
-  SequenceNumber32 m_next;    // Next expected sequence to be sent
-  RttHistory_t m_history;     // List of sent packet
-  uint16_t m_maxMultiplier;
-  Time m_initialEstimatedRtt;
-
-protected:
-  Time         m_currentEstimatedRtt;     // Current estimate
-  Time         m_minRto;                  // minimum value of the timeout
-  uint32_t     m_nSamples;                // Number of samples
-  uint16_t     m_multiplier;              // RTO Multiplier
-  uint64_t     m_sentBytes;               // Number of bytes sent
-  // Parameters needed for DCTCP
-  double      m_g;
-  uint64_t     m_marked;
-  uint64_t     m_nonMarked;
-  double      m_alpha;
+  protected:
+    Time m_estimatedRtt;       //!< Current estimate
+    Time m_estimatedVariation; //!< Current estimate variation
+    uint32_t m_nSamples;       //!< Number of samples
 };
 
 /**
@@ -202,44 +116,76 @@ protected:
  * by Van Jacobson and Michael J. Karels, in
  * "Congestion Avoidance and Control", SIGCOMM 88, Appendix A
  *
+ * The default values for the gain (alpha and beta) are set as documented
+ * in RFC 6298.
+ *
  */
-class RttMeanDeviation : public RttEstimator {
-public:
-  static TypeId GetTypeId (void);
+class RttMeanDeviation : public RttEstimator
+{
+  public:
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
 
-  RttMeanDeviation ();
+    RttMeanDeviation();
 
-  RttMeanDeviation (const RttMeanDeviation&);
+    /**
+     * \brief Copy constructor
+     * \param r the object to copy
+     */
+    RttMeanDeviation(const RttMeanDeviation& r);
 
-  /**
-   * \brief Add a new measurement to the estimator.
-   * \param measure the new RTT measure.
-   */
-  void Measurement (Time measure);
+    TypeId GetInstanceTypeId() const override;
 
-  /**
-   * \brief Returns the estimated RTO.
-   * \return the estimated RTO.
-   */
-  Time RetransmitTimeout ();
+    /**
+     * \brief Add a new measurement to the estimator.
+     * \param measure the new RTT measure.
+     */
+    void Measurement(Time measure) override;
 
-  Ptr<RttEstimator> Copy () const;
+    Ptr<RttEstimator> Copy() const override;
 
-  /**
-   * \brief Resets sthe estimator.
-   */
-  virtual void Reset (SequenceNumber32 seq);
+    /**
+     * \brief Resets the estimator.
+     */
+    void Reset() override;
 
-  /**
-   * \brief Sets the estimator Gain.
-   * \param g the gain, where 0 < g < 1.
-   */
-  void Gain (double g);
-
-private:
-  double       m_gain;       // Filter gain
-  Time         m_variance;   // Current variance
+  private:
+    /**
+     * Utility function to check for possible conversion
+     * of a double value (0 < value < 1) to a reciprocal power of two
+     *
+     * Values of 1/32, 1/16, 1/8, 1/4, and 1/2 (i.e., within the possible
+     * range of experimentation for this estimator) are supported.
+     *
+     * \param val value to check
+     * \return log base 2 (1/val) if reciprocal power of 2, or zero if not
+     */
+    uint32_t CheckForReciprocalPowerOfTwo(double val) const;
+    /**
+     * Method to update the rtt and variation estimates using integer
+     * arithmetic, used when the values of Alpha and Beta support the
+     * integer conversion.
+     *
+     * \param m time measurement
+     * \param rttShift value corresponding to log base 2 (1/alpha)
+     * \param variationShift value corresponding to log base 2 (1/beta)
+     */
+    void IntegerUpdate(Time m, uint32_t rttShift, uint32_t variationShift);
+    /**
+     * Method to update the rtt and variation estimates using floating
+     * point arithmetic, used when the values of Alpha and Beta are not
+     * both a reciprocal power of two.
+     *
+     * \param m time measurement
+     */
+    void FloatingPointUpdate(Time m);
+    double m_alpha; //!< Filter gain for average
+    double m_beta;  //!< Filter gain for variation
 };
+
 } // namespace ns3
 
 #endif /* RTT_ESTIMATOR_H */

@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007 Georgia Tech Research Corporation
  *
@@ -20,40 +19,42 @@
 #ifndef TCP_SOCKET_FACTORY_IMPL_H
 #define TCP_SOCKET_FACTORY_IMPL_H
 
-#include "ns3/tcp-socket-factory.h"
 #include "ns3/ptr.h"
+#include "ns3/tcp-socket-factory.h"
 
-namespace ns3 {
+namespace ns3
+{
 
 class TcpL4Protocol;
 
 /**
- * \ingroup internet
- * \defgroup tcp Tcp
- *
- * This class serves to create sockets of the TcpSocketBase type.
- */
-
-/**
+ * \ingroup socket
  * \ingroup tcp
  *
  * \brief socket factory implementation for native ns-3 TCP
  *
+ *
+ * This class serves to create sockets of the TcpSocketBase type.
  */
 class TcpSocketFactoryImpl : public TcpSocketFactory
 {
-public:
-  TcpSocketFactoryImpl ();
-  virtual ~TcpSocketFactoryImpl ();
+  public:
+    TcpSocketFactoryImpl();
+    ~TcpSocketFactoryImpl() override;
 
-  void SetTcp (Ptr<TcpL4Protocol> tcp);
+    /**
+     * \brief Set the associated TCP L4 protocol.
+     * \param tcp the TCP L4 protocol
+     */
+    void SetTcp(Ptr<TcpL4Protocol> tcp);
 
-  virtual Ptr<Socket> CreateSocket (void);
+    Ptr<Socket> CreateSocket() override;
 
-protected:
-  virtual void DoDispose (void);
-private:
-  Ptr<TcpL4Protocol> m_tcp;
+  protected:
+    void DoDispose() override;
+
+  private:
+    Ptr<TcpL4Protocol> m_tcp; //!< the associated TCP L4 protocol
 };
 
 } // namespace ns3

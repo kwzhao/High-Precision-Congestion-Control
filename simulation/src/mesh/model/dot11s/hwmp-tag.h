@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008,2009 IITP RAS
  *
@@ -23,11 +22,14 @@
 #ifndef HWMP_TAG_H
 #define HWMP_TAG_H
 
-#include "ns3/tag.h"
-#include "ns3/object.h"
 #include "ns3/mac48-address.h"
-namespace ns3 {
-namespace dot11s {
+#include "ns3/object.h"
+#include "ns3/tag.h"
+
+namespace ns3
+{
+namespace dot11s
+{
 /**
  * \ingroup dot11s
  *
@@ -47,30 +49,68 @@ namespace dot11s {
  */
 class HwmpTag : public Tag
 {
-public:
-  HwmpTag ();
-  ~HwmpTag ();
-  void  SetAddress (Mac48Address retransmitter);
-  Mac48Address GetAddress ();
-  void  SetTtl (uint8_t ttl);
-  uint8_t GetTtl ();
-  void  SetMetric (uint32_t metric);
-  uint32_t GetMetric ();
-  void  SetSeqno (uint32_t seqno);
-  uint32_t GetSeqno ();
-  void  DecrementTtl ();
+  public:
+    HwmpTag();
+    ~HwmpTag() override;
+    /**
+     * Set address
+     * \param retransmitter the MAC address of the retransmitter
+     */
+    void SetAddress(Mac48Address retransmitter);
+    /**
+     * Get address from tag
+     * \return the MAC address
+     */
+    Mac48Address GetAddress();
+    /**
+     * Set the TTL value
+     * \param ttl
+     */
+    void SetTtl(uint8_t ttl);
+    /**
+     * Get the TTL value
+     * \returns the TTL
+     */
+    uint8_t GetTtl() const;
+    /**
+     * Set the metric value
+     * \param metric the metric
+     */
+    void SetMetric(uint32_t metric);
+    /**
+     * Get the metric value
+     * \returns the metric
+     */
+    uint32_t GetMetric() const;
+    /**
+     * Set sequence number
+     * \param seqno the sequence number
+     */
+    void SetSeqno(uint32_t seqno);
+    /**
+     * Get the sequence number
+     * \returns the sequence number
+     */
+    uint32_t GetSeqno() const;
+    /// Decrement TTL
+    void DecrementTtl();
 
-  static  TypeId  GetTypeId ();
-  virtual TypeId  GetInstanceTypeId () const;
-  virtual uint32_t GetSerializedSize () const;
-  virtual void  Serialize (TagBuffer i) const;
-  virtual void  Deserialize (TagBuffer i);
-  virtual void  Print (std::ostream &os) const;
-private:
-  Mac48Address m_address;
-  uint8_t  m_ttl;
-  uint32_t m_metric;
-  uint32_t m_seqno;
+    /**
+     * \brief Get the type ID.
+     * \return the object TypeId
+     */
+    static TypeId GetTypeId();
+    TypeId GetInstanceTypeId() const override;
+    uint32_t GetSerializedSize() const override;
+    void Serialize(TagBuffer i) const override;
+    void Deserialize(TagBuffer i) override;
+    void Print(std::ostream& os) const override;
+
+  private:
+    Mac48Address m_address; ///< address
+    uint8_t m_ttl;          ///< TTL
+    uint32_t m_metric;      ///< metric
+    uint32_t m_seqno;       ///< sequence no
 };
 } // namespace dot11s
 } // namespace ns3

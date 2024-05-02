@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2009 University of Washington
  *
@@ -22,20 +21,20 @@
 #define UAN_MAC_RC_H
 
 #include "uan-mac.h"
-#include "uan-address.h"
 
+#include "ns3/event-id.h"
+#include "ns3/mac8-address.h"
 #include "ns3/nstime.h"
+#include "ns3/random-variable-stream.h"
 #include "ns3/trace-source-accessor.h"
 #include "ns3/traced-callback.h"
-#include "ns3/event-id.h"
-#include "ns3/random-variable-stream.h"
 
 #include <list>
 #include <utility>
 #include <vector>
 
-
-namespace ns3 {
+namespace ns3
+{
 
 class Address;
 class UanTxMode;
@@ -44,86 +43,112 @@ class UanHeaderRcCts;
 class UanHeaderRcCtsGlobal;
 class UanPhy;
 
-
 /**
- * \class Reservation
- * \brief Stores reservation info for use in scheduling data channel by reservation channel MAC
+ * Stores reservation info for use in scheduling data channel
+ * by reservation channel MAC.
  */
 class Reservation
 {
-public:
-  /**
-   * \brief Create empty object with default values
-   */
-  Reservation ();
-  /**
-   * \brief Create Reservation object with given packet list, frame number and max packets
-   * \param list List of packets for assigned to reservation
-   * \param frameNo Frame number of reservation transmission
-   * \param maxPkts Maximum number of packets to assign to reservation from packet list (0 = no maximum)
-   */
-  Reservation (std::list<std::pair <Ptr<Packet>, UanAddress > > &list, uint8_t frameNo, uint32_t maxPkts = 0);
-  ~Reservation ();
-  /**
-   * \returns number of frames in reservation
-   */
-  uint32_t GetNoFrames () const;
-  /**
-   * \returns total byte length of reservation (sum of all packets with headers)
-   */
-  uint32_t GetLength () const;
-  /**
-   * \returns reference to list of packets in this reservation
-   */
-  const std::list<std::pair <Ptr<Packet>, UanAddress > > &GetPktList (void) const;
-  /**
-   * \returns Frame number of reservation
-   */
-  uint8_t GetFrameNo () const;
-  /**
-   * \returns Retry number of reservation
-   */
-  uint8_t GetRetryNo () const;
-  /**
-   * \returns Timestamp nth RTS send for this reservation
-   * \param n Timestamp for retry number n to return
-   */
-  Time GetTimestamp (uint8_t n) const;
-  /**
-   * \returns True if reservation packets have been transmitted
-   */
-  bool IsTransmitted () const;
-  /**
-   * \param fn Frame number to set reservation to
-   */
-  void SetFrameNo (uint8_t fn);
-  /**
-   * \param t Time of latest RTS send
-   */
-  void AddTimestamp (Time t);
-  /**
-   * \brief Increments retry count by 1
-   */
-  void IncrementRetry ();
-  /**
-   * \param t True if resevation has been transmitted
-   * \brief Sets reservation transmitted state
-   */
-  void SetTransmitted (bool t = true);
-private:
-  std::list<std::pair <Ptr<Packet>, UanAddress > > m_pktList;
-  uint32_t m_length;
-  uint8_t m_frameNo;
-  std::vector<Time> m_timestamp;
-  uint8_t m_retryNo;
-  bool m_transmitted;
+  public:
+    /** Default constructor. */
+    Reservation();
+    /**
+     * Create Reservation object with given packet list,
+     * frame number and max packets.
+     *
+     * \param list List of packets for assigned to reservation.
+     * \param frameNo Frame number of reservation transmission.
+     * \param maxPkts Maximum number of packets to assign to reservation
+     *   from packet list (0 = no maximum).
+     */
+    Reservation(std::list<std::pair<Ptr<Packet>, Mac8Address>>& list,
+                uint8_t frameNo,
+                uint32_t maxPkts = 0);
+    /** Destructor */
+    ~Reservation();
+    /**
+     * Get the number of frames in this Reservation.
+     *
+     * \return Number of frames.
+     */
+    uint32_t GetNoFrames() const;
+    /**
+     * Get the total length of the Reservation.
+     *
+     * This is the sum of packets with headers.
+     *
+     * \return Total length, in bytes.
+     */
+    uint32_t GetLength() const;
+    /**
+     * Get the list of packets.
+     *
+     * \return The list of packets.
+     */
+    const std::list<std::pair<Ptr<Packet>, Mac8Address>>& GetPktList() const;
+    /**
+     * Get the frame number.
+     *
+     * \return The frame number.
+     */
+    uint8_t GetFrameNo() const;
+    /**
+     * Get the retry number.
+     *
+     * \return The retry number.
+     */
+    uint8_t GetRetryNo() const;
+    /**
+     * Get the timestamp for the n'th RTS.
+     *
+     * \param n Which retry number.
+     * \return N'th timestamp.
+     */
+    Time GetTimestamp(uint8_t n) const;
 
-};
+    /** \return True if reservation packets have been transmitted. */
+    bool IsTransmitted() const;
+    /**
+     * Set the frame number.
+     *
+     * \param fn The frame number.
+     */
+    void SetFrameNo(uint8_t fn);
+    /**
+     * Set the time of the latest RTS sent.
+     *
+     * \param t RTS timestamp.
+     */
+    void AddTimestamp(Time t);
+    /** Increment the retry count. */
+    void IncrementRetry();
+    /**
+     * Set the reservation transmitted state.
+     *
+     * \param t True if resevation has been transmitted.
+     */
+    void SetTransmitted(bool t = true);
 
+  private:
+    /** Queued packets for each address. */
+    std::list<std::pair<Ptr<Packet>, Mac8Address>> m_pktList;
+    /** Total length of queued packets. */
+    uint32_t m_length;
+    /** Frame number. */
+    uint8_t m_frameNo;
+    /** Timestamps for each retry. */
+    std::vector<Time> m_timestamp;
+    /** Number of retries. */
+    uint8_t m_retryNo;
+    /** Has this reservation been transmitted. */
+    bool m_transmitted;
+
+}; // class Reservation
 
 /**
- * \class UanMacRc
- * \brief Non-gateway node MAC for reservation channel MAC protocol
+ * \ingroup uan
+ *
+ * Non-gateway node MAC for reservation channel MAC protocol.
  *
  * This MAC protocol assumes a network topology where all traffic
  * is destined for a set of GW nodes which are connected via
@@ -136,96 +161,164 @@ private:
  */
 class UanMacRc : public UanMac
 {
-public:
-  enum {
-    TYPE_DATA, TYPE_GWPING, TYPE_RTS, TYPE_CTS, TYPE_ACK
-  };
-  UanMacRc ();
-  virtual ~UanMacRc ();
+  public:
+    /** Packet types. */
+    enum
+    {
+        TYPE_DATA,   //!< Data.
+        TYPE_GWPING, //!< Gateway ping.
+        TYPE_RTS,    //!< RTS.
+        TYPE_CTS,    //!< CTS.
+        TYPE_ACK     //!< ACK.
+    };
 
-  static TypeId GetTypeId (void);
+    /** Default constructor */
+    UanMacRc();
+    /** Dummy destructor, DoDispose. */
+    ~UanMacRc() override;
 
-  // Inherited virtual functions
-  virtual Address GetAddress (void);
-  virtual void SetAddress (UanAddress addr);
-  virtual bool Enqueue (Ptr<Packet> pkt, const Address &dest, uint16_t protocolNumber);
-  virtual void SetForwardUpCb (Callback<void, Ptr<Packet>, const UanAddress&> cb);
-  virtual void AttachPhy (Ptr<UanPhy> phy);
-  virtual Address GetBroadcast (void) const;
-  virtual void Clear (void);
+    /**
+     * Register this type.
+     * \return The TypeId.
+     */
+    static TypeId GetTypeId();
 
- /**
-  * Assign a fixed random variable stream number to the random variables
-  * used by this model.  Return the number of streams (possibly zero) that
-  * have been assigned.
-  *
-  * \param stream first stream index to use
-  * \return the number of stream indices assigned by this model
-  */
-  int64_t AssignStreams (int64_t stream);
+    // Inherited methods
+    bool Enqueue(Ptr<Packet> pkt, uint16_t protocolNumber, const Address& dest) override;
+    void SetForwardUpCb(Callback<void, Ptr<Packet>, uint16_t, const Mac8Address&> cb) override;
+    void AttachPhy(Ptr<UanPhy> phy) override;
+    void Clear() override;
+    int64_t AssignStreams(int64_t stream) override;
 
-private:
-  enum State {
-    UNASSOCIATED, GWPSENT, IDLE, RTSSENT, DATATX
-  };
+    /**
+     *  TracedCallback signature for dequeue of a packet.
+     *
+     * \param [in] packet The Packet being received.
+     * \param [in] proto The protocol number.
+     */
+    typedef void (*QueueTracedCallback)(Ptr<const Packet> packet, uint32_t proto);
 
-  State m_state;
-  bool m_rtsBlocked;
+  private:
+    /** MAC state. */
+    enum State
+    {
+        UNASSOCIATED, //!< Initial state.
+        GWPSENT,      //!< Associated with gateway.
+        IDLE,         //!< Finished scheduling packet sends.
+        RTSSENT,      //!< RTS just sent.
+        DATATX        //!< (Unused).
+    };
 
-  EventId m_startAgain;
-  UanAddress m_address;
-  double m_retryRate;
-  UanAddress m_assocAddr;
-  Ptr<UanPhy> m_phy;
-  uint32_t m_numRates;
-  uint32_t m_currentRate;
-  uint32_t m_maxFrames;
-  uint32_t m_queueLimit;
-  uint8_t m_frameNo;
-  Time m_sifs;
-  Time m_learnedProp;
+    State m_state;     //!< MAC state.
+    bool m_rtsBlocked; //!< RTS blocked while processing ACK.
 
-  uint16_t m_numRetryRates;
-  double m_minRetryRate;
-  double m_retryStep;
+    EventId m_startAgain;    //!< (Unused).
+    double m_retryRate;      //!< Number of retry attempts per second (of RTS/GWPING.
+    Mac8Address m_assocAddr; //!< Next hop address.
+    Ptr<UanPhy> m_phy;       //!< PHY layer attached to this MAC.
+    uint32_t m_numRates;     //!< Number of rates per Phy layer.
+    uint32_t m_currentRate;  //!< Rate number corresponding to data rate of current cycle.
+    uint32_t m_maxFrames;    //!< Maximum number of frames to include in a single RTS.
+    uint32_t m_queueLimit;   //!< Maximum packets to queue at MAC.
+    uint8_t m_frameNo;       //!< Current frame number.
+    Time m_sifs; //!< Spacing between frames to account for timing error and processing delay.
+    Time m_learnedProp; //!< Propagation delay to gateway.
 
-  uint32_t m_ctsSizeN;
-  uint32_t m_ctsSizeG;
+    double m_minRetryRate; //!< Smallest allowed RTS retry rate.
+    double m_retryStep;    //!< Retry rate increment.
 
-  bool m_cleared;
+    uint32_t m_ctsSizeN; //!< Size of UanHeaderRcCts.
+    uint32_t m_ctsSizeG; //!< Size of UanHeaderCommon and UanHeaderRcCtsGlobal.
 
-  std::list<std::pair <Ptr<Packet>, UanAddress > > m_pktQueue;
-  std::list<Reservation> m_resList;
+    bool m_cleared; //!< Flag when we've been cleared.
 
-  Callback<void, Ptr<Packet>, const UanAddress& > m_forwardUpCb;
+    /** Pending packets. */
+    std::list<std::pair<Ptr<Packet>, Mac8Address>> m_pktQueue;
+    /** List of scheduled reservations. */
+    std::list<Reservation> m_resList;
 
-  TracedCallback<Ptr<const Packet>, UanTxMode > m_rxLogger;
-  TracedCallback<Ptr<const Packet>, uint16_t > m_enqueueLogger;
-  TracedCallback<Ptr<const Packet>, uint16_t > m_dequeueLogger;
+    /** The callback to forward a packet up to higher layer. */
+    Callback<void, Ptr<Packet>, uint16_t, const Mac8Address&> m_forwardUpCb;
 
-  EventId m_rtsEvent;
-  void ReceiveOkFromPhy (Ptr<Packet>, double sinr, UanTxMode mode);
+    /** A packet was destined for and received at this MAC layer. */
+    TracedCallback<Ptr<const Packet>, UanTxMode> m_rxLogger;
+    /** A packet arrived at the MAC for transmission. */
+    TracedCallback<Ptr<const Packet>, uint32_t> m_enqueueLogger;
+    /** A was passed down to the PHY from the MAC. */
+    TracedCallback<Ptr<const Packet>, uint32_t> m_dequeueLogger;
 
-  void Associate (void);
-  void AssociateTimeout (void);
-  void SendRts (void);
-  void RtsTimeout (void);
-  UanHeaderRcRts CreateRtsHeader (const Reservation &res);
-  void ScheduleData (const UanHeaderRcCts &ctsh, const UanHeaderRcCtsGlobal &ctsg, uint32_t ctsBytes);
-  void ProcessAck (Ptr<Packet> ack);
-  void SendPacket (Ptr<Packet> pkt, uint32_t rate);
-  bool IsPhy1Ok (void);
-  void BlockRtsing (void);
+    /** The RTS event. */
+    EventId m_rtsEvent;
+    /**
+     * PHY receive ok Callback.
+     *
+     * \param pkt The received packet.
+     * \param sinr (Unused).
+     * \param mode Modulation mode.
+     */
+    void ReceiveOkFromPhy(Ptr<Packet> pkt, double sinr, UanTxMode mode);
+    /** Associate with a gateway by sending the first GWPING. */
+    void Associate();
+    /** Periodically retry association. */
+    void AssociateTimeout();
+    /** Send RTS packet. */
+    void SendRts();
+    /** Retry RTS. */
+    void RtsTimeout();
+    /**
+     * Create the RTS header from a Reservation.
+     *
+     * \param res The Reservation.
+     * \return A RTS header.
+     */
+    UanHeaderRcRts CreateRtsHeader(const Reservation& res);
+    /**
+     * Schedule Packet sends.
+     *
+     * \param ctsh The CTS header identifying the frame number and delay.
+     * \param ctsg The CTS global header giving the transmit time stamp base.
+     * \param ctsBytes Number of bytes total in CTS packet.
+     */
+    void ScheduleData(const UanHeaderRcCts& ctsh,
+                      const UanHeaderRcCtsGlobal& ctsg,
+                      uint32_t ctsBytes);
+    /**
+     * Process a received ACK.
+     *
+     * \param ack The ACK packet.
+     */
+    void ProcessAck(Ptr<Packet> ack);
+    /**
+     * Send on packet on the PHY.
+     *
+     * \param pkt The packet.
+     * \param rate The transmission rate.
+     */
+    void SendPacket(Ptr<Packet> pkt, uint32_t rate);
+    /**
+     * Check that PHY is ok:
+     *   not CTS or ACK
+     *   not to my address
+     * \return True if PHY is ok.
+     */
+    bool IsPhy1Ok();
+    /** Callback to block RST. */
+    void BlockRtsing();
 
-  static uint32_t m_cntrlSends;
+    /**
+     * Global count of calls to Associate, AssociateTimeout,
+     * SendRts, and RtsTimeout.
+     */
+    static uint32_t m_cntrlSends;
 
-  /// Provides exponential random variables.
-  Ptr<ExponentialRandomVariable> m_ev;
+    /** Provides exponential random variables. */
+    Ptr<ExponentialRandomVariable> m_ev;
 
-protected:
-  void DoDispose ();
-};
+  protected:
+    void DoDispose() override;
 
-}
+}; // class UanMacRc
+
+} // namespace ns3
 
 #endif /* UAN_MAC_RC_H */

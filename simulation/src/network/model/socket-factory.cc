@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007 INRIA
  *
@@ -19,19 +18,25 @@
  */
 #include "socket-factory.h"
 
-namespace ns3 {
+#include "ns3/log.h"
 
-NS_OBJECT_ENSURE_REGISTERED (SocketFactory);
-
-TypeId SocketFactory::GetTypeId (void)
+namespace ns3
 {
-  static TypeId tid = TypeId ("ns3::SocketFactory")
-    .SetParent<Object> ();
-  return tid;
+
+NS_LOG_COMPONENT_DEFINE("SocketFactory");
+
+NS_OBJECT_ENSURE_REGISTERED(SocketFactory);
+
+TypeId
+SocketFactory::GetTypeId()
+{
+    static TypeId tid = TypeId("ns3::SocketFactory").SetParent<Object>().SetGroupName("Network");
+    return tid;
 }
 
-SocketFactory::SocketFactory ()
+SocketFactory::SocketFactory()
 {
+    NS_LOG_FUNCTION(this);
 }
 
 } // namespace ns3

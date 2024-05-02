@@ -32,7 +32,7 @@
 
 namespace ns3 {
 
-class Queue;
+// template <typename Item> class Queue;
 class NetDevice;
 class Node;
 
@@ -147,8 +147,8 @@ public:
    */
   NetDeviceContainer Install (std::string aNode, std::string bNode);
 
-  static void GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice>, Ptr<const Packet> p, uint32_t qidx, Event event, bool hasL2);
-  static void PacketEventCallback(FILE *file, Ptr<QbbNetDevice>, Ptr<const Packet>, uint32_t qidx, Event event, bool hasL2);
+  static void GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice>, Ptr<const Packet> p, uint32_t qidx, PEvent event, bool hasL2);
+  static void PacketEventCallback(FILE *file, Ptr<QbbNetDevice>, Ptr<const Packet>, uint32_t qidx, PEvent event, bool hasL2);
   static void MacRxDetailCallback (FILE* file, Ptr<QbbNetDevice>, Ptr<const Packet> p);
   static void EnqueueDetailCallback(FILE* file, Ptr<QbbNetDevice>, Ptr<const Packet> p, uint32_t qidx);
   static void DequeueDetailCallback(FILE* file, Ptr<QbbNetDevice>, Ptr<const Packet> p, uint32_t qidx);

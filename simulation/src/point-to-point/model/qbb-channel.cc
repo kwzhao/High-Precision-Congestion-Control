@@ -24,11 +24,11 @@
 #include "ns3/log.h"
 #include <iostream>
 #include <fstream>
-
-NS_LOG_COMPONENT_DEFINE ("QbbChannel");
+#include "ns3/flow-id-tag-path.h"
 
 namespace ns3 {
 
+NS_LOG_COMPONENT_DEFINE ("QbbChannel");
 NS_OBJECT_ENSURE_REGISTERED (QbbChannel);
 
 TypeId 
@@ -43,7 +43,7 @@ QbbChannel::GetTypeId (void)
                    MakeTimeChecker ())
     .AddTraceSource ("TxRxQbb",
                      "Trace source indicating transmission of packet from the QbbChannel, used by the Animation interface.",
-                     MakeTraceSourceAccessor (&QbbChannel::m_txrxQbb))
+                     MakeTraceSourceAccessor (&QbbChannel::m_txrxQbb),"ns3::Packet::TracedCallback")
   ;
   return tid;
 }
@@ -53,7 +53,9 @@ QbbChannel::GetTypeId (void)
 // has an "infitely" fast transmission speed and zero delay.
 QbbChannel::QbbChannel()
   :
-    PointToPointChannel ()
+    PointToPointChannel (),
+    m_delay (Seconds (0.)),
+    m_nDevices (0)
 {
   NS_LOG_FUNCTION_NOARGS ();
   m_nDevices = 0;
@@ -85,6 +87,22 @@ QbbChannel::Attach (Ptr<QbbNetDevice> device)
 
 }
 
+std::set<uint32_t> QbbChannel::GetFlowIdSet(uint32_t i)
+{
+    // std::cout << m_flowIdSet.size()<< " flows:";
+    // for (auto flowId : m_flowIdSet)
+    //     {
+    //   std::cout << ", " << flowId;
+    //     }
+    // std::cout << '\n';
+    return m_flowIdSet[i];
+    // NS_LOG_UNCOND("Flow IDs in Channel " << m_channelId << ":");
+    // for (auto flowId : m_flowIdSet)
+    // {
+    //     NS_LOG_UNCOND("  " << flowId);
+    // }
+}
+
 bool
 QbbChannel::TransmitStart (
   Ptr<Packet> p,
@@ -99,6 +117,18 @@ QbbChannel::TransmitStart (
 
   uint32_t wire = src == m_link[0].m_src ? 0 : 1;
 
+  // Check if the packet has the FlowIdTag
+  FlowIdTagPath tag;
+  if (p->PeekPacketTag (tag))
+  {
+      // Extract the flow ID from the packet
+      // p->PeekPacketTag(tag);
+      uint32_t flowId = tag.GetFlowId();
+
+      // Add flow ID to per-channel set
+      m_flowIdSet[wire].insert(flowId);
+  }
+
   Simulator::ScheduleWithContext (m_link[wire].m_dst->GetNode ()->GetId (),
                                   txTime + m_delay, &QbbNetDevice::Receive,
                                   m_link[wire].m_dst, p);
@@ -108,7 +138,7 @@ QbbChannel::TransmitStart (
   return true;
 }
 
-uint32_t 
+std::size_t
 QbbChannel::GetNDevices (void) const
 {
   NS_LOG_FUNCTION_NOARGS ();
@@ -120,8 +150,16 @@ QbbChannel::GetNDevices (void) const
   return m_nDevices;
 }
 
+Ptr<PointToPointNetDevice>
+QbbChannel::GetPointToPointDevice (std::size_t i) const
+{
+  NS_LOG_FUNCTION_NOARGS ();
+  NS_ASSERT (i < 2);
+  return DynamicCast<PointToPointNetDevice>(m_link[i].m_src);
+}
+
 Ptr<QbbNetDevice>
-QbbChannel::GetQbbDevice (uint32_t i) const
+QbbChannel::GetQbbDevice (std::size_t i) const
 {
   NS_LOG_FUNCTION_NOARGS ();
   NS_ASSERT (i < 2);
@@ -129,7 +167,7 @@ QbbChannel::GetQbbDevice (uint32_t i) const
 }
 
 Ptr<NetDevice>
-QbbChannel::GetDevice (uint32_t i) const
+QbbChannel::GetDevice (std::size_t i) const
 {
   NS_LOG_FUNCTION_NOARGS ();
   return GetQbbDevice (i);

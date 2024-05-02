@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2008 INRIA
  *
@@ -18,16 +17,25 @@
  * Authors: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 #include "trace-source-accessor.h"
+
 #include "log.h"
 
-NS_LOG_COMPONENT_DEFINE ("TraceSourceAccessor");
+/**
+ * \file
+ * \ingroup tracing
+ * ns3::TraceSourceAccessor implementation (constructor and destructor).
+ */
 
-namespace ns3 {
+namespace ns3
+{
 
-TraceSourceAccessor::TraceSourceAccessor ()
+NS_LOG_COMPONENT_DEFINE("TraceSourceAccessor");
+
+TraceSourceAccessor::TraceSourceAccessor()
 {
 }
-TraceSourceAccessor::~TraceSourceAccessor ()
+
+TraceSourceAccessor::~TraceSourceAccessor()
 {
 }
 

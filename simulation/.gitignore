@@ -1,5 +1,2 @@
-/build
-/.lock*
-/.waf*
-/mix
-*.pyc
+build/*
+cmake-cache/

@@ -1,76 +1,126 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-#include "ns3/ptr.h"
+/*
+ * Copyright (c) 2006 INRIA
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation;
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
+#include "ns3/command-line.h"
 #include "ns3/object.h"
+#include "ns3/ptr.h"
+
 #include <iostream>
+
+/**
+ * \file
+ * \ingroup core-examples
+ * \ingroup ptr
+ * Example program illustrating use of the ns3::Ptr smart pointer.
+ */
 
 using namespace ns3;
 
-class A : public Object
+/**
+ * Example class illustrating use of Ptr.
+ */
+class PtrExample : public Object
 {
-public:
-  A ();
-  ~A ();
-  void Method (void);
+  public:
+    /** Constructor. */
+    PtrExample();
+    /** Destructor. */
+    ~PtrExample() override;
+    /** Example class method. */
+    void Method();
 };
-A::A ()
+
+PtrExample::PtrExample()
 {
-  std::cout << "A constructor" << std::endl;
+    std::cout << "PtrExample constructor" << std::endl;
 }
-A::~A()
+
+PtrExample::~PtrExample()
 {
-  std::cout << "A destructor" << std::endl;
+    std::cout << "PtrExample destructor" << std::endl;
 }
+
 void
-A::Method (void)
+PtrExample::Method()
 {
-  std::cout << "A method" << std::endl;
+    std::cout << "PtrExample method" << std::endl;
 }
 
-static Ptr<A> g_a = 0;
+/**
+ *  Example Ptr global variable.
+ */
+static Ptr<PtrExample> g_ptr = nullptr;
 
-static Ptr<A>
-StoreA (Ptr<A> a)
+/**
+ * Example Ptr manipulations.
+ *
+ * This function stores it's argument in the global variable \c g_ptr
+ * and returns the old value of \c g_ptr.
+ * \param [in] p A Ptr.
+ * \returns The prior value of \c g_ptr.
+ */
+static Ptr<PtrExample>
+StorePtr(Ptr<PtrExample> p)
 {
-  Ptr<A> prev = g_a;
-  g_a = a;
-  return prev;
+    Ptr<PtrExample> prev = g_ptr;
+    g_ptr = p;
+    return prev;
 }
 
+/**
+ *  Set \c g_ptr to NULL.
+ */
 static void
-ClearA (void)
+ClearPtr()
 {
-  g_a = 0;
+    g_ptr = nullptr;
 }
 
-
-
-int main (int argc, char *argv[])
+int
+main(int argc, char* argv[])
 {
-  {
-    // Create a new object of type A, store it in global 
-    // variable g_a
-    Ptr<A> a = CreateObject<A> ();
-    a->Method ();
-    Ptr<A> prev = StoreA (a);
-    NS_ASSERT (prev == 0);
-  }
+    CommandLine cmd(__FILE__);
+    cmd.Parse(argc, argv);
 
-  {
-    // Create a new object of type A, store it in global 
-    // variable g_a, get a hold on the previous A object.
-    Ptr<A> a = CreateObject<A> ();
-    Ptr<A> prev = StoreA (a);
-    // call method on object
-    prev->Method ();
-    // Clear the currently-stored object
-    ClearA ();
-    // get the raw pointer and release it.
-    A *raw = GetPointer (prev);
-    prev = 0;
-    raw->Method ();
-    raw->Unref ();
-  }
+    {
+        // Create a new object of type PtrExample, store it in global
+        // variable g_ptr
+        Ptr<PtrExample> p = CreateObject<PtrExample>();
+        p->Method();
+        Ptr<PtrExample> prev = StorePtr(p);
+        NS_ASSERT(!prev);
+    }
 
+    {
+        // Create a new object of type PtrExample, store it in global
+        // variable g_ptr, get a hold on the previous PtrExample object.
+        Ptr<PtrExample> p = CreateObject<PtrExample>();
+        Ptr<PtrExample> prev = StorePtr(p);
+        // call method on object
+        prev->Method();
+        // Clear the currently-stored object
+        ClearPtr();
+        // get the raw pointer and release it.
+        PtrExample* raw = GetPointer(prev);
+        prev = nullptr;
+        raw->Method();
+        raw->Unref();
+    }
 
-  return 0;
+    return 0;
 }

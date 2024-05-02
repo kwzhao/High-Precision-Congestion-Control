@@ -1,4 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2011 Yufei Cheng
  *
@@ -18,7 +17,7 @@
  * Author: Yufei Cheng   <yfcheng@ittc.ku.edu>
  *
  * James P.G. Sterbenz <jpgs@ittc.ku.edu>, director
- * ResiliNets Research Group  http://wiki.ittc.ku.edu/resilinets
+ * ResiliNets Research Group  https://resilinets.org/
  * Information and Telecommunication Technology Center (ITTC)
  * and Department of Electrical Engineering and Computer Science
  * The University of Kansas Lawrence, KS USA.
@@ -30,66 +29,72 @@
  */
 
 #include "dsr-gratuitous-reply-table.h"
+
 #include "ns3/log.h"
+
 #include <algorithm>
 
-NS_LOG_COMPONENT_DEFINE ("DsrGraReplyTable");
-
-namespace ns3 {
-namespace dsr {
-
-NS_OBJECT_ENSURE_REGISTERED (GraReply);
-
-TypeId GraReply::GetTypeId ()
+namespace ns3
 {
-  static TypeId tid = TypeId ("ns3::dsr::GraReply")
-    .SetParent<Object> ()
-    .AddConstructor<GraReply> ()
-  ;
-  return tid;
+
+NS_LOG_COMPONENT_DEFINE("DsrGraReplyTable");
+
+namespace dsr
+{
+
+NS_OBJECT_ENSURE_REGISTERED(DsrGraReply);
+
+TypeId
+DsrGraReply::GetTypeId()
+{
+    static TypeId tid = TypeId("ns3::dsr::DsrGraReply")
+                            .SetParent<Object>()
+                            .SetGroupName("Dsr")
+                            .AddConstructor<DsrGraReply>();
+    return tid;
 }
 
-GraReply::GraReply ()
+DsrGraReply::DsrGraReply()
 {
 }
 
-GraReply::~GraReply ()
+DsrGraReply::~DsrGraReply()
 {
-  NS_LOG_FUNCTION_NOARGS ();
+    NS_LOG_FUNCTION_NOARGS();
 }
 
 bool
-GraReply::FindAndUpdate (Ipv4Address replyTo, Ipv4Address replyFrom, Time gratReplyHoldoff)
+DsrGraReply::FindAndUpdate(Ipv4Address replyTo, Ipv4Address replyFrom, Time gratReplyHoldoff)
 {
-  Purge ();  // purge the gratuitous reply table
-  for (std::vector<GraReplyEntry>::iterator i = m_graReply.begin ();
-       i != m_graReply.end (); ++i)
+    Purge(); // purge the gratuitous reply table
+    for (std::vector<GraReplyEntry>::iterator i = m_graReply.begin(); i != m_graReply.end(); ++i)
     {
-      if ((i->m_replyTo == replyTo) && (i->m_hearFrom == replyFrom))
+        if ((i->m_replyTo == replyTo) && (i->m_hearFrom == replyFrom))
         {
-          NS_LOG_DEBUG ("Update the reply to ip address if found the gratuitous reply entry");
-          i->m_gratReplyHoldoff = std::max (gratReplyHoldoff + Simulator::Now (), i->m_gratReplyHoldoff);
-          return true;
+            NS_LOG_DEBUG("Update the reply to ip address if found the gratuitous reply entry");
+            i->m_gratReplyHoldoff =
+                std::max(gratReplyHoldoff + Simulator::Now(), i->m_gratReplyHoldoff);
+            return true;
         }
     }
-  return false;
+    return false;
 }
 
 bool
-GraReply::AddEntry (GraReplyEntry & graTableEntry)
+DsrGraReply::AddEntry(GraReplyEntry& graTableEntry)
 {
-  m_graReply.push_back (graTableEntry);
-  return true;
+    m_graReply.push_back(graTableEntry);
+    return true;
 }
 
 void
-GraReply::Purge ()
+DsrGraReply::Purge()
 {
-  /*
-   * Purge the expired gratuitous reply entries
-   */
-  m_graReply.erase (remove_if (m_graReply.begin (), m_graReply.end (),
-                               IsExpired ()), m_graReply.end ());
+    /*
+     * Purge the expired gratuitous reply entries
+     */
+    m_graReply.erase(remove_if(m_graReply.begin(), m_graReply.end(), IsExpired()),
+                     m_graReply.end());
 }
 
 } // namespace dsr
