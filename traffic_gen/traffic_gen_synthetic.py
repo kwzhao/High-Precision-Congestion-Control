@@ -101,8 +101,9 @@ if __name__ == "__main__":
         host_pair_list=[(0,nhost-1)]
         
         if enable_const:
-            ntc=nhost-1
-            host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
+            # ntc=nhost-1
+            # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
+            ntc=1
         else:
             if nhost==2:
                 ntc=1
@@ -121,10 +122,11 @@ if __name__ == "__main__":
         
         n_flows_tmp=n_flows*ntc+1
         
-        if enable_const:
-            f_sizes_in_byte=np.ones(n_flows_tmp)*constfsize # Byte
-            f_sizes_in_byte=f_sizes_in_byte.astype("int64")
-        else:
+        # if enable_const:
+        #     f_sizes_in_byte=np.ones(n_flows_tmp)*constfsize # Byte
+        #     f_sizes_in_byte=f_sizes_in_byte.astype("int64")
+        # else:
+        if True:
             size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
             size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
             ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
@@ -184,9 +186,10 @@ if __name__ == "__main__":
                 sys.exit(0)
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
-        if enable_const:
-            f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
-        elif ia_distribution=="lognorm":
+        # if enable_const:
+        #     f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
+        # elif ia_distribution=="lognorm":
+        if True:
             avg_inter_arrival_in_s = 1/(bandwidth_list[load_bottleneck_link_id]*load_candidate/8./avg_in_byte)
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
@@ -223,9 +226,10 @@ if __name__ == "__main__":
             t+=inter_t
             flow_id_total+=1
         n_flows_total=flow_id_total
-        if enable_const:
-            t+=600*UNIT_G   
-        else:
+        # if enable_const:
+        #     t+=600*UNIT_G   
+        # else:
+        if True:
             t+=UNIT_G
         data+="%f"%((t)/1e9)
         data = "{}{}".format("%d\n"%n_flows_total,data)
