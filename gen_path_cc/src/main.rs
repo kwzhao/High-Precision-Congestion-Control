@@ -33,7 +33,7 @@ fn main() -> anyhow::Result<()> {
     let constfsize=1000000;
     // setup the configurations
     let params = Parameters {
-        shard: (0..500).collect(),
+        shard: (0..1).collect(),
         n_flows: vec![1000],
         // n_flows: (1..=9).step_by(2).collect(),
         // n_hosts: vec![3, 5, 7],
@@ -45,12 +45,12 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     // let params = Parameters {
-    //     shard: vec![0,1],
+    //     shard: vec![0],
     //     n_flows: vec![1000],
     //     n_hosts: vec![3],
     //     shard_cc: vec![0],
-    //     bandwidth: vec![1,10],
-    //     prop_delay: vec![1000],
+    //     bandwidth: vec![1,9],
+    //     prop_delay: vec![1000,9000],
     // };
 
     // no need to change

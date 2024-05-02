@@ -100,12 +100,11 @@ if __name__ == "__main__":
                     host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
         
-        # if enable_const:
-        #     # ntc=nhost-1
-        #     # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
-        #     ntc=1
-        # else:
-        if True:
+        if enable_const:
+            # ntc=nhost-1
+            # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
+            ntc=1
+        else:
             if nhost==2:
                 ntc=1
             else:
