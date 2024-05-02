@@ -257,7 +257,7 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
         bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
-        bulksend->SetAttribute("InitialCwnd", UintegerValue (maxBdp/packet_payload_size + 1));
+        bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
