@@ -57,3 +57,7 @@ run
 
 NS_LOG="Ipv4EndPointDemux" ./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt' > test.log 2> test.log
 
+python run_cc.py --trace flows --base_rtt 14400 --topo topo-pl-3 --root /data2/lichenni/path_cc_test/shard0_nflows1000_nhosts3 --shard_cc 0 --shard_total 0 --enable_tr 1 --enable_debug 0 --bw 1 --pd 1000
+
+python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_cc_test --scenario_dir shard0_nflows1000_nhosts3 --shard_cc 0 --enable_debug 0
+

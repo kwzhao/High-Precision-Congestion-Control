@@ -46,10 +46,10 @@ fn main() -> anyhow::Result<()> {
     // config for debugging
     let params = Parameters {
         shard: vec![0],
-        n_flows: vec![1],
+        n_flows: vec![1000],
         n_hosts: vec![3],
         shard_cc: vec![0],
-        bandwidth: vec![1],
+        bandwidth: vec![1,10],
         prop_delay: vec![1000],
     };
 
