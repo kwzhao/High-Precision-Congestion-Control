@@ -32,26 +32,26 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
     let constfsize=1000000;
     // setup the configurations
-    let params = Parameters {
-        shard: (0..1).collect(),
-        n_flows: vec![1000],
-        // n_flows: (1..=9).step_by(2).collect(),
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![3],
-        shard_cc: (0..20).collect(),
-        bandwidth: (1..=9).step_by(2).collect(),
-        prop_delay: (1000..=9000).step_by(2000).collect(),
-    };
+    // let params = Parameters {
+    //     shard: (0..1).collect(),
+    //     n_flows: vec![1000],
+    //     // n_flows: (1..=9).step_by(2).collect(),
+    //     // n_hosts: vec![3, 5, 7],
+    //     n_hosts: vec![3],
+    //     shard_cc: (0..20).collect(),
+    //     bandwidth: (1..=9).step_by(2).collect(),
+    //     prop_delay: (1000..=9000).step_by(2000).collect(),
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![0],
-    //     n_flows: vec![1000],
-    //     n_hosts: vec![3],
-    //     shard_cc: vec![0],
-    //     bandwidth: vec![1,9],
-    //     prop_delay: vec![1000,9000],
-    // };
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![1000],
+        n_hosts: vec![3],
+        shard_cc: vec![0,10],
+        bandwidth: vec![1],
+        prop_delay: vec![1000],
+    };
 
     // no need to change
     let root_path = format!("..");

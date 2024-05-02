@@ -14,17 +14,18 @@ from collections import deque
 
 def parse_log_entry(line):
     parts = line.split()
-    data_pkt = parts[10]=='U' 
+    data_pkt = parts[10]=='U' or parts[10]=='T' 
     node = int(parts[1].split(':')[1])
     event_type = parts[4]
-    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ']:
+    queue_info = parts[2].split(':')
+    port = int(queue_info[0])
+    queue = int(queue_info[1])
+    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or port !=3 or queue not in [1,3]:
         return None
     else:
         timestamp = int(parts[0])
-        queue_info = parts[2].split(':')
-        port = int(queue_info[0])
-        queue = int(queue_info[1])
-        payload_size = int(parts[-1].split('(')[1].split(')')[0])
+        # payload_size = int(parts[-1].split('(')[1].split(')')[0])
+        payload_size = 1000
         queue_len= int(parts[3])
         return {
             'timestamp': timestamp,
@@ -49,7 +50,7 @@ def calculate_throughput_and_delay(log_file):
         for line in file:
             entry = parse_log_entry(line)
             if entry:
-                assert entry['node'] == 3 and  entry['queue'] == 3
+                assert entry['node'] == 3 and entry['port'] == 3 and entry['queue'] in [1,3]
                 if start_time is None:
                     start_time = entry['timestamp']
                 end_time = entry['timestamp']
@@ -139,10 +140,10 @@ if __name__ == "__main__":
         % tr_path)
     
     # os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    # )
     
     os.system(
         "rm %s"
