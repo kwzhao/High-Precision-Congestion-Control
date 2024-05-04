@@ -137,6 +137,9 @@ uint32_t PORT_START[512] = {4444};
  ***********************************************/
 std::ifstream topof, flowf, tracef;
 
+Ptr<OutputStreamWrapper> torStats;
+AsciiTraceHelper torTraceHelper;
+
 NodeContainer n;
 
 uint64_t nic_rate;
@@ -216,6 +219,26 @@ void TraceMsgFinish (FILE* fout, double size_double, double start_double, bool i
 	// flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
 	fprintf(fout, "%u %08x %08x %u %u %lu %lu %lu %lu\n", flowId, sip.Get(), dip.Get(), sip_socket.GetPort() , dip_socket.GetPort(), size, start, Simulator::Now().GetNanoSeconds() - start, standalone_fct);
 	fflush(fout);
+}
+
+void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double delay) {
+    for (uint32_t i = 0; i < switches.GetN(); i++) {
+        if (switches.Get(i)->GetNodeType()) { // switch
+            Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(switches.Get(i));
+            *fout->GetStream() 
+                << i
+                << " " << sw->m_mmu->totalUsed
+                << " " << sw->m_mmu->egressPoolUsed[0]
+                << " " << sw->m_mmu->egressPoolUsed[1]
+                << " " << sw->m_mmu->totalUsed - sw->m_mmu->xoffTotalUsed
+                << " " << sw->m_mmu->xoffTotalUsed
+                << " " << sw->m_mmu->sharedPoolUsed
+                << " " << Simulator::Now().GetSeconds()
+                << std::endl;
+        }
+    }
+    if (Simulator::Now().GetSeconds() < simulator_stop_time)
+        Simulator::Schedule(Seconds(delay), printBuffer, fout, switches, delay);
 }
 
 void ScheduleFlowInputsTcp(FILE* fout){
@@ -347,36 +370,36 @@ struct QlenDistribution{
 		cnt[kb]++;
 	}
 };
-map<uint32_t, map<uint32_t, QlenDistribution> > queue_result;
-void monitor_buffer(FILE* qlen_output, NodeContainer *n){
-	for (uint32_t i = 0; i < n->GetN(); i++){
-		if (n->Get(i)->GetNodeType() == 1){ // is switch
-			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n->Get(i));
-			if (queue_result.find(i) == queue_result.end())
-				queue_result[i];
-			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
-				uint32_t size = 0;
-				for (uint32_t k = 0; k < SwitchMmu::qCnt; k++)
-					size += sw->m_mmu->egress_bytes[j][k];
-				queue_result[i][j].add(size);
-			}
-		}
-	}
-	if (Simulator::Now().GetTimeStep() % qlen_dump_interval == 0){
-		fprintf(qlen_output, "time: %lu\n", Simulator::Now().GetTimeStep());
-		for (auto &it0 : queue_result)
-			for (auto &it1 : it0.second){
-				fprintf(qlen_output, "%u %u", it0.first, it1.first);
-				auto &dist = it1.second.cnt;
-				for (uint32_t i = 0; i < dist.size(); i++)
-					fprintf(qlen_output, " %u", dist[i]);
-				fprintf(qlen_output, "\n");
-			}
-		fflush(qlen_output);
-	}
-	if (Simulator::Now().GetTimeStep() < qlen_mon_end)
-		Simulator::Schedule(NanoSeconds(qlen_mon_interval), &monitor_buffer, qlen_output, n);
-}
+// map<uint32_t, map<uint32_t, QlenDistribution> > queue_result;
+// void monitor_buffer(FILE* qlen_output, NodeContainer *n){
+// 	for (uint32_t i = 0; i < n->GetN(); i++){
+// 		if (n->Get(i)->GetNodeType() == 1){ // is switch
+// 			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n->Get(i));
+// 			if (queue_result.find(i) == queue_result.end())
+// 				queue_result[i];
+// 			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
+// 				uint32_t size = 0;
+// 				for (uint32_t k = 0; k < SwitchMmu::qCnt; k++)
+// 					size += sw->m_mmu->egress_bytes[j][k];
+// 				queue_result[i][j].add(size);
+// 			}
+// 		}
+// 	}
+// 	if (Simulator::Now().GetTimeStep() % qlen_dump_interval == 0){
+// 		fprintf(qlen_output, "time: %lu\n", Simulator::Now().GetTimeStep());
+// 		for (auto &it0 : queue_result)
+// 			for (auto &it1 : it0.second){
+// 				fprintf(qlen_output, "%u %u", it0.first, it1.first);
+// 				auto &dist = it1.second.cnt;
+// 				for (uint32_t i = 0; i < dist.size(); i++)
+// 					fprintf(qlen_output, " %u", dist[i]);
+// 				fprintf(qlen_output, "\n");
+// 			}
+// 		fflush(qlen_output);
+// 	}
+// 	if (Simulator::Now().GetTimeStep() < qlen_mon_end)
+// 		Simulator::Schedule(NanoSeconds(qlen_mon_interval), &monitor_buffer, qlen_output, n);
+// }
 
 void CalculateRoute(Ptr<Node> host){
     // queue for the BFS.
@@ -1008,7 +1031,6 @@ int main(int argc, char *argv[])
     flowf >> flow_num;
     tracef >> trace_num;
 
-
     //n.Create(node_num);
     std::vector<uint32_t> node_type(node_num, 0);
     for (uint32_t i = 0; i < switch_num; i++)
@@ -1059,6 +1081,17 @@ int main(int argc, char *argv[])
     rem->SetAttribute("ErrorRate", DoubleValue(error_rate_per_link));
     rem->SetAttribute("ErrorUnit", StringValue("ERROR_UNIT_PACKET"));
 
+    torStats = torTraceHelper.CreateFileStream (qlen_mon_file.c_str());
+    *torStats->GetStream() 
+                << "switch"
+                << " " << "totalused"
+                << " " << "egressOccupancyLossless"
+                << " " << "egressOccupancyLossy"
+                << " " << "ingressPoolOccupancy"
+                << " " << "headroomOccupancy"
+                << " " << "sharedPoolOccupancy"
+                << " " << "time"
+                << std::endl;
 	FILE *pfc_file = fopen(pfc_output_file.c_str(), "w");
 
     QbbHelper qbb;
@@ -1303,6 +1336,7 @@ int main(int argc, char *argv[])
 	//
 
 	NodeContainer trace_nodes;
+    NodeContainer torNodes;
 	for (uint32_t i = 0; i < trace_num; i++)
 	{
 		uint32_t nid;
@@ -1311,6 +1345,7 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		trace_nodes = NodeContainer(trace_nodes, n.Get(nid));
+        torNodes.Add(n.Get(nid));
 	}
 
 	FILE *trace_output = fopen(trace_output_file.c_str(), "w");
@@ -1369,8 +1404,11 @@ int main(int argc, char *argv[])
 	}
 
 	// schedule buffer monitor
-	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
-	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+	// FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
+	// Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+
+    double delay = 1.5 * maxRtt * 1e-9; // 10 micro seconds
+    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
 
     Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 	//
