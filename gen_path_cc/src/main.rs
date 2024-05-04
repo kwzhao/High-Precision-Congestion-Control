@@ -46,7 +46,7 @@ fn main() -> anyhow::Result<()> {
     // config for debugging
     let params = Parameters {
         shard: vec![0],
-        n_flows: vec![2],
+        n_flows: vec![1],
         n_hosts: vec![3],
         shard_cc: vec![0,10],
         bandwidth: vec![10],
