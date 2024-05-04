@@ -269,8 +269,8 @@ void ScheduleFlowInputsTcp(FILE* fout){
         sinkApp.Get(0)->SetAttribute("Local", AddressValue(sinkAddress));
         sinkApp.Get(0)->SetAttribute("priority", UintegerValue(0)); // ack packets are prioritized
         sinkApp.Get(0)->SetAttribute("priorityCustom", UintegerValue(0)); // ack packets are prioritized
-        sinkApp.Get(0)->SetAttribute("flowId", UintegerValue(flow_input.flowId));
         sinkApp.Get(0)->SetAttribute("senderPriority", UintegerValue(prior));
+        sinkApp.Get(0)->SetAttribute("flowId", UintegerValue(flow_input.flowId));
         sinkApp.Start (Seconds(flow_input.start_time));
         sinkApp.Stop (Seconds (simulator_stop_time));
         sinkApp.Get(0)->TraceConnectWithoutContext("FlowFinish", MakeBoundCallback(&TraceMsgFinish, fout));
@@ -897,11 +897,11 @@ int main(int argc, char *argv[])
     if (gen_tcp_traffic){
         /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
         Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
-        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (200)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
-        Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (10))); //TimeValue (MicroSeconds (80))
+        Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (5))); //TimeValue (MicroSeconds (80))
         Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(1)); // 1
         Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
         Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
@@ -1147,7 +1147,7 @@ int main(int argc, char *argv[])
             sw->m_mmu->SetPortCount(sw->GetNDevices() - 1); // set the actual port count here so that we don't always iterate over the default 256 ports.
             sw->m_mmu->SetBufferModel(bufferModel);
             sw->m_mmu->SetGamma(gamma);
-            // std::cout << "ports " << sw->GetNDevices() << " node " << i << std::endl;
+            std::cout << "ports " << sw->GetNDevices() << " node " << i << std::endl;
             for (uint32_t j = 1; j < sw->GetNDevices(); j++){
                 Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
                 uint64_t rate = dev->GetDataRate().GetBitRate();
