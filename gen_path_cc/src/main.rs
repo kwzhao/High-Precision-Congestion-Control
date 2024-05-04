@@ -30,7 +30,8 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 1;
     let enable_debug = 0;
-    let constfsize=1000000;
+    // let constfsize=1000000;
+    let constfsize=1000;
     // setup the configurations
     // let params = Parameters {
     //     shard: (0..500).collect(),
