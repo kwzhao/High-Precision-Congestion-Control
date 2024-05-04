@@ -101,9 +101,8 @@ if __name__ == "__main__":
         host_pair_list=[(0,nhost-1)]
         
         if enable_const:
-            # ntc=nhost-1
-            # host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
-            ntc=1
+            ntc=nhost-1
+            host_pair_list+=[(i,ntc) for i in range(1,nhost-1)]
         else:
             if nhost==2:
                 ntc=1
@@ -122,11 +121,10 @@ if __name__ == "__main__":
         
         n_flows_tmp=n_flows*ntc+1
         
-        # if enable_const:
-        #     f_sizes_in_byte=np.ones(n_flows_tmp)*constfsize # Byte
-        #     f_sizes_in_byte=f_sizes_in_byte.astype("int64")
-        # else:
-        if True:
+        if enable_const:
+            f_sizes_in_byte=np.ones(n_flows_tmp)*constfsize # Byte
+            f_sizes_in_byte=f_sizes_in_byte.astype("int64")
+        else:
             size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
             size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
             ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
@@ -186,10 +184,9 @@ if __name__ == "__main__":
                 sys.exit(0)
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
-        # if enable_const:
-        #     f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
-        # elif ia_distribution=="lognorm":
-        if True:
+        if enable_const:
+            f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
+        elif ia_distribution=="lognorm":
             avg_inter_arrival_in_s = 1/(bandwidth_list[load_bottleneck_link_id]*load_candidate/8./avg_in_byte)
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
@@ -210,8 +207,11 @@ if __name__ == "__main__":
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
-            # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
-            host_pair_idx=np.random.choice(host_pair_list_idx)
+            if enable_const:
+                host_pair_idx=host_pair_list_idx[flow_id_total%ntc]
+            else:
+                host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+                # host_pair_idx=np.random.choice(host_pair_list_idx)
             if host_pair_idx==0:
                 n_flows_foreground+=1
             src,dst=host_pair_list[host_pair_idx]
@@ -226,10 +226,9 @@ if __name__ == "__main__":
             t+=inter_t
             flow_id_total+=1
         n_flows_total=flow_id_total
-        # if enable_const:
-        #     t+=600*UNIT_G   
-        # else:
-        if True:
+        if enable_const:
+            t+=600*UNIT_G   
+        else:
             t+=UNIT_G
         data+="%f"%((t)/1e9)
         data = "{}{}".format("%d\n"%n_flows_total,data)
@@ -265,12 +264,12 @@ if __name__ == "__main__":
             np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
         
         else:
-            # end_time=float(t) / UNIT_G
-            end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
-            # utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
-            # print("utilization: ",np.round(utilization, 3))
-            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
-            print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
+            end_time=float(t) / UNIT_G
+            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
+            print("utilization: ",np.round(utilization, 3))
+            # end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
+            # utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
+            # print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
             print("stats:", n_flows_total,end_time)
             stats={
                 "n_flows": n_flows_total,
