@@ -1408,7 +1408,7 @@ int main(int argc, char *argv[])
 	// Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
 
     double delay = 1.5 * maxRtt * 1e-9; // 10 micro seconds
-    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
+    // Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
 
     Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 	//
