@@ -39,6 +39,7 @@
 #include "point-to-point-helper.h"
 #include "qbb-helper.h"
 #include "ns3/custom-header.h"
+#include "ns3/tcp-header.h"
 #include "ns3/trace-format.h"
 
 NS_LOG_COMPONENT_DEFINE ("QbbHelper");
@@ -331,11 +332,47 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.dip = hdr.dip;
 	tr.l3Prot = hdr.l3Prot;
 	tr.ecn = hdr.m_tos & 0x3;
+  tr.size = p->GetSize();//hdr.m_payloadSize;
+	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
+  tr.isFiltered = false;
 	switch (hdr.l3Prot){
 		case 0x6:
-			tr.data.sport = hdr.tcp.sport;
-			tr.data.dport = hdr.tcp.dport;
-			break;
+      // Handle different TCP flags
+      // std::cout<<"TCP Protocol: "<< hdr.tcp.seq << ", "<< hdr.tcp.ack << ", "<< hdr.tcp.length << ", "<< hdr.tcp.tcpFlags << ", " << hdr.tcp.windowSize << ", "<< hdr.tcp.urgentPointer << ", "<< hdr.tcp.optionBuf << std::endl;
+      if (hdr.tcp.tcpFlags & TcpHeader::SYN || hdr.tcp.tcpFlags & TcpHeader::RST)
+        tr.isFiltered = true;
+      else if (hdr.tcp.tcpFlags & TcpHeader::ACK){
+        tr.data.sport = hdr.tcp.sport;
+        tr.data.dport = hdr.tcp.dport;
+        tr.data.payload = p->GetSize() - hdr.GetSerializedSize();
+        tr.data.seq = hdr.tcp.seq;
+        tr.data.ts = 0;
+        tr.data.pg = 3;
+        // std::cout<<"Data: " << tr.data.seq << ", "<< tr.data.payload  <<", "<< hdr.GetSerializedSize()  <<std::endl;
+      }
+      else
+        std::cout<<"TCP packet ERROR"<<std::endl;
+      // if (hdr.tcp.tcpFlags & TcpHeader::SYN)
+      //   std::cout<<"SYN"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::ACK)
+      //   std::cout<<"ACK"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::FIN)
+      //   std::cout<<"FIN"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::RST)
+      //   std::cout<<"RST"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::PSH)
+      //   std::cout<<"PSH"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::URG)
+      //   std::cout<<"URG"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::CWR)
+      //   std::cout<<"CWR"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::ECE)
+      //   std::cout<<"ECE"<<std::endl;
+      // else if (hdr.tcp.tcpFlags & TcpHeader::NONE)
+      //   std::cout<<"NONE"<<std::endl;
+      // else
+      //   std::cout<<"ERROR"<<std::endl;
+      break;
 		case 0x11:
 			tr.data.sport = hdr.udp.sport;
 			tr.data.dport = hdr.udp.dport;
@@ -344,6 +381,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.data.seq = hdr.udp.seq;
 			tr.data.ts = hdr.udp.ih.GetTs();
 			tr.data.pg = hdr.udp.pg;
+      // std::cout<<"UDP Protocol: " << tr.ack.flags<<", "<<tr.size << ", "<< tr.data.payload  <<std::endl;
 			break;
 		case 0xFC:
 		case 0xFD:
@@ -353,6 +391,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.ack.pg = hdr.ack.pg;
 			tr.ack.seq = hdr.ack.seq;
 			tr.ack.ts = hdr.ack.ih.GetTs();
+      // std::cout<<"ACK Protocol: " << tr.ack.flags<<", "<<tr.ack.ts <<std::endl;
 			break;
 		case 0xFE:
 			tr.pfc.time = hdr.pfc.time;
@@ -365,18 +404,18 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.cnp.qfb = hdr.cnp.qfb;
 			tr.cnp.ecnBits = hdr.cnp.ecnBits;
 			tr.cnp.total = hdr.cnp.total;
+      // std::cout<<"CNP Protocol: " << tr.cnp.fid<<", "<<tr.cnp.qIndex <<std::endl;
 			break;
 		default:
 			break;
 	}
-	tr.size = p->GetSize();//hdr.m_payloadSize;
-	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
 }
 
 void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, PEvent event, bool hasL2){
 	TraceFormat tr;
 	GetTraceFromPacket(tr, dev, p, qidx, event, hasL2);
-	tr.Serialize(file);
+  if (!tr.isFiltered)
+	  tr.Serialize(file);
 }
 
 void QbbHelper::MacRxDetailCallback (FILE* file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p){

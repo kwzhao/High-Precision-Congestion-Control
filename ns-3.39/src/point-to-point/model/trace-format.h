@@ -27,6 +27,7 @@ struct TraceFormat{
 	uint8_t event;
 	uint8_t ecn; // this is the ip ECN bits
 	uint8_t nodeType; // 0: host, 1: switch
+	bool isFiltered;
 	union{
 		struct {
 			uint16_t sport, dport;
