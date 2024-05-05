@@ -332,9 +332,9 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.dip = hdr.dip;
 	tr.l3Prot = hdr.l3Prot;
 	tr.ecn = hdr.m_tos & 0x3;
-  tr.size = p->GetSize();//hdr.m_payloadSize;
+	tr.size = p->GetSize();//hdr.m_payloadSize;
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
-  tr.isFiltered = false;
+	tr.isFiltered = false;
 	switch (hdr.l3Prot){
 		case 0x6:
       // Handle different TCP flags
