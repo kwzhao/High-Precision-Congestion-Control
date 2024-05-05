@@ -48,7 +48,7 @@ fn main() -> anyhow::Result<()> {
         shard: vec![0],
         n_flows: vec![1],
         n_hosts: vec![3],
-        shard_cc: vec![0,10],
+        shard_cc: (0..20).collect(),
         bandwidth: vec![10],
         prop_delay: vec![1000],
     };
