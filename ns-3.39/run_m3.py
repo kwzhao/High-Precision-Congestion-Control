@@ -299,7 +299,7 @@ if __name__ == "__main__":
         kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
         pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
         
-        config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=CC_DICT[args.cc], t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
+        config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=CC_DICT[args.cc], t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
     else:
         print("unknown cc:", args.cc)
         sys.exit(1)
