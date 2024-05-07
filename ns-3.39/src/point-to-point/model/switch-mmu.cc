@@ -359,6 +359,7 @@ uint64_t SwitchMmu::DynamicThreshold(uint32_t port, uint32_t qIndex, std::string
 			// UINT64_MAX - 1024*1024 is just a randomly chosen big value.
 			// Just don't want to return UINT64_MAX value, sometimes causes overflow issues later.
 			uint64_t threshold = std::min(uint64_t(alphaEgress[port][qIndex] * (remaining)), UINT64_MAX - 1024 * 1024);
+			// std::cout << "DynamicThreshold: port " << port << " qIndex " << qIndex << " threshold " << threshold << " remaining " << remaining << " egressPoolUsed " << egressPoolUsed[type] << " egressPool " << egressPool[type] << std::endl;
 			return threshold;
 		}
 		else {
@@ -783,6 +784,7 @@ bool SwitchMmu::CheckEgressAdmission(uint32_t port, uint32_t qIndex, uint32_t ps
 			        // or if the switch buffer is full
 			        || (psize + totalUsed > bufferPool) )
 			{
+				// std::cout << "dropping lossy packet at egress admission port " << port << " qIndex " << qIndex << " egress_bytes " << egress_bytes[port][qIndex] << " threshold " << Threshold(port, qIndex, "egress", type, unsched) << std::endl;
 				return false;
 			}
 			else {

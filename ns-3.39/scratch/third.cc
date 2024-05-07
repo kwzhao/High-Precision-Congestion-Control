@@ -542,7 +542,7 @@ int main(int argc, char *argv[])
         double a;
         iss >> a;
         alpha_values[p] = a;
-        // std::cout << "alpha-" << p << " " << alpha_values[p] << std::endl;
+        std::cout << "alpha-" << p << " " << alpha_values[p] << std::endl;
         p++;
     }
     aFile.close();
@@ -1318,7 +1318,7 @@ int main(int argc, char *argv[])
         }
     }
     printf("maxRtt=%lu maxBdp=%lu\n", maxRtt, maxBdp);
-
+    baseRtt = maxRtt;   
     //
     // setup switch CC
     //
