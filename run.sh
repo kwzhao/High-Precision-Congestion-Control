@@ -42,7 +42,7 @@ And so on, with each subsequent number representing the count of times the queue
 
 CXXFLAGS=-w ./ns3 configure --build-profile=optimized
 
-gdb --args ./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt'
+gdb --args ./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3/config_topo-pl-3-10-27000_flows_s10.txt'
 
 gdb --args build/scratch/ns3.39-third-debug /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt
 
@@ -53,7 +53,7 @@ debug
 run
 
 
-./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt' > test.log 2> test.log
+./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3/config_topo-pl-3-10-27000_flows_s10.txt' > test.log 2> test.log
 
 NS_LOG="Ipv4EndPointDemux" ./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt' > test.log 2> test.log
 
