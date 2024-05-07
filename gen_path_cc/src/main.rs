@@ -16,7 +16,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_cc20_test")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc20")]
     output_dir: PathBuf,
 }
 
@@ -32,26 +32,30 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
     let constfsize=50000000;
     // setup the configurations
-    // let params = Parameters {
-    //     shard: (0..500).collect(),
-    //     n_flows: vec![1000],
-    //     // n_flows: (1..=9).step_by(2).collect(),
-    //     // n_hosts: vec![3, 5, 7],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..20).collect(),
-    //     bandwidth: (1..=9).step_by(2).collect(),
-    //     prop_delay: (1000..=9000).step_by(2000).collect(),
-    // };
-
-    // config for debugging
     let params = Parameters {
+        // shard: (0..500).collect(),
         shard: vec![0],
-        n_flows: vec![1],
+        n_flows: (1..=9).step_by(2).collect(),
         n_hosts: vec![3],
         shard_cc: (0..20).collect(),
-        bandwidth: vec![10],
-        prop_delay: vec![12000, 24000, 42500],
+        bandwidth: vec![4, 7, 10, 13, 16],
+        prop_delay: vec![12000, 18000, 24000, 33000, 42500],
     };
+
+    // config for debugging
+    // let params = Parameters {
+    //     // shard: vec![0],
+    //     shard: vec![1],
+    //     // n_flows: vec![1],
+    //     n_flows: vec![1,5,9],
+    //     n_hosts: vec![3],
+    //     // shard_cc: (0..20).collect(),
+    //     shard_cc: vec![6,7,19],
+    //     // bandwidth: vec![10],
+    //     bandwidth: vec![4, 10, 16],
+    //     // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
+    //     prop_delay: vec![12000, 24000, 42500],
+    // };
 
     // no need to change
     let root_path = format!("..");

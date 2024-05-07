@@ -11,21 +11,27 @@ def fix_seed(seed):
     np.random.seed(seed)
 from collections import deque
 
+payload_size_dict = {'U': [1048,1056,1090], 'T': [1066]}
 
 def parse_log_entry(line):
     parts = line.split()
-    data_pkt = parts[10]=='U' or parts[10]=='T' 
+    
     node = int(parts[1].split(':')[1])
+    
+    pkt_type = parts[10]
+    data_pkt = pkt_type=='U' or pkt_type=='T'
+    payload_size = int(parts[-1].split('(')[0]) 
     event_type = parts[4]
-    queue_info = parts[2].split(':')
-    port = int(queue_info[0])
-    queue = int(queue_info[1])
-    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or port !=3 or queue not in [1,3]:
+    
+    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or payload_size not in payload_size_dict[pkt_type]:
         return None
     else:
         timestamp = int(parts[0])
+        
+        queue_info = parts[2].split(':')
+        port = int(queue_info[0])
+        queue = int(queue_info[1])
         # payload_size = int(parts[-1].split('(')[1].split(')')[0])
-        payload_size = 1000
         queue_len= int(parts[3])
         return {
             'timestamp': timestamp,
@@ -44,8 +50,6 @@ def calculate_throughput_and_delay(log_file):
     enqu_timestamps = deque()
     total_payload = 0
     queuing_delay_list = []
-    queue_len_max=0
-    queue_len_min=1000000
     with open(log_file, 'r') as file:
         for line in file:
             entry = parse_log_entry(line)
@@ -56,8 +60,6 @@ def calculate_throughput_and_delay(log_file):
                 end_time = entry['timestamp']
                 if entry['event_type'] == 'Enqu':
                     enqu_timestamps.append(entry['timestamp'])
-                    queue_len_max=max(queue_len_max,entry['queue_len'])
-                    queue_len_min=min(queue_len_min,entry['queue_len'])
                 elif entry['event_type'] == 'Dequ':
                     total_payload += entry['payload_size']
                     if enqu_timestamps:
@@ -140,10 +142,10 @@ if __name__ == "__main__":
         % tr_path)
     
     # os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    # )
+    os.system(
+        "rm %s"
+        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    )
     
     os.system(
         "rm %s"
