@@ -33,12 +33,13 @@ fn main() -> anyhow::Result<()> {
     let constfsize=50000000;
     // setup the configurations
     let params = Parameters {
-        // shard: (0..500).collect(),
-        shard: vec![0],
-        n_flows: (1..=9).step_by(2).collect(),
+        shard: (0..500).collect(),
+        // shard: vec![0],
+        // n_flows: (1..=9).step_by(2).collect(),
+        n_flows: vec![1, 5, 9],
         n_hosts: vec![3],
         shard_cc: (0..20).collect(),
-        bandwidth: vec![4, 7, 10, 13, 16],
+        bandwidth: vec![5, 10, 15],
         prop_delay: vec![12000, 18000, 24000, 33000, 42500],
     };
 
