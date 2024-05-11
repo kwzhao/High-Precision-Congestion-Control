@@ -30,8 +30,8 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 1;
     let enable_debug = 0;
-    // let constfsize=50000000;
-    let constfsize=100000;
+    let constfsize=50000000;
+    // let constfsize=10000000;
     // setup the configurations
     // let params = Parameters {
     //     shard: (0..500).collect(),
@@ -57,7 +57,7 @@ fn main() -> anyhow::Result<()> {
         // bandwidth: vec![4, 10, 16],
         // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
         // prop_delay: vec![5000, 13000, 33000],
-        prop_delay: vec![14000],
+        prop_delay: vec![5000],
     };
 
     // no need to change

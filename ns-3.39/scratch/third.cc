@@ -280,7 +280,7 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
         bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
-        bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
+        // bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
@@ -920,7 +920,7 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
         Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (5))); //TimeValue (MicroSeconds (80))
-        Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(1)); // 1
+        // Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(5)); // 5, handle pkt dropping
         Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
         Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
         Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (6));  // Syn retry count
