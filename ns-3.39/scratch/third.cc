@@ -880,11 +880,6 @@ int main(int argc, char *argv[])
 	}
 
     buffer_size=buffer_size*1024;
-
-    printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d, u_target: %f, ai: %s, enable_qcn: %d\n",
-       fwin, buffer_size, enable_pfc, cc_mode,
-       rate2kmin[10000000000], rate2kmax[10000000000],
-       timely_t_low, timely_t_high, u_target, rate_ai.c_str(),enable_qcn);
     Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));
     Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
     Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
@@ -1318,7 +1313,12 @@ int main(int argc, char *argv[])
         }
     }
     printf("maxRtt=%lu maxBdp=%lu\n", maxRtt, maxBdp);
-    baseRtt = maxRtt;   
+    baseRtt = maxRtt;  
+    fwin = maxBdp; 
+    printf("fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d, u_target: %f, ai: %s, enable_qcn: %d\n",
+       fwin, buffer_size, enable_pfc, cc_mode,
+       rate2kmin[10000000000], rate2kmax[10000000000],
+       timely_t_low, timely_t_high, u_target, rate_ai.c_str(),enable_qcn);
     //
     // setup switch CC
     //

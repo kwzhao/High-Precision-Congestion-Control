@@ -6,7 +6,7 @@ import numpy as np
 bfsz=[100,100,10]
 # PFC threshold: [15, 45, 65]
 # fwin=[10, 30,1000]
-fwin=[5, 5, 1000]
+fwin=[150, 150, 1000]
 # enable_pfc=[0,1]
 enable_pfc=[0,0]
 
