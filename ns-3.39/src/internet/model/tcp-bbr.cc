@@ -717,7 +717,7 @@ TcpBbr::CongestionStateSet(Ptr<TcpSocketState> tcb, const TcpSocketState::TcpCon
         m_priorCwnd = tcb->m_cWnd;
         tcb->m_ssThresh = tcb->m_initialSsThresh;
         m_targetCWnd = tcb->m_cWnd;
-        m_minPipeCwnd = 4 * tcb->m_segmentSize;
+        m_minPipeCwnd = 20 * tcb->m_segmentSize;
         m_sendQuantum = 1 * tcb->m_segmentSize;
 
         InitRoundCounting();

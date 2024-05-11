@@ -52,12 +52,12 @@ fn main() -> anyhow::Result<()> {
         // n_flows: vec![1,5,9],
         n_hosts: vec![3],
         shard_cc: (0..20).collect(),
-        // shard_cc: vec![0,1,10,11],
+        // shard_cc: vec![4,5,15],
         bandwidth: vec![10],
         // bandwidth: vec![4, 10, 16],
         // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
-        // prop_delay: vec![5000, 13000, 33000],
-        prop_delay: vec![5000],
+        prop_delay: vec![12000, 24000, 42500],
+        // prop_delay: vec![12000],
     };
 
     // no need to change
