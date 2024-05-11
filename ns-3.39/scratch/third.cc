@@ -915,10 +915,10 @@ int main(int argc, char *argv[])
     /* Applications Background*/
     if (gen_tcp_traffic){
         /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
-        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MicroSeconds (10))); // syn retry interval
-        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (5000)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (200)) );  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
-        Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*10 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
+        Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
         Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (50))); //TimeValue (MicroSeconds (80))
         // Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(5)); // 5, handle pkt dropping
@@ -977,14 +977,18 @@ int main(int argc, char *argv[])
             case TCP_ILLINOIS:
                 printf("CC: Illinois\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
-                Config::SetDefault("ns3::TcpIllinois::AlphaBase", DoubleValue(0.125)); // Gain factor for increasing cwnd
-                Config::SetDefault("ns3::TcpIllinois::BetaBase", DoubleValue(0.25)); // Gain factor for decreasing cwnd
+                Config::SetDefault("ns3::TcpIllinois::AlphaMin", DoubleValue(0.3)); // Minimal increase factor
+                Config::SetDefault("ns3::TcpIllinois::AlphaMax", DoubleValue(15.0)); // More aggressive increase factor
+                Config::SetDefault("ns3::TcpIllinois::BetaMin", DoubleValue(0.1)); // Minimal decrease factor
+                Config::SetDefault("ns3::TcpIllinois::BetaMax", DoubleValue(0.3)); // Less aggressive decrease factor
+                Config::SetDefault("ns3::TcpIllinois::WinThresh", UintegerValue(25)); // Higher window threshold
                 break;
             case TCP_LED_BAT:
                 printf("CC: LEDBAT\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
-                Config::SetDefault("ns3::TcpLedbat::TargetDelay", TimeValue(MilliSeconds(100))); // Target queuing delay
-                Config::SetDefault("ns3::TcpLedbat::BaseHistoryLen", UintegerValue(100)); // Base delay history size
+                Config::SetDefault("ns3::TcpLedbat::TargetDelay", TimeValue(MilliSeconds(10))); // Reduced target delay
+                Config::SetDefault("ns3::TcpLedbat::BaseHistoryLen", UintegerValue(20)); // Moderate history length
+                Config::SetDefault("ns3::TcpLedbat::NoiseFilterLen", UintegerValue(2)); // Responsive noise filter
                 break;
             case TCP_LP:
                 printf("CC: LP\n");
@@ -999,14 +1003,14 @@ int main(int argc, char *argv[])
                 printf("CC: Vegas\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
                 // Set the parameters specifically for a data center environment with high bandwidth and low latency
-                Config::SetDefault("ns3::TcpVegas::Alpha", UintegerValue(1)); // Tighter lower bound
-                Config::SetDefault("ns3::TcpVegas::Beta", UintegerValue(3));  // Tighter upper bound
+                Config::SetDefault("ns3::TcpVegas::Alpha", UintegerValue(2)); // Tighter lower bound
+                Config::SetDefault("ns3::TcpVegas::Beta", UintegerValue(6));  // Tighter upper bound
                 Config::SetDefault("ns3::TcpVegas::Gamma", UintegerValue(1)); // Sensitivity to RTT changes
                 break;
             case TCP_VENO:
                 printf("CC: Veno\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
-                Config::SetDefault("ns3::TcpVeno::Beta", UintegerValue(3)); // Factor for cwnd adjustment
+                Config::SetDefault("ns3::TcpVeno::Beta", UintegerValue(4)); // Factor for cwnd adjustment
                 break;
             case TCP_WESTWOOD:
                 printf("CC: Westwood+\n");
