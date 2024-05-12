@@ -218,6 +218,7 @@ TcpBbr::HandleRestartFromIdle(Ptr<TcpSocketState> tcb, const TcpRateOps::TcpRate
 void
 TcpBbr::SetPacingRate(Ptr<TcpSocketState> tcb, double gain)
 {
+    gain += 1;
     NS_LOG_FUNCTION(this << tcb << gain);
     DataRate rate(gain * m_maxBwFilter.GetBest().GetBitRate());
     rate = std::min(rate, tcb->m_maxPacingRate);
@@ -717,7 +718,7 @@ TcpBbr::CongestionStateSet(Ptr<TcpSocketState> tcb, const TcpSocketState::TcpCon
         m_priorCwnd = tcb->m_cWnd;
         tcb->m_ssThresh = tcb->m_initialSsThresh;
         m_targetCWnd = tcb->m_cWnd;
-        m_minPipeCwnd = 20 * tcb->m_segmentSize;
+        m_minPipeCwnd = 100 * tcb->m_segmentSize;
         m_sendQuantum = 1 * tcb->m_segmentSize;
 
         InitRoundCounting();

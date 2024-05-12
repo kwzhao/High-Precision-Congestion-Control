@@ -30,8 +30,8 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 1;
     let enable_debug = 0;
-    let constfsize=50000000;
-    // let constfsize=10000000;
+    let constfsize=30000000;
+    // let constfsize=20000000;
     // setup the configurations
     // let params = Parameters {
     //     shard: (0..500).collect(),
@@ -46,8 +46,8 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     let params = Parameters {
-        shard: vec![0],
-        // shard: vec![1],
+        // shard: vec![0],
+        shard: vec![1],
         n_flows: vec![1],
         // n_flows: vec![1,5,9],
         n_hosts: vec![3],
@@ -56,7 +56,7 @@ fn main() -> anyhow::Result<()> {
         bandwidth: vec![10],
         // bandwidth: vec![4, 10, 16],
         // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
-        prop_delay: vec![12000, 24000, 42500],
+        prop_delay: vec![12000, 24000, 30000],
         // prop_delay: vec![12000],
     };
 
