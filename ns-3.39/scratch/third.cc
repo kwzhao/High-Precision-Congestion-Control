@@ -934,10 +934,10 @@ int main(int argc, char *argv[])
             case TCP_BBR:
                 printf("CC: BBR\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
-                Config::SetDefault("ns3::TcpBbr::HighGain", DoubleValue(2.89));  // More aggressive than the default 2.89
-                Config::SetDefault("ns3::TcpBbr::BwWindowLength", UintegerValue(40));  // Smaller window for faster adaptation
+                Config::SetDefault("ns3::TcpBbr::HighGain", DoubleValue(3.0));  // More aggressive than the default 2.89
+                Config::SetDefault("ns3::TcpBbr::BwWindowLength", UintegerValue(100));  // Smaller window for faster adaptation
                 Config::SetDefault("ns3::TcpBbr::ProbeRttDuration", TimeValue(MicroSeconds(1)));  // Shorter ProbeRTT
-                Config::SetDefault("ns3::TcpBbr::RttWindowLength", TimeValue(MicroSeconds(50)));
+                Config::SetDefault("ns3::TcpBbr::RttWindowLength", TimeValue(MicroSeconds(100)));
                 break;
             case TCP_BIC:
                 printf("CC: TCP_BIC\n");
@@ -977,7 +977,7 @@ int main(int argc, char *argv[])
             case TCP_ILLINOIS:
                 printf("CC: Illinois\n");
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
-                Config::SetDefault("ns3::TcpIllinois::AlphaMin", DoubleValue(0.3)); // Minimal increase factor
+                Config::SetDefault("ns3::TcpIllinois::AlphaMin", DoubleValue(1.0)); // Minimal increase factor
                 Config::SetDefault("ns3::TcpIllinois::AlphaMax", DoubleValue(15.0)); // More aggressive increase factor
                 Config::SetDefault("ns3::TcpIllinois::BetaMin", DoubleValue(0.1)); // Minimal decrease factor
                 Config::SetDefault("ns3::TcpIllinois::BetaMax", DoubleValue(0.3)); // Less aggressive decrease factor
@@ -988,7 +988,8 @@ int main(int argc, char *argv[])
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
                 Config::SetDefault("ns3::TcpLedbat::TargetDelay", TimeValue(MilliSeconds(10))); // Reduced target delay
                 Config::SetDefault("ns3::TcpLedbat::BaseHistoryLen", UintegerValue(20)); // Moderate history length
-                Config::SetDefault("ns3::TcpLedbat::NoiseFilterLen", UintegerValue(2)); // Responsive noise filter
+                Config::SetDefault("ns3::TcpLedbat::NoiseFilterLen", UintegerValue(10)); // Responsive noise filter
+                Config::SetDefault("ns3::TcpLedbat::Gain", DoubleValue(1.2)); // Higher gain to react more aggressively to congestion
                 break;
             case TCP_LP:
                 printf("CC: LP\n");

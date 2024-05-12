@@ -37,17 +37,17 @@ CC_DICT = {
 # dctcp_k=[10,60,1]
 dctcp_k=[30,30,1]
 # dcqcn_k_min=[10, 40,1]
-dcqcn_k_min=[20, 20,1]
+dcqcn_k_min=[30, 30,1]
 # dcqcn_k_max=[50, 100,1]
-dcqcn_k_max=[70, 70,1]
+dcqcn_k_max=[50, 50,1]
 # u_tgt=[70,95,0.01]
 u_tgt=[95,95,0.01]
 # hpai=[50, 200,10]
 hpai=[100, 100,10]
 # timely_t_low=[20,80,1000]
-timely_t_low=[40,40,1000]
+timely_t_low=[100,100,1000]
 # timely_t_high=[100,200,1000]
-timely_t_high=[100,100,1000]
+timely_t_high=[200,200,1000]
 
 # cc
 CC_LIST=list(CC_DICT.keys())
