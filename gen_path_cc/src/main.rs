@@ -16,7 +16,8 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_cc20_test")]
+    // #[clap(long, default_value = "/data2/lichenni/path_cc20_test")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc20")]
     output_dir: PathBuf,
 }
 
@@ -33,32 +34,32 @@ fn main() -> anyhow::Result<()> {
     let constfsize=30000000;
     // let constfsize=20000000;
     // setup the configurations
-    // let params = Parameters {
-    //     shard: (0..500).collect(),
-    //     // shard: vec![0],
-    //     // n_flows: (1..=9).step_by(2).collect(),
-    //     n_flows: vec![1, 5, 9],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..20).collect(),
-    //     bandwidth: vec![5, 10, 15],
-    //     prop_delay: vec![12000, 18000, 24000, 33000, 42500],
-    // };
-
-    // config for debugging
     let params = Parameters {
+        shard: (0..500).collect(),
         // shard: vec![0],
-        shard: vec![1],
-        n_flows: vec![1],
-        // n_flows: vec![1,5,9],
+        // n_flows: (1..=9).step_by(2).collect(),
+        n_flows: vec![1, 5, 9],
         n_hosts: vec![3],
         shard_cc: (0..20).collect(),
-        // shard_cc: vec![4,5,15],
-        bandwidth: vec![10],
-        // bandwidth: vec![4, 10, 16],
-        // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
-        prop_delay: vec![12000, 24000, 30000],
-        // prop_delay: vec![12000],
+        bandwidth: vec![5, 10, 15],
+        prop_delay: vec![12000, 16000, 20000, 24000, 28000],
     };
+
+    // config for debugging
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     // shard: vec![1],
+    //     // n_flows: vec![1],
+    //     n_flows: vec![1,5,9],
+    //     n_hosts: vec![3],
+    //     shard_cc: (0..20).collect(),
+    //     // shard_cc: vec![4,5,15],
+    //     // bandwidth: vec![10],
+    //     bandwidth: vec![5, 10, 15],
+    //     // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
+    //     prop_delay: vec![12000, 24000, 28000],
+    //     // prop_delay: vec![12000],
+    // };
 
     // no need to change
     let root_path = format!("..");

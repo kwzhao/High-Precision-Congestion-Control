@@ -32,7 +32,7 @@ def parse_log_entry(line):
         port = int(queue_info[0])
         queue = int(queue_info[1])
         # payload_size = int(parts[-1].split('(')[1].split(')')[0])
-        queue_len= int(parts[3])
+        queue_len= float(parts[3])
         return {
             'timestamp': timestamp,
             'node': node,
@@ -142,10 +142,10 @@ if __name__ == "__main__":
         % tr_path)
     
     # os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    # )
+    os.system(
+        "rm %s"
+        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    )
     
     os.system(
         "rm %s"
