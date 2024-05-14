@@ -142,10 +142,10 @@ if __name__ == "__main__":
         % tr_path)
     
     # os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    # )
     
     os.system(
         "rm %s"
