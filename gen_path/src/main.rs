@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_cc20")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc20_test")]
     output_dir: PathBuf,
 }
 

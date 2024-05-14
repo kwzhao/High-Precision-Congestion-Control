@@ -41,8 +41,8 @@ fn main() -> anyhow::Result<()> {
         n_flows: vec![1, 5, 9],
         n_hosts: vec![3],
         shard_cc: (0..20).collect(),
-        bandwidth: vec![5, 10, 15],
-        prop_delay: vec![10000, 15000, 20000],
+        bandwidth: vec![10, 14, 18],
+        prop_delay: vec![10000, 14000, 18000],
     };
 
     // config for debugging
