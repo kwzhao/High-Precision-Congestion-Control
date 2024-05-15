@@ -20,9 +20,9 @@ size_sigma_range=[5000,50000]
 ia_distribution="lognorm"
 ias_sigma_range=[1.0,2.0]
 # ias_sigma_range=[1.5,1.5]
-load_range=[0.20,0.80]
+load_range=[0.20,0.70]
 # load_range=[0.50,0.50]
-load_bottleneck_range=[0.20,0.80]
+load_bottleneck_range=[0.20,0.70]
 # load_bottleneck_range=[0.50,0.50]
 color_list = [
     "cornflowerblue",
