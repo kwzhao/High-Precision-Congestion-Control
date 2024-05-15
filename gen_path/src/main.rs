@@ -32,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     // setup the configurations
     let params = Parameters {
         // shard: (0..500).collect(),
-        shard: vec![0],
+        shard: vec![1],
         n_flows: vec![20000],
         // n_hosts: vec![3, 5, 7],
         n_hosts: vec![3],

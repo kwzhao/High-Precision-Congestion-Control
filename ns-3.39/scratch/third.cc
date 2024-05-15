@@ -917,9 +917,9 @@ int main(int argc, char *argv[])
     /* Applications Background*/
     if (gen_tcp_traffic){
         /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
-        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MicroSeconds (2000))); // syn retry interval
-        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
-        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MicroSeconds (5000))); // syn retry interval
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (5000)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0.00001));  //(MilliSeconds (5))
         Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*50 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
         Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
         Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (50))); //TimeValue (MicroSeconds (80))
@@ -929,10 +929,10 @@ int main(int argc, char *argv[])
         Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (1));  // Syn retry count
         Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
         Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
-        Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
-        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
+        Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (5));
+        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (10)));
 
-        // Config::SetDefault("ns3::TcpSocket::DelAckTimeout", TimeValue(MicroSeconds(1000))); // Lower delayed ACK timeout
+        Config::SetDefault("ns3::TcpSocket::DelAckTimeout", TimeValue(MicroSeconds(2000))); // Lower delayed ACK timeout
         // Enable TCP Selective Acknowledgment
         Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(true));
         // Enable Window Scaling
@@ -945,7 +945,7 @@ int main(int argc, char *argv[])
                 Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
                 Config::SetDefault("ns3::TcpBbr::HighGain", DoubleValue(2.89));  // More aggressive than the default 2.89
                 Config::SetDefault("ns3::TcpBbr::BwWindowLength", UintegerValue(100));  // Smaller window for faster adaptation
-                Config::SetDefault("ns3::TcpBbr::ProbeRttDuration", TimeValue(MicroSeconds(50)));  // Shorter ProbeRTT
+                Config::SetDefault("ns3::TcpBbr::ProbeRttDuration", TimeValue(MicroSeconds(100)));  // Shorter ProbeRTT
                 Config::SetDefault("ns3::TcpBbr::RttWindowLength", TimeValue(MicroSeconds(100)));
                 break;
             case TCP_BIC:
