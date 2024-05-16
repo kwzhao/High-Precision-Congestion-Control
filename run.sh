@@ -40,15 +40,15 @@ The second number (2259) could represent the count of times the queue length was
 And so on, with each subsequent number representing the count of times the queue length fell within progressively higher KB ranges.
 
 
-CXXFLAGS=-w ./ns3 configure --build-profile=optimized
+CXXFLAGS=-w ./ns3 configure --build-profile=debug
 
-gdb --args ./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3/config_topo-pl-3-10-27000_flows_s10.txt'
+gdb --args ./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3/config_topo-pl-3-10-10000_flows_s3.txt'
 
 gdb --args build/scratch/ns3.39-third-debug /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt
 
 debug
 
-./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-1-1000_flows_s0.txt' --gdb
+./ns3 run 'scratch/third /data2/lichenni/path_tc_cc/shard0_nflows1_nhosts3/config_topo-pl-3-10-27000_flows_s10.txt' --gdb
 
 run
 

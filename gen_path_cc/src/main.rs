@@ -34,32 +34,32 @@ fn main() -> anyhow::Result<()> {
     let constfsize=50000000;
     // let constfsize=1000;
     // setup the configurations
-    let params = Parameters {
-        // shard: (0..500).collect(),
-        shard: vec![0,1,2],
-        // n_flows: (1..=9).step_by(2).collect(),
-        n_flows: vec![1, 5, 9],
-        n_hosts: vec![3],
-        shard_cc: (0..20).collect(),
-        bandwidth: vec![10, 14, 18],
-        prop_delay: vec![5000, 10000, 14000],
-    };
-
-    // config for debugging
     // let params = Parameters {
+    //     // shard: (0..500).collect(),
     //     shard: vec![0],
-    //     // shard: vec![1],
-    //     n_flows: vec![1],
-    //     // n_flows: vec![1,5,9],
+    //     // n_flows: (1..=9).step_by(2).collect(),
+    //     n_flows: vec![1, 5, 9],
     //     n_hosts: vec![3],
     //     shard_cc: (0..20).collect(),
-    //     // shard_cc: vec![4,5,15],
-    //     bandwidth: vec![10],
-    //     // bandwidth: vec![5, 10, 15],
-    //     // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
-    //     // prop_delay: vec![10000, 15000, 20000],
-    //     prop_delay: vec![10000],
+    //     bandwidth: vec![10, 14, 18],
+    //     prop_delay: vec![10000, 12000, 14000],
     // };
+
+    // config for debugging
+    let params = Parameters {
+        shard: vec![0],
+        // shard: vec![1],
+        n_flows: vec![1],
+        // n_flows: vec![1,5,9],
+        n_hosts: vec![3],
+        shard_cc: (0..20).collect(),
+        // shard_cc: vec![0,1,2,3],
+        bandwidth: vec![10],
+        // bandwidth: vec![5, 10, 15],
+        // prop_delay: vec![12000, 18000, 24000, 33000, 42500],
+        // prop_delay: vec![10000, 15000, 20000],
+        prop_delay: vec![18000],
+    };
 
     // no need to change
     let root_path = format!("..");
