@@ -275,7 +275,7 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
         bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
-        // bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
+        bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
@@ -904,7 +904,7 @@ int main(int argc, char *argv[])
     }
 
     /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
-    Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
+    Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MicroSeconds (1000))); // syn retry interval
     Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
     Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
     Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
@@ -938,12 +938,12 @@ int main(int argc, char *argv[])
         case BIC:
             printf("CC: BIC\n");
             Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBic::GetTypeId()));
-            Config::SetDefault("ns3::TcpBic::FastConvergence", BooleanValue(true));  // Enable fast convergence
-            Config::SetDefault("ns3::TcpBic::Beta", DoubleValue(0.5));  // Multiplicative decrease factor
-            Config::SetDefault("ns3::TcpBic::MaxIncr", UintegerValue(15));  // Max cWnd increment per RTT to stabilize growth
-            Config::SetDefault("ns3::TcpBic::LowWnd", UintegerValue(14));  // Lower bound of cWnd before switching to high speed
-            Config::SetDefault("ns3::TcpBic::SmoothPart", UintegerValue(7));  // Smooth cWnd increment near maximum threshold
-            Config::SetDefault("ns3::TcpBic::BinarySearchCoefficient", UintegerValue(4));  // Binary search refinement for approaching max bandwidth
+            // Config::SetDefault("ns3::TcpBic::FastConvergence", BooleanValue(true));  // Enable fast convergence
+            // Config::SetDefault("ns3::TcpBic::Beta", DoubleValue(0.5));  // Multiplicative decrease factor
+            // Config::SetDefault("ns3::TcpBic::MaxIncr", UintegerValue(15));  // Max cWnd increment per RTT to stabilize growth
+            // Config::SetDefault("ns3::TcpBic::LowWnd", UintegerValue(14));  // Lower bound of cWnd before switching to high speed
+            // Config::SetDefault("ns3::TcpBic::SmoothPart", UintegerValue(7));  // Smooth cWnd increment near maximum threshold
+            // Config::SetDefault("ns3::TcpBic::BinarySearchCoefficient", UintegerValue(4));  // Binary search refinement for approaching max bandwidth
             break;
         case CUBIC:
             printf("CC: CUBIC\n");
@@ -1091,7 +1091,7 @@ int main(int argc, char *argv[])
             Config::SetDefault("ns3::TcpSocketState::useThetaPowerTcp", BooleanValue(true));
             Config::SetDefault("ns3::TcpSocketState::multipleRateHpcc", BooleanValue(false));
             Config::SetDefault("ns3::TcpSocketState::targetUtil", DoubleValue(0.95));
-            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(30)));
+            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(40)));
             break;
         default:
 		    std::cout << "Error in CC configuration" << std::endl;

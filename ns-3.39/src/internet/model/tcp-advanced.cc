@@ -300,11 +300,17 @@ void TcpAdvanced::FastReactPowertcp(Ptr<Packet> packet, const TcpHeader& tcpHead
 void TcpAdvanced::UpdateRateThetaPowertcp(Ptr<Packet> packet, const TcpHeader& tcpHeader, Ptr<TcpSocketState> tcb, FeedbackTag fb, bool fast_react) {
 	uint32_t next_seq = tcb->m_nextTxSequence.Get().GetValue();
 	uint32_t ackNum = tcpHeader.GetAckNumber().GetValue();
-
+	double rtt = lastRTT;
+	if (fb.getPktTimestamp() != 0) {
+		rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
+	}
+	else{
+		uAggregate=1;
+	}
 	if (lastUpdatedSeq == 0) {
 		lastUpdatedSeq = next_seq;
 		lastAckedSeq = ackNum;
-		double rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
+		// double rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
 		lastRTT = rtt;
 		lastReceivedTime = Simulator::Now().GetNanoSeconds();
 	} else {
@@ -317,7 +323,7 @@ void TcpAdvanced::UpdateRateThetaPowertcp(Ptr<Packet> packet, const TcpHeader& t
 
 		lastReceivedTime = Simulator::Now().GetNanoSeconds();
 
-		double rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
+		// double rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
 
 		if (dt > m_baseRtt.GetNanoSeconds())
 			dt = m_baseRtt.GetNanoSeconds();
@@ -345,7 +351,8 @@ void TcpAdvanced::UpdateRateThetaPowertcp(Ptr<Packet> packet, const TcpHeader& t
 				new_rate = DataRate( 0.9 * (CCRateAgg.GetBitRate() / max_c + tcb->CCAddInc.GetBitRate()) + 0.1 * CCRateAgg.GetBitRate() ) ;
 			}
 			else {
-				new_rate =  DataRate( 0.7 * (CCRateAgg.GetBitRate() / max_c + tcb->CCAddInc.GetBitRate()) + 0.3 * CCRateAgg.GetBitRate() ) ;
+				// new_rate =  DataRate( 0.7 * (CCRateAgg.GetBitRate() / max_c + tcb->CCAddInc.GetBitRate()) + 0.3 * CCRateAgg.GetBitRate() ) ;
+				new_rate =  DataRate(CCRateAgg.GetBitRate() ) ;
 			}
 
 			if (new_rate < tcb->minCCRate)
