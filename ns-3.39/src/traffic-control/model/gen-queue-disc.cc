@@ -772,6 +772,7 @@ GenQueueDisc::DoDequeue (void)
       bool found;
       found = packet->PeekPacketTag(Int);
       if (found) {
+        // std::cout << "3. found gen queue disc: " << Int.getPktTimestamp() << std::endl;
         Int.setTelemetryQlenDeq(Int.getHopCount(), sharedMemory->GetQueueSize(portId, p)); // queue length at dequeue
         Int.setTelemetryTsDeq(Int.getHopCount(), Simulator::Now().GetNanoSeconds()); // timestamp at dequeue
         Int.setTelemetryBw(Int.getHopCount(), portBW * 1e9);

@@ -519,9 +519,9 @@ TcpSocketBase::~TcpSocketBase()
 /* Modification */
 void
 TcpSocketBase::SetCCRate(Ptr<TcpSocketState> tcb, DataRate rate, DataRate prevRate, Time baseRtt, bool useWindow){
+//   std::cout << "SetCCRate " << rate.GetBitRate() << " prevRate " << prevRate.GetBitRate() << " baseRtt " << baseRtt.GetSeconds() << " useWindow " << useWindow << std::endl;
 
   tcb->CCRate = DataRate(std::max(rate.GetBitRate(), tcb->minCCRate.GetBitRate()));
-
   if(useWindow){
     tcb->m_cWnd = (std::max((tcb->CCRate.GetBitRate()*baseRtt.GetSeconds())/(8),double(tcb->m_segmentSize)));
   }
@@ -530,8 +530,7 @@ TcpSocketBase::SetCCRate(Ptr<TcpSocketState> tcb, DataRate rate, DataRate prevRa
   }
   // tcb->m_cWnd = static_cast<uint32_t> (tcb->wienRate.GetBitRate()*baseRtt.GetSeconds()/(8));
   // tcb->m_cWnd =  (tcb->wienRate.GetBitRate()*baseRtt.GetSeconds()/(8));
-  // std::cout << "cwnd " << tcb->m_cWnd << " time " << Simulator::Now().GetSeconds() << " double " << baseRtt.GetDouble() << " secs " << baseRtt.GetSeconds() << " rate "<< rate.GetBitRate() << " minWienRate " << tcb->minWienRate.GetBitRate()<< std::endl;
-  
+//   std::cout<< "cwnd " << tcb->m_cWnd << " rate " << tcb->CCRate.GetBitRate() << " minRate " << tcb->minCCRate.GetBitRate() << " baseRtt " << baseRtt.GetSeconds() << " useWindow " << useWindow << std::endl;
   if (CC_pacingTimer.IsRunning()){
 
     Time left = CC_pacingTimer.GetDelayLeft();
@@ -3311,6 +3310,7 @@ TcpSocketBase::SendDataPacket(SequenceNumber32 seq, uint32_t maxSize, bool withA
   if(foundFb){
     fb.setPktTimestamp(Simulator::Now().GetNanoSeconds());
     p->ReplacePacketTag(fb);
+    // std::cout << "1. SendDataPacket timestamp: " << fb.getPktTimestamp() << std::endl;
   }
   /* Modification */
 
@@ -3695,6 +3695,7 @@ TcpSocketBase::ReceivedData(Ptr<Packet> p, const TcpHeader& tcpHeader)
     FeedbackTag fb;
     p->PeekPacketTag(fb);
     m_congestionControl->setReceivedFb(fb);
+    // std::cout << "1. ReceivedData timestamp: " << fb.getPktTimestamp() << std::endl;
   }
   /* Modification */
 

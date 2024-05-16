@@ -73,7 +73,7 @@ TcpAdvanced::Init(Ptr<TcpSocketState> tcb) {
 	else {
 		tcb->m_initialCWnd = (UINT32_MAX - 1e3);
 	}
-	tcb->CCRate = tcb->maxCCRate;
+	// tcb->CCRate = tcb->maxCCRate;
 
 	m_baseRtt = tcb->CCInitRtt;
 
@@ -158,11 +158,12 @@ void TcpAdvanced::ProcessDcAck(Ptr<Packet> packet, const TcpHeader& tcpHeader, P
 			}
 		}
 		else if (tcb->useTimely) {
-			// std::cout << tcb->m_cWnd.Get() << std::endl;
+			// std::cout << tcb->m_cWnd.Get() << ", ackNum: " << ackNum << ", lastUpdatedSeq: " << lastUpdatedSeq << std::endl;
+			// std::cout << "4. UpdateRateTimely, fb.getPktTimestamp(): " << fb.getPktTimestamp()<< " pkt size: "<<packet->GetSize() << std::endl;
 			if (ackNum > lastUpdatedSeq) {
-
 				UpdateRateTimely(packet, tcpHeader, tcb, fb, false);
 			} else {
+				// std::cout << "Fast React Timely" << std::endl;
 				FastReactTimely(packet, tcpHeader, tcb, fb);
 			}
 		}
@@ -510,12 +511,16 @@ void TcpAdvanced::FastReactHpcc(Ptr<Packet> packet, const TcpHeader& tcpHeader, 
 /*Timely*/
 void TcpAdvanced::UpdateRateTimely(Ptr<Packet> packet, const TcpHeader& tcpHeader, Ptr<TcpSocketState> tcb, FeedbackTag fb, bool fast_react) {
 	uint32_t next_seq = tcb->m_nextTxSequence.Get().GetValue();
-
-	uint64_t rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
+	uint64_t rtt= tcb->m_tmly_THigh+1;
+	if (fb.getPktTimestamp() != 0) {
+		rtt = Simulator::Now().GetNanoSeconds() - fb.getPktTimestamp();
+	}
+	
 	if (lastUpdatedSeq != 0) {
 		int64_t new_rtt_diff = (int64_t)rtt - (int64_t)lastRTT;
 		double rtt_diff = (1 - tcb->m_tmly_alpha) * lastRTTdiff + tcb->m_tmly_alpha * new_rtt_diff;
 		double gradient = rtt_diff / m_baseRtt.GetNanoSeconds();
+		// std::cout << "rtt: " << rtt << " lastRTT: " << lastRTT << " new_rtt_diff: " << new_rtt_diff << " rtt_diff: " << rtt_diff << " gradient: " << gradient << " lastRTTdiff: "<< lastRTTdiff<< std::endl;
 		bool inc = false;
 		double c = 0;
 		if (rtt < tcb->m_tmly_TLow) {
@@ -523,8 +528,8 @@ void TcpAdvanced::UpdateRateTimely(Ptr<Packet> packet, const TcpHeader& tcpHeade
 		} else if (rtt > tcb->m_tmly_THigh) {
 			c = 1 - tcb->m_tmly_beta * (1 - (double)tcb->m_tmly_THigh / rtt);
 			inc = false;
-		} else if (gradient <= 0) {
-			inc = true;
+		// } else if (gradient <= 0) {
+		// 	inc = true;
 		} else {
 			c = 1 - tcb->m_tmly_beta * gradient;
 			if (c < 0)
@@ -535,6 +540,7 @@ void TcpAdvanced::UpdateRateTimely(Ptr<Packet> packet, const TcpHeader& tcpHeade
 		if (inc) {
 			if (incStageAgg < 5) {
 				new_rate = CCRateAgg + tcb->CCAddInc;
+				// std::cout << "inc-CCRateAgg: "<<CCRateAgg<< " new_rate: "<<new_rate<< " tcb->CCAddInc: "<<tcb->CCAddInc<< " incStageAgg: "<<incStageAgg<< " lastRTTdiff: "<<lastRTTdiff<< std::endl;
 			} else {
 				new_rate = CCRateAgg + tcb->CCAddIncHigh;
 			}
@@ -553,6 +559,7 @@ void TcpAdvanced::UpdateRateTimely(Ptr<Packet> packet, const TcpHeader& tcpHeade
 		else {
 			new_rate = std::max(tcb->minCCRate, CCRateAgg * c);
 			if (!fast_react) {
+				// std::cout << "noninc-new_rate: " << new_rate << " CCRateAgg: " << CCRateAgg << " c: " << c << std::endl;
 				CCRateAgg = new_rate;
 				incStageAgg = 0;
 				lastRTTdiff = rtt_diff;
@@ -567,6 +574,8 @@ void TcpAdvanced::UpdateRateTimely(Ptr<Packet> packet, const TcpHeader& tcpHeade
 }
 
 void TcpAdvanced::FastReactTimely(Ptr<Packet> packet, const TcpHeader& tcpHeader, Ptr<TcpSocketState> tcb, FeedbackTag fb) {
+	// if (tcb->m_fast_react)
+	// 	UpdateRateTimely(packet, tcpHeader, tcb, fb, true);
 }
 
 

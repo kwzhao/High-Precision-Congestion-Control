@@ -150,7 +150,7 @@ uint32_t numTxBytes;
   bool hpcc = false;
 
   uint64_t lastRTT=0;
-  uint64_t lastRTTdiff=0;
+  double lastRTTdiff=0;
   uint64_t minRTT;
   uint64_t lastReceivedTime=0;
 };
