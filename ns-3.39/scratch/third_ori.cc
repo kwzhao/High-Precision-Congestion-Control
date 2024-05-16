@@ -40,34 +40,40 @@
 using namespace ns3;
 using namespace std;
 
+#define LOSSLESS 0
+#define LOSSY 1
+#define DUMMY 2
+
 # define DT 101
 # define FAB 102
 # define CS 103
 # define IB 104
 # define ABM 110
-# define DCQCNCC 50
-# define PINTCC 51
+# define REVERIE 111
 
+# define DCQCNCC 1
+# define POWERTCP 2
 # define HPCC 3
-# define TIMELY 7
-# define POWERTCP 9
-# define THETAPOWERTCP 10
-# define BBR 15
-# define BIC 16
-# define CUBIC 17
-# define DCTCP 18
-# define HIGH_SPEED 19
-# define HTCP 20
-# define HYBLA 21
-# define ILLINOIS 22
-# define LED_BAT 23
-# define LP 24
-# define SCALABLE 25
-# define VEGAS 26
-# define VENO 27
-# define WESTWOOD 28
-# define YEAH 29
-# define LINUX_RENO 30
+# define TIMELYCC 7
+# define PINTCC 10
+
+// Define constants for TCP Congestion Controls
+#define TCP_BBR 15
+#define TCP_BIC 16
+#define TCP_CUBIC 17
+#define TCP_DCTCP 18
+#define TCP_HIGH_SPEED 19
+#define TCP_HTCP 20
+#define TCP_HYBLA 21
+#define TCP_ILLINOIS 22
+#define TCP_LED_BAT 23
+#define TCP_LP 24
+#define TCP_SCALABLE 25
+#define TCP_VEGAS 26
+#define TCP_VENO 27
+#define TCP_WESTWOOD 28
+#define TCP_YEAH 29
+#define TCP_LINUX_RENO 30
 
 #define PORT_NUMBER_START 4444
 
@@ -75,6 +81,7 @@ NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
 bool enable_qcn = true,enable_pfc = true;
+bool gen_tcp_traffic = true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
 uint32_t ack_size = 59;
 double pause_time = 5, simulator_stop_time = 3.01;
@@ -275,7 +282,7 @@ void ScheduleFlowInputsTcp(FILE* fout){
         bulksend->SetAttribute("priorityCustom", UintegerValue(prior));
         bulksend->SetAttribute("Remote", AddressValue(sinkAddress));
         bulksend->SetAttribute("Local", AddressValue(sinkAddressTx));
-        // bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
+        bulksend->SetAttribute("InitialCwnd", UintegerValue (fwin/packet_payload_size + 1));
         bulksend->SetAttribute("priority", UintegerValue(prior));
         bulksend->SetStartTime (Seconds(flow_input.start_time));
         bulksend->SetStopTime (Seconds (simulator_stop_time));
@@ -879,10 +886,13 @@ int main(int argc, char *argv[])
     Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
     Config::SetDefault("ns3::QbbNetDevice::QcnEnabled", BooleanValue(enable_qcn));
 
+    if (cc_mode < TCP_BBR)
+        gen_tcp_traffic = false;
+
     // set int_multi
     IntHop::multi = int_multi;
     // IntHeader::mode
-    if (cc_mode == TIMELY) // timely, use ts
+    if (cc_mode == TIMELYCC) // timely, use ts
         IntHeader::mode = IntHeader::TS;
     else if (cc_mode == HPCC || cc_mode == POWERTCP) // hpcc, powertcp, use int
         IntHeader::mode = IntHeader::NORMAL;
@@ -903,199 +913,147 @@ int main(int argc, char *argv[])
         printf("PINT bits: %d bytes: %d\n", Pint::get_n_bits(), Pint::get_n_bytes());
     }
 
-    /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
-    Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MilliSeconds (10))); // syn retry interval
-    Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (500)) );  //(MilliSeconds (5))
-    Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0));  //(MilliSeconds (5))
-    Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*100 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
-    Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
-    Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (50))); //TimeValue (MicroSeconds (80))
-    // Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(5)); // 5, handle pkt dropping
-    Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
-    Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
-    Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (6));  // Syn retry count
-    Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
-    Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
-    Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
-    Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (20)));
+    /* Applications Background*/
+    if (gen_tcp_traffic){
+        /*General TCP Socket settings. Mostly used by various congestion control algorithms in common*/
+        Config::SetDefault ("ns3::TcpSocket::ConnTimeout", TimeValue (MicroSeconds (5000))); // syn retry interval
+        Config::SetDefault ("ns3::TcpSocketBase::MinRto", TimeValue (MicroSeconds (5000)) );  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::MaxSegLifetime", DoubleValue(0.00001));  //(MilliSeconds (5))
+        Config::SetDefault ("ns3::TcpSocketBase::RTTBytes", UintegerValue ( packet_payload_size*50 )); //packet_payload_size*1000 // This many number of first bytes will be prioritized by ABM. It is not necessarily RTTBytes
+        Config::SetDefault ("ns3::TcpSocketBase::ClockGranularity", TimeValue (NanoSeconds (10))); //(MicroSeconds (100))
+        Config::SetDefault ("ns3::RttEstimator::InitialEstimation", TimeValue (MicroSeconds (50))); //TimeValue (MicroSeconds (80))
+        // Config::SetDefault("ns3::TcpSocket::DataRetries", UintegerValue(5)); // 5, handle pkt dropping
+        Config::SetDefault ("ns3::TcpSocket::SndBufSize", UintegerValue (1073725440)); //1073725440
+        Config::SetDefault ("ns3::TcpSocket::RcvBufSize", UintegerValue (1073725440));
+        Config::SetDefault ("ns3::TcpSocket::ConnCount", UintegerValue (1));  // Syn retry count
+        Config::SetDefault ("ns3::TcpSocketBase::Timestamp", BooleanValue (true));
+        Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (packet_payload_size));
+        Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (5));
+        Config::SetDefault ("ns3::TcpSocket::PersistTimeout", TimeValue (Seconds (10)));
 
-    // Config::SetDefault("ns3::TcpSocket::DelAckTimeout", TimeValue(MicroSeconds(1000))); // Lower delayed ACK timeout
-    // Enable TCP Selective Acknowledgment
-    // Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(true));
-    // // Enable Window Scaling
-    // Config::SetDefault("ns3::TcpSocketBase::WindowScaling", BooleanValue(true));
-    // Config::SetDefault("ns3::TcpSocket::TcpNoDelay", BooleanValue(true)); // Disable Nagle's Algorithm for immediate sending
+        Config::SetDefault("ns3::TcpSocket::DelAckTimeout", TimeValue(MicroSeconds(2000))); // Lower delayed ACK timeout
+        // Enable TCP Selective Acknowledgment
+        Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(true));
+        // Enable Window Scaling
+        Config::SetDefault("ns3::TcpSocketBase::WindowScaling", BooleanValue(true));
+        Config::SetDefault("ns3::TcpSocket::TcpNoDelay", BooleanValue(true)); // Disable Nagle's Algorithm for immediate sending
 
-    switch (cc_mode) {
-        case BBR:
-            printf("CC: BBR\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
-            Config::SetDefault("ns3::TcpBbr::HighGain", DoubleValue(2.89));  // More aggressive than the default 2.89
-            Config::SetDefault("ns3::TcpBbr::BwWindowLength", UintegerValue(100));  // Smaller window for faster adaptation
-            Config::SetDefault("ns3::TcpBbr::ProbeRttDuration", TimeValue(MicroSeconds(100)));  // Shorter ProbeRTT
-            Config::SetDefault("ns3::TcpBbr::RttWindowLength", TimeValue(MicroSeconds(100)));
-            break;
-        case BIC:
-            printf("CC: BIC\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBic::GetTypeId()));
-            Config::SetDefault("ns3::TcpBic::FastConvergence", BooleanValue(true));  // Enable fast convergence
-            Config::SetDefault("ns3::TcpBic::Beta", DoubleValue(0.5));  // Multiplicative decrease factor
-            Config::SetDefault("ns3::TcpBic::MaxIncr", UintegerValue(15));  // Max cWnd increment per RTT to stabilize growth
-            Config::SetDefault("ns3::TcpBic::LowWnd", UintegerValue(14));  // Lower bound of cWnd before switching to high speed
-            Config::SetDefault("ns3::TcpBic::SmoothPart", UintegerValue(7));  // Smooth cWnd increment near maximum threshold
-            Config::SetDefault("ns3::TcpBic::BinarySearchCoefficient", UintegerValue(4));  // Binary search refinement for approaching max bandwidth
-            break;
-        case CUBIC:
-            printf("CC: CUBIC\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpCubic::GetTypeId()));
-            break;
-        case DCTCP:
-            printf("CC: DCTCP\n");
-            if (!enable_qcn) {
-                std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
-                exit(1);
-            }
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpDctcp::GetTypeId()));
-            Config::SetDefault("ns3::TcpSocketBase::UseEcn", StringValue("On"));
-            break;
-        case HIGH_SPEED:
-            printf("CC: HighSpeed\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHighSpeed::GetTypeId()));
-            break;
-        case HTCP:
-            printf("CC: HTCP\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHtcp::GetTypeId()));
-            break;
-        case HYBLA:
-            printf("CC: Hybla\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHybla::GetTypeId()));
-            break;
-        case ILLINOIS:
-            printf("CC: Illinois\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
-            Config::SetDefault("ns3::TcpIllinois::AlphaMin", DoubleValue(1.0)); // Minimal increase factor
-            Config::SetDefault("ns3::TcpIllinois::AlphaMax", DoubleValue(15.0)); // More aggressive increase factor
-            Config::SetDefault("ns3::TcpIllinois::BetaMin", DoubleValue(0.1)); // Minimal decrease factor
-            Config::SetDefault("ns3::TcpIllinois::BetaMax", DoubleValue(0.3)); // Less aggressive decrease factor
-            Config::SetDefault("ns3::TcpIllinois::WinThresh", UintegerValue(25)); // Higher window threshold
-            break;
-        case LED_BAT:
-            printf("CC: LEDBAT\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
-            Config::SetDefault("ns3::TcpLedbat::TargetDelay", TimeValue(MilliSeconds(10))); // Reduced target delay
-            Config::SetDefault("ns3::TcpLedbat::BaseHistoryLen", UintegerValue(20)); // Moderate history length
-            Config::SetDefault("ns3::TcpLedbat::NoiseFilterLen", UintegerValue(10)); // Responsive noise filter
-            Config::SetDefault("ns3::TcpLedbat::Gain", DoubleValue(1.2)); // Higher gain to react more aggressively to congestion
-            break;
-        case LP:
-            printf("CC: LP\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLp::GetTypeId()));
-            break;
-        case SCALABLE:
-            printf("CC: Scalable\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpScalable::GetTypeId()));
-            Config::SetDefault("ns3::TcpScalable::AIFactor", UintegerValue(100)); // Increment factor for cwnd increase
-            break;
-        case VEGAS:
-            printf("CC: Vegas\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
-            // Set the parameters specifically for a data center environment with high bandwidth and low latency
-            Config::SetDefault("ns3::TcpVegas::Alpha", UintegerValue(2)); // Tighter lower bound
-            Config::SetDefault("ns3::TcpVegas::Beta", UintegerValue(6));  // Tighter upper bound
-            Config::SetDefault("ns3::TcpVegas::Gamma", UintegerValue(1)); // Sensitivity to RTT changes
-            break;
-        case VENO:
-            printf("CC: Veno\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
-            Config::SetDefault("ns3::TcpVeno::Beta", UintegerValue(4)); // Factor for cwnd adjustment
-            break;
-        case WESTWOOD:
-            printf("CC: Westwood+\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpWestwoodPlus::GetTypeId()));
-            break;
-        case YEAH:
-            printf("CC: YeAH\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
-            break;
-        case LINUX_RENO:
-            printf("CC: Linux Reno\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLinuxReno::GetTypeId()));
-            break;
-        // case DCQCNCC:
-        //     printf("CC: DCQCN\n");
-        //     break;
-        case TIMELY:
-            printf("CC: TIMELY\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpAdvanced::GetTypeId()));
-            // Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::initCCRate", DataRateValue(DataRate("5000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::minCCRate", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::maxCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::AI", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::HighAI", DataRateValue(DataRate("150Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::useTimely", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(40)));
-            Config::SetDefault("ns3::TcpSocketState::TimelyTlow", UintegerValue((40*1000))); // in nanoseconds
-            Config::SetDefault("ns3::TcpSocketState::TimelyThigh", UintegerValue(50*1000)); // in nanoseconds
-            // Config::SetDefault("ns3::TcpSocketState::TimelyAlpha", DoubleValue(0.5));
-            // Config::SetDefault("ns3::TcpSocketState::TimelyBeta", DoubleValue(0.3));
-            break;
-        case HPCC:
-            printf("CC: HPCC\n");
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpAdvanced::GetTypeId()));
-            // Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::initCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::minCCRate", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::maxCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::AI", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::mThreshHpcc", UintegerValue(5));
-            Config::SetDefault("ns3::TcpSocketState::fastReactHpcc", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::sampleFeedbackHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::useHpcc", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::multipleRateHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::targetUtil", DoubleValue(0.95));
-            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(40)));
-            break;
-        // case PINTCC:
-        //     printf("CC: PINT\n");
-        //     break;
-        case POWERTCP:
-            printf("CC: PowerTCP\n");
-            powertcp = true;
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpAdvanced::GetTypeId()));
-            // Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::initCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::minCCRate", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::maxCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::AI", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::mThreshHpcc", UintegerValue(5));
-            Config::SetDefault("ns3::TcpSocketState::fastReactHpcc", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::sampleFeedbackHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::usePowerTcp", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::multipleRateHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::targetUtil", DoubleValue(0.95));
-            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(40)));
-            break;
-        case THETAPOWERTCP:
-            printf("CC: THETAPOWERTCP\n");
-            thetapowertcp = true;
-            Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue (ns3::TcpAdvanced::GetTypeId()));
-            // Config::SetDefault("ns3::TcpSocketBase::Sack", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::initCCRate", DataRateValue(DataRate("5000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::minCCRate", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::maxCCRate", DataRateValue(DataRate("10000Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::AI", DataRateValue(DataRate("100Mbps")));
-            Config::SetDefault("ns3::TcpSocketState::mThreshHpcc", UintegerValue(5));
-            Config::SetDefault("ns3::TcpSocketState::fastReactHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::sampleFeedbackHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::useThetaPowerTcp", BooleanValue(true));
-            Config::SetDefault("ns3::TcpSocketState::multipleRateHpcc", BooleanValue(false));
-            Config::SetDefault("ns3::TcpSocketState::targetUtil", DoubleValue(0.95));
-            Config::SetDefault("ns3::TcpSocketState::baseRtt", TimeValue(MicroSeconds(30)));
-            break;
-        default:
-		    std::cout << "Error in CC configuration" << std::endl;
-		    return 0;
+        switch (cc_mode) {
+            case TCP_BBR:
+                printf("CC: BBR\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBbr::GetTypeId()));
+                Config::SetDefault("ns3::TcpBbr::HighGain", DoubleValue(2.89));  // More aggressive than the default 2.89
+                Config::SetDefault("ns3::TcpBbr::BwWindowLength", UintegerValue(100));  // Smaller window for faster adaptation
+                Config::SetDefault("ns3::TcpBbr::ProbeRttDuration", TimeValue(MicroSeconds(100)));  // Shorter ProbeRTT
+                Config::SetDefault("ns3::TcpBbr::RttWindowLength", TimeValue(MicroSeconds(100)));
+                break;
+            case TCP_BIC:
+                printf("CC: TCP_BIC\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpBic::GetTypeId()));
+                Config::SetDefault("ns3::TcpBic::FastConvergence", BooleanValue(true));  // Enable fast convergence
+                Config::SetDefault("ns3::TcpBic::Beta", DoubleValue(0.5));  // Multiplicative decrease factor
+                Config::SetDefault("ns3::TcpBic::MaxIncr", UintegerValue(15));  // Max cWnd increment per RTT to stabilize growth
+                Config::SetDefault("ns3::TcpBic::LowWnd", UintegerValue(14));  // Lower bound of cWnd before switching to high speed
+                Config::SetDefault("ns3::TcpBic::SmoothPart", UintegerValue(7));  // Smooth cWnd increment near maximum threshold
+                Config::SetDefault("ns3::TcpBic::BinarySearchCoefficient", UintegerValue(4));  // Binary search refinement for approaching max bandwidth
+                break;
+            case TCP_CUBIC:
+                printf("CC: CUBIC\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpCubic::GetTypeId()));
+                break;
+            case TCP_DCTCP:
+                printf("CC: DCTCP\n");
+                if (!enable_qcn) {
+                    std::cout << "Set enableEcn option in order to use DCTCP" << std::endl;
+                    exit(1);
+                }
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpDctcp::GetTypeId()));
+                Config::SetDefault("ns3::TcpSocketBase::UseEcn", StringValue("On"));
+                break;
+            case TCP_HIGH_SPEED:
+                printf("CC: HighSpeed\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHighSpeed::GetTypeId()));
+                break;
+            case TCP_HTCP:
+                printf("CC: HTCP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHtcp::GetTypeId()));
+                break;
+            case TCP_HYBLA:
+                printf("CC: Hybla\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpHybla::GetTypeId()));
+                break;
+            case TCP_ILLINOIS:
+                printf("CC: Illinois\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpIllinois::GetTypeId()));
+                Config::SetDefault("ns3::TcpIllinois::AlphaMin", DoubleValue(1.0)); // Minimal increase factor
+                Config::SetDefault("ns3::TcpIllinois::AlphaMax", DoubleValue(15.0)); // More aggressive increase factor
+                Config::SetDefault("ns3::TcpIllinois::BetaMin", DoubleValue(0.1)); // Minimal decrease factor
+                Config::SetDefault("ns3::TcpIllinois::BetaMax", DoubleValue(0.3)); // Less aggressive decrease factor
+                Config::SetDefault("ns3::TcpIllinois::WinThresh", UintegerValue(25)); // Higher window threshold
+                break;
+            case TCP_LED_BAT:
+                printf("CC: LEDBAT\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLedbat::GetTypeId()));
+                Config::SetDefault("ns3::TcpLedbat::TargetDelay", TimeValue(MilliSeconds(10))); // Reduced target delay
+                Config::SetDefault("ns3::TcpLedbat::BaseHistoryLen", UintegerValue(20)); // Moderate history length
+                Config::SetDefault("ns3::TcpLedbat::NoiseFilterLen", UintegerValue(10)); // Responsive noise filter
+                Config::SetDefault("ns3::TcpLedbat::Gain", DoubleValue(1.2)); // Higher gain to react more aggressively to congestion
+                break;
+            case TCP_LP:
+                printf("CC: LP\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLp::GetTypeId()));
+                break;
+            case TCP_SCALABLE:
+                printf("CC: Scalable\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpScalable::GetTypeId()));
+                Config::SetDefault("ns3::TcpScalable::AIFactor", UintegerValue(100)); // Increment factor for cwnd increase
+                break;
+            case TCP_VEGAS:
+                printf("CC: Vegas\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVegas::GetTypeId()));
+                // Set the parameters specifically for a data center environment with high bandwidth and low latency
+                Config::SetDefault("ns3::TcpVegas::Alpha", UintegerValue(2)); // Tighter lower bound
+                Config::SetDefault("ns3::TcpVegas::Beta", UintegerValue(6));  // Tighter upper bound
+                Config::SetDefault("ns3::TcpVegas::Gamma", UintegerValue(1)); // Sensitivity to RTT changes
+                break;
+            case TCP_VENO:
+                printf("CC: Veno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpVeno::GetTypeId()));
+                Config::SetDefault("ns3::TcpVeno::Beta", UintegerValue(4)); // Factor for cwnd adjustment
+                break;
+            case TCP_WESTWOOD:
+                printf("CC: Westwood+\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpWestwoodPlus::GetTypeId()));
+                break;
+            case TCP_YEAH:
+                printf("CC: YeAH\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpYeah::GetTypeId()));
+                break;
+            case TCP_LINUX_RENO:
+                printf("CC: Default TCP Linux Reno\n");
+                Config::SetDefault("ns3::TcpL4Protocol::SocketType", TypeIdValue(ns3::TcpLinuxReno::GetTypeId()));
+                break;
+        }
+
+    }
+    else{
+        switch (cc_mode) {
+            case DCQCNCC:
+                printf("CC: DCQCN\n");
+                break;
+            case TIMELYCC:
+                printf("CC: Timely\n");
+                break;
+            case HPCC:
+                printf("CC: HPCC\n");
+                break;
+            case PINTCC:
+                printf("CC: PINT\n");
+                break;
+            case POWERTCP:
+                printf("CC: PowerTCP\n");
+                break;
+        }
     }
 
     topof.open(topology_file.c_str());
@@ -1449,6 +1407,8 @@ int main(int argc, char *argv[])
 
     Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 
+    Time interPacketInterval = Seconds(0.0000005 / 2);
+
     // maintain port number for each host
     for (uint32_t i = 0; i < node_num; i++){
         if (n.Get(i)->GetNodeType() == 0)
@@ -1463,8 +1423,14 @@ int main(int argc, char *argv[])
     flow_input.idx = 0;
     if (flow_num > 0){
         ReadFlowInput();
-        printf("TCP traffic\n");
-        Simulator::Schedule(Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
+        if (gen_tcp_traffic){
+            printf("TCP traffic\n");
+            Simulator::Schedule(Simulator::Now(), ns3::MakeBoundCallback(&ScheduleFlowInputsTcp, fct_output));
+        }
+        else{
+            printf("RDMA traffic\n");
+            Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+        }
     }
     
     topof.close();
