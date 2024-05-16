@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_cc20_test")]
+    #[clap(long, default_value = "/data2/lichenni/path_cc20")]
     output_dir: PathBuf,
 }
 
@@ -31,8 +31,8 @@ fn main() -> anyhow::Result<()> {
 
     // setup the configurations
     let params = Parameters {
-        // shard: (0..500).collect(),
-        shard: vec![0,1,2],
+        shard: (0..500).collect(),
+        // shard: vec![0,1,2],
         n_flows: vec![20000],
         // n_hosts: vec![3, 5, 7],
         n_hosts: vec![3],
