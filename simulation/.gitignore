@@ -1,5 +1,0 @@
-/build
-/.lock*
-/.waf*
-/mix
-*.pyc
