@@ -1,7 +1,7 @@
 import argparse
 import sys
 import os
-from consts import CC_LIST, PARAM_LIST, CONFIG_TO_PARAM_DICT, DEFAULT_PARAM_VEC, CC_DICT
+from consts import CC_LIST, PARAM_LIST, CONFIG_TO_PARAM_DICT, DEFAULT_PARAM_VEC
 import numpy as np
 import random
 def fix_seed(seed):
@@ -142,13 +142,11 @@ if __name__ == "__main__":
     hpai=25
     u_tgt=args.utgt/100.
  
-    # cc=np.random.choice(CC_LIST,1)[0]
-    cc=CC_LIST[args.shard_cc%len(CC_LIST)]
+    cc=np.random.choice(CC_LIST,1)[0]
     
     cc_idx=CONFIG_TO_PARAM_DICT["cc"]+CC_LIST.index(cc)
     DEFAULT_PARAM_VEC[cc_idx]=1.0
     args.cc=cc
-    
     enable_qcn=1
     if cc=="dctcp":
         cc_idx=CONFIG_TO_PARAM_DICT['dctcp_k']
@@ -156,21 +154,21 @@ if __name__ == "__main__":
             dctcp_k=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             dctcp_k=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(dctcp_k)/PARAM_LIST[cc_idx][2]
     elif cc.startswith("dcqcn"):
         cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_min']
         if enable_debug:
             dcqcn_k_min=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             dcqcn_k_min=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_min)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_min)/PARAM_LIST[cc_idx][2]
   
         cc_idx=CONFIG_TO_PARAM_DICT['dcqcn_k_max']
         if enable_debug:
             dcqcn_k_max=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             dcqcn_k_max=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(dcqcn_k_max)/PARAM_LIST[cc_idx][2]
         enable_pfc=1
     elif cc.startswith("hp"):
         cc_idx=CONFIG_TO_PARAM_DICT['u_tgt']
@@ -178,28 +176,28 @@ if __name__ == "__main__":
             u_tgt=(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             u_tgt=(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=(u_tgt)/PARAM_LIST[cc_idx][2]
 
         cc_idx=CONFIG_TO_PARAM_DICT['hpai']
         if enable_debug:
             hpai=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             hpai=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(hpai)/PARAM_LIST[cc_idx][2]
     elif cc.startswith("timely"):
         cc_idx=CONFIG_TO_PARAM_DICT['timely_t_low']
         if enable_debug:
             timely_t_low=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             timely_t_low=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_low)/PARAM_LIST[cc_idx][2]
   
         cc_idx=CONFIG_TO_PARAM_DICT['timely_t_high']
         if enable_debug:
             timely_t_high=int(PARAM_LIST[cc_idx][seed%2]*PARAM_LIST[cc_idx][2])
         else:
             timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
-        # DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
+        DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
       
     DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
     DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
@@ -253,18 +251,18 @@ if __name__ == "__main__":
         # config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
         print("cc:", cc)
         config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=3, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
-    # elif args.cc == "dctcp":
-    #     ai = 10 # ai is useless for dctcp
-    #     hai = ai  # also useless
-    #     dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
-    #     # masking_threshold_K={dctcp_k} KB (e.g., 30KB)
-    #     kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-    #     kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-    #     pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
-    #     config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
+    elif args.cc == "dctcp":
+        ai = 10 # ai is useless for dctcp
+        hai = ai  # also useless
+        dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
+        # masking_threshold_K={dctcp_k} KB (e.g., 30KB)
+        kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
+        kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
+        pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
+        config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
     elif args.cc == "timely":
-        ai = 10 * bw / 10;
-        hai = 50 * bw / 10;
+        ai = 10 * bw / 10
+        hai = 50 * bw / 10
         config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=7, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=0, vwin=0, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
     elif args.cc == "timely_vwin":
         ai = 10 * bw / 10;
@@ -290,16 +288,6 @@ if __name__ == "__main__":
         # config_name = "%s/config_%s_%s_%s%s%s.txt"%(root, topo, trace, cc, failure, config_specs)
         print("cc:", cc)
         config = config_template.format(local_dir=local_dir, root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=10, t_alpha=1, t_dec=4, t_inc=300, g=0.00390625, ai=ai, hai=hai, dctcp_ai=1000, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=int_multi, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=0, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
-    elif args.cc in CC_DICT:
-        ai = 10 # ai is useless for dctcp
-        hai = ai  # also useless
-        dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
-        # masking_threshold_K={dctcp_k} KB (e.g., 30KB)
-        kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-        kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-        pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
-        
-        config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=CC_DICT[args.cc], t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=1, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn)
     else:
         print("unknown cc:", args.cc)
         sys.exit(1)
