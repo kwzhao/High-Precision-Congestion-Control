@@ -50,9 +50,8 @@ using namespace std;
 # define HPCC 3
 # define TIMELY 7
 # define DCTCP 8
-# define PINTCC 10
-
 # define POWERTCP 9
+# define PINTCC 10
 
 #define PORT_NUMBER_START 10000
 
@@ -177,8 +176,8 @@ void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double d
                 << std::endl;
         }
     }
-    if (Simulator::Now().GetSeconds() < simulator_stop_time)
-        Simulator::Schedule(Seconds(delay), printBuffer, fout, switches, delay);
+    // if (Simulator::Now().GetSeconds() < simulator_stop_time)
+    //     Simulator::Schedule(Seconds(delay), printBuffer, fout, switches, delay);
 }
 
 
@@ -825,10 +824,10 @@ int main(int argc, char *argv[])
 
     NS_LOG_INFO("Create nodes.");
 
-    Config::SetDefault ("ns3::Ipv4GlobalRouting::FlowEcmpRouting", BooleanValue(true));
+    // Config::SetDefault ("ns3::Ipv4GlobalRouting::FlowEcmpRouting", BooleanValue(true));
     InternetStackHelper internet;
-    Ipv4GlobalRoutingHelper globalRoutingHelper;
-    internet.SetRoutingHelper (globalRoutingHelper);
+    // Ipv4GlobalRoutingHelper globalRoutingHelper;
+    // internet.SetRoutingHelper (globalRoutingHelper);
     internet.Install(n);
 
     //
@@ -854,17 +853,17 @@ int main(int argc, char *argv[])
     rem->SetAttribute("ErrorRate", DoubleValue(error_rate_per_link));
     rem->SetAttribute("ErrorUnit", StringValue("ERROR_UNIT_PACKET"));
 
-    // torStats = torTraceHelper.CreateFileStream (qlen_mon_file.c_str());
-    // *torStats->GetStream() 
-    //             << "switch"
-    //             << " " << "totalused"
-    //             << " " << "egressOccupancyLossless"
-    //             << " " << "egressOccupancyLossy"
-    //             << " " << "ingressPoolOccupancy"
-    //             << " " << "headroomOccupancy"
-    //             << " " << "sharedPoolOccupancy"
-    //             << " " << "time"
-    //             << std::endl;
+    torStats = torTraceHelper.CreateFileStream (qlen_mon_file.c_str());
+    *torStats->GetStream() 
+                << "switch"
+                << " " << "totalused"
+                << " " << "egressOccupancyLossless"
+                << " " << "egressOccupancyLossy"
+                << " " << "ingressPoolOccupancy"
+                << " " << "headroomOccupancy"
+                << " " << "sharedPoolOccupancy"
+                << " " << "time"
+                << std::endl;
 	FILE *pfc_file = fopen(pfc_output_file.c_str(), "w");
 
     QbbHelper qbb;
@@ -1114,6 +1113,7 @@ int main(int argc, char *argv[])
 	//
 
 	NodeContainer trace_nodes;
+    NodeContainer torNodes;
 	for (uint32_t i = 0; i < trace_num; i++)
 	{
 		uint32_t nid;
@@ -1122,6 +1122,7 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		trace_nodes = NodeContainer(trace_nodes, n.Get(nid));
+        torNodes.Add(n.Get(nid));
 	}
 
 	FILE *trace_output = fopen(trace_output_file.c_str(), "w");
@@ -1169,11 +1170,11 @@ int main(int argc, char *argv[])
 	}
 
 	// schedule buffer monitor
-	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
-	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+	// FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
+	// Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
 
     // double delay = 1.5 * maxRtt * 1e-9; // 10 micro seconds
-    // Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
+    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
 
 	//
 	// Now, do the actual simulation.
