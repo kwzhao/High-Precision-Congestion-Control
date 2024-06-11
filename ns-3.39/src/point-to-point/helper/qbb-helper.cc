@@ -335,19 +335,13 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.ecn = hdr.m_tos & 0x3;
 	tr.size = p->GetSize();//hdr.m_payloadSize;
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
-	tr.isFiltered = false;
+	tr.isFiltered = true;
 
   bool found;
   uint32_t flowIda = 0;
   FlowIdTagPath tag;
   found = p->PeekPacketTag (tag);
-  if(found){
-    flowIda=tag.GetFlowId();
-    std::cout<<"FlowId: "<<flowIda<<std::endl;
-    }
-  else{
-    std::cout<<"FlowId not found"<<std::endl;
-  }
+  if(found){flowIda=tag.GetFlowId();}
   tr.flowId = flowIda;
 
 	switch (hdr.l3Prot){
@@ -396,6 +390,8 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.data.seq = hdr.udp.seq;
 			tr.data.ts = hdr.udp.ih.GetTs();
 			tr.data.pg = hdr.udp.pg;
+      if (tr.data.seq == 0)
+        tr.isFiltered = false;
       // std::cout<<"UDP Protocol: " << tr.ack.flags<<", "<<tr.size << ", "<< tr.data.payload  <<std::endl;
 			break;
 		case 0xFC:

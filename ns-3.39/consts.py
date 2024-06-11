@@ -11,28 +11,12 @@ fwin=[20, 20, 1000]
 enable_pfc=[0,0]
 
 CC_DICT = {
-    # "dctcp": 8,
+    "dctcp": 8,
     # "dcqcn_paper_vwin": 1,
-    "hp": 3,
-    "timely_vwin": 7,
-    "powertcp": 9,
-    "thetapowertcp": 10,
-    "bbr": 15,
-    "bic": 16,
-    "cubic": 17,
-    "dctcp": 18,
-    "high_speed": 19,
-    "htcp": 20,
-    "hybla": 21,
-    "illinois": 22,
-    "led_bat": 23,
-    "lp": 24,
-    "scalable": 25,
-    "vegas": 26,
-    "veno": 27,
-    "westwood": 28,
-    "yeah": 29,
-    "linux_reno": 30
+    # "hp": 3,
+    # "timely_vwin": 7,
+    # "powertcp": 9,
+    # "thetapowertcp": 10,
 }
 
 # dctcp_k=[10,60,1]

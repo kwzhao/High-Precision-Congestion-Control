@@ -1,3 +1,4 @@
+import subprocess
 import argparse
 import numpy as np
 import os
@@ -11,7 +12,7 @@ def fix_seed(seed):
     np.random.seed(seed)
 from collections import deque
 
-payload_size_dict = {'U': [1048,1056,1090]}
+payload_size_in_byte=1000.0
 
 def parse_log_entry(line):
     parts = line.split()
@@ -20,10 +21,11 @@ def parse_log_entry(line):
     
     pkt_type = parts[10]
     data_pkt = pkt_type=='U' or pkt_type=='T'
-    payload_size = int(parts[-1].split('(')[1].split(')')[0])
+    payload_size = int(parts[-2].split('(')[1].split(')')[0])
     event_type = parts[4]
+    seq = int(parts[11])
     
-    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or payload_size not in payload_size_dict[pkt_type]:
+    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or seq != 0:
         return None
     else:
         timestamp = int(parts[0])
@@ -32,6 +34,7 @@ def parse_log_entry(line):
         port = int(queue_info[0])
         queue = int(queue_info[1])
         queue_len= float(parts[3])
+        flow_id = int(parts[-1])
         return {
             'timestamp': timestamp,
             'node': node,
@@ -40,7 +43,8 @@ def parse_log_entry(line):
             'payload_size': payload_size,
             'event_type': event_type,
             'data_pkt': data_pkt,
-            'queue_len': queue_len
+            'queue_len': queue_len/payload_size_in_byte,
+            'flow_id': flow_id,
         }
 
 def calculate_throughput_and_delay(log_file):
@@ -69,6 +73,17 @@ def calculate_throughput_and_delay(log_file):
     average_queuing_delay = np.mean(queuing_delay_list)  if len(queuing_delay_list) > 0 else 0
     return throughput, average_queuing_delay,queuing_delay_list
 
+def calculate_queue_lengths(log_file):
+    queue_lengths = []
+    with open(log_file, 'r') as file:
+        for line in file:
+            entry = parse_log_entry(line)
+            if entry:
+                assert entry['node'] == 3 and entry['port'] == 3 and entry['queue'] in [1, 3]
+                if entry['event_type'] == 'Enqu':
+                    queue_lengths.append((entry['flow_id'],entry['timestamp'], entry['queue_len']))
+
+    return queue_lengths
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument(
@@ -119,6 +134,55 @@ if __name__ == "__main__":
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
         exit(0)
+    # print file
+    if type == 0:
+        cmd = (
+            "cat %s" % (file)
+            + " | awk '{if ($7+$8<"
+            + "%d" % time_limit
+            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4"
+        )
+        # print cmd
+        output = subprocess.check_output(cmd, shell=True)
+    # elif type == 1:
+    #     cmd = (
+    #         "cat %s" % (file)
+    #         + " | awk '{if ($4==200 && $6+$7<"
+    #         + "%d" % time_limit
+    #         + ") {slow=$7/$8;print slow<1?1:slow, $5}}'"
+    #     )
+    #     # print cmd
+    #     output = subprocess.check_output(cmd, shell=True)
+    # else:
+    #     cmd = (
+    #         "cat %s" % (file)
+    #         + " | awk '{$6+$7<"
+    #         + "%d" % time_limit
+    #         + ") {slow=$7/$8;print slow<1?1:slow, $5}}'"
+    #     )
+    #     # print cmd
+    #     output = subprocess.check_output(cmd, shell=True)
+
+    # up to here, `output` should be a string of multiple lines, each line is: fct, size
+    
+    output=output.decode()
+    a = output[:-1].split("\n")
+    n = len(a)
+    res_np = np.array([x.split() for x in a])
+    print(res_np.shape)
+    # for i in range(n):
+    # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
+    fcts = res_np[:, 0].astype("int64")
+    i_fcts = res_np[:, 1].astype("int64")
+    fid=res_np[:, 6].astype("int64")
+    np.save(
+        "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
+    )  # Byte
+    np.save(
+        "%s/fct_i_%s%s.npy" % (output_dir, args.prefix, config_specs),
+        i_fcts,
+    )  # ns
+    np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
     
     cc_feat=[]
     tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
@@ -127,14 +191,11 @@ if __name__ == "__main__":
 
     if not os.path.exists(log_path):
         os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
-        
-    throughput, queuing_delay,queuing_delay_list = calculate_throughput_and_delay(log_path)
-    # print(f"{log_path}. Throughput: {throughput}Gbps, Queuing Delay: {queuing_delay}ns")
+    queue_lengths = calculate_queue_lengths(log_path)
 
-    with open("%s/cc_%s%s.txt" % (output_dir, args.prefix,  config_specs), "r") as file:
-        cc = file.read().strip()
-    with open("%s/cc_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-        file.write("{} {} {}\n".format(cc, throughput, queuing_delay))
+    with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+        for flowid, timestamp, queue_len in queue_lengths:
+            file.write(f"{flowid} {timestamp} {queue_len}\n")
                 
     os.system(
         "rm %s"
@@ -146,15 +207,15 @@ if __name__ == "__main__":
     #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
     # )
     
-    os.system(
-        "rm %s"
-        % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
+    # )
 
-    os.system(
-        "rm %s"
-        % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+    # )
     
     # os.system(
     #     "rm %s"

@@ -202,6 +202,8 @@ public:
 			f = new ByteField(offsetof(ns3::TraceFormat, qidx), op, v);
 		}else if (field == "qlen"){
 			f = new DwordField(offsetof(ns3::TraceFormat, qlen), op, v);
+		}else if (field == "flowId"){
+			f = new DwordField(offsetof(ns3::TraceFormat, flowId), op, v);
 		}else if (field == "sip"){
 			f = new DwordField(offsetof(ns3::TraceFormat, sip), op, v);
 		}else if (field == "dip"){

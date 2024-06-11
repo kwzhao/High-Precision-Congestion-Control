@@ -1,5 +1,5 @@
 4 1 3
 3
-0 3 10Gbps 10000ns 0
-1 3 10Gbps 10000ns 0
-2 3 10Gbps 10000ns 0
+0 3 10Gbps 1000ns 0
+1 3 10Gbps 1000ns 0
+2 3 10Gbps 1000ns 0

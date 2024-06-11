@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
 	for (int i = 0; i < cc.size(); i++){
 		string c = cc[i];
 		vector<pair<uint32_t, float> > tuples;
-		FILE* file = fopen(("../simulation/mix/"+prefix+"_"+c+".txt").c_str(), "r");
+		FILE* file = fopen(("../ns-3.39/mix/"+prefix+"_"+c+".txt").c_str(), "r");
 		uint16_t port;
 		uint32_t size;
 		uint64_t start_time, fct, standalone_fct;
