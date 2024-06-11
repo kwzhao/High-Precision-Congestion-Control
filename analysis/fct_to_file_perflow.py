@@ -20,7 +20,7 @@ def parse_log_entry(line):
     
     pkt_type = parts[10]
     data_pkt = pkt_type=='U' or pkt_type=='T'
-    payload_size = int(parts[-1].split('(')[0]) 
+    payload_size = int(parts[-1].split('(')[1].split(')')[0])
     event_type = parts[4]
     
     if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or payload_size not in payload_size_dict[pkt_type]:
@@ -31,7 +31,6 @@ def parse_log_entry(line):
         queue_info = parts[2].split(':')
         port = int(queue_info[0])
         queue = int(queue_info[1])
-        # payload_size = int(parts[-1].split('(')[1].split(')')[0])
         queue_len= float(parts[3])
         return {
             'timestamp': timestamp,

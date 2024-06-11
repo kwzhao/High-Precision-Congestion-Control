@@ -14,7 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_cc20")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_test")]
     output_dir: PathBuf,
 }
 
@@ -26,13 +26,13 @@ fn main() -> anyhow::Result<()> {
     println!("python_path: {:?}, output_dir: {:?}", python_path,output_dir);
 
     let base_rtt = 4000;
-    let enable_tr = 0;
+    let enable_tr = 1;
     let enable_debug = 0;
 
     // setup the configurations
     let params = Parameters {
-        shard: (0..500).collect(),
-        // shard: vec![0,1,2],
+        // shard: (0..500).collect(),
+        shard: vec![0],
         n_flows: vec![20000],
         // n_hosts: vec![3, 5, 7],
         n_hosts: vec![3],
@@ -57,8 +57,8 @@ fn main() -> anyhow::Result<()> {
     }
 
     let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_sim = format!("{}/ns-3.39/run_m3.py", root_path);
-    let file_ns3 = format!("{}/analysis/fct_to_file.py", root_path);
+    let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
+    let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
 
