@@ -19,7 +19,7 @@ if __name__=="__main__":
 
 	# Please list all the cc (together with parameters) that you want to compare.
 	# For example, here we list two CC: 1. HPCC-PINT with utgt=95,AI=50Mbps,pint_log_base=1.05,pint_prob=1; 2. HPCC with utgt=95,ai=50Mbps.
-	# For the exact naming, please check ../simulation/mix/fct_*.txt output by the simulation.
+	# For the exact naming, please check ../ns-3.39/mix/fct_*.txt output by the simulation.
 	CCs = [
 		'hpccPint95ai50log1.05p1.000',
 		'hp95ai50',
@@ -29,7 +29,7 @@ if __name__=="__main__":
 	res = [[i/100.] for i in range(0, 100, step)]
 	for cc in CCs:
 		#file = "%s_%s.txt"%(args.prefix, cc)
-		file = "../simulation/mix/%s_%s.txt"%(args.prefix, cc)
+		file = "../ns-3.39/mix/%s_%s.txt"%(args.prefix, cc)
 		if type == 0:
 			cmd = "cat %s"%(file)+" | awk '{if ($4==100 && $6+$7<"+"%d"%time_limit+") {slow=$7/$8;print slow<1?1:slow, $5}}' | sort -n -k 2"
 			# print cmd
