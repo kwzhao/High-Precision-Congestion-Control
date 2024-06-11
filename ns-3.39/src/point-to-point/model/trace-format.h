@@ -28,6 +28,7 @@ struct TraceFormat{
 	uint8_t ecn; // this is the ip ECN bits
 	uint8_t nodeType; // 0: host, 1: switch
 	bool isFiltered;
+	uint32_t flowId; // this is the flow id, not the 5-tuple
 	union{
 		struct {
 			uint16_t sport, dport;

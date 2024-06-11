@@ -416,7 +416,7 @@ int main(int argc, char *argv[])
     std::string bufferModel = "sonic";
     double gamma = 0.99;
 
-    std::string alphasFile = "../mix_m3/alphas"; // On lakewood
+    std::string alphasFile = "./mix_m3/alphas"; // On lakewood
 
     std::string line;
     std::fstream aFile;

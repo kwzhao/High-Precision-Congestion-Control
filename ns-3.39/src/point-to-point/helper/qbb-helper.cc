@@ -41,6 +41,7 @@
 #include "ns3/custom-header.h"
 #include "ns3/tcp-header.h"
 #include "ns3/trace-format.h"
+#include "ns3/flow-id-tag.h"
 
 NS_LOG_COMPONENT_DEFINE ("QbbHelper");
 
@@ -335,6 +336,14 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.size = p->GetSize();//hdr.m_payloadSize;
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
 	tr.isFiltered = false;
+
+  bool found;
+  uint32_t flowIda = 0;
+  FlowIdTag tag;
+  found = p->PeekPacketTag (tag);
+  if(found){flowIda=tag.GetFlowId();}
+  tr.flowId = flowIda;
+  
 	switch (hdr.l3Prot){
 		case 0x6:
       // Handle different TCP flags
