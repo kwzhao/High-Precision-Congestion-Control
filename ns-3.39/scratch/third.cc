@@ -802,7 +802,6 @@ int main(int argc, char *argv[])
     flowf >> flow_num;
     tracef >> trace_num;
 
-
     //n.Create(node_num);
     std::vector<uint32_t> node_type(node_num, 0);
     for (uint32_t i = 0; i < switch_num; i++)
@@ -952,7 +951,7 @@ int main(int argc, char *argv[])
             sw->m_mmu->SetPortCount(sw->GetNDevices() - 1); // set the actual port count here so that we don't always iterate over the default 256 ports.
             sw->m_mmu->SetBufferModel(bufferModel);
             sw->m_mmu->SetGamma(gamma);
-            std::cout << "ports " << sw->GetNDevices() << " node " << i << std::endl;
+            std::cout << "ports " << sw->GetNDevices() << " for node " << i << std::endl;
             for (uint32_t j = 1; j < sw->GetNDevices(); j++){
                 Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
                 uint64_t rate = dev->GetDataRate().GetBitRate();
@@ -1174,7 +1173,7 @@ int main(int argc, char *argv[])
 	// Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
 
     // double delay = 1.5 * maxRtt * 1e-9; // 10 micro seconds
-    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, delay);
+    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, 0.0);
 
 	//
 	// Now, do the actual simulation.
