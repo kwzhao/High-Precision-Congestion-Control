@@ -176,8 +176,8 @@ void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double d
                 << std::endl;
         }
     }
-    // if (Simulator::Now().GetSeconds() < simulator_stop_time)
-    //     Simulator::Schedule(Seconds(delay), printBuffer, fout, switches, delay);
+    if (Simulator::Now().GetSeconds() < simulator_stop_time)
+        Simulator::Schedule(Seconds(delay), printBuffer, fout, switches, delay);
 }
 
 
@@ -823,10 +823,7 @@ int main(int argc, char *argv[])
 
     NS_LOG_INFO("Create nodes.");
 
-    // Config::SetDefault ("ns3::Ipv4GlobalRouting::FlowEcmpRouting", BooleanValue(true));
     InternetStackHelper internet;
-    // Ipv4GlobalRoutingHelper globalRoutingHelper;
-    // internet.SetRoutingHelper (globalRoutingHelper);
     internet.Install(n);
 
     //
@@ -1169,11 +1166,11 @@ int main(int argc, char *argv[])
 	}
 
 	// schedule buffer monitor
-	// FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
-	// Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
+	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
 
     // double delay = 1.5 * maxRtt * 1e-9; // 10 micro seconds
-    Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, 0.0);
+    // Simulator::Schedule(NanoSeconds(qlen_mon_start), printBuffer, torStats, torNodes, 0.0);
 
 	//
 	// Now, do the actual simulation.
