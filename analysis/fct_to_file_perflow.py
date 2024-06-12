@@ -138,7 +138,7 @@ if __name__ == "__main__":
     if type == 0:
         cmd = (
             "cat %s" % (file)
-            + " | awk '{if ($7+$8<"
+            + " | awk '{if ($5==100 && $7+$8<"
             + "%d" % time_limit
             + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4"
         )
@@ -184,7 +184,6 @@ if __name__ == "__main__":
     )  # ns
     np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
     
-    cc_feat=[]
     tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
     # Read and parse the log file
     log_path = tr_path.replace('.tr', '.log')

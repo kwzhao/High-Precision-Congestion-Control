@@ -195,7 +195,8 @@ if __name__ == "__main__":
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
-            host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+            # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+            host_pair_idx=np.random.choice(host_pair_list_idx)
             if host_pair_idx==0:
                 n_flows_foreground+=1
             src,dst=host_pair_list[host_pair_idx]
