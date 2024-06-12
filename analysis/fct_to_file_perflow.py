@@ -83,7 +83,7 @@ def calculate_queue_lengths(log_file):
                 if entry['event_type'] == 'Enqu':
                     queue_lengths.append((entry['flow_id'],entry['timestamp'], entry['queue_len']))
 
-    return queue_lengths
+    return np.array(queue_lengths)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument(
@@ -192,19 +192,21 @@ if __name__ == "__main__":
         os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
     queue_lengths = calculate_queue_lengths(log_path)
 
-    with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-        for flowid, timestamp, queue_len in queue_lengths:
-            file.write(f"{flowid} {timestamp} {queue_len}\n")
-                
+    # with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+    #     for flowid, timestamp, queue_len in queue_lengths:
+    #         file.write(f"{flowid} {timestamp} {queue_len}\n")
+    print(queue_lengths.shape)
+    np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
+#            
     os.system(
         "rm %s"
         % tr_path)
     
-    # os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    # )
+    os.system("rm %s" % (file))
+    os.system(
+        "rm %s"
+        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    )
     
     # os.system(
     #     "rm %s"
