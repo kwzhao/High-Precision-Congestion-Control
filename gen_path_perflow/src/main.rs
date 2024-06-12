@@ -30,22 +30,23 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    // let params = Parameters {
-    //     // shard: (0..500).collect(),
-    //     shard: vec![0],
-    //     n_flows: vec![20000],
-    //     // n_hosts: vec![3, 5, 7],
-    //     n_hosts: vec![3],
-    //     shard_cc: (0..20).collect(),
-    // };
-
-    // config for debugging
     let params = Parameters {
-        shard: vec![0],
+        shard: (0..5000).collect(),
+        // shard: vec![0],
         n_flows: vec![20000],
+        // n_hosts: vec![3, 5, 7],
         n_hosts: vec![3],
+        // shard_cc: (0..20).collect(),
         shard_cc: vec![0],
     };
+
+    // config for debugging
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     n_flows: vec![20000],
+    //     n_hosts: vec![3],
+    //     shard_cc: vec![0],
+    // };
 
     // no need to change
     let root_path = format!("..");
