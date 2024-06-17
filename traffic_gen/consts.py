@@ -18,6 +18,7 @@ size_distribution_list=["exp","gaussian","lognorm","pareto"]
 size_sigma_range=[5000,50000]
 # size_sigma_range=[30000,30000]
 ia_distribution="lognorm"
+# ia_distribution="exp"
 ias_sigma_range=[1.0,2.0]
 # ias_sigma_range=[1.5,1.5]
 load_range=[0.20,0.80]
