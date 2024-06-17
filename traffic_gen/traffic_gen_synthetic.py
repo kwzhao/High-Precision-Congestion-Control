@@ -7,7 +7,7 @@ import numpy as np
 import os
 from scipy.stats import genpareto
 from scipy.optimize import fsolve
-from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT, size_distribution_list, size_sigma_range, ia_distribution, ias_sigma_range, load_range, load_bottleneck_range, min_size_in_bit, avg_size_base_in_bit
+from consts import BYTE_TO_BIT, UNIT_G, size_distribution_list, size_sigma_range, ia_distribution, ias_sigma_range, load_range, load_bottleneck_range, min_size_in_bit, avg_size_base_in_bit
 
 def fix_seed(seed):
     np.random.seed(seed)
@@ -82,8 +82,6 @@ if __name__ == "__main__":
         for link_id in range(nhost-1):
             bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
 
-        BDP = BDP_DICT[nhost]
-    
         host_pair_list_ori=[]
         host_pair_to_link_dict={}
         for i in range(nhost-1):
@@ -113,7 +111,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
         
-        n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
+        n_flows_tmp=n_flows*ntc+1
+        # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
         
         size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
         size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
