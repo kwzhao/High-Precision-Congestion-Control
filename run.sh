@@ -61,9 +61,9 @@ python run_cc.py --trace flows --base_rtt 14400 --topo topo-pl-3 --root /data2/l
 
 python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir /data2/lichenni/path_cc_test --scenario_dir shard0_nflows1000_nhosts3 --shard_cc 0 --enable_debug 0
 
-./waf --run 'scratch/third /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/config_topo-pl-3-10-10000_flows_s0.txt' > test.log 2> test.log
+./waf --run 'scratch/third /data2/lichenni/path_perflow_test/shard0_nflows20000_nhosts3_lr10Gbps/config_topo-pl-3_flows_s0.txt' > test.log 2> test.log
 
-./trace_reader /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/mix_topo-pl-3-10-10000_s0.tr > /data2/lichenni/path_tc_cc/shard1_nflows1_nhosts3/mix_topo-pl-3-10-10000_s0.log
+./trace_reader /data2/lichenni/path_perflow_test/shard0_nflows20000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.tr > /data2/lichenni/path_perflow_test/shard0_nflows20000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.log
 
 
 trace-format.h -> ../ns-3.39/src/point-to-point/model/trace-format.h
