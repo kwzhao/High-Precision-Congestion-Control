@@ -198,9 +198,9 @@ if __name__ == "__main__":
     print(queue_lengths.shape)
     np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
 #            
-    # os.system(
-    #     "rm %s"
-    #     % tr_path)
+    os.system(
+        "rm %s"
+        % tr_path)
     
     os.system("rm %s" % (file))
     # os.system(
