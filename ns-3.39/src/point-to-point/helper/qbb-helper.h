@@ -159,6 +159,8 @@ public:
 
   void EnableTracing(FILE *file, NodeContainer node_container);
 
+  static uint32_t qlen_prev;
+  
 private:
   /**
    * \brief Enable pcap output the indicated net device.

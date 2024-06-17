@@ -47,6 +47,7 @@ NS_LOG_COMPONENT_DEFINE ("QbbHelper");
 
 namespace ns3 {
 
+uint32_t QbbHelper::qlen_prev = 0;
 QbbHelper::QbbHelper ()
 {
   m_queueFactory.SetTypeId("ns3::DropTailQueue<Packet>");
@@ -335,7 +336,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.ecn = hdr.m_tos & 0x3;
 	tr.size = p->GetSize();//hdr.m_payloadSize;
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
-	tr.isFiltered = true;
+	tr.isFiltered = false;
 
   bool found;
   uint32_t flowIda = 0;
@@ -343,7 +344,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
   found = p->PeekPacketTag (tag);
   if(found){flowIda=tag.GetFlowId();}
   tr.flowId = flowIda;
-
+  
 	switch (hdr.l3Prot){
 		case 0x6:
       // Handle different TCP flags
@@ -390,8 +391,6 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.data.seq = hdr.udp.seq;
 			tr.data.ts = hdr.udp.ih.GetTs();
 			tr.data.pg = hdr.udp.pg;
-      if (tr.data.seq == 0)
-        tr.isFiltered = false;
       // std::cout<<"UDP Protocol: " << tr.ack.flags<<", "<<tr.size << ", "<< tr.data.payload  <<std::endl;
 			break;
 		case 0xFC:
@@ -402,6 +401,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.ack.pg = hdr.ack.pg;
 			tr.ack.seq = hdr.ack.seq;
 			tr.ack.ts = hdr.ack.ih.GetTs();
+      // tr.isFiltered = true;
       // std::cout<<"ACK Protocol: " << tr.ack.flags<<", "<<tr.ack.ts <<std::endl;
 			break;
 		case 0xFE:
@@ -425,8 +425,23 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, uint32_t qidx, PEvent event, bool hasL2){
 	TraceFormat tr;
 	GetTraceFromPacket(tr, dev, p, qidx, event, hasL2);
-  if (!tr.isFiltered)
-	  tr.Serialize(file);
+  // tr.Serialize(file);
+  if (!tr.isFiltered && tr.event == PEvent::Enqu && tr.qidx == 3){
+    if (tr.data.seq==0)
+      tr.Serialize(file);
+    if (QbbHelper::qlen_prev == 0 && tr.qlen != 0){
+      tr.data.seq=1;
+      tr.Serialize(file);
+      // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
+      QbbHelper::qlen_prev = tr.qlen;
+    }
+    else if (QbbHelper::qlen_prev != 0 && tr.qlen == 0){
+      tr.data.seq=2;
+      tr.Serialize(file);
+      // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
+      QbbHelper::qlen_prev = tr.qlen;
+    }
+  }
 }
 
 void QbbHelper::MacRxDetailCallback (FILE* file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p){
