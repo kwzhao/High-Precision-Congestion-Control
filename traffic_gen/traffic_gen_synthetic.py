@@ -111,8 +111,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
         
-        n_flows_tmp=n_flows*ntc+1
-        # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
+        # n_flows_tmp=n_flows*ntc+1
+        n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
         
         size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
         size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
