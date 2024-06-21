@@ -66,11 +66,14 @@ if __name__ == "__main__":
         print("bandwidth format incorrect")
         sys.exit(0)
     bandwidth_list_scale=[]
-    for link_id in range(nhost-1):
-        if link_id==0 or link_id==nhost-2:
-            bandwidth_list_scale.append(1)
-        else:
-            bandwidth_list_scale.append(switch_to_host)
+    if nhost==21:
+        bandwidth_list_scale=[1] * (nhost)
+    else:
+        for link_id in range(nhost-1):
+            if link_id==0 or link_id==nhost-2:
+                bandwidth_list_scale.append(1)
+            else:
+                bandwidth_list_scale.append(switch_to_host)
 
     output_dir = options.output
     if not os.path.exists("%s/flows.txt"%(output_dir)):
@@ -79,30 +82,40 @@ if __name__ == "__main__":
         
         # generate flows
         bandwidth_list=[]
-        for link_id in range(nhost-1):
-            bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
-
         host_pair_list_ori=[]
         host_pair_to_link_dict={}
-        for i in range(nhost-1):
-            for j in range(i+1,nhost):
-                src_dst_pair=(i,j)
-                if (j-i)!=nhost-1:
-                    host_pair_list_ori.append(src_dst_pair)
+        if nhost==21:
+            for link_id in range(nhost):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
+            for i in range(nhost-1):
+                src_dst_pair=(i,nhost-1)
+                host_pair_list_ori.append(src_dst_pair)
                 host_pair_to_link_dict[src_dst_pair]=[]
-                for link_id in range(i,j):
-                    host_pair_to_link_dict[src_dst_pair].append(link_id)
+                host_pair_to_link_dict[src_dst_pair].append(i)
+                host_pair_to_link_dict[src_dst_pair].append(nhost-1)
+        else:
+            for link_id in range(nhost-1):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
+            for i in range(nhost-1):
+                for j in range(i+1,nhost):
+                    src_dst_pair=(i,j)
+                    if (j-i)!=nhost-1:
+                        host_pair_list_ori.append(src_dst_pair)
+                    host_pair_to_link_dict[src_dst_pair]=[]
+                    for link_id in range(i,j):
+                        host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
         
         if nhost==2:
             ntc=1
-        else:
-            ntc=2
-            host_pair_idx_list=[(1,nhost-1) for i in range(1,nhost-1)]
+        elif nhost==21:
+            ntc=20
+            host_pair_idx_list=[(i,nhost-1) for i in range(1,nhost-1)]
             host_pair_list+=host_pair_idx_list
-            # ntc=random.randint(2, nhost*(nhost-1)//2)
-            # host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
-            # host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+        else:
+            ntc=random.randint(2, nhost*(nhost-1)//2)
+            host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
+            host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
         assert len(host_pair_list)==ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
     
@@ -111,8 +124,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
         
-        # n_flows_tmp=n_flows*ntc+1
-        n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
+        n_flows_tmp=n_flows*ntc+1
+        # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
         
         size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
         size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
@@ -122,8 +135,12 @@ if __name__ == "__main__":
         load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
 
         load_per_link={}
-        for i in range(nhost-1):
-            load_per_link[i]=0
+        if nhost==21:
+            for i in range(nhost):
+                load_per_link[i]=0
+        else:
+            for i in range(nhost-1):
+                load_per_link[i]=0
         for i in range(ntc):
             load_tmp=load_candidate
             src_dst_pair=host_pair_list[i]
