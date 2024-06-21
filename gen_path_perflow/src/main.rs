@@ -14,7 +14,8 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_1k")]
+    // #[clap(long, default_value = "/data2/lichenni/path_perflow_1k")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_empirical_1k")]
     output_dir: PathBuf,
 }
 
@@ -31,7 +32,7 @@ fn main() -> anyhow::Result<()> {
 
     // setup the configurations
     let params = Parameters {
-        shard: (0..20000).collect(),
+        shard: (0..2000).collect(),
         // shard: vec![0],
         n_flows: vec![1000],
         // n_hosts: vec![3, 5, 7],
@@ -57,8 +58,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);

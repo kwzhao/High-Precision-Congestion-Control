@@ -113,8 +113,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
 
-        n_flows_tmp=n_flows*ntc+1
-        # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
+        # n_flows_tmp=n_flows*ntc+1
+        n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
     
         customRand_dict={}
         for cdf_file_name in size_distribution_list:
