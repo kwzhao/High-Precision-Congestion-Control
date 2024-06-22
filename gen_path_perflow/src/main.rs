@@ -14,8 +14,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    // #[clap(long, default_value = "/data2/lichenni/path_perflow_1k")]
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_empirical_1k")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy")]
     output_dir: PathBuf,
 }
 
@@ -31,23 +30,23 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..2000).collect(),
-        // shard: vec![0],
-        n_flows: vec![1000],
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![3],
-        // shard_cc: (0..20).collect(),
-        shard_cc: vec![0],
-    };
-
-    // config for debugging
     // let params = Parameters {
-    //     shard: vec![1],
-    //     n_flows: vec![20000],
+    //     shard: (0..2000).collect(),
+    //     // shard: vec![0],
+    //     n_flows: vec![1000],
+    //     // n_hosts: vec![3, 5, 7],
     //     n_hosts: vec![3],
+    //     // shard_cc: (0..20).collect(),
     //     shard_cc: vec![0],
     // };
+
+    // config for debugging
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![2000],
+        n_hosts: vec![21],
+        shard_cc: vec![0],
+    };
 
     // no need to change
     let root_path = format!("..");
@@ -58,8 +57,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
@@ -153,34 +152,34 @@ fn main() -> anyhow::Result<()> {
     });
 
     // println!("{:?}", Parameters::field_names());
-    itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
-        .par_bridge()
-        .for_each(|combination| {
-            let shard = combination.0;
-            let n_flows = combination.1;
-            let n_hosts = combination.2;
+    // itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
+    //     .par_bridge()
+    //     .for_each(|combination| {
+    //         let shard = combination.0;
+    //         let n_flows = combination.1;
+    //         let n_hosts = combination.2;
 
-            // println!("{:?}", combination);
-            let scenario_dir = format!(
-                "shard{}_nflows{}_nhosts{}_lr10Gbps",
-                shard, n_flows, n_hosts,
-            );
+    //         // println!("{:?}", combination);
+    //         let scenario_dir = format!(
+    //             "shard{}_nflows{}_nhosts{}_lr10Gbps",
+    //             shard, n_flows, n_hosts,
+    //         );
 
-            // run reference sys (e.g., max-min fair sharing)
-            let command_args = format!(
-                "--shard {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --nhost {}",
-                shard, type_topo, n_hosts, output_dir, scenario_dir, n_hosts,
-            );
-            let log_path = format!("{}/nhosts{}_reference.log", log_dir, n_hosts,);
-            let py_command = format!("{} {} {}", python_path, file_reference, command_args,);
-            let cmd = format!(
-                "echo {} >> {}; {} >> {}; echo \"\">>{}",
-                py_command, log_path, py_command, log_path, log_path
-            );
-            // println!("{}", cmd);
-            let mut child = Command::new("sh").arg("-c").arg(cmd).spawn().unwrap();
-            let mut _result = child.wait().unwrap();
-        });
+    //         // run reference sys (e.g., max-min fair sharing)
+    //         let command_args = format!(
+    //             "--shard {} -b 10 -p {}-{} --output_dir {} --scenario_dir {} --nhost {}",
+    //             shard, type_topo, n_hosts, output_dir, scenario_dir, n_hosts,
+    //         );
+    //         let log_path = format!("{}/nhosts{}_reference.log", log_dir, n_hosts,);
+    //         let py_command = format!("{} {} {}", python_path, file_reference, command_args,);
+    //         let cmd = format!(
+    //             "echo {} >> {}; {} >> {}; echo \"\">>{}",
+    //             py_command, log_path, py_command, log_path, log_path
+    //         );
+    //         // println!("{}", cmd);
+    //         let mut child = Command::new("sh").arg("-c").arg(cmd).spawn().unwrap();
+    //         let mut _result = child.wait().unwrap();
+    //     });
 
     Ok(())
 }

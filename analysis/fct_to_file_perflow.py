@@ -13,7 +13,7 @@ def fix_seed(seed):
 from collections import deque
 
 payload_size_in_byte=1000.0
-
+target_node_id=21
 def parse_log_entry(line):
     parts = line.split()
     
@@ -25,7 +25,7 @@ def parse_log_entry(line):
     event_type = parts[4]
     seq = int(parts[11])
     
-    if not data_pkt or node != 3 or event_type not in ['Enqu', 'Dequ'] or seq != 0:
+    if not data_pkt or node != target_node_id or event_type not in ['Enqu', 'Dequ'] or seq != 0:
         return None
     else:
         timestamp = int(parts[0])
@@ -43,7 +43,7 @@ def parse_log_entry(line):
             'payload_size': payload_size,
             'event_type': event_type,
             'data_pkt': data_pkt,
-            'queue_len': queue_len/payload_size_in_byte,
+            'queue_len': queue_len,
             'flow_id': flow_id,
         }
 
@@ -57,7 +57,7 @@ def calculate_throughput_and_delay(log_file):
         for line in file:
             entry = parse_log_entry(line)
             if entry:
-                assert entry['node'] == 3 and entry['port'] == 3 and entry['queue'] in [1,3]
+                assert entry['node'] == target_node_id and entry['port'] == target_node_id and entry['queue'] in [1,3]
                 if start_time is None:
                     start_time = entry['timestamp']
                 end_time = entry['timestamp']
@@ -79,7 +79,7 @@ def calculate_queue_lengths(log_file):
         for line in file:
             entry = parse_log_entry(line)
             if entry:
-                assert entry['node'] == 3 and entry['port'] == 3 and entry['queue'] in [1, 3]
+                assert entry['node'] == target_node_id and entry['port'] == target_node_id and entry['queue'] in [1, 3]
                 if entry['event_type'] == 'Enqu':
                     queue_lengths.append((entry['flow_id'],entry['timestamp'], entry['queue_len']))
 
@@ -192,9 +192,9 @@ if __name__ == "__main__":
         os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
     queue_lengths = calculate_queue_lengths(log_path)
 
-    # with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-    #     for flowid, timestamp, queue_len in queue_lengths:
-    #         file.write(f"{flowid} {timestamp} {queue_len}\n")
+    with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+        for flowid, timestamp, queue_len in queue_lengths:
+            file.write(f"{flowid} {timestamp} {queue_len}\n")
     print(queue_lengths.shape)
     np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
 #            
@@ -202,11 +202,11 @@ if __name__ == "__main__":
         "rm %s"
         % tr_path)
     
-    os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    )
+    # os.system("rm %s" % (file))
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    # )
     
     # os.system(
     #     "rm %s"
