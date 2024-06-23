@@ -4,16 +4,29 @@ import numpy as np
 import os
 import numpy as np
 from os.path import abspath, dirname
+from enum import Enum
+from collections import deque
 
 cur_dir=dirname(abspath(__file__))
 os.chdir(cur_dir)
 
+class QueueEvent(Enum):
+    ARRIVAL_FIRST_PKT = 1
+    ARRIVAL_LAST_PKT = 2
+    QUEUE_START = 3
+    QUEUE_END = 4
+class OutputType(Enum):
+    CC_FINGERPRINT = 0
+    PER_FLOW_QUEUE = 1
+    BUSY_PERIOD = 2
+    
 def fix_seed(seed):
     np.random.seed(seed)
-from collections import deque
 
-payload_size_in_byte=1000.0
 target_node_id=21
+queue_threshold=0
+busy_period_threshold=10
+
 def parse_log_entry(line):
     parts = line.split()
     
@@ -31,8 +44,7 @@ def parse_log_entry(line):
         queue_info = parts[2].split(':')
         port = int(queue_info[0])
         queue = int(queue_info[1])
-        queue_len= float(parts[3])
-        seq = int(parts[11])
+        queue_len= int(parts[3])
         payload_size = int(parts[14].split('(')[1].split(')')[0])
         flow_id = int(parts[15])
         n_active_flows=int(parts[17])
@@ -87,6 +99,49 @@ def calculate_queue_lengths(log_file):
                     queue_lengths.append((entry['flow_id'],entry['timestamp'], entry['queue_len'], entry['queue_event'],entry['n_active_flows']))
 
     return np.array(queue_lengths)
+
+def calculate_busy_period(log_file):
+    flow_id_per_period=[]
+    flow_id_per_period_cur=None
+    n_flow_event=0
+    qlen_prev = 0
+    with open(log_file, 'r') as file:
+        for line in file:
+            entry = parse_log_entry(line)
+            if entry:
+                assert entry['node'] == target_node_id and entry['port'] == target_node_id and entry['queue'] in [1, 3]
+                if entry['event_type'] == 'Enqu':
+                    queue_event = entry["queue_event"]
+                    flow_id = entry["flow_id"]
+                    queue_len=entry["queue_len"]
+                    n_active_flows=entry["n_active_flows"]
+                   
+                    if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value) or queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value):
+                        n_flow_event+=1
+                        if queue_len>queue_threshold:
+                            if qlen_prev<=queue_threshold:
+                                # start a new busy period
+                                if flow_id_per_period_cur is None:
+                                    flow_id_per_period_cur=set()
+                        else:
+                            if qlen_prev>queue_threshold:
+                                # terminate a new busy period
+                                if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
+                                    assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
+                                    flow_id_per_period.append(flow_id_per_period_cur)
+                                    flow_id_per_period_cur=None
+                        qlen_prev=queue_len
+                        if flow_id_per_period_cur is not None:
+                            flow_id_per_period_cur.add(flow_id)
+                    else:
+                        assert "Invalid queue_event"
+    n_flows_per_period=[len(flow_id_per_period[i]) for i in range(len(flow_id_per_period))]
+    
+    flow_id_per_period_unique= [item for sublist in flow_id_per_period for item in sublist]
+    assert len(flow_id_per_period_unique)==len(set(flow_id_per_period_unique))
+    print(f"n_flow_event: {n_flow_event}, {len(n_flows_per_period)} busy periods, n_flows_per_period: {np.min(n_flows_per_period)}, {np.max(n_flows_per_period)}, {len(flow_id_per_period_unique)} unique flows")
+    return flow_id_per_period
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument(
@@ -126,6 +181,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     enable_debug=args.enable_debug
+    output_type=OutputType.BUSY_PERIOD
     
     fix_seed(args.shard)
     type = args.type
@@ -193,13 +249,21 @@ if __name__ == "__main__":
 
     if not os.path.exists(log_path):
         os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
-    queue_lengths = calculate_queue_lengths(log_path)
+    
+    if output_type==OutputType.PER_FLOW_QUEUE:
+        queue_lengths = calculate_queue_lengths(log_path)
 
-    with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-        for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
-            file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
-    print(queue_lengths.shape)
-    np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
+        with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+            for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
+                file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
+        print(queue_lengths.shape)
+        np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
+    elif output_type==OutputType.BUSY_PERIOD:
+        flow_id_per_period=calculate_busy_period(log_path)
+        np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period)
+        # with open("%s/busy_period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+        #     for period in flow_id_per_period:
+        #         file.write(" ".join(map(str, period)) + "\n")
 #            
     os.system(
         "rm %s"
