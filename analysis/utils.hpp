@@ -89,25 +89,25 @@ static inline void print_trace(ns3::TraceFormat &tr){
 	switch (tr.l3Prot){
 		case 0x6:
 		case 0x11:
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %hu %hu %c %u %lu %u %hu(%hu) %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.data.sport, tr.data.dport, l3ProtToChar(tr.l3Prot), tr.data.seq, tr.data.ts, tr.data.pg, tr.size, tr.data.payload, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %hu %hu %c %u %lu %u %hu(%hu) %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.data.sport, tr.data.dport, l3ProtToChar(tr.l3Prot), tr.data.seq, tr.data.ts, tr.data.pg, tr.size, tr.data.payload, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		case 0xFC: // ACK
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %u %u %c 0x%02X %u %u %lu %hu %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.ack.sport, tr.ack.dport, l3ProtToChar(tr.l3Prot), tr.ack.flags, tr.ack.pg, tr.ack.seq, tr.ack.ts, tr.size, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %u %u %c 0x%02X %u %u %lu %hu %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.ack.sport, tr.ack.dport, l3ProtToChar(tr.l3Prot), tr.ack.flags, tr.ack.pg, tr.ack.seq, tr.ack.ts, tr.size, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		case 0xFD: // NACK
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %u %u %c 0x%02X %u %u %lu %hu %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.ack.sport, tr.ack.dport, l3ProtToChar(tr.l3Prot), tr.ack.flags, tr.ack.pg, tr.ack.seq, tr.ack.ts, tr.size, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %u %u %c 0x%02X %u %u %lu %hu %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.ack.sport, tr.ack.dport, l3ProtToChar(tr.l3Prot), tr.ack.flags, tr.ack.pg, tr.ack.seq, tr.ack.ts, tr.size, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		case 0xFE: // PFC
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %c %u %u %u %hu %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, l3ProtToChar(tr.l3Prot), tr.pfc.time, tr.pfc.qlen, tr.pfc.qIndex, tr.size, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %c %u %u %u %hu %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, l3ProtToChar(tr.l3Prot), tr.pfc.time, tr.pfc.qlen, tr.pfc.qIndex, tr.size, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		case 0xFF: // CNP
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %c %u %u %u %u %u %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, l3ProtToChar(tr.l3Prot), tr.cnp.fid, tr.cnp.qIndex, tr.cnp.ecnBits, tr.cnp.seq, tr.size, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %c %u %u %u %u %u %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, l3ProtToChar(tr.l3Prot), tr.cnp.fid, tr.cnp.qIndex, tr.cnp.ecnBits, tr.cnp.seq, tr.size, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		case 0x0: // QpAv
-			printf("%lu n:%u %u:%u %s %08x %08x %u %u %u", tr.time, tr.node, tr.intf, tr.qidx, EventToStr((ns3::PEvent)tr.event), tr.sip, tr.dip, tr.qp.sport, tr.qp.dport, tr.flowId);
+			printf("%lu n:%u %u:%u %s %08x %08x %u %u %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, EventToStr((ns3::PEvent)tr.event), tr.sip, tr.dip, tr.qp.sport, tr.qp.dport, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 		default:
-			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %x %u %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.l3Prot, tr.size, tr.flowId);
+			printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %x %u %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.l3Prot, tr.size, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 			break;
 	}
 	printf("\n");

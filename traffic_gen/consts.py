@@ -21,9 +21,9 @@ ia_distribution="lognorm"
 # ia_distribution="exp"
 ias_sigma_range=[1.0,2.0]
 # ias_sigma_range=[1.5,1.5]
-load_range=[0.20,0.80]
+load_range=[0.20,0.95]
 # load_range=[0.50,0.50]
-load_bottleneck_range=[0.20,0.80]
+load_bottleneck_range=[0.20,0.95]
 # load_bottleneck_range=[0.50,0.50]
 color_list = [
     "cornflowerblue",

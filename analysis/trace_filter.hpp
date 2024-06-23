@@ -204,6 +204,8 @@ public:
 			f = new DwordField(offsetof(ns3::TraceFormat, qlen), op, v);
 		}else if (field == "flowId"){
 			f = new DwordField(offsetof(ns3::TraceFormat, flowId), op, v);
+		}else if (field == "nActiveFlows"){
+			f = new DwordField(offsetof(ns3::TraceFormat, nActiveFlows), op, v);
 		}else if (field == "sip"){
 			f = new DwordField(offsetof(ns3::TraceFormat, sip), op, v);
 		}else if (field == "dip"){
@@ -216,6 +218,8 @@ public:
 			f = new ByteField(offsetof(ns3::TraceFormat, event), op, v);
 		}else if (field == "ecn"){
 			f = new ByteField(offsetof(ns3::TraceFormat, ecn), op, v);
+		}else if (field == "queueEvent"){
+			f = new ByteField(offsetof(ns3::TraceFormat, queueEvent), op, v);
 		}else if (field == "data.sport"){
 			f = new WordField(offsetof(ns3::TraceFormat, data.sport), op, v);
 		}else if (field == "data.dport"){
