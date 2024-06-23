@@ -30,23 +30,23 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    // let params = Parameters {
-    //     shard: (0..2000).collect(),
-    //     // shard: vec![0],
-    //     n_flows: vec![1000],
-    //     // n_hosts: vec![3, 5, 7],
-    //     n_hosts: vec![3],
-    //     // shard_cc: (0..20).collect(),
-    //     shard_cc: vec![0],
-    // };
-
-    // config for debugging
     let params = Parameters {
-        shard: vec![0],
+        shard: (0..5000).collect(),
+        // shard: vec![0],
         n_flows: vec![2000],
+        // n_hosts: vec![3, 5, 7],
         n_hosts: vec![21],
+        // shard_cc: (0..20).collect(),
         shard_cc: vec![0],
     };
+
+    // config for debugging
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     n_flows: vec![2000],
+    //     n_hosts: vec![21],
+    //     shard_cc: vec![0],
+    // };
 
     // no need to change
     let root_path = format!("..");
@@ -61,7 +61,7 @@ fn main() -> anyhow::Result<()> {
     // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
-    let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
+    // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
 
     // println!("{:?}", Parameters::field_names());

@@ -25,7 +25,7 @@ def fix_seed(seed):
 
 target_node_id=21
 queue_threshold=0
-busy_period_threshold=10
+busy_period_threshold=0
 
 def parse_log_entry(line):
     parts = line.split()
@@ -269,11 +269,12 @@ if __name__ == "__main__":
         "rm %s"
         % tr_path)
     
-    # os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    # )
+    os.system("rm %s" % (file))
+    os.system(
+        "rm %s"
+        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    )
+    os.system("rm %s/flows.txt" % (output_dir))
     
     # os.system(
     #     "rm %s"
