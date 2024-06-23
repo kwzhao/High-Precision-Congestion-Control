@@ -955,7 +955,7 @@ int main(int argc, char *argv[])
                 // set port bandwidth in the mmu, used by ABM.
                 sw->m_mmu->bandwidth[j] = rate;
                 for (uint32_t qu = 0; qu < 8; qu++) {
-                    if (qu == 3 || qu == 0) { // lossless
+                    if (qu == 3 || qu == 0) { // lossless, it only requries ingree admission control
                         sw->m_mmu->SetAlphaIngress(alpha_values[qu], j, qu);
                         sw->m_mmu->SetAlphaEgress(10000, j, qu);
                         // set pfc

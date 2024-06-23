@@ -48,6 +48,7 @@ NS_LOG_COMPONENT_DEFINE ("QbbHelper");
 namespace ns3 {
 
 uint32_t QbbHelper::qlen_prev = 0;
+uint32_t QbbHelper::n_active_flows = 0;
 QbbHelper::QbbHelper ()
 {
   m_queueFactory.SetTypeId("ns3::DropTailQueue<Packet>");
@@ -337,7 +338,8 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 	tr.size = p->GetSize();//hdr.m_payloadSize;
 	tr.qlen = dev->GetQueue()->GetNBytes(qidx);
 	tr.isFiltered = false;
-
+  tr.queueEvent=0;
+  tr.nActiveFlows=0;
   bool found;
   uint32_t flowIda = 0;
   FlowIdTagPath tag;
@@ -401,7 +403,7 @@ void QbbHelper::GetTraceFromPacket(TraceFormat &tr, Ptr<QbbNetDevice> dev, Ptr<c
 			tr.ack.pg = hdr.ack.pg;
 			tr.ack.seq = hdr.ack.seq;
 			tr.ack.ts = hdr.ack.ih.GetTs();
-      // tr.isFiltered = true;
+      tr.isFiltered = true;
       // std::cout<<"ACK Protocol: " << tr.ack.flags<<", "<<tr.ack.ts <<std::endl;
 			break;
 		case 0xFE:
@@ -427,16 +429,29 @@ void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const
 	GetTraceFromPacket(tr, dev, p, qidx, event, hasL2);
   // tr.Serialize(file);
   if (!tr.isFiltered && tr.event == PEvent::Enqu && tr.qidx == 3){
-    if (tr.data.seq==0)
+    if (tr.data.seq==0){
+      tr.queueEvent=1;
+      QbbHelper::n_active_flows+=1;
+      tr.nActiveFlows=QbbHelper::n_active_flows;
       tr.Serialize(file);
+    }
+    
+    if (tr.data.payload!=1000){
+      tr.queueEvent=2;
+      QbbHelper::n_active_flows-=1;
+      tr.nActiveFlows=QbbHelper::n_active_flows;
+      tr.Serialize(file);
+    }
     if (QbbHelper::qlen_prev == 0 && tr.qlen != 0){
-      tr.data.seq=1;
+      tr.queueEvent=3;
+      tr.nActiveFlows=QbbHelper::n_active_flows;
       tr.Serialize(file);
       // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
       QbbHelper::qlen_prev = tr.qlen;
     }
     else if (QbbHelper::qlen_prev != 0 && tr.qlen == 0){
-      tr.data.seq=2;
+      tr.queueEvent=4;
+      tr.nActiveFlows=QbbHelper::n_active_flows;
       tr.Serialize(file);
       // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
       QbbHelper::qlen_prev = tr.qlen;

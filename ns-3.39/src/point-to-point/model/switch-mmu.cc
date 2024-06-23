@@ -711,6 +711,7 @@ bool SwitchMmu::CheckIngressAdmission(uint32_t port, uint32_t qIndex, uint32_t p
 			break;
 		case LOSSLESS:
 			// if reserved is used up
+			// std::cout<< "ingress_bytes[port][qIndex] " << ingress_bytes[port][qIndex] << " reserveIngress[port][qIndex] " << reserveIngress[port][qIndex] << " GetHdrmBytes(port, qIndex) " << GetHdrmBytes(port, qIndex) << " xoff[port][qIndex] " << xoff[port][qIndex] << " xoffTotalUsed " << xoffTotalUsed << " xoffTotal " << xoffTotal << " totalUsed " << totalUsed << " ingressPool " << ingressPool << " bufferPool " << bufferPool << std::endl;
 			if ( ( (psize + ingress_bytes[port][qIndex] > reserveIngress[port][qIndex])
 			        // AND if per queue headroom is used up.
 			        && (psize + GetHdrmBytes(port, qIndex) > xoff[port][qIndex]) && GetHdrmBytes(port, qIndex) > 0 )

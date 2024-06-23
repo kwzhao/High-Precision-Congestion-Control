@@ -42,6 +42,7 @@ def PosNormal(mean, sigma):
 
 if __name__ == "__main__":
     port = 80
+    payload_size = 1000
     parser = ArgumentParser()
     parser.add_argument("--shard", dest="shard", type=int, default=0, help="random seed")
     parser.add_argument("--switchtohost", dest="switch_to_host", type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
@@ -221,6 +222,8 @@ if __name__ == "__main__":
                 n_flows_foreground+=1
             src,dst=host_pair_list[host_pair_idx]
             size=f_sizes_in_byte[flow_id_total]
+            if size%payload_size==0:
+                size-=1
             data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
             
             flow_src_dst_save.append([src,dst])

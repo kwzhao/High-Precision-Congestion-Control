@@ -160,6 +160,7 @@ public:
   void EnableTracing(FILE *file, NodeContainer node_container);
 
   static uint32_t qlen_prev;
+  static uint32_t n_active_flows;
   
 private:
   /**
