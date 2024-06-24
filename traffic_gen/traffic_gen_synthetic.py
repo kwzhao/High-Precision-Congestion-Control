@@ -53,7 +53,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     fix_seed(options.shard)
-    
+
     base_t = 1*UNIT_G
 
     if not options.nhost:
@@ -200,7 +200,6 @@ if __name__ == "__main__":
             avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
             f_arr_in_ns = (np.random.exponential(scale=avg_inter_arrival_in_s, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
 
-
         flow_src_dst_save=[]
         f_arr_in_ns_save=[]
         f_sizes_in_byte_save=[]
@@ -212,7 +211,7 @@ if __name__ == "__main__":
         p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         p_list=np.random.rand(ntc)*p_candidate/ntc
         p_list[0]=1.0
-    
+
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):

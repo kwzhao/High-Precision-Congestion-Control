@@ -10,7 +10,7 @@ from custom_rand import CustomRand
 dir_path_cur = os.path.dirname(os.path.realpath(__file__))+'/'
 
 size_distribution_list=["cachefollower-all","hadoop-all","webserver-all"]
-
+min_size_in_byte=50
 def fix_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
@@ -44,6 +44,7 @@ def PosNormal(mean, sigma):
 
 if __name__ == "__main__":
     port = 80
+    payload_size = 1000
     parser = ArgumentParser()
     parser.add_argument("--shard", dest = "shard",type=int, default=0, help="random seed")
     parser.add_argument("--switchtohost", dest = "switch_to_host",type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
@@ -54,27 +55,29 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     fix_seed(options.shard)
- 
+
     base_t = 1*UNIT_G
- 
+
     if not options.nhost:
         print("please use -n to enter number of hosts")
         sys.exit(0)
     n_flows = int(options.nflows)
     nhost = int(options.nhost)
     switch_to_host = int(options.switch_to_host)
-    
     bandwidth_base = translate_bandwidth(options.bandwidth)
     if bandwidth_base == None:
         print("bandwidth format incorrect")
         sys.exit(0)
     bandwidth_list_scale=[]
-    for link_id in range(nhost-1):
-        if link_id==0 or link_id==nhost-2:
-            bandwidth_list_scale.append(1)
-        else:
-            bandwidth_list_scale.append(switch_to_host)
-    
+    if nhost==21:
+        bandwidth_list_scale=[1] * (nhost)
+    else:
+        for link_id in range(nhost-1):
+            if link_id==0 or link_id==nhost-2:
+                bandwidth_list_scale.append(1)
+            else:
+                bandwidth_list_scale.append(switch_to_host)
+
     output_dir = options.output
     if not os.path.exists("%s/flows.txt"%(output_dir)):
         if not os.path.exists(output_dir):
@@ -82,29 +85,40 @@ if __name__ == "__main__":
         
         # generate flows
         bandwidth_list=[]
-        for link_id in range(nhost-1):
-            bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
-        
         host_pair_list_ori=[]
         host_pair_to_link_dict={}
-        for i in range(nhost-1):
-            for j in range(i+1,nhost):
-                src_dst_pair=(i,j)
-                if (j-i)!=nhost-1:
-                    host_pair_list_ori.append(src_dst_pair)
+        if nhost==21:
+            for link_id in range(nhost):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
+            for i in range(nhost-1):
+                src_dst_pair=(i,nhost-1)
+                host_pair_list_ori.append(src_dst_pair)
                 host_pair_to_link_dict[src_dst_pair]=[]
-                for link_id in range(i,j):
-                    host_pair_to_link_dict[src_dst_pair].append(link_id)
+                host_pair_to_link_dict[src_dst_pair].append(i)
+                host_pair_to_link_dict[src_dst_pair].append(nhost-1)
+        else:
+            for link_id in range(nhost-1):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
+            for i in range(nhost-1):
+                for j in range(i+1,nhost):
+                    src_dst_pair=(i,j)
+                    if (j-i)!=nhost-1:
+                        host_pair_list_ori.append(src_dst_pair)
+                    host_pair_to_link_dict[src_dst_pair]=[]
+                    for link_id in range(i,j):
+                        host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
+        
         if nhost==2:
             ntc=1
-        else:
-            ntc=2
-            host_pair_idx_list=[(1,nhost-1) for i in range(1,nhost-1)]
+        elif nhost==21:
+            ntc=20
+            host_pair_idx_list=[(i,nhost-1) for i in range(1,nhost-1)]
             host_pair_list+=host_pair_idx_list
-            # ntc=random.randint(2, nhost*(nhost-1)//2)
-            # host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
-            # host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+        else:
+            ntc=random.randint(2, nhost*(nhost-1)//2)
+            host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
+            host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
         assert len(host_pair_list)==ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
     
@@ -112,9 +126,9 @@ if __name__ == "__main__":
         for i in range(ntc):
             host_list.append((base_t, i))
         heapq.heapify(host_list)
-
-        # n_flows_tmp=n_flows*ntc+1
-        n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
+        
+        n_flows_tmp=n_flows*ntc+1
+        # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
     
         customRand_dict={}
         for cdf_file_name in size_distribution_list:
@@ -136,10 +150,14 @@ if __name__ == "__main__":
     
         load_candidate=np.random.rand()*(load_range[1]-load_range[0])+load_range[0]
         load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
-  
+
         load_per_link={}
-        for i in range(nhost-1):
-            load_per_link[i]=0
+        if nhost==21:
+            for i in range(nhost):
+                load_per_link[i]=0
+        else:
+            for i in range(nhost-1):
+                load_per_link[i]=0
         for i in range(ntc):
             load_tmp=load_candidate
             src_dst_pair=host_pair_list[i]
@@ -165,7 +183,7 @@ if __name__ == "__main__":
         elif ia_distribution == "exp":
             avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
             f_arr_in_ns = (np.random.exponential(scale=avg_inter_arrival_in_s, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
-    
+
         flow_src_dst_save=[]
         f_arr_in_ns_save=[]
         f_sizes_in_byte_save=[]
@@ -173,12 +191,11 @@ if __name__ == "__main__":
         flow_id_total=0
         t=base_t
         host_pair_list_idx=np.arange(len(host_pair_list))
-  
         p_candidate_list=[ntc, 10, 20, 50, 100]
         p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         p_list=np.random.rand(ntc)*p_candidate/ntc
         p_list[0]=1.0
-  
+
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
@@ -188,6 +205,10 @@ if __name__ == "__main__":
                 n_flows_foreground+=1
             src,dst=host_pair_list[host_pair_idx]
             size=f_sizes_in_byte[flow_id_total]
+            if size<min_size_in_byte:
+                size=min_size_in_byte
+            if size%payload_size==0:
+                size-=1
             data+="%d %d %d 3 100 %d %.9f\n"%(flow_id_total,src, dst, size, t * 1e-9)
             
             flow_src_dst_save.append([src,dst])
