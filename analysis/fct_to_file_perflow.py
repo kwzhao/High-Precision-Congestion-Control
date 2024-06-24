@@ -136,10 +136,12 @@ def calculate_busy_period(log_file):
                     else:
                         assert "Invalid queue_event"
     n_flows_per_period=[len(flow_id_per_period[i]) for i in range(len(flow_id_per_period))]
-    
     flow_id_per_period_unique= [item for sublist in flow_id_per_period for item in sublist]
     assert len(flow_id_per_period_unique)==len(set(flow_id_per_period_unique))
-    print(f"n_flow_event: {n_flow_event}, {len(n_flows_per_period)} busy periods, n_flows_per_period: {np.min(n_flows_per_period)}, {np.max(n_flows_per_period)}, {len(flow_id_per_period_unique)} unique flows")
+    if len(flow_id_per_period)>0:
+        print(f"n_flow_event: {n_flow_event}, {len(n_flows_per_period)} busy periods, n_flows_per_period: {np.min(n_flows_per_period)}, {np.max(n_flows_per_period)}, {len(flow_id_per_period_unique)} unique flows")
+    else:
+        print(f"n_flow_event: {n_flow_event}, no busy period")
     return flow_id_per_period
 
 if __name__ == "__main__":
