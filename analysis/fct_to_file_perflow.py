@@ -263,7 +263,7 @@ if __name__ == "__main__":
     elif output_type==OutputType.BUSY_PERIOD:
         flow_id_per_period=calculate_busy_period(log_path)
         np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period)
-        # with open("%s/busy_period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+        # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
         #     for period in flow_id_per_period:
         #         file.write(" ".join(map(str, period)) + "\n")
 #            
@@ -272,10 +272,10 @@ if __name__ == "__main__":
         % tr_path)
     
     os.system("rm %s" % (file))
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    # )
+    os.system(
+        "rm %s"
+        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    )
     os.system("rm %s/flows.txt" % (output_dir))
     
     # os.system(
