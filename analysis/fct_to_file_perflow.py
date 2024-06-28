@@ -118,20 +118,31 @@ def calculate_busy_period(log_file):
                    
                     if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value) or queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value):
                         n_flow_event+=1
-                        if queue_len>queue_threshold:
-                            if qlen_prev<=queue_threshold:
-                                # start a new busy period
-                                if flow_id_per_period_cur is None:
-                                    flow_id_per_period_cur=set()
-                        else:
-                            if qlen_prev>queue_threshold:
-                                # terminate a new busy period
-                                if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
-                                    assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
-                                    flow_id_per_period.append(flow_id_per_period_cur)
-                                    flow_id_per_period_cur=None
-                        qlen_prev=queue_len
-                        if flow_id_per_period_cur is not None:
+                    #     if queue_len>queue_threshold:
+                    #         if qlen_prev<=queue_threshold:
+                    #             # start a new busy period
+                    #             if flow_id_per_period_cur is None:
+                    #                 flow_id_per_period_cur=set()
+                    #     else:
+                    #         if qlen_prev>queue_threshold:
+                    #             # terminate a new busy period
+                    #             if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
+                    #                 assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
+                    #                 flow_id_per_period.append(flow_id_per_period_cur)
+                    #                 flow_id_per_period_cur=None
+                    #     qlen_prev=queue_len
+                    #     if flow_id_per_period_cur is not None:
+                    #         flow_id_per_period_cur.add(flow_id)
+                        if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
+                            assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
+                            flow_id_per_period.append(flow_id_per_period_cur)
+                            flow_id_per_period_cur=None
+                        
+                        elif flow_id_per_period_cur is None:
+                            if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value):
+                                flow_id_per_period_cur=set()
+                                flow_id_per_period_cur.add(flow_id)
+                        elif flow_id_per_period_cur is not None:
                             flow_id_per_period_cur.add(flow_id)
                     else:
                         assert "Invalid queue_event"
