@@ -110,50 +110,64 @@ def calculate_busy_period(log_file):
             entry = parse_log_entry(line)
             if entry:
                 assert entry['node'] == target_node_id and entry['port'] == target_node_id and entry['queue'] in [1, 3]
-                if entry['event_type'] == 'Enqu':
-                    queue_event = entry["queue_event"]
-                    flow_id = entry["flow_id"]
-                    queue_len=entry["queue_len"]
-                    n_active_flows=entry["n_active_flows"]
-                   
-                    if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value) or queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value):
-                        n_flow_event+=1
-                    #     if queue_len>queue_threshold:
-                    #         if qlen_prev<=queue_threshold:
-                    #             # start a new busy period
-                    #             if flow_id_per_period_cur is None:
-                    #                 flow_id_per_period_cur=set()
-                    #     else:
-                    #         if qlen_prev>queue_threshold:
-                    #             # terminate a new busy period
-                    #             if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
-                    #                 assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
-                    #                 flow_id_per_period.append(flow_id_per_period_cur)
-                    #                 flow_id_per_period_cur=None
-                    #     qlen_prev=queue_len
-                    #     if flow_id_per_period_cur is not None:
-                    #         flow_id_per_period_cur.add(flow_id)
-                        if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
-                            assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
-                            flow_id_per_period.append(flow_id_per_period_cur)
-                            flow_id_per_period_cur=None
-                        
-                        elif flow_id_per_period_cur is None:
-                            if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value):
-                                flow_id_per_period_cur=set()
-                                flow_id_per_period_cur.add(flow_id)
-                        elif flow_id_per_period_cur is not None:
+                queue_event = entry["queue_event"]
+                flow_id = entry["flow_id"]
+                queue_len=entry["queue_len"]
+                n_active_flows=entry["n_active_flows"]
+                
+                if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value) or queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value):
+                    n_flow_event+=1
+                #     if queue_len>queue_threshold:
+                #         if qlen_prev<=queue_threshold:
+                #             # start a new busy period
+                #             if flow_id_per_period_cur is None:
+                #                 flow_id_per_period_cur=set()
+                #     else:
+                #         if qlen_prev>queue_threshold:
+                #             # terminate a new busy period
+                #             if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
+                #                 assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
+                #                 flow_id_per_period.append(flow_id_per_period_cur)
+                #                 flow_id_per_period_cur=None
+                #     qlen_prev=queue_len
+                #     if flow_id_per_period_cur is not None:
+                #         flow_id_per_period_cur.add(flow_id)
+                    if n_active_flows==0 and flow_id_per_period_cur is not None and len(flow_id_per_period_cur)>busy_period_threshold:
+                        assert queue_event == int(QueueEvent.ARRIVAL_LAST_PKT.value)
+                        flow_id_per_period.append(flow_id_per_period_cur)
+                        flow_id_per_period_cur=None
+                    
+                    elif flow_id_per_period_cur is None:
+                        if queue_event == int(QueueEvent.ARRIVAL_FIRST_PKT.value):
+                            flow_id_per_period_cur=set()
                             flow_id_per_period_cur.add(flow_id)
-                    else:
-                        assert "Invalid queue_event"
-    n_flows_per_period=[len(flow_id_per_period[i]) for i in range(len(flow_id_per_period))]
-    flow_id_per_period_unique= [item for sublist in flow_id_per_period for item in sublist]
-    assert len(flow_id_per_period_unique)==len(set(flow_id_per_period_unique))
+                    elif flow_id_per_period_cur is not None:
+                        flow_id_per_period_cur.add(flow_id)
+                else:
+                    assert "Invalid queue_event"
+    
     if len(flow_id_per_period)>0:
+        n_flows_per_period=[len(flow_id_per_period[i]) for i in range(len(flow_id_per_period))]
+        
+        unique_lengths, counts = np.unique(n_flows_per_period, return_counts=True)
+                                                        
+        # Calculate the weight for each period
+        busy_periods=[]
+        for length, count in zip(unique_lengths, counts):
+            period_indices = np.where(n_flows_per_period == length)[0]
+            if count > 500:
+                period_indices=np.random.choice(period_indices,500,replace=False)
+            busy_periods.extend([flow_id_per_period[i] for i in period_indices])
+        
+        n_flows_per_period=[len(busy_periods[i]) for i in range(len(busy_periods))]
+        
+        flow_id_per_period_unique= [item for sublist in busy_periods for item in sublist]
+        assert len(flow_id_per_period_unique)==len(set(flow_id_per_period_unique))
+    
         print(f"n_flow_event: {n_flow_event}, {len(n_flows_per_period)} busy periods, n_flows_per_period: {np.min(n_flows_per_period)}, {np.max(n_flows_per_period)}, {len(flow_id_per_period_unique)} unique flows")
     else:
         print(f"n_flow_event: {n_flow_event}, no busy period")
-    return flow_id_per_period
+    return busy_periods
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
@@ -283,10 +297,10 @@ if __name__ == "__main__":
         % tr_path)
     
     os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    )
+    # os.system(
+    #     "rm %s"
+    #     % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+    # )
     os.system("rm %s/flows.txt" % (output_dir))
     
     # os.system(
