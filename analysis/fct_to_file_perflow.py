@@ -189,6 +189,7 @@ if __name__ == "__main__":
         default="AliStorage2019_exp_util0.5_lr10Gbps_nflows10000_nhosts4",
         help="the name of the flow file",
     )
+    parser.add_argument("--max_inflgiht_flows", dest="max_inflgiht_flows", type=int, default=0, help="max inflgiht flows for close-loop traffic")
     args = parser.parse_args()
     enable_debug=args.enable_debug
     output_type=OutputType.BUSY_PERIOD
@@ -198,7 +199,8 @@ if __name__ == "__main__":
 
     time_limit = int(30000 * 1e9)
     shard_cc=args.shard_cc
-    config_specs = "_s%d"%(shard_cc)
+    max_inflgiht_flows=args.max_inflgiht_flows
+    config_specs = "_s%d_i%d"%(shard_cc, max_inflgiht_flows)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
