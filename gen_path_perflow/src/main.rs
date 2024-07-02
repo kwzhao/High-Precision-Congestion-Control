@@ -7,14 +7,15 @@ struct Parameters {
     shard: Vec<u32>,
     n_flows: Vec<u32>,
     n_hosts: Vec<u32>,
-    shard_cc: Vec<u32>
+    shard_cc: Vec<u32>,
+    max_inflight_flows: Vec<u32>,
 }
 
 #[derive(Debug, Parser)]
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy_empirical")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy_test")]
     output_dir: PathBuf,
 }
 
@@ -30,22 +31,24 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..500).collect(),
-        n_flows: vec![2000],
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![21],
-        // shard_cc: (0..20).collect(),
-        shard_cc: vec![0],
-    };
+    // let params = Parameters {
+    //     shard: (0..500).collect(),
+    //     n_flows: vec![2000],
+    //     // n_hosts: vec![3, 5, 7],
+    //     n_hosts: vec![21],
+    //     // shard_cc: (0..20).collect(),
+    //     shard_cc: vec![0],
+    //     max_inflight_flows: vec![100],
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![0],
-    //     n_flows: vec![2000],
-    //     n_hosts: vec![21],
-    //     shard_cc: vec![0],
-    // };
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![2000],
+        n_hosts: vec![21],
+        shard_cc: vec![0],
+        max_inflight_flows: vec![0],
+    };
 
     // no need to change
     let root_path = format!("..");
@@ -56,8 +59,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
@@ -99,7 +102,8 @@ fn main() -> anyhow::Result<()> {
         &params.shard,
         &params.n_flows,
         &params.n_hosts,
-        &params.shard_cc
+        &params.shard_cc,
+        &params.max_inflight_flows
     )
     .par_bridge()
     .for_each(|combination| {
@@ -108,6 +112,7 @@ fn main() -> anyhow::Result<()> {
         let n_hosts = combination.2;
         let shard_cc = combination.3;
         let shard_total = shard * params.shard_cc.len() as u32 + shard_cc;
+        let max_inflight_flows = combination.4;
 
         println!("{:?}", combination);
         let scenario_dir = format!(
@@ -118,13 +123,13 @@ fn main() -> anyhow::Result<()> {
         // ns3 sim
         let mut command_args = format!(
             "--trace flows --bw 10 --base_rtt {} \
-            --topo {}-{}  --root {}/{} --shard_cc {} --shard_total {} --enable_tr {} --enable_debug {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, shard_total, enable_tr, enable_debug,
+            --topo {}-{}  --root {}/{} --shard_cc {} --shard_total {} --enable_tr {} --enable_debug {} --max_inflight_flows {}",base_rtt, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, shard_total, enable_tr, enable_debug, max_inflight_flows
         );
         let mut log_path = format!("{}/nhosts{}_sim.log", log_dir, n_hosts,);
         let mut py_command = format!("{} {} {}", python_path, file_sim, command_args,);
         let mut cmd = format!(
-            "echo {} >> {}; {} >> {}/{}/pdrop_{}-{}_s{}.txt",
-            py_command, log_path, py_command, output_dir, scenario_dir,type_topo, n_hosts, shard_cc
+            "echo {} >> {}; {} >> {}/{}/pdrop_{}-{}_s{}_i{}.txt",
+            py_command, log_path, py_command, output_dir, scenario_dir,type_topo, n_hosts, shard_cc,  max_inflight_flows
         );
         // let mut cmd = format!(
         //     "echo {} >> {}; {} >> {}; echo \"\">>{}",
@@ -136,8 +141,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {}",
-            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug
+            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {} --max_inflight_flows {}",
+            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug, max_inflight_flows,
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);
