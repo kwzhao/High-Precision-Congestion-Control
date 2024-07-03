@@ -189,7 +189,7 @@ if __name__ == "__main__":
         default="AliStorage2019_exp_util0.5_lr10Gbps_nflows10000_nhosts4",
         help="the name of the flow file",
     )
-    parser.add_argument("--max_inflgiht_flows", dest="max_inflgiht_flows", type=int, default=0, help="max inflgiht flows for close-loop traffic")
+    parser.add_argument("--max_inflight_flows", dest="max_inflight_flows", type=int, default=0, help="max inflgiht flows for close-loop traffic")
     args = parser.parse_args()
     enable_debug=args.enable_debug
     output_type=OutputType.BUSY_PERIOD
@@ -199,8 +199,8 @@ if __name__ == "__main__":
 
     time_limit = int(30000 * 1e9)
     shard_cc=args.shard_cc
-    max_inflgiht_flows=args.max_inflgiht_flows
-    config_specs = "_s%d_i%d"%(shard_cc, max_inflgiht_flows)
+    max_inflight_flows=args.max_inflight_flows
+    config_specs = "_s%d_i%d"%(shard_cc, max_inflight_flows)
     output_dir = "%s/%s" % (args.output_dir, args.scenario_dir)
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
@@ -236,70 +236,77 @@ if __name__ == "__main__":
 
     # up to here, `output` should be a string of multiple lines, each line is: fct, size
     
-    output=output.decode()
-    a = output[:-1].split("\n")
-    n = len(a)
-    res_np = np.array([x.split() for x in a])
-    print(res_np.shape)
-    # for i in range(n):
-    # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
-    fcts = res_np[:, 0].astype("int64")
-    i_fcts = res_np[:, 1].astype("int64")
-    fid=res_np[:, 6].astype("int64")
-    np.save(
-        "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
-    )  # Byte
-    np.save(
-        "%s/fct_i_%s%s.npy" % (output_dir, args.prefix, config_specs),
-        i_fcts,
-    )  # ns
-    np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
-    
-    tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
-    # Read and parse the log file
-    log_path = tr_path.replace('.tr', '.log')
+    try:
+        output=output.decode()
+        a = output[:-1].split("\n")
+        n = len(a)
+        res_np = np.array([x.split() for x in a])
+        print(res_np.shape)
+        # for i in range(n):
+        # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
+        fcts = res_np[:, 0].astype("int64")
+        i_fcts = res_np[:, 1].astype("int64")
+        fid=res_np[:, 6].astype("int64")
+        fat=res_np[:, 3].astype("int64")
+        np.save(
+            "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
+        )  # Byte
+        np.save(
+            "%s/fct_i_%s%s.npy" % (output_dir, args.prefix, config_specs),
+            i_fcts,
+        )  # ns
+        np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
+        np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), fat)
+        
+        tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
+        # Read and parse the log file
+        log_path = tr_path.replace('.tr', '.log')
 
-    if not os.path.exists(log_path):
-        os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
-    
-    if output_type==OutputType.PER_FLOW_QUEUE:
-        queue_lengths = calculate_queue_lengths(log_path)
+        if not os.path.exists(log_path):
+            os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
+        
+        if output_type==OutputType.PER_FLOW_QUEUE:
+            queue_lengths = calculate_queue_lengths(log_path)
 
-        with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-            for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
-                file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
-        print(queue_lengths.shape)
-        np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
-    elif output_type==OutputType.BUSY_PERIOD:
-        flow_id_per_period_est=calculate_busy_period(log_path)
-        np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
-        # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-        #     for period in flow_id_per_period_est:
-        #         file.write(" ".join(map(str, period)) + "\n")
-#            
-    os.system(
-        "rm %s"
-        % tr_path)
-    
-    os.system("rm %s" % (file))
-    os.system(
-        "rm %s"
-        % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-    )
-    os.system("rm %s/flows.txt" % (output_dir))
-    
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
-    # )
+            with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+                for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
+                    file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
+            print(queue_lengths.shape)
+            np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
+        elif output_type==OutputType.BUSY_PERIOD:
+            flow_id_per_period_est=calculate_busy_period(log_path)
+            np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
+            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+            #     for period in flow_id_per_period_est:
+            #         file.write(" ".join(map(str, period)) + "\n")
+    #            
+        os.system(
+            "rm %s"
+            % tr_path)
+        
+        os.system("rm %s" % (file))
+        os.system(
+            "rm %s"
+            % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+        )
+        # if os.path.exists("%s/flows.txt"% (output_dir)):
+        #     os.system("rm %s/flows.txt" % (output_dir))
+        
+        # os.system(
+        #     "rm %s"
+        #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
+        # )
 
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-    # )
-    
-    # os.system(
-    #     "rm %s"
-    #     % ("%s/pdrop_%s%s.txt" % (output_dir, args.prefix, config_specs))
-    # )
+        # os.system(
+        #     "rm %s"
+        #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        # )
+        
+        # os.system(
+        #     "rm %s"
+        #     % ("%s/pdrop_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        # )
+    except Exception as e:
+        print(output_dir, args.prefix, config_specs,e)
+        pass
 

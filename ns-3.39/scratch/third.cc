@@ -196,6 +196,7 @@ void ScheduleFlowInputs(){
             ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
             appCon.Start(Seconds(0)); // setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at desired time.
             inflight_flows++; // Increment the inflight flows counter
+            // std::cout << "From arrival, #inflight flows: " << inflight_flows<< " with flow-"<<flow_input.flowId << std::endl;
         } else {
             waiting_flows.push(flow_input); // Queue the flow if max inflight flows is reached
         }
@@ -216,7 +217,7 @@ void OnFlowCompletion(uint64_t flowId){
     inflight_flows--; // Decrement the inflight flows counter
 
     // Check if there are waiting flows and schedule the next one
-    if (!waiting_flows.empty() && inflight_flows < max_inflight_flows) {
+    while (!waiting_flows.empty() && inflight_flows < max_inflight_flows) {
         FlowInput next_flow = waiting_flows.front();
         waiting_flows.pop();
 
@@ -225,6 +226,7 @@ void OnFlowCompletion(uint64_t flowId){
         ApplicationContainer appCon = clientHelper.Install(n.Get(next_flow.src));
         appCon.Start(Seconds(0)); // setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at desired time.
         inflight_flows++; // Increment the inflight flows counter
+        // std::cout << "From queue, #inflight flows: " << inflight_flows << " with flow-"<<next_flow.flowId << std::endl;
     }
 }
 
@@ -884,7 +886,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (max_inflight_flows == 0) max_inflight_flows = 1000000
+    if (max_inflight_flows == 0) max_inflight_flows = 1000000;
     buffer_size = buffer_size * 1024;
     Config::SetDefault("ns3::QbbNetDevice::PauseTime", UintegerValue(pause_time));
     Config::SetDefault("ns3::QbbNetDevice::QbbEnabled", BooleanValue(enable_pfc));
@@ -1073,7 +1075,7 @@ int main(int argc, char *argv[])
             sw->m_mmu->SetABMalphaHigh(1024);
             sw->m_mmu->SetABMdequeueUpdateNS(maxRtt);
             sw->m_mmu->SetPortCount(sw->GetNDevices() - 1); // set the actual port count here so that we don't always iterate over the default 256 ports.
-                        sw->m_mmu->SetBufferModel(bufferModel);
+            sw->m_mmu->SetBufferModel(bufferModel);
             sw->m_mmu->SetGamma(gamma);
             std::cout << "ports " << sw->GetNDevices() << " for node " << i << std::endl;
             for (uint32_t j = 1; j < sw->GetNDevices(); j++){
