@@ -15,7 +15,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy_close")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy_close_empirical")]
     output_dir: PathBuf,
 }
 
@@ -31,24 +31,24 @@ fn main() -> anyhow::Result<()> {
     let enable_debug = 0;
 
     // setup the configurations
-    // let params = Parameters {
-    //     shard: (0..500).collect(),
-    //     n_flows: vec![2000],
-    //     // n_hosts: vec![3, 5, 7],
-    //     n_hosts: vec![21],
-    //     // shard_cc: (0..20).collect(),
-    //     shard_cc: vec![0],
-    //     max_inflight_flows: vec![4, 6, 15],
-    // };
+    let params = Parameters {
+        shard: (0..10).collect(),
+        n_flows: vec![2000],
+        // n_hosts: vec![3, 5, 7],
+        n_hosts: vec![21],
+        // shard_cc: (0..20).collect(),
+        shard_cc: vec![0],
+        max_inflight_flows: vec![0, 2, 4, 15],
+    };
 
     // config for debugging
-    let params = Parameters {
-        shard: vec![0],
-        n_flows: vec![2000],
-        n_hosts: vec![21],
-        shard_cc: vec![0],
-        max_inflight_flows: vec![0],
-    };
+    // let params = Parameters {
+    //     shard: vec![0],
+    //     n_flows: vec![2000],
+    //     n_hosts: vec![21],
+    //     shard_cc: vec![0],
+    //     max_inflight_flows: vec![0],
+    // };
 
     // no need to change
     let root_path = format!("..");
@@ -59,8 +59,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
