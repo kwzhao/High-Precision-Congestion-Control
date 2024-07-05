@@ -70,7 +70,9 @@ double alpha_resume_interval = 55, rp_timer, ewma_gain = 1 / 16;
 double rate_decrease_interval = 4;
 uint32_t fast_recovery_times = 5;
 std::string rate_ai, rate_hai, min_rate = "100Mb/s";
+std::string max_rate = "10000Mb/s";
 std::string dctcp_rate_ai = "1000Mb/s";
+uint64_t max_rate_int = 10000000000lu;
 
 bool clamp_target_rate = false, l2_back_to_zero = false;
 double error_rate_per_link = 0.0;
@@ -348,6 +350,7 @@ void CalculateRoute(Ptr<Node> host){
                 bws[next] = bws[now];
                 bws[next].push_back(it->second.bw);
                 bw[next] = std::min(bw[now], it->second.bw);
+                bw[next] = std::min(bw[next], max_rate_int);
                 // we only enqueue switch, because we do not want packets to go through host as middle point
                 if (next->GetNodeType() == 1)
                     q.push_back(next);
@@ -680,7 +683,10 @@ int main(int argc, char *argv[])
             {
                 conf >> min_rate;
                 std::cout << "MIN_RATE\t\t" << min_rate << "\n";
-            }
+            }else if (key.compare("MAX_RATE") == 0){
+				conf >> max_rate;
+				std::cout << "MAX_RATE\t\t" << max_rate << "\n";
+			}
             else if (key.compare("FCT_OUTPUT_FILE") == 0)
             {
                 conf >> fct_output_file;
@@ -1081,6 +1087,7 @@ int main(int argc, char *argv[])
             for (uint32_t j = 1; j < sw->GetNDevices(); j++){
                 Ptr<QbbNetDevice> dev = DynamicCast<QbbNetDevice>(sw->GetDevice(j));
                 uint64_t rate = dev->GetDataRate().GetBitRate();
+                std::cout << "rate " << rate << " for port " << j << std::endl;
                 // set port bandwidth in the mmu, used by ABM.
                 sw->m_mmu->bandwidth[j] = rate;
                 for (uint32_t qu = 0; qu < 8; qu++) {
@@ -1089,7 +1096,7 @@ int main(int argc, char *argv[])
                         sw->m_mmu->SetAlphaEgress(10000, j, qu);
                         // set PFC
                         double delay = DynamicCast<QbbChannel>(dev->GetChannel())->GetDelay().GetSeconds();
-                        uint32_t headroom = (packet_payload_size + 48) * 2 + 3860 + (2 * rate * delay / 8);
+                        uint32_t headroom = (packet_payload_size + 48) * 2 + 3860 + (2 * std::min(rate,max_rate_int) * delay / 8);
                         // std::cout << headroom << std::endl;
                         sw->m_mmu->SetHeadroom(headroom, j, qu);
                         totalHeadroom += headroom;
@@ -1140,6 +1147,7 @@ int main(int argc, char *argv[])
             rdmaHw->SetAttribute("CcMode", UintegerValue(cc_mode));
             rdmaHw->SetAttribute("RateDecreaseInterval", DoubleValue(rate_decrease_interval));
             rdmaHw->SetAttribute("MinRate", DataRateValue(DataRate(min_rate)));
+            rdmaHw->SetAttribute("MaxRate", DataRateValue(DataRate(max_rate)));
             rdmaHw->SetAttribute("Mtu", UintegerValue(packet_payload_size));
             rdmaHw->SetAttribute("MiThresh", UintegerValue(mi_thresh));
             rdmaHw->SetAttribute("VarWin", BooleanValue(var_win));

@@ -38,6 +38,7 @@ FAST_RECOVERY_TIMES 1
 RATE_AI {ai}Mb/s
 RATE_HAI {hai}Mb/s
 MIN_RATE 1000Mb/s
+MAX_RATE 10000Mb/s
 DCTCP_RATE_AI {dctcp_ai}Mb/s
 TIMELY_T_HIGH {timely_t_high}
 TIMELY_T_LOW {timely_t_low}
@@ -209,9 +210,9 @@ if __name__ == "__main__":
     config_specs="_s%d_i%d"%(seed, max_inflight_flows)
     config_name = "%s/config_%s_%s%s%s.txt"%(root, topo, trace, failure, config_specs)
 
-    kmax_map = "2 %d %d %d %d"%(bw*1000000000, dcqcn_k_max*bw/25, bw*4*1000000000, dcqcn_k_max*bw*4/25)
-    kmin_map = "2 %d %d %d %d"%(bw*1000000000, dcqcn_k_min*bw/25, bw*4*1000000000, dcqcn_k_min*bw*4/25)
-    pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2)
+    kmax_map = "3 %d %d %d %d %d %d"%(bw*1000000000, dcqcn_k_max*bw/25, bw*4*1000000000, dcqcn_k_max*bw*4/25, bw*1000000000*10000, dcqcn_k_max*bw/25*10000)
+    kmin_map = "3 %d %d %d %d %d %d"%(bw*1000000000, dcqcn_k_min*bw/25, bw*4*1000000000, dcqcn_k_min*bw*4/25, bw*1000000000*10000, dcqcn_k_min*bw/25*10000)
+    pmax_map = "3 %d %.2f %d %.2f %d %.2f"%(bw*1000000000, 0.2, bw*4*1000000000, 0.2, bw*1000000000*10000, 0.2)
 
     duration=600
     with open("%s/%s.txt"%(root, trace), 'rb') as f:
@@ -259,9 +260,9 @@ if __name__ == "__main__":
         hai = ai  # also useless
         dctcp_ai=615 # calculated from RTT=13us and MTU=1KB, because DCTCP add 1 MTU per RTT.
         # masking_threshold_K={dctcp_k} KB (e.g., 30KB)
-        kmax_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-        kmin_map = "2 %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10)
-        pmax_map = "2 %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0)
+        kmax_map = "3 %d %d %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10, bw*1000000000*10000, dctcp_k*bw/10*10000)
+        kmin_map = "3 %d %d %d %d %d %d"%(bw*1000000000, dctcp_k*bw/10, bw*4*1000000000, dctcp_k*bw*4/10, bw*1000000000*10000, dctcp_k*bw/10*10000)
+        pmax_map = "3 %d %.2f %d %.2f %d %.2f"%(bw*1000000000, 1.0, bw*4*1000000000, 1.0, bw*1000000000*10000, 1.0)
         config = config_template.format(local_dir=local_dir,root=root, bw=bw, trace=trace, topo=topo, trace_track=topo.replace("topo","trace"), cc=args.cc, mode=8, t_alpha=1, t_dec=4, t_inc=300, g=0.0625, ai=ai, hai=hai, dctcp_ai=dctcp_ai, has_win=1, vwin=1, us=0, u_tgt=u_tgt, mi=mi, int_multi=1, pint_log_base=pint_log_base, pint_prob=pint_prob, ack_prio=1, link_down=args.down, failure=failure, kmax_map=kmax_map, kmin_map=kmin_map, pmax_map=pmax_map, buffer_size=bfsz, enable_tr=enable_tr, fwin=fwin, base_rtt=base_rtt,duration=duration,config_specs=config_specs,timely_t_high=timely_t_high,timely_t_low=timely_t_low, timely_beta=timely_beta,enable_pfc=enable_pfc,enable_qcn=enable_qcn, max_inflight_flows=max_inflight_flows)
     elif args.cc == "timely":
         ai = 10 * bw / 10

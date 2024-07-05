@@ -15,7 +15,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_busy_close_empirical")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_test")]
     output_dir: PathBuf,
 }
 
@@ -27,28 +27,28 @@ fn main() -> anyhow::Result<()> {
     println!("python_path: {:?}, output_dir: {:?}", python_path,output_dir);
 
     let base_rtt = 4000;
-    let enable_tr = 1;
+    let enable_tr = 0;
     let enable_debug = 0;
 
     // setup the configurations
-    let params = Parameters {
-        shard: (0..10).collect(),
-        n_flows: vec![2000],
-        // n_hosts: vec![3, 5, 7],
-        n_hosts: vec![21],
-        // shard_cc: (0..20).collect(),
-        shard_cc: vec![0],
-        max_inflight_flows: vec![0, 2, 4, 15],
-    };
+    // let params = Parameters {
+    //     shard: (0..10).collect(),
+    //     n_flows: vec![2000],
+    //     // n_hosts: vec![3, 5, 7],
+    //     n_hosts: vec![21],
+    //     // shard_cc: (0..20).collect(),
+    //     shard_cc: vec![0],
+    //     max_inflight_flows: vec![0, 2, 4, 15],
+    // };
 
     // config for debugging
-    // let params = Parameters {
-    //     shard: vec![0],
-    //     n_flows: vec![2000],
-    //     n_hosts: vec![21],
-    //     shard_cc: vec![0],
-    //     max_inflight_flows: vec![0],
-    // };
+    let params = Parameters {
+        shard: vec![0],
+        n_flows: vec![100],
+        n_hosts: vec![3],
+        shard_cc: vec![0],
+        max_inflight_flows: vec![0],
+    };
 
     // no need to change
     let root_path = format!("..");
@@ -141,8 +141,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_debug {} --max_inflight_flows {}",
-            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc,enable_debug, max_inflight_flows,
+            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_tr {} --enable_debug {} --max_inflight_flows {}",
+            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr, enable_debug, max_inflight_flows,
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);

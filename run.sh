@@ -24,6 +24,8 @@ https://github.com/kwzhao/High-Precision-Congestion-Control/compare/9f4be2a9ead8
 
 https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...a69f1a6d8157fb70190db6dd74ee8cdeb90425b5
 
+https://github.com/kwzhao/High-Precision-Congestion-Control/compare/13958423c9b7e666b8b51bdb889816ec3f52d79a...5d3beebdadf3fc91b2ff86a76bc536f8b9e75be4
+
 # parse the result, which can be used to calcualte the flow rate, queue length, etc.
 ./trace_reader /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/mix_topo-pl-3_s0.tr > /data2/lichenni/path_tc_test/shard0_nflows2000_nhosts3_lr10Gbps/tr_s0.log
 

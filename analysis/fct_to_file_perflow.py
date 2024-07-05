@@ -152,6 +152,38 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
+def calculate_busy_period_est(fat, fct, fsd, src_dst_pair_target):
+    busy_periods=[]
+    
+    fid_target=np.logical_and(
+                fsd[:, 0] == src_dst_pair_target[0],
+                fsd[:, 1] == src_dst_pair_target[1],
+            )
+    fid_target = np.where(fid_target)[0]
+    fat_target = fat[fid_target]    
+    fct_target = fct[fid_target]
+    
+    events = []
+    for i in range(len(fid_target)):
+        events.append((fat_target[i], 'arrival', fid_target[i]))
+        events.append((fat_target[i]+fct_target[i], 'departure', fid_target[i]))
+        
+    n_inflight_flows=0
+    current_busy_period_start_flow_id = None
+    for event in events:
+        time, event_type, flow_id = event
+
+        if event_type == 'arrival':
+            if n_inflight_flows == 0:
+                current_busy_period_start_flow_id = flow_id
+            n_inflight_flows += 1
+        elif event_type == 'departure':
+            n_inflight_flows -= 1
+            if n_inflight_flows == 0:
+                busy_periods.append((current_busy_period_start_flow_id, flow_id))
+
+    return busy_periods
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument(
@@ -174,7 +206,7 @@ if __name__ == "__main__":
         default=0,
         help="0: normal, 1: incast, 2: all",
     )
-    parser.add_argument('--enable_debug', dest='enable_debug', action = 'store', type=int, default=0, help="enable debug for parameter sample space")
+    parser.add_argument('--enable_tr', dest='enable_tr', action = 'store', type=int, default=0, help="enable tracing")
     parser.add_argument(
         "--output_dir",
         dest="output_dir",
@@ -191,7 +223,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--max_inflight_flows", dest="max_inflight_flows", type=int, default=0, help="max inflgiht flows for close-loop traffic")
     args = parser.parse_args()
-    enable_debug=args.enable_debug
+    enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
     
     fix_seed(args.shard)
@@ -259,27 +291,28 @@ if __name__ == "__main__":
         np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), fat)
         
         tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
-        # Read and parse the log file
-        log_path = tr_path.replace('.tr', '.log')
+        if enable_tr:
+            # Read and parse the log file
+            log_path = tr_path.replace('.tr', '.log')
 
-        if not os.path.exists(log_path):
-            os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
-        
-        if output_type==OutputType.PER_FLOW_QUEUE:
-            queue_lengths = calculate_queue_lengths(log_path)
+            if not os.path.exists(log_path):
+                os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
+            
+            if output_type==OutputType.PER_FLOW_QUEUE:
+                queue_lengths = calculate_queue_lengths(log_path)
 
-            with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
-                for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
-                    file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
-            print(queue_lengths.shape)
-            np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
-        elif output_type==OutputType.BUSY_PERIOD:
-            flow_id_per_period_est=calculate_busy_period(log_path)
-            np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
-            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-            #     for period in flow_id_per_period_est:
-            #         file.write(" ".join(map(str, period)) + "\n")
-    #            
+                with open("%s/qfeat_%s%s.txt" % (output_dir, args.prefix,  config_specs), "w") as file:
+                    for flowid, timestamp, queue_len, queue_event, n_active_flows in queue_lengths:
+                        file.write(f"{flowid} {timestamp} {queue_len} {queue_event} {n_active_flows}\n")
+                print(queue_lengths.shape)
+                np.save("%s/qfeat_%s%s.npy" % (output_dir, args.prefix, config_specs), queue_lengths)
+            elif output_type==OutputType.BUSY_PERIOD:
+                flow_id_per_period_est=calculate_busy_period(log_path)
+                np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
+                # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+                #     for period in flow_id_per_period_est:
+                #         file.write(" ".join(map(str, period)) + "\n")
+                
         os.system(
             "rm %s"
             % tr_path)
@@ -289,8 +322,8 @@ if __name__ == "__main__":
             "rm %s"
             % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
         )
-        # if os.path.exists("%s/flows.txt"% (output_dir)):
-        #     os.system("rm %s/flows.txt" % (output_dir))
+        if os.path.exists("%s/flows.txt"% (output_dir)):
+            os.system("rm %s/flows.txt" % (output_dir))
         
         # os.system(
         #     "rm %s"
