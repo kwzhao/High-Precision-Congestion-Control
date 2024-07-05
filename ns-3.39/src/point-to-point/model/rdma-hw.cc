@@ -27,6 +27,11 @@ TypeId RdmaHw::GetTypeId (void)
 	                                  DataRateValue(DataRate("100Mb/s")),
 	                                  MakeDataRateAccessor(&RdmaHw::m_minRate),
 	                                  MakeDataRateChecker())
+						.AddAttribute("MaxRate",
+									"Maximum rate of a flow",
+									DataRateValue(DataRate("100000Mb/s")),
+									MakeDataRateAccessor(&RdmaHw::m_maxRate),
+									MakeDataRateChecker())
 	                    .AddAttribute("Mtu",
 	                                  "Mtu.",
 	                                  UintegerValue(1000),
@@ -313,10 +318,22 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 	uint64_t key = GetQpKey(dip.Get(), sport, pg);
 	m_qpMap[key] = qp;
 
+	qp->powerEnabled = PowerTCPEnabled;
+
+	// set init variables
+	if (m_nic[nic_idx].dev == NULL) {
+		std::cout << "sip " << sip << " dip " << dip << " sport " << sport  << " dport " << dport << std::endl;
+	}
+
 	// set init variables
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
+	// std::cout<<"before, m_bps: "<<m_bps.GetBitRate()<<", m_maxRate: "<<m_maxRate.GetBitRate()<<std::endl;
+	m_bps=std::min(m_bps,m_maxRate);
+	if(win)
+		qp->SetWin(m_bps.GetBitRate() * 1 * baseRtt * 1e-9 / 8);
 	qp->m_rate = m_bps;
 	qp->m_max_rate = m_bps;
+	// std::cout<<"after, m_bps: "<<m_bps.GetBitRate()<<", m_maxRate: "<<m_maxRate.GetBitRate()<<std::endl;
 	if (m_cc_mode == 1) {
 		qp->mlx.m_targetRate = m_bps;
 	} else if (m_cc_mode == 3) {
