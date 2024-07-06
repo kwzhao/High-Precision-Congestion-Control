@@ -357,8 +357,8 @@ if __name__ == "__main__":
         
         os.system("rm %s" % (file))
         
-        # if os.path.exists("%s/flows.txt"% (output_dir)):
-        #     os.system("rm %s/flows.txt" % (output_dir))
+        if os.path.exists("%s/flows.txt"% (output_dir)):
+            os.system("rm %s/flows.txt" % (output_dir))
         
         # os.system(
         #     "rm %s"
