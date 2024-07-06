@@ -312,18 +312,19 @@ if __name__ == "__main__":
                 # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
                 #     for period in flow_id_per_period_est:
                 #         file.write(" ".join(map(str, period)) + "\n")
-                
+            
+            os.system(
+                "rm %s"
+                % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
+            )   
         os.system(
             "rm %s"
             % tr_path)
         
         os.system("rm %s" % (file))
-        os.system(
-            "rm %s"
-            % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-        )
-        if os.path.exists("%s/flows.txt"% (output_dir)):
-            os.system("rm %s/flows.txt" % (output_dir))
+        
+        # if os.path.exists("%s/flows.txt"% (output_dir)):
+        #     os.system("rm %s/flows.txt" % (output_dir))
         
         # os.system(
         #     "rm %s"
