@@ -153,35 +153,51 @@ def calculate_busy_period(log_file):
     return busy_periods
 
 def calculate_busy_period_est(fat, fct, fsd, src_dst_pair_target):
-    busy_periods=[]
-    
-    fid_target=np.logical_and(
+    fid_fg=np.logical_and(
                 fsd[:, 0] == src_dst_pair_target[0],
                 fsd[:, 1] == src_dst_pair_target[1],
             )
-    fid_target = np.where(fid_target)[0]
-    fat_target = fat[fid_target]    
-    fct_target = fct[fid_target]
+    fid_fg = np.where(fid_fg)[0]
+    fat_fg = fat[fid_fg]    
+    fct_fg = fct[fid_fg]
     
     events = []
-    for i in range(len(fid_target)):
-        events.append((fat_target[i], 'arrival', fid_target[i]))
-        events.append((fat_target[i]+fct_target[i], 'departure', fid_target[i]))
-        
+    for i in range(len(fid_fg)):
+        events.append((fat_fg[i], 'arrival'))
+        events.append((fat_fg[i]+fct_fg[i], 'departure'))
+    events.sort(key=lambda x: x[0])
+    
     n_inflight_flows=0
-    current_busy_period_start_flow_id = None
+    current_busy_period_start_time=None
+    n_flows_fg=0
+    busy_periods_time = []
     for event in events:
-        time, event_type, flow_id = event
+        time, event_type = event
 
         if event_type == 'arrival':
             if n_inflight_flows == 0:
-                current_busy_period_start_flow_id = flow_id
+                n_flows_fg=0
+                current_busy_period_start_time = time
             n_inflight_flows += 1
+            n_flows_fg+=1
         elif event_type == 'departure':
             n_inflight_flows -= 1
             if n_inflight_flows == 0:
-                busy_periods.append((current_busy_period_start_flow_id, flow_id))
-
+                if n_flows_fg>1:
+                    busy_periods_time.append((current_busy_period_start_time, time, n_flows_fg))
+                
+    busy_periods=[]
+    busy_periods_len=[]
+    for busy_period_time in busy_periods_time:
+        busy_period_start, busy_period_end, n_flows_fg = busy_period_time
+        fid_target=~np.logical_or(
+                fat+fct<=busy_period_start,
+                fat>=busy_period_end,
+            )
+        if np.sum(fid_target)>0:
+            busy_periods.append(set(fid[fid_target]))
+            busy_periods_len.append(n_flows_fg)
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
 if __name__ == "__main__":
@@ -228,7 +244,7 @@ if __name__ == "__main__":
     
     fix_seed(args.shard)
     type = args.type
-
+    nhosts=int(args.prefix.split("-")[-1])
     time_limit = int(30000 * 1e9)
     shard_cc=args.shard_cc
     max_inflight_flows=args.max_inflight_flows
@@ -290,6 +306,15 @@ if __name__ == "__main__":
         np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fid)
         np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), fat)
         
+        # src_arr = np.array(lambda x: x[-3].split(), res_np[:, 4]).astype("int32")
+        # dst_arr = np.array(lambda x: x[-3].split(), res_np[:, 5]).astype("int32")
+        # fsd = np.concatenate((src_arr, dst_arr), axis=1)
+        # print(f"fsd: {fsd.shape}")
+        # np.save("%s/fsd_%s%s.npy" % (output_dir, args.prefix, config_specs), fsd)
+        # with open("%s/fsd_%s%s.txt"% (output_dir, args.prefix, config_specs), "w") as file:
+        #     for i in range(fsd.shape[0]):
+        #         file.write(" ".join(map(str, fsd[i])) + "\n")
+        
         tr_path="%s/mix_%s%s.tr" % (output_dir, args.prefix,  config_specs)
         if enable_tr:
             # Read and parse the log file
@@ -312,11 +337,20 @@ if __name__ == "__main__":
                 # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
                 #     for period in flow_id_per_period_est:
                 #         file.write(" ".join(map(str, period)) + "\n")
-            
+           
             os.system(
                 "rm %s"
                 % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
-            )   
+            )  
+        else:
+            fsd=np.load("%s/fsd.npy" % (output_dir))
+            fsd=fsd[fid]
+            print(f"fsd: {fsd.shape}")
+            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fsd, [0, nhosts-1])
+            np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
+            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+            #     for period in flow_id_per_period_est:
+            #         file.write(" ".join(map(str, period)) + "\n") 
         os.system(
             "rm %s"
             % tr_path)
