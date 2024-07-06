@@ -44,8 +44,8 @@ fn main() -> anyhow::Result<()> {
     // config for debugging
     let params = Parameters {
         shard: vec![0],
-        n_flows: vec![100],
-        n_hosts: vec![3],
+        n_flows: vec![2],
+        n_hosts: vec![3,5,7],
         shard_cc: vec![0],
         max_inflight_flows: vec![0],
     };
@@ -141,8 +141,8 @@ fn main() -> anyhow::Result<()> {
 
         // parse ground-truth
         command_args = format!(
-            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_tr {} --enable_debug {} --max_inflight_flows {}",
-            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr, enable_debug, max_inflight_flows,
+            "--shard {} -p {}-{} --output_dir {} --scenario_dir {} --shard_cc {} --enable_tr {} --max_inflight_flows {}",
+            shard, type_topo, n_hosts, output_dir, scenario_dir, shard_cc, enable_tr, max_inflight_flows,
         );
         log_path = format!("{}/nhosts{}_ns3.log", log_dir, n_hosts,);
         py_command = format!("{} {} {}", python_path, file_ns3, command_args,);
