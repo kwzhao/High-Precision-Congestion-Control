@@ -6,6 +6,7 @@ import numpy as np
 from os.path import abspath, dirname
 from enum import Enum
 from collections import deque
+import traceback
 
 cur_dir=dirname(abspath(__file__))
 os.chdir(cur_dir)
@@ -152,7 +153,7 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
-def calculate_busy_period_est(fat, fct, fsd, src_dst_pair_target):
+def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target):
     fid_fg=np.logical_and(
                 fsd[:, 0] == src_dst_pair_target[0],
                 fsd[:, 1] == src_dst_pair_target[1],
@@ -190,12 +191,13 @@ def calculate_busy_period_est(fat, fct, fsd, src_dst_pair_target):
     busy_periods_len=[]
     for busy_period_time in busy_periods_time:
         busy_period_start, busy_period_end, n_flows_fg = busy_period_time
-        fid_target=~np.logical_or(
-                fat+fct<=busy_period_start,
-                fat>=busy_period_end,
+        fid_target_idx=~np.logical_or(
+                fat+fct<busy_period_start,
+                fat>busy_period_end,
             )
+        fid_target=fid[fid_target_idx]
         if np.sum(fid_target)>0:
-            busy_periods.append(set(fid[fid_target]))
+            busy_periods.append([np.min(fid_target), np.max(fid_target)])
             busy_periods_len.append(n_flows_fg)
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
@@ -254,12 +256,13 @@ if __name__ == "__main__":
     if not os.path.exists(file):
         exit(0)
     # print file
+    # flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
     if type == 0:
         cmd = (
             "cat %s" % (file)
             + " | awk '{if ($5==100 && $7+$8<"
             + "%d" % time_limit
-            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4"
+            + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4,4 -k 7,7"
         )
         # print cmd
         output = subprocess.check_output(cmd, shell=True)
@@ -346,7 +349,7 @@ if __name__ == "__main__":
             fsd=np.load("%s/fsd.npy" % (output_dir))
             fsd=fsd[fid]
             print(f"fsd: {fsd.shape}")
-            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fsd, [0, nhosts-1])
+            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fid, fsd, [0, nhosts-1])
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
@@ -375,6 +378,7 @@ if __name__ == "__main__":
         #     % ("%s/pdrop_%s%s.txt" % (output_dir, args.prefix, config_specs))
         # )
     except Exception as e:
-        print(output_dir, args.prefix, config_specs,e)
+        print(output_dir, args.prefix, config_specs, e)
+        traceback.print_exc()
         pass
 

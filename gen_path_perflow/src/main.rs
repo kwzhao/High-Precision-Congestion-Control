@@ -43,7 +43,7 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     // let params = Parameters {
-    //     shard: vec![1],
+    //     shard: vec![534],
     //     n_flows: vec![2000],
     //     n_hosts: vec![3,5,7],
     //     shard_cc: vec![0],
@@ -59,8 +59,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
