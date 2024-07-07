@@ -184,7 +184,7 @@ def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target):
         elif event_type == 'departure':
             n_inflight_flows -= 1
             if n_inflight_flows == 0:
-                if n_flows_fg>1:
+                if n_flows_fg>0:
                     busy_periods_time.append((current_busy_period_start_time, time, n_flows_fg))
                 
     busy_periods=[]
@@ -199,6 +199,20 @@ def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target):
         if np.sum(fid_target)>0:
             busy_periods.append([np.min(fid_target), np.max(fid_target)])
             busy_periods_len.append(n_flows_fg)
+        
+    unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
+                                                        
+    # Calculate the weight for each period
+    busy_periods_filter=[]
+    busy_periods_len_filter=[]
+    for length, count in zip(unique_lengths, counts):
+        period_indices = np.where(busy_periods_len == length)[0]
+        if count > 500:
+            period_indices=np.random.choice(period_indices,500,replace=False)
+        busy_periods_filter.extend([busy_periods[i] for i in period_indices])
+        busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
+    busy_periods=busy_periods_filter
+    busy_periods_len=busy_periods_len_filter
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
