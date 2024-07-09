@@ -153,7 +153,7 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
-def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target):
+def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
     fid_fg=np.logical_and(
                 fsd[:, 0] == src_dst_pair_target[0],
                 fsd[:, 1] == src_dst_pair_target[1],
@@ -202,17 +202,17 @@ def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target):
         
     unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
                                                         
-    # Calculate the weight for each period
-    busy_periods_filter=[]
-    busy_periods_len_filter=[]
-    for length, count in zip(unique_lengths, counts):
-        period_indices = np.where(busy_periods_len == length)[0]
-        if count > 500:
-            period_indices=np.random.choice(period_indices,500,replace=False)
-        busy_periods_filter.extend([busy_periods[i] for i in period_indices])
-        busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
-    busy_periods=busy_periods_filter
-    busy_periods_len=busy_periods_len_filter
+    if not enable_empirical:
+        busy_periods_filter=[]
+        busy_periods_len_filter=[]
+        for length, count in zip(unique_lengths, counts):
+            period_indices = np.where(busy_periods_len == length)[0]
+            if count > 500:
+                period_indices=np.random.choice(period_indices,500,replace=False)
+            busy_periods_filter.extend([busy_periods[i] for i in period_indices])
+            busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
+        busy_periods=busy_periods_filter
+        busy_periods_len=busy_periods_len_filter
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
@@ -257,6 +257,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
+    enable_empirical=args.output_dir.split("_")[-1]=="empirical"
+    print(f"enable_empirical: {enable_empirical}")
     
     fix_seed(args.shard)
     type = args.type
@@ -363,7 +365,7 @@ if __name__ == "__main__":
             fsd=np.load("%s/fsd.npy" % (output_dir))
             fsd=fsd[fid]
             print(f"fsd: {fsd.shape}")
-            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fid, fsd, [0, nhosts-1])
+            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
