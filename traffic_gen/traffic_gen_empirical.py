@@ -108,7 +108,7 @@ if __name__ == "__main__":
                     for link_id in range(i,j):
                         host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
-        
+
         if nhost==2:
             ntc=1
         elif nhost==21:
@@ -176,12 +176,12 @@ if __name__ == "__main__":
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
         if ia_distribution == "lognorm":
-            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
+            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
             f_arr_in_ns = (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
         elif ia_distribution == "exp":
-            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
+            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             f_arr_in_ns = (np.random.exponential(scale=avg_inter_arrival_in_s, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
 
         flow_src_dst_save=[]
@@ -225,7 +225,7 @@ if __name__ == "__main__":
         ofile = open("%s/flows.txt"%(output_dir), "w")
         ofile.write(data)
         ofile.close()
-    
+
         n_flows_done= min(n_flows_total,n_flows_tmp-1)
         end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
         utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
