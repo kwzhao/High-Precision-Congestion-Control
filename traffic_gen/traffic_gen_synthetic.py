@@ -7,7 +7,7 @@ import numpy as np
 import os
 from scipy.stats import genpareto
 from scipy.optimize import fsolve
-from consts import BYTE_TO_BIT, UNIT_G, BDP_DICT, size_distribution_list, size_sigma_range, ia_distribution, ias_sigma_range, load_range, load_bottleneck_range, min_size_in_bit, avg_size_base_in_bit
+from consts import BYTE_TO_BIT, UNIT_G, size_distribution_list, size_sigma_range, ia_distribution, ias_sigma_range, load_range, load_bottleneck_range, min_size_in_bit, avg_size_base_in_bit
 
 def fix_seed(seed):
     np.random.seed(seed)
@@ -81,8 +81,6 @@ if __name__ == "__main__":
         for link_id in range(nhost-1):
             bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
 
-        BDP = BDP_DICT[nhost]
-    
         host_pair_list_ori=[]
         host_pair_to_link_dict={}
         for i in range(nhost-1):
@@ -94,7 +92,7 @@ if __name__ == "__main__":
                 for link_id in range(i,j):
                     host_pair_to_link_dict[src_dst_pair].append(link_id)
         host_pair_list=[(0,nhost-1)]
-        
+
         if nhost==2:
             ntc=1
         else:
@@ -183,7 +181,7 @@ if __name__ == "__main__":
         flow_id_total=0
         t=base_t
         host_pair_list_idx=np.arange(len(host_pair_list))
-        p_candidate_list=[ntc, 10, 20, 50, 100]
+        p_candidate_list=[ntc, 10, 20, 50]
         p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         p_list=np.random.rand(ntc)*p_candidate/ntc
         p_list[0]=1.0
