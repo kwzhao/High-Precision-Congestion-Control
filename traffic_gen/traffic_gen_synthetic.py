@@ -41,7 +41,6 @@ def PosNormal(mean, sigma):
     return(x if x>=0 else PosNormal(mean,sigma))
 
 if __name__ == "__main__":
-    port = 80
     payload_size = 1000
     parser = ArgumentParser()
     parser.add_argument("--shard", dest="shard", type=int, default=0, help="random seed")
@@ -152,7 +151,6 @@ if __name__ == "__main__":
         load_bottleneck_cur=np.max(tmp)
         load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
         load_candidate=load_candidate*load_bottleneck_target/load_bottleneck_cur
-
         if size_dist_candidate=="exp":
             mu = avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0)**2- min_size_in_bit
             f_sizes_in_byte = ((min_size_in_bit + np.random.exponential(scale=mu, size=(n_flows_tmp,))) / BYTE_TO_BIT).astype("int64") # Byte
@@ -192,12 +190,12 @@ if __name__ == "__main__":
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
         if ia_distribution == "lognorm":
-            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
+            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
             f_arr_in_ns = (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
         elif ia_distribution == "exp":
-            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte)
+            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             f_arr_in_ns = (np.random.exponential(scale=avg_inter_arrival_in_s, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
 
         flow_src_dst_save=[]
