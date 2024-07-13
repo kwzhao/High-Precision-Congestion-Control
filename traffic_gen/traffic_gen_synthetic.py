@@ -41,7 +41,6 @@ def PosNormal(mean, sigma):
     return(x if x>=0 else PosNormal(mean,sigma))
 
 if __name__ == "__main__":
-    port = 80
     parser = ArgumentParser()
     parser.add_argument("--shard", dest="shard", type=int, default=0, help="random seed")
     parser.add_argument("--switchtohost", dest="switch_to_host", type=int, default=4, help="the ratio of switch-to-switch link to host-to-switch link")
@@ -52,7 +51,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     fix_seed(options.shard)
-    
+
     base_t = 1*UNIT_G
 
     if not options.nhost:
@@ -141,7 +140,7 @@ if __name__ == "__main__":
             mu=avg_size_base_in_bit*size_sigma - min_size_in_bit
     
             tmp=np.array([PosNormal(mu, avg_size_base_in_bit*size_sigma) for _ in range(n_flows_tmp)]).squeeze()
-            f_sizes_in_byte=(
+            f_sizes_in_byte = (
                 (
                     min_size_in_bit
                     + tmp
@@ -149,7 +148,7 @@ if __name__ == "__main__":
                 / BYTE_TO_BIT  # Byte
             ).astype("int64")
         elif size_dist_candidate=="lognorm":
-            avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
+            avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
             size_sigma=(float(size_sigma_candidate)) / 50000+1
             # flow size
             mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
@@ -171,12 +170,12 @@ if __name__ == "__main__":
             sys.exit(0)
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
-        if ia_distribution=="lognorm":
-            avg_inter_arrival_in_s = 1/(bandwidth_list[load_bottleneck_link_id]*load_candidate/8./avg_in_byte)
+        if ia_distribution == "lognorm":
+            avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
-            f_arr_in_ns= (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,))* UNIT_G).astype("int64")
-    
+            f_arr_in_ns = (np.random.lognormal(mean=mu, sigma=arr_sigma, size=(n_flows_tmp-1,)) * UNIT_G).astype("int64")
+
         flow_src_dst_save=[]
         f_arr_in_ns_save=[]
         f_sizes_in_byte_save=[]
@@ -188,7 +187,7 @@ if __name__ == "__main__":
         p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         p_list=np.random.rand(ntc)*p_candidate/ntc
         p_list[0]=1.0
-    
+
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
