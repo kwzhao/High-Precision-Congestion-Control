@@ -153,7 +153,7 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
-def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
+def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
     fid_fg=np.logical_and(
                 fsd[:, 0] == src_dst_pair_target[0],
                 fsd[:, 1] == src_dst_pair_target[1],
@@ -213,6 +213,62 @@ def calculate_busy_period_est(fat, fct, fid, fsd, src_dst_pair_target,enable_emp
             busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
         busy_periods=busy_periods_filter
         busy_periods_len=busy_periods_len_filter
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+    return busy_periods
+
+def calculate_busy_period_link(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
+    
+    events = []
+    for i in range(len(fat)):
+        events.append((fat[i], 'arrival'))
+        events.append((fat[i]+fct[i], 'departure'))
+    events.sort(key=lambda x: x[0])
+    
+    n_inflight_flows=0
+    current_busy_period_start_time=None
+    n_flows=0
+    busy_periods_time = []
+    for event in events:
+        time, event_type = event
+
+        if event_type == 'arrival':
+            if n_inflight_flows == 0:
+                n_flows=0
+                current_busy_period_start_time = time
+            n_inflight_flows += 1
+            n_flows+=1
+        elif event_type == 'departure':
+            n_inflight_flows -= 1
+            if n_inflight_flows == 0:
+                if n_flows>0:
+                    busy_periods_time.append((current_busy_period_start_time, time, n_flows))
+                
+    busy_periods=[]
+    busy_periods_len=[]
+    for busy_period_time in busy_periods_time:
+        busy_period_start, busy_period_end, n_flows = busy_period_time
+        fid_target_idx=~np.logical_or(
+                fat+fct<busy_period_start,
+                fat>busy_period_end,
+            )
+        fid_target=fid[fid_target_idx]
+        if np.sum(fid_target)>0:
+            busy_periods.append([np.min(fid_target), np.max(fid_target)])
+            busy_periods_len.append(n_flows)
+        
+    # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
+                                                        
+    # if not enable_empirical:
+    #     busy_periods_filter=[]
+    #     busy_periods_len_filter=[]
+    #     for length, count in zip(unique_lengths, counts):
+    #         period_indices = np.where(busy_periods_len == length)[0]
+    #         if count > 500:
+    #             period_indices=np.random.choice(period_indices,500,replace=False)
+    #         busy_periods_filter.extend([busy_periods[i] for i in period_indices])
+    #         busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
+    #     busy_periods=busy_periods_filter
+    #     busy_periods_len=busy_periods_len_filter
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
@@ -315,6 +371,12 @@ if __name__ == "__main__":
         i_fcts = res_np[:, 1].astype("int64")
         fid=res_np[:, 6].astype("int64")
         fat=res_np[:, 3].astype("int64")
+        if nhosts==21:
+            fsize=res_np[:, 2].astype("int64")
+            util = np.sum(fsize) / (np.max(fat+fcts) - np.min(fat)) * 8 / 10
+            print(f"util: {util}")
+            n_inflight_flows_mean=np.sum(fcts-2000)/(np.max(fat+fcts)-np.min(fat))
+            print(f"n_inflight_flows_mean: {n_inflight_flows_mean}")
         np.save(
             "%s/fct_%s%s.npy" % (output_dir, args.prefix, config_specs), fcts
         )  # Byte
@@ -365,7 +427,10 @@ if __name__ == "__main__":
             fsd=np.load("%s/fsd.npy" % (output_dir))
             fsd=fsd[fid]
             print(f"fsd: {fsd.shape}")
-            flow_id_per_period_est=calculate_busy_period_est(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
+            if nhosts==21:
+                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
+            else:
+                flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
