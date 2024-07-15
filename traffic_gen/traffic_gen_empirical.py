@@ -43,7 +43,6 @@ def PosNormal(mean, sigma):
     return(x if x>=0 else PosNormal(mean,sigma))
 
 if __name__ == "__main__":
-    port = 80
     payload_size = 1000
     parser = ArgumentParser()
     parser.add_argument("--shard", dest = "shard",type=int, default=0, help="random seed")
