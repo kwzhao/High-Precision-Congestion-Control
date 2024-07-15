@@ -237,7 +237,7 @@ if __name__ == "__main__":
         ofile = open("%s/flows.txt"%(output_dir), "w")
         ofile.write(data)
         ofile.close()
-    
+
         n_flows_done= min(n_flows_total,n_flows_tmp-1)
         end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
         utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
