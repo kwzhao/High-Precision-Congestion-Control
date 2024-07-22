@@ -3,10 +3,11 @@ import numpy as np
 # extra params, bdp, init_window,buffer_size, enable_pfc
 # bfsz=[20,50,10]
 # https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9288775
-bfsz=[200,200,10]
+# bfsz=[200,200,10]
+bfsz=[4,4,10]
 # PFC threshold: [15, 45, 65]
 # fwin=[10, 30,1000]
-fwin=[20, 20, 1000]
+fwin=[18, 18, 1000]
 # enable_pfc=[0,1]
 enable_pfc=[0,0]
 
