@@ -29,7 +29,7 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 0;
     let enable_debug = 0;
-    let constfsize=5000*10;
+    let constfsize=5000*100;
 
     // setup the configurations
     // let params = Parameters {

@@ -1099,7 +1099,8 @@ int main(int argc, char *argv[])
                         uint32_t headroom = (packet_payload_size + 48) * 2 + 3860 + (2 * std::min(rate,max_rate_int) * delay / 8);
                         // std::cout << headroom << std::endl;
                         sw->m_mmu->SetHeadroom(headroom, j, qu);
-                        totalHeadroom += headroom;
+                        // totalHeadroom += headroom;
+                        totalHeadroom = headroom;
                     } else { // lossy
                         sw->m_mmu->SetAlphaIngress(10000, j, qu);
                         sw->m_mmu->SetAlphaEgress(alpha_values[qu], j, qu);
