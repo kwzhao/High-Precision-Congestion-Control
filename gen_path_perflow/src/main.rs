@@ -15,7 +15,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_link_empirical_test")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_chaotic_test")]
     output_dir: PathBuf,
 }
 
@@ -29,6 +29,7 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 0;
     let enable_debug = 0;
+    let constfsize=5000*10;
 
     // setup the configurations
     // let params = Parameters {
@@ -44,7 +45,7 @@ fn main() -> anyhow::Result<()> {
     // config for debugging
     let params = Parameters {
         shard: vec![0],
-        n_flows: vec![2000],
+        n_flows: vec![1],
         n_hosts: vec![21],
         shard_cc: vec![0],
         max_inflight_flows: vec![0],
@@ -59,8 +60,8 @@ fn main() -> anyhow::Result<()> {
         println!("Directory '{}' created successfully.", log_dir);
     }
 
-    // let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
-    let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
+    let file_traffic = format!("{}/traffic_gen/traffic_gen_synthetic.py", root_path);
+    // let file_traffic = format!("{}/traffic_gen/traffic_gen_empirical.py", root_path);
     let file_sim = format!("{}/ns-3.39/run_perflow.py", root_path);
     let file_ns3 = format!("{}/analysis/fct_to_file_perflow.py", root_path);
     // let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
@@ -83,8 +84,8 @@ fn main() -> anyhow::Result<()> {
 
             // gen traffic
             let command_args = format!(
-                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 4",
-                shard, n_flows, n_hosts, output_path,
+                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 4 --constfsize {}",
+                shard, n_flows, n_hosts, output_path,constfsize,
             );
             let log_path = format!("{}/nhosts{}_traffic.log", log_dir, n_hosts);
             let py_command = format!("{} {} {}", python_path, file_traffic, command_args);
