@@ -49,6 +49,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--nhost", dest="nhost", help="number of hosts")
     parser.add_argument("-b", "--bandwidth", dest="bandwidth", help="the bandwidth of host link (G/M/K), by default 10G", default="10G")
     parser.add_argument("-o", "--output", dest="output", help="the output file", default="../simulation/mix/")
+    parser.add_argument("--constfsize", dest="constfsize", type=int, default=0, help="the flow size for constant size distribution in bytes")
     options = parser.parse_args()
 
     fix_seed(options.shard)
@@ -61,6 +62,9 @@ if __name__ == "__main__":
     n_flows = int(options.nflows)
     nhost = int(options.nhost)
     switch_to_host = int(options.switch_to_host)
+    constfsize = int(options.constfsize)
+    enable_const = constfsize > 0
+
     bandwidth_base = translate_bandwidth(options.bandwidth)
     if bandwidth_base == None:
         print("bandwidth format incorrect")
@@ -116,6 +120,7 @@ if __name__ == "__main__":
             ntc=random.randint(2, nhost*(nhost-1)//2)
             host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
             host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+            
         assert len(host_pair_list)==ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
     
@@ -127,69 +132,83 @@ if __name__ == "__main__":
         n_flows_tmp=n_flows*ntc+1
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
         
-        size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
-        size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
-        ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
-    
-        load_candidate=np.random.rand()*(load_range[1]-load_range[0])+load_range[0]
-        load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
+        if enable_const:
+            f_sizes_in_byte=np.ones(n_flows_tmp)*constfsize # Byte
+            f_sizes_in_byte=f_sizes_in_byte.astype("int64")
+        else:
+            size_dist_candidate=np.random.choice(size_distribution_list,size=1,replace=True)[0]
+            size_sigma_candidate=np.random.rand()*(size_sigma_range[1]-size_sigma_range[0])+size_sigma_range[0]
+            ias_sigma_candidate=np.random.rand()*(ias_sigma_range[1]-ias_sigma_range[0])+ias_sigma_range[0]
+        
+            load_candidate=np.random.rand()*(load_range[1]-load_range[0])+load_range[0]
+            load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
 
-        load_per_link={}
-        if nhost==21:
-            for i in range(nhost):
-                load_per_link[i]=0
-        else:
-            for i in range(nhost-1):
-                load_per_link[i]=0
-        for i in range(ntc):
-            load_tmp=load_candidate
-            src_dst_pair=host_pair_list[i]
-            
-            for link_id in host_pair_to_link_dict[src_dst_pair]:
-                load_per_link[link_id]+=load_tmp/bandwidth_list_scale[link_id]
-        tmp=list(load_per_link.values())
-        load_bottleneck_cur=np.max(tmp)
-        load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
-        load_candidate=load_candidate*load_bottleneck_target/load_bottleneck_cur
-        if size_dist_candidate=="exp":
-            mu = avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0)**2- min_size_in_bit
-            f_sizes_in_byte = ((min_size_in_bit + np.random.exponential(scale=mu, size=(n_flows_tmp,))) / BYTE_TO_BIT).astype("int64") # Byte
-        elif size_dist_candidate=="gaussian":
-            size_sigma=(float(size_sigma_candidate)/5000.0)**2
-            mu=avg_size_base_in_bit*size_sigma - min_size_in_bit
-    
-            tmp=np.array([PosNormal(mu, avg_size_base_in_bit*size_sigma) for _ in range(n_flows_tmp)]).squeeze()
-            f_sizes_in_byte = (
-                (
-                    min_size_in_bit
-                    + tmp
-                )
-                / BYTE_TO_BIT  # Byte
-            ).astype("int64")
-        elif size_dist_candidate=="lognorm":
-            avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
-            size_sigma=(float(size_sigma_candidate)) / 50000+1
-            # flow size
-            mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
-            f_sizes_in_byte = (
-                (min_size_in_bit + np.random.lognormal(mean=mu, sigma=size_sigma, size=(n_flows_tmp,)))
-                / BYTE_TO_BIT  # Byte
-            ).astype("int64")
-        elif size_dist_candidate=="pareto":
-            avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_candidate)/5000.0)**2
-            size_sigma=avg_size_in_bit//2.0
-            func = lambda x: 5 - np.power(1 + x * (avg_size_in_bit - min_size_in_bit) / size_sigma, 1 / x)
-            psi = fsolve(func, 0.5)[0]
-            print("psi: ", psi)
-            assert psi<1.0
-            f_sizes_in_byte = min_size_in_bit + size_sigma * genpareto.rvs(c=psi, size=(n_flows_tmp,))
-            f_sizes_in_byte = (f_sizes_in_byte / BYTE_TO_BIT).astype("int64")  # Byte
-        else:
-            print("size distribution not supported")
-            sys.exit(0)
+            load_per_link={}
+            if nhost==21:
+                for i in range(nhost):
+                    load_per_link[i]=0
+            else:
+                for i in range(nhost-1):
+                    load_per_link[i]=0
+            for i in range(ntc):
+                load_tmp=load_candidate
+                src_dst_pair=host_pair_list[i]
+                
+                for link_id in host_pair_to_link_dict[src_dst_pair]:
+                    load_per_link[link_id]+=load_tmp/bandwidth_list_scale[link_id]
+            tmp=list(load_per_link.values())
+            load_bottleneck_cur=np.max(tmp)
+            load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
+            load_candidate=load_candidate*load_bottleneck_target/load_bottleneck_cur
+
+            if size_dist_candidate=="exp":
+                mu = avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0)**2- min_size_in_bit
+                f_sizes_in_byte = ((min_size_in_bit + np.random.exponential(scale=mu, size=(n_flows_tmp,))) / BYTE_TO_BIT).astype("int64") # Byte
+            elif size_dist_candidate=="gaussian":
+                size_sigma=(float(size_sigma_candidate)/5000.0)**2
+                mu=avg_size_base_in_bit*size_sigma - min_size_in_bit
+        
+                tmp=np.array([PosNormal(mu, avg_size_base_in_bit*size_sigma) for _ in range(n_flows_tmp)]).squeeze()
+                f_sizes_in_byte = (
+                    (
+                        min_size_in_bit
+                        + tmp
+                    )
+                    / BYTE_TO_BIT  # Byte
+                ).astype("int64")
+            elif size_dist_candidate=="lognorm":
+                avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
+                size_sigma=(float(size_sigma_candidate)) / 50000+1
+                # flow size
+                mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
+                f_sizes_in_byte = (
+                    (min_size_in_bit + np.random.lognormal(mean=mu, sigma=size_sigma, size=(n_flows_tmp,)))
+                    / BYTE_TO_BIT  # Byte
+                ).astype("int64")
+            elif size_dist_candidate=="pareto":
+                avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_candidate)/5000.0)**2
+                size_sigma=avg_size_in_bit//2.0
+                func = lambda x: 5 - np.power(1 + x * (avg_size_in_bit - min_size_in_bit) / size_sigma, 1 / x)
+                psi = fsolve(func, 0.5)[0]
+                print("psi: ", psi)
+                assert psi<1.0
+                f_sizes_in_byte = min_size_in_bit + size_sigma * genpareto.rvs(c=psi, size=(n_flows_tmp,))
+                f_sizes_in_byte = (f_sizes_in_byte / BYTE_TO_BIT).astype("int64")  # Byte
+            else:
+                print("size distribution not supported")
+                sys.exit(0)
         avg_in_byte = np.mean(f_sizes_in_byte) 
         
-        if ia_distribution == "lognorm":
+        if enable_const:
+            # f_arr_in_ns= np.zeros(n_flows_tmp-1).astype("int64")*UNIT_G
+            RTT_ns = 4_000  # Example RTT value in nanoseconds
+            
+            arrival_times = np.sort(np.random.randint(0, RTT_ns, size=n_flows_tmp).astype("int64"))
+
+            # Calculate inter-arrival times
+            f_arr_in_ns = np.diff(arrival_times)
+
+        elif ia_distribution == "lognorm":
             avg_inter_arrival_in_s = 1 / (bandwidth_list[load_bottleneck_link_id] * load_candidate / 8. / avg_in_byte) / ntc
             arr_sigma = ias_sigma_candidate
             mu = np.log(avg_inter_arrival_in_s) - (arr_sigma**2) / 2
@@ -213,8 +232,11 @@ if __name__ == "__main__":
         p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
-            # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
-            host_pair_idx=np.random.choice(host_pair_list_idx)
+            if enable_const:
+                host_pair_idx=host_pair_list_idx[flow_id_total%ntc]
+            else:
+                # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
+                host_pair_idx=np.random.choice(host_pair_list_idx)
             if host_pair_idx==0:
                 n_flows_foreground+=1
             src,dst=host_pair_list[host_pair_idx]
@@ -239,27 +261,50 @@ if __name__ == "__main__":
         ofile.close()
 
         n_flows_done= min(n_flows_total,n_flows_tmp-1)
-        end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
-        utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
-        print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
-        print("load_candidate:", load_bottleneck_target,load_candidate)
-        print("stats:", n_flows_total,p_list[0],n_flows_foreground,size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
-        stats={
-            "n_flows": n_flows_total,
-            "ratio": p_list[0],
-            "n_flows_foreground":n_flows_foreground,
-            "load_bottleneck_target":load_bottleneck_target,
-            "host_pair_list":host_pair_list,
-            "load_candidate":load_candidate,
-            "size_dist_candidate":size_dist_candidate,
-            "size_sigma_candidate":size_sigma_candidate,
-            "ias_sigma_candidate":ias_sigma_candidate,
-        }
-        np.save("%s/stats.npy"%(output_dir), stats)  # Byte
+        if not enable_const:
+            end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
+            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
+            print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
+            print("load_candidate:", load_bottleneck_target,load_candidate)
+            print("stats:", n_flows_total,p_list[0],n_flows_foreground,size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
+            stats={
+                "n_flows": n_flows_total,
+                "ratio": p_list[0],
+                "n_flows_foreground":n_flows_foreground,
+                "load_bottleneck_target":load_bottleneck_target,
+                "host_pair_list":host_pair_list,
+                "load_candidate":load_candidate,
+                "size_dist_candidate":size_dist_candidate,
+                "size_sigma_candidate":size_sigma_candidate,
+                "ias_sigma_candidate":ias_sigma_candidate,
+            }
+            np.save("%s/stats.npy"%(output_dir), stats)  # Byte
         
-        flow_src_dst=np.array(flow_src_dst_save).astype("int32")
-        f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
-        f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
-        np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
-        np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
-        np.save("%s/fsd.npy"%(output_dir), flow_src_dst) 
+            flow_src_dst=np.array(flow_src_dst_save).astype("int32")
+            f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
+            f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
+            np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
+            np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
+            np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
+
+        else:
+            end_time=float(t) / UNIT_G
+            utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_base
+            print("utilization: ",np.round(utilization, 3))
+            # end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
+            # utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
+            # print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
+            print("stats:", n_flows_total,end_time)
+            stats={
+                "n_flows": n_flows_total,
+                "ratio": 1.0,
+                "n_flows_foreground":n_flows_foreground,
+            }
+            
+            flow_src_dst=np.array(flow_src_dst_save).astype("int32")
+            f_arr_in_ns=np.array(f_arr_in_ns_save).astype("int64")
+            f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
+            np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
+            np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
+            np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
+
