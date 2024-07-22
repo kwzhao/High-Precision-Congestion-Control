@@ -15,7 +15,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/path_perflow_chaotic_test")]
+    #[clap(long, default_value = "/data2/lichenni/path_perflow_chaotic_s5")]
     output_dir: PathBuf,
 }
 
@@ -29,7 +29,7 @@ fn main() -> anyhow::Result<()> {
     let base_rtt = 4000;
     let enable_tr = 0;
     let enable_debug = 0;
-    let constfsize=5000*100;
+    let constfsize=5000*5;
 
     // setup the configurations
     // let params = Parameters {
@@ -44,8 +44,9 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     let params = Parameters {
-        shard: vec![0],
-        n_flows: vec![1],
+        // shard: vec![0],
+        shard: (0..10).collect(),
+        n_flows: vec![1, 3],
         n_hosts: vec![21],
         shard_cc: vec![0],
         max_inflight_flows: vec![0],
