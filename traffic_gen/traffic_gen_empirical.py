@@ -51,6 +51,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--nhost", dest = "nhost", help = "number of hosts")
     parser.add_argument("-b", "--bandwidth", dest = "bandwidth", help = "the bandwidth of host link (G/M/K), by default 10G", default = "10G")
     parser.add_argument("-o", "--output", dest = "output", help = "the output file", default = "../simulation/mix/")
+    parser.add_argument("--constfsize", dest="constfsize", type=int, default=0, help="the flow size for constant size distribution in bytes")
     options = parser.parse_args()
 
     fix_seed(options.shard)
