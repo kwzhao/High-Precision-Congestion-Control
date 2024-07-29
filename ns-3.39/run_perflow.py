@@ -7,7 +7,7 @@ import random
 def fix_seed(seed):
     np.random.seed(seed)
     random.seed(seed)
-    
+
 from os.path import abspath, dirname
 cur_dir=dirname(abspath(__file__))
 os.chdir(cur_dir)
@@ -202,7 +202,7 @@ if __name__ == "__main__":
         else:
             timely_t_high=int(np.random.uniform(PARAM_LIST[cc_idx][0],PARAM_LIST[cc_idx][1])*PARAM_LIST[cc_idx][2])
         DEFAULT_PARAM_VEC[cc_idx]=float(timely_t_high)/PARAM_LIST[cc_idx][2]
-      
+   
     DEFAULT_PARAM_VEC[bfsz_idx]=float(bfsz)/PARAM_LIST[bfsz_idx][2]
     DEFAULT_PARAM_VEC[fwin_idx]=float(fwin)/PARAM_LIST[fwin_idx][2]
     DEFAULT_PARAM_VEC[pfc_idx]=enable_pfc
