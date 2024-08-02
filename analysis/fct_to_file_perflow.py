@@ -216,12 +216,12 @@ def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,enable_em
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
-def calculate_busy_period_link(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
-    
+def calculate_busy_period_link(fat, fct, fid,fsize,flows_size_threshold=0, enable_empirical=False):
     events = []
     for i in range(len(fat)):
-        events.append((fat[i], 'arrival'))
-        events.append((fat[i]+fct[i], 'departure'))
+        if fsize[i]<flows_size_threshold:
+            events.append((fat[i], 'arrival'))
+            events.append((fat[i]+fct[i], 'departure'))
     events.sort(key=lambda x: x[0])
     
     n_inflight_flows=0
@@ -313,6 +313,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
+    flows_size_threshold=50000
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     
@@ -371,8 +372,8 @@ if __name__ == "__main__":
         i_fcts = res_np[:, 1].astype("int64")
         fid=res_np[:, 6].astype("int64")
         fat=res_np[:, 3].astype("int64")
+        fsize=res_np[:, 2].astype("int64")
         if nhosts==21:
-            fsize=res_np[:, 2].astype("int64")
             util = np.sum(fsize) / (np.max(fat+fcts) - np.min(fat)) * 8 / 10
             print(f"util: {util}")
             n_inflight_flows_mean=np.sum(fcts-2000)/(np.max(fat+fcts)-np.min(fat))
@@ -424,12 +425,12 @@ if __name__ == "__main__":
                 % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
             )  
         else:
-            fsd=np.load("%s/fsd.npy" % (output_dir))
-            fsd=fsd[fid]
-            print(f"fsd: {fsd.shape}")
             if nhosts==21:
-                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
+                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flows_size_threshold,enable_empirical)
             else:
+                fsd=np.load("%s/fsd.npy" % (output_dir))
+                fsd=fsd[fid]
+                print(f"fsd: {fsd.shape}")
                 flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
