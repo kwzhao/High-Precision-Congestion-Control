@@ -275,7 +275,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
     #         busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
-    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flows_size_threshold: {flows_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
 if __name__ == "__main__":
