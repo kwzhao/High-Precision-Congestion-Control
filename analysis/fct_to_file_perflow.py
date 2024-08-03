@@ -216,37 +216,41 @@ def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,enable_em
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
-def calculate_busy_period_link(fat, fct, fid,fsize,flows_size_threshold, enable_empirical=False):
+def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, enable_empirical=False):
     events = []
+    flow_to_fsize={}
     for i in range(len(fat)):
-        if fsize[i]<flows_size_threshold:
-            events.append((fat[i], 'arrival'))
-            events.append((fat[i]+fct[i], 'departure'))
+        events.append((fat[i], 'arrival', fid[i]))
+        events.append((fat[i]+fct[i], 'departure', fid[i]))
+        flow_to_fsize[fid[i]]=fsize_total[i]
     events.sort(key=lambda x: x[0])
     
     n_inflight_flows=0
     current_busy_period_start_time=None
-    n_flows=0
     busy_periods_time = []
+    active_flows=set()
+    enable_new_period=True
     for event in events:
-        time, event_type = event
+        time, event_type, flow_id = event
 
         if event_type == 'arrival':
-            if n_inflight_flows == 0:
-                n_flows=0
+            if enable_new_period:
                 current_busy_period_start_time = time
+                enable_new_period=False
             n_inflight_flows += 1
-            n_flows+=1
+            active_flows.add(flow_id)
         elif event_type == 'departure':
             n_inflight_flows -= 1
-            if n_inflight_flows == 0:
-                if n_flows>0:
-                    busy_periods_time.append((current_busy_period_start_time, time, n_flows))
+            active_flows.remove(flow_id)
+            n_small_flows=len([flow_id for flow_id in active_flows if flow_to_fsize[flow_id]<flows_size_threshold])
+            if n_small_flows==0:
+                busy_periods_time.append((current_busy_period_start_time, time))
+                enable_new_period=True
                 
     busy_periods=[]
     busy_periods_len=[]
     for busy_period_time in busy_periods_time:
-        busy_period_start, busy_period_end, n_flows = busy_period_time
+        busy_period_start, busy_period_end = busy_period_time
         fid_target_idx=~np.logical_or(
                 fat+fct<busy_period_start,
                 fat>busy_period_end,
@@ -254,7 +258,7 @@ def calculate_busy_period_link(fat, fct, fid,fsize,flows_size_threshold, enable_
         fid_target=fid[fid_target_idx]
         if np.sum(fid_target)>0:
             busy_periods.append([np.min(fid_target), np.max(fid_target)])
-            busy_periods_len.append(n_flows)
+            busy_periods_len.append(len(fid_target))
         
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
                                                         
@@ -440,7 +444,7 @@ if __name__ == "__main__":
             "rm %s"
             % tr_path)
         
-        # os.system("rm %s" % (file))
+        os.system("rm %s" % (file))
         
         # if os.path.exists("%s/flows.txt"% (output_dir)):
         #     os.system("rm %s/flows.txt" % (output_dir))
