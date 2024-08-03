@@ -69,7 +69,7 @@ fn main() -> anyhow::Result<()> {
     let file_reference = format!("{}/analysis/main_flowsim_mmf.py", root_path);
     let type_topo = "topo-pl";
 
-    println!("{:?}", Parameters::field_names());
+    // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(&params.shard, &params.n_flows, &params.n_hosts)
         .par_bridge()
         .for_each(|combination| {
@@ -100,7 +100,7 @@ fn main() -> anyhow::Result<()> {
             let mut _result = child.wait().unwrap();
         });
 
-    println!("{:?}", Parameters::field_names());
+    // println!("{:?}", Parameters::field_names());
     itertools::iproduct!(
         &params.shard,
         &params.n_flows,
