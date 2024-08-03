@@ -216,7 +216,7 @@ def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,enable_em
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
-def calculate_busy_period_link(fat, fct, fid,fsize,flows_size_threshold=0, enable_empirical=False):
+def calculate_busy_period_link(fat, fct, fid,fsize,flows_size_threshold, enable_empirical=False):
     events = []
     for i in range(len(fat)):
         if fsize[i]<flows_size_threshold:
