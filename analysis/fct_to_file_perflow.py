@@ -242,10 +242,11 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
         elif event_type == 'departure':
             n_inflight_flows -= 1
             active_flows.remove(flow_id)
-            n_small_flows=len([flow_id for flow_id in active_flows if flow_to_fsize[flow_id]<flows_size_threshold])
-            if n_small_flows==0:
-                busy_periods_time.append((current_busy_period_start_time, time))
-                enable_new_period=True
+            if not enable_new_period:
+                n_small_flows=len([flow_id for flow_id in active_flows if flow_to_fsize[flow_id]<flows_size_threshold])
+                if n_small_flows==0 or n_inflight_flows==0:
+                    busy_periods_time.append((current_busy_period_start_time, time))
+                    enable_new_period=True
                 
     busy_periods=[]
     busy_periods_len=[]
