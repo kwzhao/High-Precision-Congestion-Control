@@ -178,7 +178,7 @@ if __name__ == "__main__":
                 ).astype("int64")
             elif size_dist_candidate=="lognorm":
                 avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
-                size_sigma=(float(size_sigma_candidate)) / 50000+1
+                size_sigma=(float(size_sigma_candidate)) / 70000+1
                 # flow size
                 mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
                 f_sizes_in_byte = (

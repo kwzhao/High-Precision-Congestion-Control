@@ -15,7 +15,7 @@ avg_size_base_in_bit = MTU*BYTE_TO_BIT # 10KB
 
 size_distribution_list=["exp","gaussian","lognorm","pareto"]
 # size_distribution_list=["exp"]
-size_sigma_range=[10000,50000]
+size_sigma_range=[5000,50000]
 # size_sigma_range=[30000,30000]
 ia_distribution="lognorm"
 # ia_distribution="exp"
