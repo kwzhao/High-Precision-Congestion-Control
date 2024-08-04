@@ -119,6 +119,7 @@ if __name__ == "__main__":
             ntc=random.randint(2, nhost*(nhost-1)//2)
             host_pair_idx_list=np.random.choice(len(host_pair_list_ori),size=ntc-1,replace=False)
             host_pair_list+=[host_pair_list_ori[i] for i in host_pair_idx_list]
+
         assert len(host_pair_list)==ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
     
@@ -249,4 +250,4 @@ if __name__ == "__main__":
         f_sizes_in_byte=np.array(f_sizes_in_byte_save).astype("int64")
         np.save("%s/fsize.npy"%(output_dir), f_sizes_in_byte)  # Byte
         np.save("%s/fat.npy"%(output_dir), f_arr_in_ns)  # ns
-        np.save("%s/fsd.npy"%(output_dir), flow_src_dst) 
+        np.save("%s/fsd.npy"%(output_dir), flow_src_dst)
