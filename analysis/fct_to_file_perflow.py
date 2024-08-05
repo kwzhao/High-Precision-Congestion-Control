@@ -261,7 +261,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
         if np.sum(fid_target)>0:
             # busy_periods.append([np.min(fid_target), np.max(fid_target)])
             # busy_periods_len.append(len(fid_target))
-            busy_periods.append(fid_target)
+            busy_periods.append(tuple(fid_target))
             busy_periods_len.append(len(fid_target))
         
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
@@ -321,7 +321,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
-    flows_size_threshold=30000
+    flows_size_threshold=100000
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     
@@ -435,6 +435,7 @@ if __name__ == "__main__":
         else:
             if nhosts==21:
                 flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flows_size_threshold,enable_empirical)
+                flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
             else:
                 fsd=np.load("%s/fsd.npy" % (output_dir))
                 fsd=fsd[fid]
