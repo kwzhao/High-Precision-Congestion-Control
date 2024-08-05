@@ -244,10 +244,10 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
             n_inflight_flows -= 1
             if flow_to_fsize[flow_id]<flows_size_threshold:
                 active_flows.remove(flow_id)
-            if len(active_flows)==0 or n_inflight_flows==0:
-                busy_periods_time.append((current_busy_period_start_time, time))
-                enable_new_period=True
-                current_busy_period_start_time = time + 1
+            if not enable_new_period:
+                if len(active_flows)==0:
+                    busy_periods_time.append((current_busy_period_start_time, time))
+                    enable_new_period=True
                 
     busy_periods=[]
     busy_periods_len=[]
@@ -259,7 +259,9 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
             )
         fid_target=fid[fid_target_idx]
         if np.sum(fid_target)>0:
-            busy_periods.append([np.min(fid_target), np.max(fid_target)])
+            # busy_periods.append([np.min(fid_target), np.max(fid_target)])
+            # busy_periods_len.append(len(fid_target))
+            busy_periods.append(fid_target)
             busy_periods_len.append(len(fid_target))
         
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
