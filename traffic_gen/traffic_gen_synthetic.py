@@ -162,10 +162,10 @@ if __name__ == "__main__":
             load_candidate=load_candidate*load_bottleneck_target/load_bottleneck_cur
 
             if size_dist_candidate=="exp":
-                mu = avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0)**2- min_size_in_bit
+                mu = avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0)**3.2- min_size_in_bit
                 f_sizes_in_byte = ((min_size_in_bit + np.random.exponential(scale=mu, size=(n_flows_tmp,))) / BYTE_TO_BIT).astype("int64") # Byte
             elif size_dist_candidate=="gaussian":
-                size_sigma=(float(size_sigma_candidate)/5000.0)**2
+                size_sigma=(float(size_sigma_candidate)/5000.0)**3.5
                 mu=avg_size_base_in_bit*size_sigma - min_size_in_bit
         
                 tmp=np.array([PosNormal(mu, avg_size_base_in_bit*size_sigma) for _ in range(n_flows_tmp)]).squeeze()
@@ -177,8 +177,9 @@ if __name__ == "__main__":
                     / BYTE_TO_BIT  # Byte
                 ).astype("int64")
             elif size_dist_candidate=="lognorm":
-                avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2
-                size_sigma=(float(size_sigma_candidate)) / 70000+1
+                avg_size_in_bit = avg_size_base_in_bit*(float(size_sigma_candidate) / 5000.0)**2.4
+                # size_sigma=(float(size_sigma_candidate)) / 70000+1
+                size_sigma=2.0
                 # flow size
                 mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma ** 2) / 2
                 f_sizes_in_byte = (
@@ -186,8 +187,8 @@ if __name__ == "__main__":
                     / BYTE_TO_BIT  # Byte
                 ).astype("int64")
             elif size_dist_candidate=="pareto":
-                avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_candidate)/5000.0)**2
-                size_sigma=avg_size_in_bit//2.0
+                avg_size_in_bit=avg_size_base_in_bit*(float(size_sigma_candidate)/5000.0)**2.5
+                size_sigma=avg_size_in_bit//2.5
                 func = lambda x: 5 - np.power(1 + x * (avg_size_in_bit - min_size_in_bit) / size_sigma, 1 / x)
                 psi = fsolve(func, 0.5)[0]
                 print("psi: ", psi)
