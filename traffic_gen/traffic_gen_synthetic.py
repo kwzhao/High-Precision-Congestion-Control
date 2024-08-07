@@ -103,8 +103,8 @@ if __name__ == "__main__":
             for i in range(nhost-1):
                 for j in range(i+1,nhost):
                     src_dst_pair=(i,j)
-                    if (j-i)!=nhost-1:
-                        host_pair_list_ori.append(src_dst_pair)
+                    # if (j-i)!=nhost-1:
+                    host_pair_list_ori.append(src_dst_pair)
                     host_pair_to_link_dict[src_dst_pair]=[]
                     for link_id in range(i,j):
                         host_pair_to_link_dict[src_dst_pair].append(link_id)
