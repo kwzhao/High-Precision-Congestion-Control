@@ -5,7 +5,7 @@ import os
 import numpy as np
 from os.path import abspath, dirname
 from enum import Enum
-from collections import deque
+from collections import deque, defaultdict
 import traceback
 
 cur_dir=dirname(abspath(__file__))
@@ -153,70 +153,156 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
-def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,enable_empirical=False):
-    fid_fg=np.logical_and(
-                fsd[:, 0] == src_dst_pair_target[0],
-                fsd[:, 1] == src_dst_pair_target[1],
-            )
-    fid_fg = np.where(fid_fg)[0]
-    fat_fg = fat[fid_fg]    
-    fct_fg = fct[fid_fg]
+def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,fsize, flow_size_threshold,enable_empirical=False):
+    flows = {}
+    for i in range(len(fat)):
+        link_range=fsd[fid[i]]
+        flows[fid[i]] = {
+            'start_time': fat[i],
+            'end_time': fat[i] + fct[i],
+            'links': set([i for i in range(link_range[0],link_range[1])]),
+            'size': fsize[i]
+        }
     
-    events = []
-    for i in range(len(fid_fg)):
-        events.append((fat_fg[i], 'arrival'))
-        events.append((fat_fg[i]+fct_fg[i], 'departure'))
-    events.sort(key=lambda x: x[0])
-    
-    n_inflight_flows=0
-    current_busy_period_start_time=None
-    n_flows_fg=0
-    busy_periods_time = []
-    for event in events:
-        time, event_type = event
-
-        if event_type == 'arrival':
-            if n_inflight_flows == 0:
-                n_flows_fg=0
-                current_busy_period_start_time = time
-            n_inflight_flows += 1
-            n_flows_fg+=1
-        elif event_type == 'departure':
-            n_inflight_flows -= 1
-            if n_inflight_flows == 0:
-                if n_flows_fg>0:
-                    busy_periods_time.append((current_busy_period_start_time, time, n_flows_fg))
-                
-    busy_periods=[]
+    active_graphs = {}  # Dictionary to hold multiple bipartite graphs with graph_id as key
+    busy_periods = []  # List to store busy periods
     busy_periods_len=[]
-    for busy_period_time in busy_periods_time:
-        busy_period_start, busy_period_end, n_flows_fg = busy_period_time
-        fid_target_idx=~np.logical_or(
-                fat+fct<busy_period_start,
-                fat>busy_period_end,
-            )
-        fid_target=fid[fid_target_idx]
-        if np.sum(fid_target)>0:
-            busy_periods.append([np.min(fid_target), np.max(fid_target)])
-            busy_periods_len.append(n_flows_fg)
+    events = []
+
+    # Precompute events
+    flow_to_end_time = {}
+    for flow_id, flow in flows.items():
+        events.append((flow['start_time'], 'start', flow_id, flow['links'], flow['size']))
+        events.append((flow['end_time'], 'end', flow_id, flow['links'], flow['size']))
+        flow_to_end_time[flow_id] = flow['end_time']
+
+    events.sort()
+    
+    link_to_graph = {}  # Map to quickly find which graph a link belongs to
+    graph_id_new = 0  # Unique identifier for each graph
+    large_flow_to_info = {}
+    flow_to_size = {}
+    
+    for time, event, flow_id, links, size in events:
+        cur_time = time
+        # if flow_id % 1000 == 0:
+        #     print(f'Processing flow {flow_id}')
         
-    unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
-                                                        
-    if not enable_empirical:
-        busy_periods_filter=[]
-        busy_periods_len_filter=[]
-        for length, count in zip(unique_lengths, counts):
-            period_indices = np.where(busy_periods_len == length)[0]
-            if count > 500:
-                period_indices=np.random.choice(period_indices,500,replace=False)
-            busy_periods_filter.extend([busy_periods[i] for i in period_indices])
-            busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
-        busy_periods=busy_periods_filter
-        busy_periods_len=busy_periods_len_filter
-    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+        if event == 'start':
+            flow_to_size[flow_id] = size
+            if size > flow_size_threshold:
+                large_flow_to_info[flow_id] = (time, links)
+            
+            involved_graph_ids = set()
+            for link in links:
+                if link in link_to_graph:
+                    involved_graph_ids.add(link_to_graph[link])
+
+            new_active_links = defaultdict(set)
+            new_all_links = set()
+            new_flows = set()
+            new_all_flows = set()
+            
+            if involved_graph_ids:
+                for gid in involved_graph_ids:
+                    graph = active_graphs[gid]
+                    new_active_links.update(graph['active_links'])
+                    new_all_links.update(graph['all_links'])
+                    new_flows.update(graph['active_flows'])
+                    new_all_flows.update(graph['all_flows'])
+                    if cur_time > graph['start_time']:
+                        cur_time = graph['start_time']
+                    
+                    for link in graph['active_links']:
+                        link_to_graph[link] = graph_id_new
+                    del active_graphs[gid]
+            
+            for link in links:
+                new_active_links[link].add(flow_id)
+                new_all_links.add(link)
+                link_to_graph[link] = graph_id_new
+            new_flows.add(flow_id)
+            new_all_flows.add(flow_id)
+            active_graphs[graph_id_new] = {
+                'active_links': new_active_links,
+                'all_links': new_all_links,
+                'active_flows': new_flows,
+                'all_flows': new_all_flows,
+                'start_time': cur_time
+            }
+            graph_id_new += 1
+
+        elif event == 'end':
+            graph = None
+            for link in links:
+                if link in link_to_graph:
+                    graph_id = link_to_graph[link]
+                    graph = active_graphs[graph_id]
+                    break
+
+            if graph:
+                flow_to_size.pop(flow_id)
+                if flow_id in large_flow_to_info:
+                    large_flow_to_info.pop(flow_id)
+                
+                for link in links:
+                    if flow_id in graph['active_links'][link]:
+                        graph['active_links'][link].remove(flow_id)
+                        if not graph['active_links'][link]:
+                            del graph['active_links'][link]
+                            del link_to_graph[link]
+                    else:
+                        assert False, f"Flow {flow_id} not found in link {link} of graph {graph_id}"
+                if flow_id in graph['active_flows']:
+                    graph['active_flows'].remove(flow_id)
+                else:
+                    assert False, f"Flow {flow_id} not found in active flows of graph {graph_id}"
+                
+                n_small_flows=len([flow_id for flow_id in graph['active_flows'] if flow_to_size[flow_id]<=flow_size_threshold])
+                n_large_flows = len(graph['active_flows']) - n_small_flows
+                
+                if n_small_flows == 0:  # If no active small flows left in the graph
+                    end_time = cur_time
+                    for flow_id in graph['active_flows']:
+                        if flow_to_end_time[flow_id] > end_time:
+                            end_time = flow_to_end_time[flow_id]
+                    # busy_periods.append((graph['start_time'], end_time, list(graph['all_links']), list(graph['all_flows'])))
+                    busy_periods.append(tuple(graph['all_flows']))
+                    busy_periods_len.append(len(graph['all_flows']))
+                    
+                    del active_graphs[graph_id]
+                    for link in graph['active_links']:
+                        del link_to_graph[link]
+                    
+                    if n_large_flows > 0:
+                        new_active_links = defaultdict(set)
+                        new_all_links = set()
+                        new_flows = graph['active_flows']
+                        new_all_flows = graph['active_flows']
+                        start_time = cur_time
+                        for flow_id in graph['active_flows']:
+                            for link in large_flow_to_info[flow_id][1]:
+                                new_active_links[link].add(flow_id)
+                                new_all_links.add(link)
+                                link_to_graph[link] = graph_id_new
+                            if large_flow_to_info[flow_id][0] < start_time:
+                                start_time = large_flow_to_info[flow_id][0]
+                        active_graphs[graph_id_new] = {
+                            'active_links': new_active_links,
+                            'all_links': new_all_links,
+                            'active_flows': new_flows,
+                            'all_flows': new_all_flows,
+                            'start_time': start_time
+                        }
+                        graph_id_new += 1
+            else:
+                assert False, f"Flow {flow_id} has no active graph"
+    
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+    
     return busy_periods
 
-def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, enable_empirical=False):
+def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, enable_empirical=False):
     events = []
     flow_to_fsize={}
     for i in range(len(fat)):
@@ -235,14 +321,14 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
         time, event_type, flow_id = event
         if event_type == 'arrival':
             n_inflight_flows += 1
-            if flow_to_fsize[flow_id]<flows_size_threshold:
+            if flow_to_fsize[flow_id]<flow_size_threshold:
                 active_flows.add(flow_id)
             if enable_new_period:
                 current_busy_period_start_time = time
                 enable_new_period=False
         elif event_type == 'departure':
             n_inflight_flows -= 1
-            if flow_to_fsize[flow_id]<flows_size_threshold:
+            if flow_to_fsize[flow_id]<flow_size_threshold:
                 active_flows.remove(flow_id)
             if not enable_new_period:
                 if len(active_flows)==0:
@@ -277,7 +363,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flows_size_threshold, 
     #         busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
-    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flows_size_threshold: {flows_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
 if __name__ == "__main__":
@@ -321,7 +407,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
-    flows_size_threshold=100000
+    flow_size_threshold=100000
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     
@@ -434,13 +520,13 @@ if __name__ == "__main__":
             )  
         else:
             if nhosts==21:
-                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flows_size_threshold,enable_empirical)
-                flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
+                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flow_size_threshold,enable_empirical)
             else:
                 fsd=np.load("%s/fsd.npy" % (output_dir))
                 fsd=fsd[fid]
                 print(f"fsd: {fsd.shape}")
-                flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],enable_empirical)
+                flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],fsize, flow_size_threshold,enable_empirical)
+            flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
