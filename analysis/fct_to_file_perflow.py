@@ -155,8 +155,8 @@ def calculate_busy_period(log_file):
 
 def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,fsize, flow_size_threshold,enable_empirical=False):
     flows = {}
-    for i in range(len(fat)):
-        link_range=fsd[fid[i]]
+    for i in range(len(fid)):
+        link_range=fsd[i]
         flows[fid[i]] = {
             'start_time': fat[i],
             'end_time': fat[i] + fct[i],
@@ -267,8 +267,9 @@ def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,fsize, fl
                         if flow_to_end_time[flow_id] > end_time:
                             end_time = flow_to_end_time[flow_id]
                     # busy_periods.append((graph['start_time'], end_time, list(graph['all_links']), list(graph['all_flows'])))
-                    busy_periods.append(tuple(graph['all_flows']))
-                    busy_periods_len.append(len(graph['all_flows']))
+                    if len(graph['all_flows'])>0:
+                        busy_periods.append(tuple(graph['all_flows']))
+                        busy_periods_len.append(len(graph['all_flows']))
                     
                     del active_graphs[graph_id]
                     for link in graph['active_links']:
@@ -528,9 +529,9 @@ if __name__ == "__main__":
                 flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],fsize, flow_size_threshold,enable_empirical)
             flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
-            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-            #     for period in flow_id_per_period_est:
-            #         file.write(" ".join(map(str, period)) + "\n") 
+            with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+                for period in flow_id_per_period_est:
+                    file.write(" ".join(map(str, period)) + "\n") 
         os.system(
             "rm %s"
             % tr_path)
