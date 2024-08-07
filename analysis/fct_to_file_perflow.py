@@ -529,9 +529,9 @@ if __name__ == "__main__":
                 flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],fsize, flow_size_threshold,enable_empirical)
             flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
             np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
-            with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-                for period in flow_id_per_period_est:
-                    file.write(" ".join(map(str, period)) + "\n") 
+            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+            #     for period in flow_id_per_period_est:
+            #         file.write(" ".join(map(str, period)) + "\n") 
         os.system(
             "rm %s"
             % tr_path)
