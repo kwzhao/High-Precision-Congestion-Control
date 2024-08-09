@@ -338,6 +338,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, e
                 
     busy_periods=[]
     busy_periods_len=[]
+    busy_periods_duration=[]
     for busy_period_time in busy_periods_time:
         busy_period_start, busy_period_end = busy_period_time
         fid_target_idx=~np.logical_or(
@@ -350,6 +351,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, e
             # busy_periods_len.append(len(fid_target))
             busy_periods.append(tuple(fid_target))
             busy_periods_len.append(len(fid_target))
+            busy_periods_duration.append([busy_period_start, busy_period_end])
         
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
                                                         
@@ -365,7 +367,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, e
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}")
-    return busy_periods, busy_periods_time
+    return busy_periods, busy_periods_duration
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
