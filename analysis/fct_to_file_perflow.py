@@ -301,7 +301,7 @@ def calculate_busy_period_path(fat, fct, fid, fsd,fsize, flow_size_threshold,ena
     
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
     
-    return busy_periods
+    return busy_periods, None
 
 def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, enable_empirical=False):
     events = []
@@ -365,7 +365,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, e
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
     print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}")
-    return busy_periods
+    return busy_periods, busy_periods_time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
@@ -408,7 +408,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
-    flow_size_threshold_list=[10000, 50000, 100000, 200000]
+    flow_size_threshold_list=[10000, 50000, 100000, 1000000]
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     
@@ -521,14 +521,15 @@ if __name__ == "__main__":
         else:
             for flow_size_threshold in flow_size_threshold_list:
                 if nhosts==21:
-                    flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flow_size_threshold,enable_empirical)
+                    busy_periods, busy_periods_time=calculate_busy_period_link(fat, fcts, fid, fsize, flow_size_threshold,enable_empirical)
                 else:
                     fsd=np.load("%s/fsd.npy" % (output_dir))
                     fsd=fsd[fid]
                     print(f"fsd: {fsd.shape}")
-                    flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd,fsize, flow_size_threshold,enable_empirical)
-                flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
-                np.save("%s/period_%s%s_t%d.npy" % (output_dir, args.prefix, config_specs, flow_size_threshold), flow_id_per_period_est)
+                    busy_periods, busy_periods_time=calculate_busy_period_path(fat, fcts, fid, fsd,fsize, flow_size_threshold,enable_empirical)
+                busy_periods = np.array(busy_periods, dtype=object)
+                np.save("%s/period_%s%s_t%d.npy" % (output_dir, args.prefix, config_specs, flow_size_threshold), busy_periods)
+                np.save("%s/period_time_%s%s_t%d.npy" % (output_dir, args.prefix, config_specs, flow_size_threshold), np.array(busy_periods_time))
                 # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
                 #     for period in flow_id_per_period_est:
                 #         file.write(" ".join(map(str, period)) + "\n") 
