@@ -153,7 +153,7 @@ def calculate_busy_period(log_file):
         print(f"n_flow_event: {n_flow_event}, no busy period")
     return busy_periods
 
-def calculate_busy_period_path(fat, fct, fid, fsd, src_dst_pair_target,fsize, flow_size_threshold,enable_empirical=False):
+def calculate_busy_period_path(fat, fct, fid, fsd,fsize, flow_size_threshold,enable_empirical=False):
     flows = {}
     for i in range(len(fid)):
         link_range=fsd[i]
@@ -364,7 +364,7 @@ def calculate_busy_period_link(fat, fct, fid, fsize_total,flow_size_threshold, e
     #         busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
-    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.median(busy_periods_len)}, {np.max(busy_periods_len)}")
+    print(f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}")
     return busy_periods
 
 if __name__ == "__main__":
@@ -408,7 +408,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
-    flow_size_threshold=200000
+    flow_size_threshold_list=[10000, 50000, 100000, 200000]
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     
@@ -423,7 +423,6 @@ if __name__ == "__main__":
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
         exit(0)
-    # print file
     # flowId, sip, dip, sport, dport, size (B), start_time, fct (ns), standalone_fct (ns)
     if type == 0:
         cmd = (
@@ -465,9 +464,9 @@ if __name__ == "__main__":
         # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
         fcts = res_np[:, 0].astype("int64")
         i_fcts = res_np[:, 1].astype("int64")
-        fid=res_np[:, 6].astype("int64")
-        fat=res_np[:, 3].astype("int64")
         fsize=res_np[:, 2].astype("int64")
+        fat=res_np[:, 3].astype("int64")
+        fid=res_np[:, 6].astype("int64")
         if nhosts==21:
             util = np.sum(fsize) / (np.max(fat+fcts) - np.min(fat)) * 8 / 10
             print(f"util: {util}")
@@ -520,23 +519,25 @@ if __name__ == "__main__":
                 % ("%s/mix_%s%s.log" % (output_dir, args.prefix,  config_specs))
             )  
         else:
-            if nhosts==21:
-                flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flow_size_threshold,enable_empirical)
-            else:
-                fsd=np.load("%s/fsd.npy" % (output_dir))
-                fsd=fsd[fid]
-                print(f"fsd: {fsd.shape}")
-                flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd, [0, nhosts-1],fsize, flow_size_threshold,enable_empirical)
-            flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
-            np.save("%s/period_%s%s.npy" % (output_dir, args.prefix, config_specs), flow_id_per_period_est)
-            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-            #     for period in flow_id_per_period_est:
-            #         file.write(" ".join(map(str, period)) + "\n") 
-        os.system(
-            "rm %s"
-            % tr_path)
+            for flow_size_threshold in flow_size_threshold_list:
+                if nhosts==21:
+                    flow_id_per_period_est=calculate_busy_period_link(fat, fcts, fid, fsize, flow_size_threshold,enable_empirical)
+                else:
+                    fsd=np.load("%s/fsd.npy" % (output_dir))
+                    fsd=fsd[fid]
+                    print(f"fsd: {fsd.shape}")
+                    flow_id_per_period_est=calculate_busy_period_path(fat, fcts, fid, fsd,fsize, flow_size_threshold,enable_empirical)
+                flow_id_per_period_est = np.array(flow_id_per_period_est, dtype=object)
+                np.save("%s/period_%s%s_t%d.npy" % (output_dir, args.prefix, config_specs, flow_size_threshold), flow_id_per_period_est)
+                # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+                #     for period in flow_id_per_period_est:
+                #         file.write(" ".join(map(str, period)) + "\n") 
+        if os.path.exists(tr_path):
+            os.system(
+                "rm %s"
+                % tr_path)
         
-        os.system("rm %s" % (file))
+        # os.system("rm %s" % (file))
         
         # if os.path.exists("%s/flows.txt"% (output_dir)):
         #     os.system("rm %s/flows.txt" % (output_dir))
