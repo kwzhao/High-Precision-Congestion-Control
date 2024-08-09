@@ -23,7 +23,7 @@ ias_sigma_range=[1.0,2.0]
 # ias_sigma_range=[2.0,2.0]
 load_range=[0.20,0.80]
 # load_range=[0.95,0.95]
-load_bottleneck_range=[0.20,0.70]
+load_bottleneck_range=[0.20,0.80]
 # load_bottleneck_range=[0.95,0.95]
 color_list = [
     "cornflowerblue",
