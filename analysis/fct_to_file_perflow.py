@@ -409,7 +409,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr=args.enable_tr
     output_type=OutputType.BUSY_PERIOD
-    flow_size_threshold_list=[10000, 50000, 100000, 1000000]
+    flow_size_threshold_list=[10000, 50000, 200000, 1000000,100000000]
     enable_empirical=args.output_dir.split("_")[-1]=="empirical"
     print(f"enable_empirical: {enable_empirical}")
     

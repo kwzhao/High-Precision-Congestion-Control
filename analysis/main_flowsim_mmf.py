@@ -9,12 +9,6 @@ from os.path import abspath, dirname
 cur_dir=dirname(abspath(__file__))
 os.chdir(cur_dir)
 
-MTU = 1000
-HEADER_SIZE = 48
-DELAY_PROPAGATION_BASE = 1000
-BYTE_TO_BIT = 8
-UNIT_G = 1000000000
-
 class FCTStruct(Structure):
     _fields_ = [
         ("estimated_fcts", POINTER(c_double)),
