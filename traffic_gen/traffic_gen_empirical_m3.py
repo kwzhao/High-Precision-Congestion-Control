@@ -70,12 +70,10 @@ if __name__ == "__main__":
         sys.exit(0)
     bandwidth_list_scale=[]
     if nhost==21:
-        n_links=nhost
         bandwidth_list_scale=[1] * (nhost)
     else:
-        n_links=2 * nhost - 1
-        for link_id in range(n_links):
-            if link_id < nhost:
+        for link_id in range(nhost-1):
+            if link_id==0 or link_id==nhost-2:
                 bandwidth_list_scale.append(1)
             else:
                 bandwidth_list_scale.append(switch_to_host)
@@ -89,22 +87,26 @@ if __name__ == "__main__":
         bandwidth_list=[]
         host_pair_list_ori=[]
         host_pair_to_link_dict={}
-        for link_id in range(n_links):
-            bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
         if nhost==21:
+            for link_id in range(nhost):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
             for i in range(nhost-1):
                 src_dst_pair=(i,nhost-1)
                 host_pair_list_ori.append(src_dst_pair)
-                host_pair_to_link_dict[src_dst_pair]=[i, nhost-1]
+                host_pair_to_link_dict[src_dst_pair]=[]
+                host_pair_to_link_dict[src_dst_pair].append(i)
+                host_pair_to_link_dict[src_dst_pair].append(nhost-1)
         else:
+            for link_id in range(nhost-1):
+                bandwidth_list.append(bandwidth_list_scale[link_id]*bandwidth_base)
             for i in range(nhost-1):
                 for j in range(i+1,nhost):
                     src_dst_pair=(i,j)
                     # if (j-i)!=nhost-1:
                     host_pair_list_ori.append(src_dst_pair)
-                    host_pair_to_link_dict[src_dst_pair]=[i, j]
+                    host_pair_to_link_dict[src_dst_pair]=[]
                     for link_id in range(i,j):
-                        host_pair_to_link_dict[src_dst_pair].append(nhost + link_id)
+                        host_pair_to_link_dict[src_dst_pair].append(link_id)
         # host_pair_list=[(0,nhost-1)]
         host_pair_list=[]
         if nhost==2:
@@ -151,12 +153,18 @@ if __name__ == "__main__":
         load_bottleneck_target=np.random.rand()*(load_bottleneck_range[1]-load_bottleneck_range[0])+load_bottleneck_range[0]
 
         load_per_link={}
-        for i in range(n_links):
-            load_per_link[i]=0
+        if nhost==21:
+            for i in range(nhost):
+                load_per_link[i]=0
+        else:
+            for i in range(nhost-1):
+                load_per_link[i]=0
         for i in range(ntc):
+            load_tmp=load_candidate
             src_dst_pair=host_pair_list[i]
+            
             for link_id in host_pair_to_link_dict[src_dst_pair]:
-                load_per_link[link_id]+=load_candidate/bandwidth_list_scale[link_id]
+                load_per_link[link_id]+=load_tmp/bandwidth_list_scale[link_id]
         tmp=list(load_per_link.values())
         load_bottleneck_cur=np.max(tmp)
         load_bottleneck_link_id=tmp.index(load_bottleneck_cur)
@@ -180,17 +188,16 @@ if __name__ == "__main__":
         flow_src_dst_save=[]
         f_arr_in_ns_save=[]
         f_sizes_in_byte_save=[]
-        
         data=''
         flow_id_total=0
         t=base_t
         host_pair_list_idx=np.arange(len(host_pair_list))
-        # p_candidate_list=[ntc, 10, 20, 50, 100]
-        # p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
-        # p_list=np.random.rand(ntc)*p_candidate/ntc
-        # p_list[0]=1.0
+        p_candidate_list=[ntc, 10, 20, 50, 100]
+        p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
+        p_list=np.random.rand(ntc)*p_candidate/ntc
+        p_list[0]=1.0
 
-        # p_list=np.array(p_list)/np.sum(p_list)
+        p_list=np.array(p_list)/np.sum(p_list)
         n_flows_foreground=0
         while (flow_id_total<n_flows_tmp-1):
             # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
@@ -225,9 +232,10 @@ if __name__ == "__main__":
         utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
         print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
         print("load_candidate:", load_bottleneck_target,load_candidate)
-        print("stats:", n_flows_total,n_flows_foreground,size_dist_candidate, ias_sigma_candidate,end_time)
+        print("stats:", n_flows_total,p_list[0],n_flows_foreground,size_dist_candidate, ias_sigma_candidate,end_time)
         stats={
             "n_flows": n_flows_total,
+            "ratio": p_list[0],
             "n_flows_foreground":n_flows_foreground,
             "load_bottleneck_target":load_bottleneck_target,
             "host_pair_list":host_pair_list,
