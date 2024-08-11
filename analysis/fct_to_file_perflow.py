@@ -401,18 +401,16 @@ def calculate_busy_period_link(
                 enable_new_period = False
         elif event_type == "departure":
             n_inflight_flows -= 1
-            if n_inflight_flows == 0:
+            if flow_to_fsize[flow_id] < flow_size_threshold:
+                active_flows.remove(flow_id)
+            if not enable_new_period and len(active_flows) == 0:
                 busy_periods_time.append((current_busy_period_start_time, time))
                 enable_new_period = True
-            elif flow_to_fsize[flow_id] < flow_size_threshold:
-                active_flows.remove(flow_id)
-                if len(active_flows) == 0:
-                    busy_periods_time.append((current_busy_period_start_time, time))
-                    enable_new_period = True
 
     busy_periods = []
     busy_periods_len = []
     busy_periods_duration = []
+    busy_periods_unique = set()
     for busy_period_time in busy_periods_time:
         busy_period_start, busy_period_end = busy_period_time
         fid_target_idx = ~np.logical_or(
@@ -426,6 +424,7 @@ def calculate_busy_period_link(
             busy_periods.append(tuple(fid_target))
             busy_periods_len.append(len(fid_target))
             busy_periods_duration.append([busy_period_start, busy_period_end])
+            busy_periods_unique.update(fid_target)
 
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
 
@@ -440,8 +439,9 @@ def calculate_busy_period_link(
     #         busy_periods_len_filter.extend([busy_periods_len[i] for i in period_indices])
     #     busy_periods=busy_periods_filter
     #     busy_periods_len=busy_periods_len_filter
+    n_flows_in_busy_periods = np.sum(busy_periods_len)
     print(
-        f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
+        f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
     return busy_periods, busy_periods_duration
 
@@ -502,7 +502,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr = args.enable_tr
     output_type = OutputType.BUSY_PERIOD
-    flow_size_threshold_list = [10000, 50000, 200000, 1000000, 100000000]
+    flow_size_threshold_list = [50000, 200000, 1000000, 100000000]
     enable_empirical = args.output_dir.split("_")[-1] == "empirical"
     print(f"enable_empirical: {enable_empirical}")
 
