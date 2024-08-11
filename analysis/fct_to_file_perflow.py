@@ -203,15 +203,17 @@ def calculate_busy_period(log_file):
 
 
 def calculate_busy_period_path(
-    fat, fct, fid, fsd, fsize, flow_size_threshold, enable_empirical=False
+    fat, fct, fid, fsd, fsize, nhosts, flow_size_threshold, enable_empirical=False
 ):
     flows = {}
     for i in range(len(fid)):
-        link_range = fsd[i]
+        links = fsd[i]
+        for i in range(links[0], links[1]):
+            links.append(nhosts + i)
         flows[fid[i]] = {
             "start_time": fat[i],
             "end_time": fat[i] + fct[i],
-            "links": set([i for i in range(link_range[0], link_range[1])]),
+            "links": set(links),
             "size": fsize[i],
         }
 
@@ -394,12 +396,15 @@ def calculate_busy_period_link(
             n_inflight_flows += 1
             if flow_to_fsize[flow_id] < flow_size_threshold:
                 active_flows.add(flow_id)
-                if enable_new_period:
-                    current_busy_period_start_time = time
-                    enable_new_period = False
+            if enable_new_period:
+                current_busy_period_start_time = time
+                enable_new_period = False
         elif event_type == "departure":
             n_inflight_flows -= 1
-            if flow_to_fsize[flow_id] < flow_size_threshold:
+            if n_inflight_flows == 0:
+                busy_periods_time.append((current_busy_period_start_time, time))
+                enable_new_period = True
+            elif flow_to_fsize[flow_id] < flow_size_threshold:
                 active_flows.remove(flow_id)
                 if len(active_flows) == 0:
                     busy_periods_time.append((current_busy_period_start_time, time))
@@ -640,6 +645,7 @@ if __name__ == "__main__":
                         fid,
                         fsd,
                         fsize,
+                        nhosts,
                         flow_size_threshold,
                         enable_empirical,
                     )
