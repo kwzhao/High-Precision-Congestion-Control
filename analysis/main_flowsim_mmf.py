@@ -6,8 +6,10 @@ from time import time
 import argparse
 import os
 from os.path import abspath, dirname
-cur_dir=dirname(abspath(__file__))
+
+cur_dir = dirname(abspath(__file__))
 os.chdir(cur_dir)
+
 
 class FCTStruct(Structure):
     _fields_ = [
@@ -113,10 +115,10 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
 
     n_flows = len(sizes)
 
-    if nhost==21:
-        nhost=3
-        flow_src_dst[:, 0]=0
-        flow_src_dst[:, 1]=2
+    if nhost == 21:
+        nhost = 3
+        flow_src_dst[:, 0] = 0
+        flow_src_dst[:, 1] = 2
     start = time()
     fats_pt = make_array(c_double, fats)
     sizes_pt = make_array(c_double, sizes)
@@ -135,6 +137,6 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
 
     np.save("%s/fct_flowsim.npy" % output_dir, estimated_fcts)
     C_LIB.free_fctstruct(res)
-    
+
 if os.path.exists("%s/flows.txt" % output_dir):
     os.system("rm %s/flows.txt" % (output_dir))
