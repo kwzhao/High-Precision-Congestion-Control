@@ -125,9 +125,14 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     src_pt = make_array(c_int, flow_src_dst[:, 0])
     dst_pt = make_array(c_int, flow_src_dst[:, 1])
     topo_pt = make_array(c_int, np.array([1, 4]))
-    res = C_LIB.get_fct_mmf(
-        n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 2, 8, 2, bw
-    )
+    if nhost == 21:
+        res = C_LIB.get_fct_mmf(
+            n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 2, 8, 2, bw
+        )
+    else:
+        res = C_LIB.get_fct_mmf(
+            n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 1, 8, 2, bw
+        )
 
     estimated_fcts = np.fromiter(res.estimated_fcts, dtype=np.float64, count=n_flows)
 
