@@ -115,21 +115,23 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
 
     n_flows = len(sizes)
 
+    start = time()
+    fats_pt = make_array(c_double, fats)
+    sizes_pt = make_array(c_double, sizes)
+
+    topo_pt = make_array(c_int, np.array([1, 4]))
     if nhost == 21:
         nhost = 3
         flow_src_dst[:, 0] = 0
         flow_src_dst[:, 1] = 2
-    start = time()
-    fats_pt = make_array(c_double, fats)
-    sizes_pt = make_array(c_double, sizes)
-    src_pt = make_array(c_int, flow_src_dst[:, 0])
-    dst_pt = make_array(c_int, flow_src_dst[:, 1])
-    topo_pt = make_array(c_int, np.array([1, 4]))
-    if nhost == 21:
+        src_pt = make_array(c_int, flow_src_dst[:, 0])
+        dst_pt = make_array(c_int, flow_src_dst[:, 1])
         res = C_LIB.get_fct_mmf(
             n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 2, 8, 2, bw
         )
     else:
+        src_pt = make_array(c_int, flow_src_dst[:, 0])
+        dst_pt = make_array(c_int, flow_src_dst[:, 1])
         res = C_LIB.get_fct_mmf(
             n_flows, fats_pt, sizes_pt, src_pt, dst_pt, nhost, topo_pt, 1, 8, 2, bw
         )
