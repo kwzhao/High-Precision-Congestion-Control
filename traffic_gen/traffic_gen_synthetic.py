@@ -213,8 +213,6 @@ if __name__ == "__main__":
     
         n_flows_done= min(n_flows_total,n_flows_tmp-1)
         end_time=float(np.sum(f_arr_in_ns[: n_flows_done])) / UNIT_G
-        utilization = np.sum(f_sizes_in_byte[: n_flows_done])*BYTE_TO_BIT / end_time / bandwidth_list[load_bottleneck_link_id]
-        print("utilization: ",np.round(utilization, 3), np.round(load_candidate, 3))
         print("load_candidate:", load_bottleneck_target,load_candidate)
         print("stats:", n_flows_total,p_list[0],n_flows_foreground,size_dist_candidate, size_sigma_candidate, ias_sigma_candidate,end_time)
         stats={
