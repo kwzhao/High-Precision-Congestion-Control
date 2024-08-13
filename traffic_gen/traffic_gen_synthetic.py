@@ -155,18 +155,18 @@ if __name__ == "__main__":
                     host_pair_to_link_dict[src_dst_pair] = [i, j]
                     for link_id in range(i, j):
                         host_pair_to_link_dict[src_dst_pair].append(nhost + link_id)
-        # host_pair_list=[(0,nhost-1)]
-        host_pair_list = []
+        host_pair_list = [(0, nhost - 1)]
+        # host_pair_list = []
         if nhost == 2:
             ntc = 1
         elif nhost == 21:
             ntc = 20
-            host_pair_idx_list = [(i, nhost - 1) for i in range(0, nhost - 1)]
+            host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
             ntc = random.randint(2, nhost * (nhost - 1) // 2)
             host_pair_idx_list = np.random.choice(
-                len(host_pair_list_ori), size=ntc, replace=False
+                len(host_pair_list_ori), size=ntc - 1, replace=False
             )
             host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
 
