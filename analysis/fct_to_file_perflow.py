@@ -30,8 +30,6 @@ def fix_seed(seed):
 
 
 target_node_id = 21
-queue_threshold = 0
-busy_period_threshold = 0
 
 
 def parse_log_entry(line):
