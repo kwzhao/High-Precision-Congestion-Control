@@ -205,13 +205,15 @@ def calculate_busy_period_path(
 ):
     flows = {}
     for i in range(len(fid)):
-        links = fsd[i].tolist()
-        for link_idx in range(links[0], links[1]):
-            links.append(nhosts + link_idx)
+        links = set()
+        links.add((fsd[i][0], nhosts + fsd[i][0]))
+        for link_idx in range(fsd[i][0], fsd[i][1]):
+            links.add((nhosts + link_idx, nhosts + link_idx + 1))
+        links.add((nhosts + fsd[i][1], fsd[i][1]))
         flows[fid[i]] = {
             "start_time": fat[i],
             "end_time": fat[i] + fct[i],
-            "links": set(links),
+            "links": links,
             "size": fsize[i],
         }
 
