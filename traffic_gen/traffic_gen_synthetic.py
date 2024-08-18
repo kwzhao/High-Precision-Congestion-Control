@@ -164,7 +164,9 @@ if __name__ == "__main__":
             host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
-            ntc = random.randint(2, nhost * (nhost - 1) // 2)
+            ntc = random.randint(
+                max(2, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
+            )
             host_pair_idx_list = np.random.choice(
                 len(host_pair_list_ori), size=ntc - 1, replace=False
             )
