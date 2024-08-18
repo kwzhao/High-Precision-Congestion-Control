@@ -236,32 +236,29 @@ def calculate_busy_period_path(
 
     events.sort()
 
-    link_to_graph = defaultdict(
-        set
-    )  # Map to quickly find which graph a link belongs to
+    link_to_graph = {}  # Map to quickly find which graph a link belongs to
     graph_id_new = 0  # Unique identifier for each graph
     large_flow_to_info = {}
     flow_to_size = {}
-
     for time, event, flow_id, links, size in events:
         cur_time = time
         # if flow_id % 1000 == 0:
         #     print(f'Processing flow {flow_id}')
 
         if event == "start":
-            new_active_links = defaultdict(set)
-            new_all_links = set()
-            new_flows = set()
-            new_all_flows = set()
-
             flow_to_size[flow_id] = size
             if size > flow_size_threshold:
                 large_flow_to_info[flow_id] = (time, links)
             else:
+                new_active_links = defaultdict(set)
+                new_all_links = set()
+                new_flows = set()
+                new_all_flows = set()
+
                 involved_graph_ids = set()
                 for link in links:
                     if link in link_to_graph:
-                        involved_graph_ids.udpate(link_to_graph[link])
+                        involved_graph_ids.add(link_to_graph[link])
 
                 if involved_graph_ids:
                     for gid in involved_graph_ids:
@@ -274,107 +271,107 @@ def calculate_busy_period_path(
                             cur_time = graph["start_time"]
 
                         for link in graph["active_links"]:
-                            link_to_graph[link].add(graph_id_new)
+                            link_to_graph[link] = graph_id_new
                         del active_graphs[gid]
 
-            for link in links:
-                new_active_links[link].add(flow_id)
-                new_all_links.add(link)
-                link_to_graph[link].add(graph_id_new)
-            new_flows.add(flow_id)
-            new_all_flows.add(flow_id)
-            active_graphs[graph_id_new] = {
-                "active_links": new_active_links,
-                "all_links": new_all_links,
-                "active_flows": new_flows,
-                "all_flows": new_all_flows,
-                "start_time": cur_time,
-            }
-            graph_id_new += 1
+                for link in links:
+                    new_active_links[link].add(flow_id)
+                    new_all_links.add(link)
+                    link_to_graph[link] = graph_id_new
+                new_flows.add(flow_id)
+                new_all_flows.add(flow_id)
+                active_graphs[graph_id_new] = {
+                    "active_links": new_active_links,
+                    "all_links": new_all_links,
+                    "active_flows": new_flows,
+                    "all_flows": new_all_flows,
+                    "start_time": cur_time,
+                }
+                graph_id_new += 1
 
         elif event == "end":
             graph = None
             flow_to_size.pop(flow_id)
             if flow_id in large_flow_to_info:
                 large_flow_to_info.pop(flow_id)
+                continue
+
             for link in links:
                 if link in link_to_graph:
-                    for graph_id in link_to_graph[link]:
-                        graph = active_graphs[graph_id]
+                    graph_id = link_to_graph[link]
+                    graph = active_graphs[graph_id]
+                    break
 
-                        if flow_id in graph["active_links"][link]:
-                            graph["active_links"][link].remove(flow_id)
-                            if not graph["active_links"][link]:
-                                del graph["active_links"][link]
-                            if not link_to_graph[link]:
-                                del link_to_graph[link]
-                        else:
-                            assert (
-                                False
-                            ), f"Flow {flow_id} not found in link {link} of graph {graph_id}"
-
-                        if flow_id in graph["active_flows"]:
-                            graph["active_flows"].remove(flow_id)
-                        else:
-                            assert (
-                                False
-                            ), f"Flow {flow_id} not found in active flows of graph {graph_id}"
-
-                        n_small_flows = len(
-                            [
-                                flow_id
-                                for flow_id in graph["active_flows"]
-                                if flow_to_size[flow_id] <= flow_size_threshold
-                            ]
-                        )
-                        n_large_flows = len(graph["active_flows"]) - n_small_flows
-
-                        if (
-                            n_small_flows == 0
-                        ):  # If no active small flows left in the graph
-                            # end_time = cur_time
-                            # for flow_id in graph["active_flows"]:
-                            #     if flow_to_end_time[flow_id] > end_time:
-                            #         end_time = flow_to_end_time[flow_id]
-                            # busy_periods.append((graph['start_time'], end_time, list(graph['all_links']), list(graph['all_flows'])))
-                            # if len(graph["all_flows"]) > 0:
-                            busy_periods.append(tuple(graph["all_flows"]))
-                            busy_periods_len.append(len(graph["all_flows"]))
-                            busy_periods_duration.append(
-                                [graph["start_time"], cur_time]
-                            )
-                            busy_periods_unique.update(graph["all_flows"])
-
-                            del active_graphs[graph_id]
-                            for link in graph["active_links"]:
-                                link_to_graph[link].remove(graph_id)
-                                if not link_to_graph[link]:
-                                    del link_to_graph[link]
-                            if n_large_flows > 0:
-                                new_active_links = defaultdict(set)
-                                new_all_links = set()
-                                new_flows = set()
-                                new_all_flows = set()
-                                start_time = cur_time
-                                for flow_id in graph["active_flows"]:
-                                    new_flows.add(flow_id)
-                                    new_all_flows.add(flow_id)
-                                    for link in large_flow_to_info[flow_id][1]:
-                                        new_active_links[link].add(flow_id)
-                                        new_all_links.add(link)
-                                        link_to_graph[link].add(graph_id_new)
-                                    # if large_flow_to_info[flow_id][0] < start_time:
-                                    #     start_time = large_flow_to_info[flow_id][0]
-                                active_graphs[graph_id_new] = {
-                                    "active_links": new_active_links,
-                                    "all_links": new_all_links,
-                                    "active_flows": new_flows,
-                                    "all_flows": new_all_flows,
-                                    "start_time": start_time,
-                                }
-                                graph_id_new += 1
+            if graph:
+                for link in links:
+                    if flow_id in graph["active_links"][link]:
+                        graph["active_links"][link].remove(flow_id)
+                        if not graph["active_links"][link]:
+                            del graph["active_links"][link]
+                            del link_to_graph[link]
+                    else:
+                        assert (
+                            False
+                        ), f"Flow {flow_id} not found in link {link} of graph {graph_id}"
+                if flow_id in graph["active_flows"]:
+                    graph["active_flows"].remove(flow_id)
                 else:
-                    assert False, f"Link {link} not found in link_to_graph"
+                    assert (
+                        False
+                    ), f"Flow {flow_id} not found in active flows of graph {graph_id}"
+
+                n_small_flows = len(
+                    [
+                        flow_id
+                        for flow_id in graph["active_flows"]
+                        if flow_to_size[flow_id] <= flow_size_threshold
+                    ]
+                )
+                assert n_small_flows == len(
+                    graph["active_flows"]
+                ), f"n_small_flows: {n_small_flows}, n_active_flows: {len(graph['active_flows'])}"
+                if n_small_flows == 0:  # If no active small flows left in the graph
+                    # end_time = cur_time
+                    # for flow_id in graph["active_flows"]:
+                    #     if flow_to_end_time[flow_id] > end_time:
+                    #         end_time = flow_to_end_time[flow_id]
+                    # busy_periods.append((graph['start_time'], end_time, list(graph['all_links']), list(graph['all_flows'])))
+                    # if len(graph["all_flows"]) > 0:
+                    busy_periods.append(tuple(graph["all_flows"]))
+                    busy_periods_len.append(len(graph["all_flows"]))
+                    busy_periods_duration.append([graph["start_time"], cur_time])
+                    busy_periods_unique.update(graph["all_flows"])
+
+                    del active_graphs[graph_id]
+                    for link in graph["active_links"]:
+                        del link_to_graph[link]
+
+                    # if n_large_flows > 0:
+                    #     new_active_links = defaultdict(set)
+                    #     new_all_links = set()
+                    #     new_flows = set()
+                    #     new_all_flows = set()
+                    #     start_time = cur_time
+                    #     for flow_id in graph["active_flows"]:
+                    #         new_flows.add(flow_id)
+                    #         new_all_flows.add(flow_id)
+                    #         for link in large_flow_to_info[flow_id][1]:
+                    #             new_active_links[link].add(flow_id)
+                    #             new_all_links.add(link)
+                    #             link_to_graph[link] = graph_id_new
+                    #         # if large_flow_to_info[flow_id][0] < start_time:
+                    #         #     start_time = large_flow_to_info[flow_id][0]
+                    #     active_graphs[graph_id_new] = {
+                    #         "active_links": new_active_links,
+                    #         "all_links": new_all_links,
+                    #         "active_flows": new_flows,
+                    #         "all_flows": new_all_flows,
+                    #         "start_time": start_time,
+                    #     }
+                    #     graph_id_new += 1
+            else:
+                assert False, f"Flow {flow_id} has no active graph"
+
     print(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
@@ -510,7 +507,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     enable_tr = args.enable_tr
     output_type = OutputType.BUSY_PERIOD
-    flow_size_threshold_list = [50000, 200000, 1000000, 100000000]
+    flow_size_threshold_list = [200000, 1000000, 100000000]
     enable_empirical = args.output_dir.split("_")[-1] == "empirical"
     print(f"enable_empirical: {enable_empirical}")
 
