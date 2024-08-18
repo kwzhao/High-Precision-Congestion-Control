@@ -249,6 +249,15 @@ def calculate_busy_period_path(
             flow_to_size[flow_id] = size
             if size > flow_size_threshold:
                 large_flow_to_info[flow_id] = (time, links)
+                involved_graph_ids = set()
+                for link in links:
+                    if link in link_to_graph:
+                        involved_graph_ids.add(link_to_graph[link])
+                if involved_graph_ids:
+                    for gid in involved_graph_ids:
+                        graph = active_graphs[gid]
+                        graph["all_links"].add(link)
+                        graph["all_flows"].add(flow_id)
             else:
                 new_active_links = defaultdict(set)
                 new_all_links = set()
@@ -294,8 +303,16 @@ def calculate_busy_period_path(
             flow_to_size.pop(flow_id)
             if flow_id in large_flow_to_info:
                 large_flow_to_info.pop(flow_id)
+                involved_graph_ids = set()
+                for link in links:
+                    if link in link_to_graph:
+                        involved_graph_ids.add(link_to_graph[link])
+                if involved_graph_ids:
+                    for gid in involved_graph_ids:
+                        graph = active_graphs[gid]
+                        graph["all_links"].add(link)
+                        graph["all_flows"].add(flow_id)
                 continue
-
             for link in links:
                 if link in link_to_graph:
                     graph_id = link_to_graph[link]
@@ -327,6 +344,7 @@ def calculate_busy_period_path(
                         if flow_to_size[flow_id] <= flow_size_threshold
                     ]
                 )
+                # n_large_flows = len(graph["active_flows"]) - n_small_flows
                 assert n_small_flows == len(
                     graph["active_flows"]
                 ), f"n_small_flows: {n_small_flows}, n_active_flows: {len(graph['active_flows'])}"
