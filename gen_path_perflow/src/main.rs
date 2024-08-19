@@ -88,7 +88,7 @@ fn main() -> anyhow::Result<()> {
 
             // gen traffic
             let command_args = format!(
-                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 1 --constfsize {}",
+                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 4 --constfsize {}",
                 shard, n_flows, n_hosts, output_path,constfsize,
             );
             let log_path = format!("{}/nhosts{}_traffic.log", log_dir, n_hosts);
