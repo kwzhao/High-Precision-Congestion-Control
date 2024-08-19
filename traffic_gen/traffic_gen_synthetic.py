@@ -179,9 +179,7 @@ if __name__ == "__main__":
             host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
-            ntc = random.randint(
-                max(2, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
-            )
+            ntc = random.randint(2, nhost * (nhost - 1) // 2)
             host_pair_idx_list = np.random.choice(
                 len(host_pair_list_ori), size=ntc - 1, replace=False
             )
@@ -195,7 +193,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
 
-        n_flows_tmp = n_flows * ntc + 1
+        # n_flows_tmp = n_flows * ntc + 1
+        n_flows_tmp = 40001
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
 
         if enable_const:
@@ -282,7 +281,7 @@ if __name__ == "__main__":
                 ).astype("int64")
             elif size_dist_candidate == "pareto":
                 avg_size_in_bit = (
-                    avg_size_base_in_bit * (float(size_sigma_candidate) / 2000.0) ** 2
+                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.5
                 )
                 size_sigma = avg_size_in_bit // 2.5
                 func = lambda x: 5 - np.power(
