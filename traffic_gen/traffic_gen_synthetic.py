@@ -7,6 +7,7 @@ import numpy as np
 import os
 from scipy.stats import genpareto
 from scipy.optimize import fsolve
+from collections import defaultdict
 from consts import (
     BYTE_TO_BIT,
     UNIT_G,
@@ -118,17 +119,21 @@ if __name__ == "__main__":
     if bandwidth_base == None:
         print("bandwidth format incorrect")
         sys.exit(0)
-    bandwidth_list_scale = []
+
     if nhost == 21:
+        bandwidth_list_scale = []
         n_links = nhost
         bandwidth_list_scale = [1] * (nhost)
     else:
         n_links = 2 * nhost - 1
+        bandwidth_list_scale = {}
         for link_id in range(n_links):
             if link_id < nhost:
-                bandwidth_list_scale.append(1)
+                bandwidth_list_scale[(link_id, nhost + link_id)] = 1
+                bandwidth_list_scale[(nhost + link_id, link_id)] = 1
             else:
-                bandwidth_list_scale.append(switch_to_host)
+                bandwidth_list_scale[(link_id, link_id + 1)] = switch_to_host
+                bandwidth_list_scale[(link_id + 1, link_id)] = switch_to_host
 
     output_dir = options.output
     if not os.path.exists("%s/flows.txt" % (output_dir)):
@@ -136,25 +141,35 @@ if __name__ == "__main__":
             os.makedirs(output_dir)
 
         # generate flows
-        bandwidth_list = []
+
         host_pair_list_ori = []
         host_pair_to_link_dict = {}
-        for link_id in range(n_links):
-            bandwidth_list.append(bandwidth_list_scale[link_id] * bandwidth_base)
+
         if nhost == 21:
+            bandwidth_list = []
+            for link_id in range(n_links):
+                bandwidth_list.append(bandwidth_list_scale[link_id] * bandwidth_base)
             for i in range(nhost - 1):
                 src_dst_pair = (i, nhost - 1)
                 host_pair_list_ori.append(src_dst_pair)
                 host_pair_to_link_dict[src_dst_pair] = [i, nhost - 1]
         else:
+            bandwidth_list = {}
+            for link_id in bandwidth_list_scale:
+                bandwidth_list[link_id] = bandwidth_list_scale[link_id] * bandwidth_base
             for i in range(nhost - 1):
                 for j in range(i + 1, nhost):
                     src_dst_pair = (i, j)
                     if (j - i) != nhost - 1:
                         host_pair_list_ori.append(src_dst_pair)
-                    host_pair_to_link_dict[src_dst_pair] = [i, j]
+                    host_pair_to_link_dict[src_dst_pair] = [
+                        (i, nhost + i),
+                        (nhost + j, j),
+                    ]
                     for link_id in range(i, j):
-                        host_pair_to_link_dict[src_dst_pair].append(nhost + link_id)
+                        host_pair_to_link_dict[src_dst_pair].append(
+                            (nhost + link_id, nhost + link_id + 1)
+                        )
         host_pair_list = [(0, nhost - 1)]
         # host_pair_list = []
         if nhost == 2:
@@ -207,25 +222,23 @@ if __name__ == "__main__":
                 + load_bottleneck_range[0]
             )
 
-            load_per_link = {}
-            for i in range(n_links):
-                load_per_link[i] = 0
+            load_per_link = defaultdict(lambda: 0)
+
             for i in range(ntc):
                 src_dst_pair = host_pair_list[i]
                 for link_id in host_pair_to_link_dict[src_dst_pair]:
                     load_per_link[link_id] += (
                         load_candidate / bandwidth_list_scale[link_id]
                     )
-            tmp = list(load_per_link.values())
-            load_bottleneck_cur = np.max(tmp)
-            load_bottleneck_link_id = tmp.index(load_bottleneck_cur)
+            load_bottleneck_link_id = max(load_per_link, key=load_per_link.get)
+            load_bottleneck_cur = load_per_link[load_bottleneck_link_id]
             load_candidate = (
                 load_candidate * load_bottleneck_target / load_bottleneck_cur
             )
 
             if size_dist_candidate == "exp":
                 mu = (
-                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2
+                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3.2
                     - min_size_in_bit
                 )
                 f_sizes_in_byte = (
@@ -238,7 +251,7 @@ if __name__ == "__main__":
                     "int64"
                 )  # Byte
             elif size_dist_candidate == "gaussian":
-                size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3
+                size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3.5
                 mu = avg_size_base_in_bit * size_sigma - min_size_in_bit
 
                 tmp = np.array(
