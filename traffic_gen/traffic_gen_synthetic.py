@@ -179,13 +179,15 @@ if __name__ == "__main__":
             host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
-            ntc = random.randint(
-                max(nhost - 1, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
-            )
-            # ntc = random.randint(2, nhost * (nhost - 1) // 2)
-            host_pair_idx_list = np.random.choice(
-                len(host_pair_list_ori), size=ntc - 1, replace=False
-            )
+            # ntc = random.randint(
+            #     max(nhost - 1, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
+            # )
+            # # ntc = random.randint(2, nhost * (nhost - 1) // 2)
+            # host_pair_idx_list = np.random.choice(
+            #     len(host_pair_list_ori), size=ntc - 1, replace=False
+            # )
+            ntc = nhost * (nhost - 1) // 2
+            host_pair_idx_list = np.arange(len(host_pair_list_ori))
             host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
 
         assert len(host_pair_list) == ntc
@@ -197,7 +199,7 @@ if __name__ == "__main__":
         heapq.heapify(host_list)
 
         # n_flows_tmp = n_flows * ntc + 1
-        n_flows_tmp = 40001
+        n_flows_tmp = 100001
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
 
         if enable_const:
@@ -362,15 +364,18 @@ if __name__ == "__main__":
         # p_candidate=np.random.choice(p_candidate_list,size=1,replace=False)[0]
         # p_list=np.random.rand(ntc)*p_candidate/ntc
         # p_list[0]=1.0
-
         # p_list=np.array(p_list)/np.sum(p_list)
+
+        p_list = np.random.rand(ntc) + 0.1
+        p_list = np.array(p_list) / np.sum(p_list)
+        print("p_list: ", p_list)
         n_flows_foreground = 0
         while flow_id_total < n_flows_tmp - 1:
             if enable_const:
                 host_pair_idx = host_pair_list_idx[flow_id_total % ntc]
             else:
-                # host_pair_idx=np.random.choice(host_pair_list_idx,p=p_list)
-                host_pair_idx = np.random.choice(host_pair_list_idx)
+                host_pair_idx = np.random.choice(host_pair_list_idx, p=p_list)
+                # host_pair_idx = np.random.choice(host_pair_list_idx)
             if host_pair_idx == 0:
                 n_flows_foreground += 1
             src, dst = host_pair_list[host_pair_idx]

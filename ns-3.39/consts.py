@@ -9,7 +9,7 @@ bfsz = [300, 300, 10]
 # fwin=[10, 30,1000]
 fwin = [18, 18, 1000]
 # enable_pfc=[0,1]
-enable_pfc = [0, 0]
+enable_pfc = [1, 1]
 
 CC_DICT = {
     "dctcp": 8,
