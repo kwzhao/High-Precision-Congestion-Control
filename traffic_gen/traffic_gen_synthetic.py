@@ -179,7 +179,10 @@ if __name__ == "__main__":
             host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
-            ntc = random.randint(2, nhost * (nhost - 1) // 2)
+            ntc = random.randint(
+                max(nhost - 1, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
+            )
+            # ntc = random.randint(2, nhost * (nhost - 1) // 2)
             host_pair_idx_list = np.random.choice(
                 len(host_pair_list_ori), size=ntc - 1, replace=False
             )
@@ -237,7 +240,7 @@ if __name__ == "__main__":
 
             if size_dist_candidate == "exp":
                 mu = (
-                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3.2
+                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2
                     - min_size_in_bit
                 )
                 f_sizes_in_byte = (
@@ -250,7 +253,7 @@ if __name__ == "__main__":
                     "int64"
                 )  # Byte
             elif size_dist_candidate == "gaussian":
-                size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3.5
+                size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3
                 mu = avg_size_base_in_bit * size_sigma - min_size_in_bit
 
                 tmp = np.array(
@@ -264,10 +267,10 @@ if __name__ == "__main__":
                 ).astype("int64")
             elif size_dist_candidate == "lognorm":
                 avg_size_in_bit = (
-                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3
+                    avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.4
                 )
-                size_sigma = 0.8 + (60000 - float(size_sigma_candidate)) / 30000
-                # size_sigma = 2.0
+                # size_sigma = 0.8 + (60000 - float(size_sigma_candidate)) / 30000
+                size_sigma = 2.0
                 # flow size
                 mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma**2) / 2
                 f_sizes_in_byte = (
