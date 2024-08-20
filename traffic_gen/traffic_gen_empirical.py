@@ -147,7 +147,7 @@ if __name__ == "__main__":
             for i in range(nhost - 1):
                 for j in range(i + 1, nhost):
                     src_dst_pair = (i, j)
-                    if (j-i)!=nhost-1:
+                    if (j - i) != nhost - 1:
                         host_pair_list_ori.append(src_dst_pair)
                     host_pair_to_link_dict[src_dst_pair] = [i, j]
                     for link_id in range(i, j):
@@ -161,7 +161,10 @@ if __name__ == "__main__":
             host_pair_idx_list = [(i, nhost - 1) for i in range(1, nhost - 1)]
             host_pair_list += host_pair_idx_list
         else:
-            ntc = random.randint(2, nhost * (nhost - 1) // 2)
+            ntc = random.randint(
+                max(nhost - 1, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
+            )
+            # ntc = random.randint(2, nhost * (nhost - 1) // 2)
             host_pair_idx_list = np.random.choice(
                 len(host_pair_list_ori), size=ntc - 1, replace=False
             )
@@ -175,7 +178,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
 
-        n_flows_tmp = n_flows * ntc + 1
+        # n_flows_tmp = n_flows * ntc + 1
+        n_flows_tmp = 40001
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
 
         customRand_dict = {}
