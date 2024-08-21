@@ -182,13 +182,13 @@ if __name__ == "__main__":
             # ntc = random.randint(
             #     max(nhost - 1, nhost * (nhost - 1) // 4), nhost * (nhost - 1) // 2
             # )
-            # # ntc = random.randint(2, nhost * (nhost - 1) // 2)
-            # host_pair_idx_list = np.random.choice(
-            #     len(host_pair_list_ori), size=ntc - 1, replace=False
-            # )
-            ntc = nhost * (nhost - 1) // 2
-            host_pair_idx_list = np.arange(len(host_pair_list_ori))
-            host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
+            ntc = random.randint(2, nhost * (nhost - 1) // 2)
+            host_pair_idx_list = np.random.choice(
+                len(host_pair_list_ori), size=ntc - 1, replace=False
+            )
+            # ntc = nhost * (nhost - 1) // 2
+            # host_pair_idx_list = np.arange(len(host_pair_list_ori))
+            # host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
 
         assert len(host_pair_list) == ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
@@ -366,16 +366,16 @@ if __name__ == "__main__":
         # p_list[0]=1.0
         # p_list=np.array(p_list)/np.sum(p_list)
 
-        p_list = np.random.rand(ntc) + 0.1
-        p_list = np.array(p_list) / np.sum(p_list)
-        print("p_list: ", p_list)
+        # p_list = np.random.rand(ntc) + 0.1
+        # p_list = np.array(p_list) / np.sum(p_list)
+        # print("p_list: ", p_list)
         n_flows_foreground = 0
         while flow_id_total < n_flows_tmp - 1:
             if enable_const:
                 host_pair_idx = host_pair_list_idx[flow_id_total % ntc]
             else:
-                host_pair_idx = np.random.choice(host_pair_list_idx, p=p_list)
-                # host_pair_idx = np.random.choice(host_pair_list_idx)
+                # host_pair_idx = np.random.choice(host_pair_list_idx, p=p_list)
+                host_pair_idx = np.random.choice(host_pair_list_idx)
             if host_pair_idx == 0:
                 n_flows_foreground += 1
             src, dst = host_pair_list[host_pair_idx]
