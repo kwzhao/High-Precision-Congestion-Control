@@ -185,7 +185,7 @@ if __name__ == "__main__":
             )
             # ntc = nhost * (nhost - 1) // 2
             # host_pair_idx_list = np.arange(len(host_pair_list_ori))
-            # host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
+            host_pair_list += [host_pair_list_ori[i] for i in host_pair_idx_list]
 
         assert len(host_pair_list) == ntc
         print("lr: ", bandwidth_list, "ntc: ", ntc, "host_pair_list: ", host_pair_list)
@@ -195,8 +195,8 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
 
-        # n_flows_tmp = n_flows * ntc + 1
-        n_flows_tmp = 100001
+        n_flows_tmp = n_flows * ntc + 1
+        # n_flows_tmp = 100001
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
 
         customRand_dict = {}
