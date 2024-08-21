@@ -45,8 +45,8 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     let params = Parameters {
-        shard: vec![0],
-        // shard: (0..200).collect(),
+        // shard: vec![0],
+        shard: (0..1000).collect(),
         n_flows: vec![10000],
         // n_hosts: vec![21],
         n_hosts: vec![5],
@@ -88,7 +88,7 @@ fn main() -> anyhow::Result<()> {
 
             // gen traffic
             let command_args = format!(
-                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 1 --constfsize {}",
+                "--shard {} -f {} -n {} -b 10G -o {} --switchtohost 4 --constfsize {}",
                 shard, n_flows, n_hosts, output_path,constfsize,
             );
             let log_path = format!("{}/nhosts{}_traffic.log", log_dir, n_hosts);
