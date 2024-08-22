@@ -119,7 +119,7 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     fats_pt = make_array(c_double, fats)
     sizes_pt = make_array(c_double, sizes)
 
-    topo_pt = make_array(c_int, np.array([1, 4]))
+    topo_pt = make_array(c_int, np.array([1, 1]))
     if nhost == 21:
         nhost = 3
         flow_src_dst[:, 0] = 0
