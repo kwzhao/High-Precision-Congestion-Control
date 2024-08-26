@@ -37,10 +37,10 @@ fn main() -> anyhow::Result<()> {
         shard_cc: (0..20).collect(),
     };
 
-    // config for debugging
+    // config for demo purpose
     // let params = Parameters {
-    //     shard: vec![1],
-    //     n_flows: vec![10],
+    //     shard: (0..100).collect(),
+    //     n_flows: vec![100],
     //     n_hosts: vec![3],
     //     shard_cc: (0..1).collect(),
     // };
