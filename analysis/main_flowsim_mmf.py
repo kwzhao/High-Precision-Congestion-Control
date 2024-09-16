@@ -145,5 +145,5 @@ if not os.path.exists("%s/fct_flowsim.npy" % output_dir) and os.path.exists(
     np.save("%s/fct_flowsim.npy" % output_dir, estimated_fcts)
     C_LIB.free_fctstruct(res)
 
-# if os.path.exists("%s/flows.txt" % output_dir):
-#     os.system("rm %s/flows.txt" % (output_dir))
+if os.path.exists("%s/flows.txt" % output_dir):
+    os.system("rm %s/flows.txt" % (output_dir))
