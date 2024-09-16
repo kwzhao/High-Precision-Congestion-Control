@@ -6,7 +6,7 @@
 typedef uint64_t FlowInt;
 
 // Map to store the transmitted size for each active flow
-std::unordered_map<uint32_t, uint32_t> activeFlows;
+std::map<uint32_t, uint32_t> activeFlows;
 
 static uint32_t GetDevInt(uint16_t node, uint8_t intf){
 	return ((uint32_t)node << 8) | intf;
@@ -94,18 +94,25 @@ static inline void InitFlowTransmittedSize(uint32_t flowId) {
 }
 // Update the transmitted size for each flow
 static inline void UpdateFlowTransmittedSize(uint32_t flowId, uint32_t packetSize) {
-	activeFlows[flowId] += packetSize;
+	// activeFlows[flowId] += packetSize;
+	activeFlows[flowId] += 1;
 }
 static inline void RemoveFlowTransmittedSize(uint32_t flowId) {
 	activeFlows.erase(flowId);
 }
 
 static inline void PrintActiveFlows() {
-	printf("%u:", activeFlows.size());
-    for (const auto& flow : activeFlows) {
-        printf("%u,%u,", flow.first, flow.second);
-    }
-	printf("\n");
+	if (activeFlows.empty()) {
+		printf("0\n");
+	}
+	else {
+		// printf("%u,", activeFlows.size());
+		for (const auto& flow : activeFlows) {
+			// printf("%u,%u,", flow.first, flow.second);
+			printf("%u,", flow.second);
+		}
+		printf("\n");
+	}
 }
 
 static inline void print_trace(ns3::TraceFormat &tr){
@@ -116,6 +123,11 @@ static inline void print_trace(ns3::TraceFormat &tr){
 	else if (tr.queueEvent==2){
 		RemoveFlowTransmittedSize(tr.flowId);
 	}
+	PrintActiveFlows();
+	if (tr.queueEvent==1){
+		InitFlowTransmittedSize(tr.flowId);
+	}
+	return;
 	switch (tr.l3Prot){
 		case 0x6:
 		case 0x11:
@@ -141,10 +153,6 @@ static inline void print_trace(ns3::TraceFormat &tr){
 			break;
 	}
 	printf("\n");
-	PrintActiveFlows();
-	if (tr.queueEvent==1){
-		InitFlowTransmittedSize(tr.flowId);
-	}
 }
 
 #endif /* UTILS_HPP */
