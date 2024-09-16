@@ -406,7 +406,13 @@ def calculate_busy_period_path(
 
 
 def calculate_busy_period_link(
-    fat, fct, fid, fsize_total, flow_size_threshold, enable_empirical=False
+    fat,
+    fct,
+    fid,
+    fsize_total,
+    flow_size_threshold,
+    remainsize_list,
+    enable_empirical=False,
 ):
     events = []
     flow_to_fsize = {}
@@ -418,10 +424,12 @@ def calculate_busy_period_link(
 
     n_inflight_flows = 0
     current_busy_period_start_time = None
+    current_busy_period_start_event = None
     busy_periods_time = []
 
     active_flows = set()
     enable_new_period = True
+    event_idx = 0
     for event in events:
         time, event_type, flow_id = event
         if event_type == "arrival":
@@ -430,21 +438,35 @@ def calculate_busy_period_link(
                 active_flows.add(flow_id)
             if enable_new_period:
                 current_busy_period_start_time = time
+                current_busy_period_start_event = event_idx
                 enable_new_period = False
         elif event_type == "departure":
             n_inflight_flows -= 1
             if flow_to_fsize[flow_id] < flow_size_threshold:
                 active_flows.remove(flow_id)
             if not enable_new_period and len(active_flows) == 0:
-                busy_periods_time.append((current_busy_period_start_time, time))
+                busy_periods_time.append(
+                    (
+                        current_busy_period_start_time,
+                        time,
+                        current_busy_period_start_event,
+                        event_idx,
+                    )
+                )
                 enable_new_period = True
-
+        event_idx += 1
     busy_periods = []
     busy_periods_len = []
     busy_periods_duration = []
+    remainsizes = []
     busy_periods_unique = set()
     for busy_period_time in busy_periods_time:
-        busy_period_start, busy_period_end = busy_period_time
+        (
+            busy_period_start,
+            busy_period_end,
+            busy_period_start_event_idx,
+            busy_period_end_event_idx,
+        ) = busy_period_time
         fid_target_idx = ~np.logical_or(
             fat + fct < busy_period_start,
             fat > busy_period_end,
@@ -457,6 +479,14 @@ def calculate_busy_period_link(
             busy_periods_len.append(len(fid_target))
             busy_periods_duration.append([busy_period_start, busy_period_end])
             busy_periods_unique.update(fid_target)
+            remainsize = [
+                remainsize_list[i]
+                for i in range(
+                    busy_period_start_event_idx, busy_period_end_event_idx + 1
+                )
+            ]
+            assert len(remainsize) == len(fid_target) * 2
+            remainsizes.append(tuple(remainsize))
 
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
 
@@ -474,7 +504,7 @@ def calculate_busy_period_link(
     print(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
-    return busy_periods, busy_periods_duration
+    return busy_periods, busy_periods_duration, remainsizes
 
 
 if __name__ == "__main__":
@@ -667,11 +697,28 @@ if __name__ == "__main__":
 
         if not os.path.exists(log_path):
             os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
+        remainsize_list = []
+        with open(log_path, "r") as file:
+            # Read the file line by line
+            for line in file:
+                # Strip leading/trailing whitespace characters (like newline)
+                line = line = line.strip().rstrip(",").split(",")
+                # Print each line
+                line = [int(x) for x in line]
+                remainsize_list.append(line)
 
         for flow_size_threshold in flow_size_threshold_list:
             if nhosts == 21:
-                busy_periods, busy_periods_time = calculate_busy_period_link(
-                    fat, fcts, fid, fsize, flow_size_threshold, enable_empirical
+                busy_periods, busy_periods_time, busy_periods_remainsize = (
+                    calculate_busy_period_link(
+                        fat,
+                        fcts,
+                        fid,
+                        fsize,
+                        flow_size_threshold,
+                        remainsize_list,
+                        enable_empirical,
+                    )
                 )
             else:
                 fsd = np.load("%s/fsd.npy" % (output_dir))
@@ -698,12 +745,19 @@ if __name__ == "__main__":
                 % (output_dir, args.prefix, config_specs, flow_size_threshold),
                 np.array(busy_periods_time),
             )
+            busy_periods_remainsize = np.array(busy_periods_remainsize, dtype=object)
+            np.save(
+                "%s/period_remainsize_%s%s_t%d.npy"
+                % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                np.array(busy_periods_remainsize),
+            )
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
             #         file.write(" ".join(map(str, period)) + "\n")
         if os.path.exists(tr_path):
             os.system("rm %s" % tr_path)
-
+        if os.path.exists(log_path):
+            os.system("rm %s" % log_path)
         # os.system("rm %s" % (file))
 
         # if os.path.exists("%s/flows.txt"% (output_dir)):
