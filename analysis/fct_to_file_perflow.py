@@ -414,6 +414,8 @@ def calculate_busy_period_link(
     remainsize_list,
     enable_empirical=False,
 ):
+    if flow_size_threshold == 100000000:
+        flow_size_threshold = np.inf
     events = []
     flow_to_fsize = {}
     for i in range(len(fat)):
@@ -468,8 +470,8 @@ def calculate_busy_period_link(
             busy_period_end_event_idx,
         ) = busy_period_time
         fid_target_idx = ~np.logical_or(
-            fat + fct < busy_period_start,
-            fat > busy_period_end,
+            fat + fct <= busy_period_start,
+            fat >= busy_period_end,
         )
         fid_target = fid[fid_target_idx]
         if np.sum(fid_target) > 0:
@@ -485,7 +487,9 @@ def calculate_busy_period_link(
                     busy_period_start_event_idx, busy_period_end_event_idx + 1
                 )
             ]
-            assert len(remainsize) == len(fid_target) * 2
+            assert (
+                len(remainsize) == len(fid_target) * 2
+            ), f"{len(remainsize)} != {len(fid_target) * 2}"
             remainsizes.append(tuple(remainsize))
 
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
