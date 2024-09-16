@@ -428,37 +428,46 @@ void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const
 	TraceFormat tr;
 	GetTraceFromPacket(tr, dev, p, qidx, event, hasL2);
   // tr.Serialize(file);
-  if (!tr.isFiltered && tr.qidx == 3){
-    if (tr.event == PEvent::Dequ){
+  if (!tr.isFiltered){//for endhost
+    if (tr.event == PEvent::Recv){
       if (tr.data.payload!=1000){
         tr.queueEvent=2;
         QbbHelper::n_active_flows-=1;
         tr.nActiveFlows=QbbHelper::n_active_flows;
-        tr.Serialize(file);
       }
-      if (QbbHelper::qlen_prev != 0 && tr.qlen == 0){
-        tr.queueEvent=4;
-        tr.nActiveFlows=QbbHelper::n_active_flows;
-        tr.Serialize(file);
-        // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
-        QbbHelper::qlen_prev = tr.qlen;
-      }
+      tr.Serialize(file);
     }
-    else if (tr.event == PEvent::Enqu){
-      if (tr.data.seq==0){
-        tr.queueEvent=1;
-        QbbHelper::n_active_flows+=1;
-        tr.nActiveFlows=QbbHelper::n_active_flows;
-        tr.Serialize(file);
-      }
-      if (QbbHelper::qlen_prev == 0 && tr.qlen != 0){
-        tr.queueEvent=3;
-        tr.nActiveFlows=QbbHelper::n_active_flows;
-        tr.Serialize(file);
-        // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
-        QbbHelper::qlen_prev = tr.qlen;
-      }
-    }
+    // if (!tr.isFiltered && tr.qidx == 3){//for switch
+    // if (tr.event == PEvent::Dequ){
+    //   if (tr.data.payload!=1000){
+    //     tr.queueEvent=2;
+    //     QbbHelper::n_active_flows-=1;
+    //     tr.nActiveFlows=QbbHelper::n_active_flows;
+    //     tr.Serialize(file);
+    //   }
+      // if (QbbHelper::qlen_prev != 0 && tr.qlen == 0){
+      //   tr.queueEvent=4;
+      //   tr.nActiveFlows=QbbHelper::n_active_flows;
+      //   // tr.Serialize(file);
+      //   // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
+      //   QbbHelper::qlen_prev = tr.qlen;
+      // }
+    // }
+    // else if (tr.event == PEvent::Enqu){
+      // if (tr.data.seq==0){
+      //   tr.queueEvent=1;
+      //   QbbHelper::n_active_flows+=1;
+      //   tr.nActiveFlows=QbbHelper::n_active_flows;
+      //   tr.Serialize(file);
+      // }
+      // if (QbbHelper::qlen_prev == 0 && tr.qlen != 0){
+      //   tr.queueEvent=3;
+      //   tr.nActiveFlows=QbbHelper::n_active_flows;
+      //   // tr.Serialize(file);
+      //   // std::cout<<"qlen_prev: "<<QbbHelper::qlen_prev<<", qlen: "<<tr.qlen<<std::endl;
+      //   QbbHelper::qlen_prev = tr.qlen;
+      // }
+    // }
   }
 }
 
@@ -481,7 +490,15 @@ void QbbHelper::DropDetailCallback(FILE* file, Ptr<QbbNetDevice> dev, Ptr<const 
 void QbbHelper::QpDequeueCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const Packet> p, Ptr<RdmaQueuePair> qp){
 	TraceFormat tr;
 	GetTraceFromPacket(tr, dev, p, qp->m_pg, Dequ, true);
-	tr.Serialize(file);
+	// tr.Serialize(file);
+  if (!tr.isFiltered){//for endhost
+    if (tr.data.seq==0){
+      tr.queueEvent=1;
+      QbbHelper::n_active_flows+=1;
+      tr.nActiveFlows=QbbHelper::n_active_flows;
+      tr.Serialize(file);
+    }
+  }
 }
 
 void QbbHelper::EnableTracingDevice(FILE *file, Ptr<QbbNetDevice> nd){
