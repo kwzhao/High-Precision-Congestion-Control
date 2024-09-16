@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
     let params = Parameters {
         shard: vec![0],
         // shard: (0..200).collect(),
-        n_flows: vec![1],
+        n_flows: vec![2000],
         n_hosts: vec![21],
         // n_hosts: vec![5],
         // n_hosts: vec![3],
