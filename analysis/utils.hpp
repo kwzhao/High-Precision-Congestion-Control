@@ -127,6 +127,9 @@ static inline void print_trace(ns3::TraceFormat &tr){
 	if (tr.queueEvent==1){
 		InitFlowTransmittedSize(tr.flowId);
 	}
+	// if (tr.flowId<38477){
+	// 	return;
+	// }
 	return;
 	switch (tr.l3Prot){
 		case 0x6:

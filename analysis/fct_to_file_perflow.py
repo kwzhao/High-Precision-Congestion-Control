@@ -487,6 +487,21 @@ def calculate_busy_period_link(
                     busy_period_start_event_idx, busy_period_end_event_idx + 1
                 )
             ]
+            # if len(remainsizes) == 1490:
+            #     fats = fat[fid_target_idx]
+            #     fcts = fct[fid_target_idx]
+            #     fats = fats - fats[0]
+            #     fcts_stamp = fats + fcts
+
+            #     # Concatenate the arrays
+            #     merged = np.concatenate((fats, fcts_stamp))
+            #     sorted_indices = np.argsort(merged)
+            #     idx_completion_events = np.where(sorted_indices >= len(fats))[0]
+            #     idx_completion_ranks = np.argsort(fcts_stamp)
+
+            #     print(
+            #         f"remainsize: {len(remainsize)}, {len(fid_target)}, {len(busy_periods_time)}, {fid_target[0]}, {busy_period_start_event_idx}"
+            #     )
             assert (
                 len(remainsize) == len(fid_target) * 2
             ), f"{len(remainsize)} != {len(fid_target) * 2}"
@@ -762,6 +777,7 @@ if __name__ == "__main__":
             os.system("rm %s" % tr_path)
         if os.path.exists(log_path):
             os.system("rm %s" % log_path)
+
         # os.system("rm %s" % (file))
 
         # if os.path.exists("%s/flows.txt"% (output_dir)):
