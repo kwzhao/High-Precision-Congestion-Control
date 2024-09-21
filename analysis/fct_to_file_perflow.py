@@ -461,6 +461,7 @@ def calculate_busy_period_link(
     busy_periods_len = []
     busy_periods_duration = []
     remainsizes = []
+    remainsizes_num = []
     busy_periods_unique = set()
     for busy_period_time in busy_periods_time:
         (
@@ -505,6 +506,8 @@ def calculate_busy_period_link(
             assert (
                 len(remainsize) == len(fid_target) * 2
             ), f"{len(remainsize)} != {len(fid_target) * 2}"
+
+            remainsizes_num.append(np.max([len(x) for x in remainsize]))
             remainsizes.append(tuple(remainsize))
 
     # unique_lengths, counts = np.unique(busy_periods_len, return_counts=True)
@@ -523,7 +526,7 @@ def calculate_busy_period_link(
     print(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
-    return busy_periods, busy_periods_duration, remainsizes
+    return busy_periods, busy_periods_duration, remainsizes, remainsizes_num
 
 
 if __name__ == "__main__":
@@ -728,16 +731,19 @@ if __name__ == "__main__":
 
         for flow_size_threshold in flow_size_threshold_list:
             if nhosts == 21:
-                busy_periods, busy_periods_time, busy_periods_remainsize = (
-                    calculate_busy_period_link(
-                        fat,
-                        fcts,
-                        fid,
-                        fsize,
-                        flow_size_threshold,
-                        remainsize_list,
-                        enable_empirical,
-                    )
+                (
+                    busy_periods,
+                    busy_periods_time,
+                    busy_periods_remainsize,
+                    remainsizes_num,
+                ) = calculate_busy_period_link(
+                    fat,
+                    fcts,
+                    fid,
+                    fsize,
+                    flow_size_threshold,
+                    remainsize_list,
+                    enable_empirical,
                 )
             else:
                 fsd = np.load("%s/fsd.npy" % (output_dir))
@@ -769,6 +775,11 @@ if __name__ == "__main__":
                 "%s/period_remainsize_%s%s_t%d.npy"
                 % (output_dir, args.prefix, config_specs, flow_size_threshold),
                 np.array(busy_periods_remainsize),
+            )
+            np.save(
+                "%s/period_remainsize_num_%s%s_t%d.npy"
+                % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                np.array(remainsizes_num),
             )
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
