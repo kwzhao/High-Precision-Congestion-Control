@@ -94,8 +94,7 @@ static inline void InitFlowTransmittedSize(uint32_t flowId) {
 }
 // Update the transmitted size for each flow
 static inline void UpdateFlowTransmittedSize(uint32_t flowId, uint32_t packetSize) {
-	// activeFlows[flowId] += packetSize;
-	activeFlows[flowId] += 1;
+	activeFlows[flowId] += packetSize;
 }
 static inline void RemoveFlowTransmittedSize(uint32_t flowId) {
 	activeFlows.erase(flowId);
@@ -121,9 +120,13 @@ static inline void print_trace(ns3::TraceFormat &tr){
 		return;
 	}
 	else if (tr.queueEvent==2){
+		UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
+		PrintActiveFlows();
 		RemoveFlowTransmittedSize(tr.flowId);
 	}
-	PrintActiveFlows();
+	else{
+		PrintActiveFlows();
+	}
 	if (tr.queueEvent==1){
 		InitFlowTransmittedSize(tr.flowId);
 	}
