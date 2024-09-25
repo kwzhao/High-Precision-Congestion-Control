@@ -107,8 +107,8 @@ static inline void PrintActiveFlows() {
 	else {
 		// printf("%u,", activeFlows.size());
 		for (const auto& flow : activeFlows) {
-			// printf("%u,%u,", flow.first, flow.second);
-			printf("%u,", flow.second);
+			printf("%u:%u,", flow.first, flow.second);
+			// printf("%u,", flow.second);
 		}
 		printf("\n");
 	}

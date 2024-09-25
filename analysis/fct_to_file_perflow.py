@@ -201,8 +201,18 @@ def calculate_busy_period(log_file):
 
 
 def calculate_busy_period_path(
-    fat, fct, fid, fsd, fsize, nhosts, flow_size_threshold, enable_empirical=False
+    fat,
+    fct,
+    fid,
+    fsd,
+    fsize,
+    nhosts,
+    flow_size_threshold,
+    remainsize_list,
+    enable_empirical=False,
 ):
+    if flow_size_threshold == 100000000:
+        flow_size_threshold = np.inf
     flows = {}
     for i in range(len(fid)):
         links = set()
@@ -223,6 +233,8 @@ def calculate_busy_period_path(
     busy_periods = []  # List to store busy periods
     busy_periods_len = []
     busy_periods_duration = []
+    remainsizes = []
+    remainsizes_num = []
     busy_periods_unique = set()
     events = []
 
@@ -482,12 +494,23 @@ def calculate_busy_period_link(
             busy_periods_len.append(len(fid_target))
             busy_periods_duration.append([busy_period_start, busy_period_end])
             busy_periods_unique.update(fid_target)
-            remainsize = [
-                remainsize_list[i]
-                for i in range(
-                    busy_period_start_event_idx, busy_period_end_event_idx + 1
-                )
-            ]
+            remainsize = []
+            for i in range(busy_period_start_event_idx, busy_period_end_event_idx + 1):
+                tmp = remainsize_list[i]
+                if isinstance(tmp, dict):
+                    tmp_list = []
+                    for j in fid_target:
+                        if j in tmp:
+                            tmp_list.append(tmp[j])
+                    remainsize.append(tmp_list)
+                else:
+                    remainsize.append(tmp)
+            # remainsize = [
+            #     remainsize_list[i]
+            #     for i in range(
+            #         busy_period_start_event_idx, busy_period_end_event_idx + 1
+            #     )
+            # ]
             # if len(remainsizes) == 1490:
             #     fats = fat[fid_target_idx]
             #     fcts = fct[fid_target_idx]
@@ -719,15 +742,22 @@ if __name__ == "__main__":
 
         if not os.path.exists(log_path):
             os.system(f"{cur_dir}/trace_reader {tr_path} > {log_path}")
-        remainsize_list = []
-        with open(log_path, "r") as file:
-            # Read the file line by line
-            for line in file:
-                # Strip leading/trailing whitespace characters (like newline)
-                line = line = line.strip().rstrip(",").split(",")
-                # Print each line
-                line = [int(x) for x in line]
-                remainsize_list.append(line)
+        if os.path.exists(log_path):
+            remainsize_list = []
+            with open(log_path, "r") as file:
+                # Read the file line by line
+                for line in file:
+                    # Strip leading/trailing whitespace characters (like newline)
+                    line = line.strip().rstrip(",").split(",")
+                    # Print each line
+                    if len(line[0]) > 1:
+                        line_dict = {}
+                        for i in range(len(line)):
+                            tmp = line[i].split(":")
+                            line_dict[int(tmp[0])] = int(tmp[1])
+                        remainsize_list.append(line_dict)
+                    else:
+                        remainsize_list.append([0])
 
         for flow_size_threshold in flow_size_threshold_list:
             if nhosts == 21:
@@ -749,7 +779,12 @@ if __name__ == "__main__":
                 fsd = np.load("%s/fsd.npy" % (output_dir))
                 fsd = fsd[fid]
                 print(f"fsd: {fsd.shape}")
-                busy_periods, busy_periods_time = calculate_busy_period_path(
+                (
+                    busy_periods,
+                    busy_periods_time,
+                    busy_periods_remainsize,
+                    remainsizes_num,
+                ) = calculate_busy_period_path(
                     fat,
                     fcts,
                     fid,
@@ -757,6 +792,7 @@ if __name__ == "__main__":
                     fsize,
                     nhosts,
                     flow_size_threshold,
+                    remainsize_list,
                     enable_empirical,
                 )
             busy_periods = np.array(busy_periods, dtype=object)
@@ -786,8 +822,8 @@ if __name__ == "__main__":
             #         file.write(" ".join(map(str, period)) + "\n")
         if os.path.exists(tr_path):
             os.system("rm %s" % tr_path)
-        if os.path.exists(log_path):
-            os.system("rm %s" % log_path)
+        # if os.path.exists(log_path):
+        #     os.system("rm %s" % log_path)
 
         # os.system("rm %s" % (file))
 
