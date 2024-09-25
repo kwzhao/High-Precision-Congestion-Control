@@ -254,7 +254,6 @@ def calculate_busy_period_path(
     flow_to_size = {}
     for event_idx, (time, event, flow_id, links, size) in enumerate(events):
         cur_time = time
-        cur_event_idx = event_idx
         # if flow_id % 1000 == 0:
         #     print(f'Processing flow {flow_id}')
 
@@ -304,7 +303,7 @@ def calculate_busy_period_path(
                     link_to_graph[link] = graph_id_new
                 new_flows.add(flow_id)
                 new_all_flows.add(flow_id)
-                new_event_idxs.add(cur_event_idx)
+                new_event_idxs.add(event_idx)
                 for large_flow_id in large_flow_to_info:
                     _, links_tmp = large_flow_to_info[large_flow_id]
                     if large_flow_id not in new_all_flows and not links_tmp.isdisjoint(
@@ -359,7 +358,7 @@ def calculate_busy_period_path(
                         assert (
                             False
                         ), f"Flow {flow_id} not found in active flows of graph {graph_id}"
-                    graph["event_idxs"].add(cur_event_idx)
+                    graph["event_idxs"].add(event_idx)
 
                     n_small_flows = len(
                         [
