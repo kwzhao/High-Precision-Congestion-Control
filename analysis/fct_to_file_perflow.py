@@ -850,8 +850,8 @@ if __name__ == "__main__":
             #         file.write(" ".join(map(str, period)) + "\n")
         if os.path.exists(tr_path):
             os.system("rm %s" % tr_path)
-        # if os.path.exists(log_path):
-        #     os.system("rm %s" % log_path)
+        if os.path.exists(log_path):
+            os.system("rm %s" % log_path)
 
         # os.system("rm %s" % (file))
 
