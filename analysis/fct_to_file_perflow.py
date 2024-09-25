@@ -252,8 +252,9 @@ def calculate_busy_period_path(
     graph_id_new = 0  # Unique identifier for each graph
     large_flow_to_info = {}
     flow_to_size = {}
-    for time, event, flow_id, links, size in events:
+    for event_idx, (time, event, flow_id, links, size) in enumerate(events):
         cur_time = time
+        cur_event_idx = event_idx
         # if flow_id % 1000 == 0:
         #     print(f'Processing flow {flow_id}')
 
@@ -275,6 +276,7 @@ def calculate_busy_period_path(
                 new_all_links = set()
                 new_flows = set()
                 new_all_flows = set()
+                new_event_idxs = set()
 
                 involved_graph_ids = set()
                 for link in links:
@@ -288,6 +290,7 @@ def calculate_busy_period_path(
                         new_all_links.update(graph["all_links"])
                         new_flows.update(graph["active_flows"])
                         new_all_flows.update(graph["all_flows"])
+                        new_event_idxs.update(graph["event_idxs"])
                         if cur_time > graph["start_time"]:
                             cur_time = graph["start_time"]
 
@@ -301,6 +304,7 @@ def calculate_busy_period_path(
                     link_to_graph[link] = graph_id_new
                 new_flows.add(flow_id)
                 new_all_flows.add(flow_id)
+                new_event_idxs.add(cur_event_idx)
                 for large_flow_id in large_flow_to_info:
                     _, links_tmp = large_flow_to_info[large_flow_id]
                     if large_flow_id not in new_all_flows and not links_tmp.isdisjoint(
@@ -313,6 +317,7 @@ def calculate_busy_period_path(
                     "active_flows": new_flows,
                     "all_flows": new_all_flows,
                     "start_time": cur_time,
+                    "event_idxs": new_event_idxs,
                 }
                 graph_id_new += 1
 
@@ -354,6 +359,7 @@ def calculate_busy_period_path(
                         assert (
                             False
                         ), f"Flow {flow_id} not found in active flows of graph {graph_id}"
+                    graph["event_idxs"].add(cur_event_idx)
 
                     n_small_flows = len(
                         [
@@ -375,10 +381,33 @@ def calculate_busy_period_path(
                         #         end_time = flow_to_end_time[flow_id]
                         # busy_periods.append((graph['start_time'], end_time, list(graph['all_links']), list(graph['all_flows'])))
                         # if len(graph["all_flows"]) > 0:
-                        busy_periods.append(tuple(graph["all_flows"]))
-                        busy_periods_len.append(len(graph["all_flows"]))
+                        fid_target = sorted(graph["all_flows"])
+                        busy_periods.append(tuple(fid_target))
+                        busy_periods_len.append(len(fid_target))
                         busy_periods_duration.append([graph["start_time"], cur_time])
-                        busy_periods_unique.update(graph["all_flows"])
+                        busy_periods_unique.update(fid_target)
+
+                        busy_period_event_idxs = sorted(graph["event_idxs"])
+                        remainsize = []
+                        for i in busy_period_event_idxs:
+                            tmp = remainsize_list[i]
+                            if isinstance(tmp, dict):
+                                tmp_list = []
+                                for j in fid_target:
+                                    if j in tmp:
+                                        tmp_list.append(tmp[j])
+                                if len(tmp_list) > 0:
+                                    remainsize.append(tmp_list)
+                                else:
+                                    remainsize.append([0])
+                            else:
+                                remainsize.append(tmp)
+                        assert (
+                            len(remainsize) == len(fid_target) * 2
+                        ), f"{len(remainsize)} != {len(fid_target) * 2}"
+
+                        remainsizes_num.append(np.max([len(x) for x in remainsize]))
+                        remainsizes.append(tuple(remainsize))
 
                         del active_graphs[graph_id]
                         # for link in graph["active_links"]:
@@ -414,7 +443,7 @@ def calculate_busy_period_path(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
 
-    return busy_periods, busy_periods_duration
+    return busy_periods, busy_periods_duration, remainsizes, remainsizes_num
 
 
 def calculate_busy_period_link(
