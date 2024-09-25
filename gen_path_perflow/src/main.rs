@@ -15,7 +15,7 @@ struct Parameters {
 pub struct Main {
     #[clap(long, default_value = "/data1/lichenni/software/anaconda3/envs/py39/bin/python")]
     python_path: PathBuf,
-    #[clap(long, default_value = "/data2/lichenni/perflow_link_size")]
+    #[clap(long, default_value = "/data2/lichenni/perflow_link_size_test")]
     output_dir: PathBuf,
 }
 
@@ -45,12 +45,12 @@ fn main() -> anyhow::Result<()> {
 
     // config for debugging
     let params = Parameters {
-        // shard: vec![0],
-        shard: (0..2000).collect(),
+        shard: vec![0],
+        // shard: (0..1000).collect(),
         n_flows: vec![2000],
+        // n_flows: vec![10000],
         n_hosts: vec![21],
         // n_hosts: vec![5],
-        // n_hosts: vec![3],
         shard_cc: vec![0],
         max_inflight_flows: vec![0],
     };
