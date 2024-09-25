@@ -200,7 +200,7 @@ if __name__ == "__main__":
             host_list.append((base_t, i))
         heapq.heapify(host_list)
 
-        n_flows_tmp = n_flows * ntc + 1
+        n_flows_tmp = np.min(n_flows * ntc + 1, 40001)
         # n_flows_tmp = 100001
         # n_flows_tmp=np.random.randint(10, n_flows + 1)*ntc+1
 
