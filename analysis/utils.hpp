@@ -119,16 +119,14 @@ static inline void print_trace(ns3::TraceFormat &tr){
 		UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
 		return;
 	}
-	else if (tr.queueEvent==2){
-		UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
-		PrintActiveFlows();
-		RemoveFlowTransmittedSize(tr.flowId);
-	}
-	else{
-		PrintActiveFlows();
-	}
-	if (tr.queueEvent==1){
+	else if (tr.queueEvent==1){
 		InitFlowTransmittedSize(tr.flowId);
+		PrintActiveFlows();
+	}
+	else if (tr.queueEvent==2){
+		// UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
+		RemoveFlowTransmittedSize(tr.flowId);
+		PrintActiveFlows();
 	}
 	// if (tr.flowId<38477){
 	// 	return;
