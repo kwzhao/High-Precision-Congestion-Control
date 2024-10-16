@@ -23,12 +23,12 @@ ENABLE_PFC {enable_pfc}
 
 PACKET_PAYLOAD_SIZE 1000
 
-TOPOLOGY_FILE {local_dir}/{topo}.txt
+TOPOLOGY_FILE {root}/{topo}.txt
 FLOW_FILE {root}/{trace}.txt
-TRACE_FILE {local_dir}/{trace_track}.txt
-TRACE_OUTPUT_FILE {root}/mix_{topo}{failure}{config_specs}.tr
-FCT_OUTPUT_FILE {root}/fct_{topo}{failure}{config_specs}.txt
-PFC_OUTPUT_FILE {root}/pfc_{topo}{failure}{config_specs}.txt
+TRACE_FILE {local_dir}/trace.txt
+TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}_{cc}{failure}{config_specs}.tr
+FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}_{cc}{failure}{config_specs}.txt
+PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}_{cc}{failure}{config_specs}.txt
 
 SIMULATOR_STOP_TIME {duration}
 
@@ -77,7 +77,7 @@ KMAX_MAP {kmax_map}
 KMIN_MAP {kmin_map}
 PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
-QLEN_MON_FILE {root}/qlen_{topo}{failure}{config_specs}.txt
+QLEN_MON_FILE {root}/qlen_{topo}_{trace}_{cc}{failure}{config_specs}.txt
 QLEN_MON_START 1000000000
 QLEN_MON_END 3000000000
 
@@ -87,6 +87,53 @@ MAX_INFLIGHT_FLOWS {max_inflight_flows}
 """
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="run simulation")
+    parser.add_argument(
+        "--cc",
+        dest="cc",
+        action="store",
+        default="hp",
+        help="hp/dcqcn/timely/dctcp/hpccPint",
+    )
+    parser.add_argument(
+        "--param_1",
+        dest="param_1",
+        action="store",
+        type=float,
+        default=30.0,
+        help="CC param 1",
+    )
+    parser.add_argument(
+        "--param_2",
+        dest="param_2",
+        action="store",
+        type=float,
+        default=0.0,
+        help="CC param 2",
+    )
+    parser.add_argument(
+        "--bfsz",
+        dest="bfsz",
+        action="store",
+        type=float,
+        default=30.0,
+        help="buffer size",
+    )
+    parser.add_argument(
+        "--fwin",
+        dest="fwin",
+        action="store",
+        type=float,
+        default=18000.0,
+        help="fixed window size",
+    )
+    parser.add_argument(
+        "--enable_pfc",
+        dest="enable_pfc",
+        action="store",
+        type=float,
+        default=1.0,
+        help="enabel PFC",
+    )
     parser.add_argument(
         "--shard_total",
         dest="shard_total",
@@ -233,11 +280,9 @@ if __name__ == "__main__":
     hpai = 25
     u_tgt = args.utgt / 100.0
 
-    cc = np.random.choice(CC_LIST, 1)[0]
-
+    cc = args.cc
     cc_idx = CONFIG_TO_PARAM_DICT["cc"] + CC_LIST.index(cc)
     DEFAULT_PARAM_VEC[cc_idx] = 1.0
-    args.cc = cc
     enable_qcn = 1
     if cc == "dctcp":
         cc_idx = CONFIG_TO_PARAM_DICT["dctcp_k"]
@@ -315,7 +360,7 @@ if __name__ == "__main__":
     DEFAULT_PARAM_VEC[fwin_idx] = float(fwin) / PARAM_LIST[fwin_idx][2]
     DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
 
-    config_specs = "_s%d_i%d" % (seed, max_inflight_flows)
+    config_specs = ""
     config_name = "%s/config_%s_%s%s%s.txt" % (root, topo, trace, failure, config_specs)
 
     kmax_map = "3 %d %d %d %d %d %d" % (
@@ -365,7 +410,6 @@ if __name__ == "__main__":
                 bw=bw,
                 trace=trace,
                 topo=topo,
-                trace_track=topo.replace("topo", "trace"),
                 cc=args.cc,
                 mode=1,
                 t_alpha=1,
@@ -409,7 +453,6 @@ if __name__ == "__main__":
                 bw=bw,
                 trace=trace,
                 topo=topo,
-                trace_track=topo.replace("topo", "trace"),
                 cc=args.cc,
                 mode=1,
                 t_alpha=50,
@@ -453,7 +496,6 @@ if __name__ == "__main__":
                 bw=bw,
                 trace=trace,
                 topo=topo,
-                trace_track=topo.replace("topo", "trace"),
                 cc=args.cc,
                 mode=1,
                 t_alpha=1,
@@ -497,7 +539,6 @@ if __name__ == "__main__":
                 bw=bw,
                 trace=trace,
                 topo=topo,
-                trace_track=topo.replace("topo", "trace"),
                 cc=args.cc,
                 mode=1,
                 t_alpha=50,
@@ -557,7 +598,6 @@ if __name__ == "__main__":
             bw=bw,
             trace=trace,
             topo=topo,
-            trace_track=topo.replace("topo", "trace"),
             cc=args.cc,
             mode=3,
             t_alpha=1,
@@ -629,7 +669,6 @@ if __name__ == "__main__":
             bw=bw,
             trace=trace,
             topo=topo,
-            trace_track=topo.replace("topo", "trace"),
             cc=args.cc,
             mode=8,
             t_alpha=1,
@@ -675,7 +714,6 @@ if __name__ == "__main__":
             bw=bw,
             trace=trace,
             topo=topo,
-            trace_track=topo.replace("topo", "trace"),
             cc=args.cc,
             mode=7,
             t_alpha=1,
@@ -721,7 +759,6 @@ if __name__ == "__main__":
             bw=bw,
             trace=trace,
             topo=topo,
-            trace_track=topo.replace("topo", "trace"),
             cc=args.cc,
             mode=7,
             t_alpha=1,
@@ -783,7 +820,6 @@ if __name__ == "__main__":
             bw=bw,
             trace=trace,
             topo=topo,
-            trace_track=topo.replace("topo", "trace"),
             cc=args.cc,
             mode=10,
             t_alpha=1,
