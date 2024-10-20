@@ -16,28 +16,20 @@ def fix_seed(seed):
     np.random.seed(seed)
 
 
-def update_bipartite_graph_and_calculate_busy_periods_small_flows(
-    flows, flow_size_threshold
-):
-    active_graphs = (
-        {}
-    )  # Dictionary to hold multiple bipartite graphs with graph_id as key
-    busy_periods_info = []
+def update_bipartite_graph_and_calculate_busy_periods(flows, flow_size_threshold):
+    active_graphs = {}
+
     busy_periods = []
     busy_periods_len = []
-    busy_periods_duration = []
+    busy_periods_time = []
     busy_periods_unique = set()
-    events = []
 
-    # Precompute events
-    flow_to_end_time = {}
+    events = []
     for flow_id, flow in flows.items():
         events.append(
             (flow["start_time"], "start", flow_id, flow["links"], flow["size"])
         )
         events.append((flow["end_time"], "end", flow_id, flow["links"], flow["size"]))
-        # flow_to_end_time[flow_id] = flow["end_time"]
-
     events.sort()
 
     link_to_graph = {}  # Map to quickly find which graph a link belongs to
@@ -47,8 +39,8 @@ def update_bipartite_graph_and_calculate_busy_periods_small_flows(
 
     for event_idx, (time, event, flow_id, links, size) in enumerate(events):
         cur_time = time
-        if flow_id % 1000 == 0:
-            print(f"Processing flow {flow_id}")
+        # if flow_id % 1000 == 0:
+        #     print(f"Processing flow {flow_id}")
         if event == "start":
             flow_to_size[flow_id] = size
             if size > flow_size_threshold:
@@ -173,19 +165,11 @@ def update_bipartite_graph_and_calculate_busy_periods_small_flows(
                         # for flow_id in graph['active_flows']:
                         #     if flow_to_end_time[flow_id]>end_time:
                         #         end_time=flow_to_end_time[flow_id]
-                        busy_periods_info.append(
-                            (
-                                graph["start_time"],
-                                cur_time,
-                                list(graph["all_links"]),
-                                list(graph["all_flows"]),
-                            )
-                        )
 
                         fid_target = sorted(graph["all_flows"])
                         busy_periods.append(tuple(fid_target))
                         busy_periods_len.append(len(graph["all_flows"]))
-                        busy_periods_duration.append([graph["start_time"], cur_time])
+                        busy_periods_time.append([graph["start_time"], cur_time])
                         busy_periods_unique.update(graph["all_flows"])
 
                         # busy_period_event_idxs = sorted(graph["event_idxs"])
@@ -240,7 +224,7 @@ def update_bipartite_graph_and_calculate_busy_periods_small_flows(
     print(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
-    return busy_periods, busy_periods_duration, busy_periods_info
+    return busy_periods, busy_periods_time
 
 
 if __name__ == "__main__":
@@ -298,10 +282,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     enable_tr = args.enable_tr
-    flow_size_threshold_list = [100000000]
+    flow_size_threshold_list = [100000000, 1000000]
 
     fix_seed(args.shard)
-    nhosts = 32
     time_limit = int(30000 * 1e9)
     shard_cc = args.shard_cc
     # max_inflight_flows = args.max_inflight_flows
@@ -309,7 +292,6 @@ if __name__ == "__main__":
     config_specs = "_%s" % (args.cc)
     output_dir = args.output_dir
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
-    print(file)
     if not os.path.exists(file):
         exit(0)
     # flowId, sip, dip, sport, dport, size (B), start_time, fcts (ns), standalone_fct (ns)
@@ -319,17 +301,13 @@ if __name__ == "__main__":
         + "%d" % time_limit
         + ") {slow=$8/$9;print slow<1?$9:$8, $9, $6, $7, $2, $3, $1}}' | sort -n -k 4,4 -k 7,7"
     )
-    # print cmd
     output = subprocess.check_output(cmd, shell=True)
 
     try:
         output = output.decode()
-        a = output[:-1].split("\n")
-        n = len(a)
-        res_np = np.array([x.split() for x in a])
+        tmp = output[:-1].split("\n")
+        res_np = np.array([x.split() for x in tmp])
         print(res_np.shape)
-        # for i in range(n):
-        # 	print "%s %s %s %s %s %s"%(res_np[i,0], res_np[i,1], res_np[i,2], res_np[i,3], res_np[i,4], res_np[i,5])
         fcts = res_np[:, 0].astype("int64")
         i_fcts = res_np[:, 1].astype("int64")
         fsize = res_np[:, 2].astype("int64")
@@ -356,24 +334,30 @@ if __name__ == "__main__":
             }
         with open(link_info_file, "r") as file:
             num_flows, num_path = map(int, file.readline().strip().split(","))
-            print(f"num_flows: {num_flows}, num_path: {num_path}")
+            assert num_flows == len(fids)
+            # print(f"num_flows: {num_flows}, num_path: {num_path}")
             for _ in range(num_flows):
                 tmp = file.readline().strip().split(":")
                 flow_id = int(tmp[0])
                 link_info = tmp[1].split(",")
                 if flow_id in flows:
-                    flows[flow_id]["links"] = [
-                        link_info[i] for i in range(1, len(link_info) - 1)
-                    ]
+                    flows[flow_id]["links"] = set(
+                        [link_info[i] for i in range(1, len(link_info) - 1)]
+                    )
+
+        link_info = [tuple(flows[i]["links"]) for i in range(len(fids))]
+        np.save(
+            "%s/link_%s%s.npy" % (output_dir, args.prefix, config_specs),
+            np.array(link_info, dtype=object),
+        )
+        tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
+        log_path = tr_path.replace(".tr", ".log")
 
         for flow_size_threshold in flow_size_threshold_list:
-
-            (
-                busy_periods,
-                busy_periods_time,
-                busy_periods_info,
-            ) = update_bipartite_graph_and_calculate_busy_periods_small_flows(
-                flows, flow_size_threshold
+            (busy_periods, busy_periods_time) = (
+                update_bipartite_graph_and_calculate_busy_periods(
+                    flows, flow_size_threshold
+                )
             )
             busy_periods = np.array(busy_periods, dtype=object)
             np.save(
@@ -407,18 +391,16 @@ if __name__ == "__main__":
 
         # os.system("rm %s" % (file))
 
-        # if os.path.exists("%s/flows.txt"% (output_dir)):
-        #     os.system("rm %s/flows.txt" % (output_dir))
+        if os.path.exists("%s/flows.txt" % (output_dir)):
+            os.system("rm %s/flows.txt" % (output_dir))
 
-        # os.system(
-        #     "rm %s"
-        #     % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix,  config_specs))
-        # )
+        os.system(
+            "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        )
 
-        # os.system(
-        #     "rm %s"
-        #     % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-        # )
+        os.system(
+            "rm %s" % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        )
 
         # os.system(
         #     "rm %s"
