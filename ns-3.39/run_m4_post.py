@@ -322,8 +322,8 @@ if __name__ == "__main__":
             i_fcts,
         )  # ns
         np.save("%s/fid_%s%s.npy" % (output_dir, args.prefix, config_specs), fids)
-        np.save("%s/fat_%s%s.npy" % (output_dir, args.prefix, config_specs), fats)
-
+        np.save("%s/fat.npy" % (output_dir), fats)
+        np.save("%s/fsize.npy" % (output_dir), fsize)
         link_info_file = "%s/path_1.txt" % (output_dir)
         flows = {}
         for i in range(len(fids)):
@@ -345,11 +345,16 @@ if __name__ == "__main__":
                         [link_info[i] for i in range(1, len(link_info) - 1)]
                     )
 
-        link_info = [tuple(flows[i]["links"]) for i in range(len(fids))]
+        link_info = [list(flows[i]["links"]) for i in range(len(fids))]
         np.save(
-            "%s/link_%s%s.npy" % (output_dir, args.prefix, config_specs),
+            "%s/flow_to_path.npy" % (output_dir),
             np.array(link_info, dtype=object),
         )
+        link_list = list(set().union(*link_info))
+        link_list = sorted(link_list)
+        link_dict = {link: idx for idx, link in enumerate(link_list)}
+        np.save("%s/flink.npy" % (output_dir), np.array(link_list))
+
         tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
         log_path = tr_path.replace(".tr", ".log")
 
@@ -394,13 +399,13 @@ if __name__ == "__main__":
         if os.path.exists("%s/flows.txt" % (output_dir)):
             os.system("rm %s/flows.txt" % (output_dir))
 
-        os.system(
-            "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
-        )
+            os.system(
+                "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
+            )
 
-        os.system(
-            "rm %s" % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-        )
+            os.system(
+                "rm %s" % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+            )
 
         # os.system(
         #     "rm %s"
