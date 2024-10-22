@@ -352,7 +352,6 @@ if __name__ == "__main__":
         )
         link_list = list(set().union(*link_info))
         link_list = sorted(link_list)
-        link_dict = {link: idx for idx, link in enumerate(link_list)}
         np.save("%s/flink.npy" % (output_dir), np.array(link_list))
 
         tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
