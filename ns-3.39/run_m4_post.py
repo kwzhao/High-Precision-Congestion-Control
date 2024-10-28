@@ -282,7 +282,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     enable_tr = args.enable_tr
-    flow_size_threshold_list = [100000000, 1000000]
+    flow_size_threshold_list = [100000000]
 
     fix_seed(args.shard)
     time_limit = int(30000 * 1e9)
@@ -332,25 +332,25 @@ if __name__ == "__main__":
                 "end_time": fats[i] + fcts[i],
                 "size": fsize[i],
             }
+        link_info_list = []
         with open(link_info_file, "r") as file:
             num_flows, num_path = map(int, file.readline().strip().split(","))
-            assert num_flows == len(fids)
+            # assert num_flows == len(fids)
             # print(f"num_flows: {num_flows}, num_path: {num_path}")
             for _ in range(num_flows):
                 tmp = file.readline().strip().split(":")
                 flow_id = int(tmp[0])
                 link_info = tmp[1].split(",")
+                link_set = set([link_info[i] for i in range(1, len(link_info) - 1)])
                 if flow_id in flows:
-                    flows[flow_id]["links"] = set(
-                        [link_info[i] for i in range(1, len(link_info) - 1)]
-                    )
+                    flows[flow_id]["links"] = link_set
+                link_info_list.append(list(link_set))
 
-        link_info = [list(flows[i]["links"]) for i in range(len(fids))]
         np.save(
             "%s/flow_to_path.npy" % (output_dir),
-            np.array(link_info, dtype=object),
+            np.array(link_info_list, dtype=object),
         )
-        link_list = list(set().union(*link_info))
+        link_list = list(set().union(*link_info_list))
         link_list = sorted(link_list)
         np.save("%s/flink.npy" % (output_dir), np.array(link_list))
 
