@@ -16,14 +16,17 @@ def fix_seed(seed):
     np.random.seed(seed)
 
 
-def update_bipartite_graph_and_calculate_busy_periods(flows, flow_size_threshold):
+def gen_busy_periods(flows, flow_size_threshold, remainsize_list):
+    if flow_size_threshold == 100000000:
+        flow_size_threshold = np.inf
     active_graphs = {}
 
     busy_periods = []
     busy_periods_len = []
     busy_periods_time = []
     busy_periods_unique = set()
-
+    remainsizes = []
+    remainsizes_num = []
     events = []
     for flow_id, flow in flows.items():
         events.append(
@@ -172,27 +175,27 @@ def update_bipartite_graph_and_calculate_busy_periods(flows, flow_size_threshold
                         busy_periods_time.append([graph["start_time"], cur_time])
                         busy_periods_unique.update(graph["all_flows"])
 
-                        # busy_period_event_idxs = sorted(graph["event_idxs"])
-                        # remainsize = []
-                        # for i in busy_period_event_idxs:
-                        #     tmp = remainsize_list[i]
-                        #     if isinstance(tmp, dict):
-                        #         tmp_list = []
-                        #         for j in fid_target:
-                        #             if j in tmp:
-                        #                 tmp_list.append(tmp[j])
-                        #         if len(tmp_list) > 0:
-                        #             remainsize.append(tmp_list)
-                        #         else:
-                        #             remainsize.append([0])
-                        #     else:
-                        #         remainsize.append(tmp)
-                        # assert (
-                        #     len(remainsize) == len(fid_target) * 2
-                        # ), f"{len(remainsize)} != {len(fid_target) * 2}"
+                        busy_period_event_idxs = sorted(graph["event_idxs"])
+                        remainsize = []
+                        for i in busy_period_event_idxs:
+                            tmp = remainsize_list[i]
+                            if isinstance(tmp, dict):
+                                tmp_list = []
+                                for j in fid_target:
+                                    if j in tmp:
+                                        tmp_list.append(tmp[j])
+                                if len(tmp_list) > 0:
+                                    remainsize.append(tmp_list)
+                                else:
+                                    remainsize.append([0])
+                            else:
+                                remainsize.append(tmp)
+                        assert (
+                            len(remainsize) == len(fid_target) * 2
+                        ), f"{len(remainsize)} != {len(fid_target) * 2}"
 
-                        # remainsizes_num.append(np.max([len(x) for x in remainsize]))
-                        # remainsizes.append(tuple(remainsize))
+                        remainsizes_num.append(np.max([len(x) for x in remainsize]))
+                        remainsizes.append(tuple(remainsize))
 
                         del active_graphs[graph_id]
                         # for link in graph["active_links"]:
@@ -224,7 +227,7 @@ def update_bipartite_graph_and_calculate_busy_periods(flows, flow_size_threshold
     print(
         f"n_flow_event: {len(events)}, {len(busy_periods)} busy periods, flow_size_threshold: {flow_size_threshold}, n_flows_unique: {len(busy_periods_unique)} , n_flows_per_period_est: {np.min(busy_periods_len)}, {np.mean(busy_periods_len)}, {np.max(busy_periods_len)}"
     )
-    return busy_periods, busy_periods_time
+    return busy_periods, busy_periods_time, remainsizes, remainsizes_num
 
 
 if __name__ == "__main__":
@@ -238,7 +241,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-s", dest="step", action="store", default="5")
     parser.add_argument(
-        "--shard", dest="shard", type=int, default=0, help="random seed"
+        "--random_seed", dest="random_seed", type=int, default=0, help="random seed"
     )
     parser.add_argument(
         "--shard_cc", dest="shard_cc", type=int, default=0, help="random seed"
@@ -284,7 +287,7 @@ if __name__ == "__main__":
     enable_tr = args.enable_tr
     flow_size_threshold_list = [100000000]
 
-    fix_seed(args.shard)
+    fix_seed(args.random_seed)
     time_limit = int(30000 * 1e9)
     shard_cc = args.shard_cc
     # max_inflight_flows = args.max_inflight_flows
@@ -356,13 +359,30 @@ if __name__ == "__main__":
 
         tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
         log_path = tr_path.replace(".tr", ".log")
+        if not os.path.exists(log_path):
+            os.system(f"{cur_dir}/../analysis/trace_reader {tr_path} > {log_path}")
+        if os.path.exists(log_path):
+            remainsize_list = []
+            with open(log_path, "r") as file:
+                for line in file:
+                    line = line.strip().rstrip(",").split(",")
+                    # Print each line
+                    if len(line[0]) > 1:
+                        line_dict = {}
+                        for i in range(len(line)):
+                            tmp = line[i].split(":")
+                            line_dict[int(tmp[0])] = int(tmp[1])
+                        remainsize_list.append(line_dict)
+                    else:
+                        remainsize_list.append([0])
 
         for flow_size_threshold in flow_size_threshold_list:
-            (busy_periods, busy_periods_time) = (
-                update_bipartite_graph_and_calculate_busy_periods(
-                    flows, flow_size_threshold
-                )
-            )
+            (
+                busy_periods,
+                busy_periods_time,
+                busy_periods_remainsize,
+                remainsizes_num,
+            ) = gen_busy_periods(flows, flow_size_threshold, remainsize_list)
             busy_periods = np.array(busy_periods, dtype=object)
             np.save(
                 "%s/period_%s%s_t%d.npy"
@@ -374,17 +394,17 @@ if __name__ == "__main__":
                 % (output_dir, args.prefix, config_specs, flow_size_threshold),
                 np.array(busy_periods_time),
             )
-            # busy_periods_remainsize = np.array(busy_periods_remainsize, dtype=object)
-            # np.save(
-            #     "%s/period_remainsize_%s%s_t%d.npy"
-            #     % (output_dir, args.prefix, config_specs, flow_size_threshold),
-            #     np.array(busy_periods_remainsize),
-            # )
-            # np.save(
-            #     "%s/period_remainsize_num_%s%s_t%d.npy"
-            #     % (output_dir, args.prefix, config_specs, flow_size_threshold),
-            #     np.array(remainsizes_num),
-            # )
+            busy_periods_remainsize = np.array(busy_periods_remainsize, dtype=object)
+            np.save(
+                "%s/period_remainsize_%s%s_t%d.npy"
+                % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                np.array(busy_periods_remainsize),
+            )
+            np.save(
+                "%s/period_remainsize_num_%s%s_t%d.npy"
+                % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                np.array(remainsizes_num),
+            )
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
             #         file.write(" ".join(map(str, period)) + "\n")
