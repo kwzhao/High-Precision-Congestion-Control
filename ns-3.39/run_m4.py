@@ -135,11 +135,11 @@ if __name__ == "__main__":
         help="enabel PFC",
     )
     parser.add_argument(
-        "--shard_total",
-        dest="shard_total",
+        "--random_seed",
+        dest="random_seed",
         type=int,
         default=0,
-        help="random shard_total",
+        help="random random_seed",
     )
     parser.add_argument(
         "--shard_cc", dest="shard_cc", type=int, default=0, help="random seed"
@@ -228,14 +228,13 @@ if __name__ == "__main__":
         help="the base RTT",
     )
     args = parser.parse_args()
+    fix_seed(int(args.random_seed))
 
     seed = int(args.shard_cc)
-    fix_seed(int(args.shard_total))
-
     enable_debug = args.enable_debug
     enable_tr = args.enable_tr
-
     max_inflight_flows = args.max_inflight_flows
+
     root = args.root
     topo = args.topo
     bw = int(args.bw)
@@ -245,7 +244,6 @@ if __name__ == "__main__":
     mi = args.mi
     pint_log_base = args.pint_log_base
     pint_prob = args.pint_prob
-
     # fwin = args.fwin
     base_rtt = args.base_rtt
 
