@@ -361,6 +361,8 @@ if __name__ == "__main__":
         log_path = tr_path.replace(".tr", ".log")
         if not os.path.exists(log_path):
             os.system(f"{cur_dir}/../analysis/trace_reader {tr_path} > {log_path}")
+        if os.path.exists(tr_path):
+            os.system("rm %s" % tr_path)
         if os.path.exists(log_path):
             remainsize_list = []
             with open(log_path, "r") as file:
@@ -408,8 +410,7 @@ if __name__ == "__main__":
             # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
             #     for period in flow_id_per_period_est:
             #         file.write(" ".join(map(str, period)) + "\n")
-        if os.path.exists(tr_path):
-            os.system("rm %s" % tr_path)
+
         if os.path.exists(log_path):
             os.system("rm %s" % log_path)
 
