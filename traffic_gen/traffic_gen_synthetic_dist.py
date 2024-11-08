@@ -81,9 +81,8 @@ if __name__ == "__main__":
     output_dir = options.output
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
-    for shard in range(1000):
-        fix_seed(shard)
+    fix_seed(0)
+    for shard in range(2000):
         size_dist_candidate = np.random.choice(
             size_distribution_list, size=1, replace=True
         )[0]
@@ -94,7 +93,7 @@ if __name__ == "__main__":
         n_flows_tmp = 100000
         if size_dist_candidate == "exp":
             mu = (
-                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2
+                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.5
                 - min_size_in_bit
             )
             f_sizes_in_byte = (
@@ -104,7 +103,7 @@ if __name__ == "__main__":
                 "int64"
             )  # Byte
         elif size_dist_candidate == "gaussian":
-            size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3
+            size_sigma = (float(size_sigma_candidate) / 5000.0) ** 2.5
             mu = avg_size_base_in_bit * size_sigma - min_size_in_bit
 
             tmp = np.array(
@@ -118,10 +117,10 @@ if __name__ == "__main__":
             )
         elif size_dist_candidate == "lognorm":
             avg_size_in_bit = (
-                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2
+                avg_size_base_in_bit * (float(size_sigma_candidate) / 4000.0) ** 3
             )
             # size_sigma = 0.8 + (60000 - float(size_sigma_candidate)) / 30000
-            size_sigma = 2.0
+            size_sigma = 2.5
             # flow size
             mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma**2) / 2
             f_sizes_in_byte = (
