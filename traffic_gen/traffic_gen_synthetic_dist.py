@@ -83,9 +83,9 @@ if __name__ == "__main__":
         os.makedirs(output_dir)
     fix_seed(0)
     for shard in range(1000):
-        size_dist_candidate = np.random.choice(
-            size_distribution_list, size=1, replace=True
-        )[0]
+        size_dist_candidate = size_distribution_list[
+            shard % len(size_distribution_list)
+        ]
         size_sigma_candidate = (
             np.random.rand() * (size_sigma_range[1] - size_sigma_range[0])
             + size_sigma_range[0]
@@ -117,7 +117,7 @@ if __name__ == "__main__":
             )
         elif size_dist_candidate == "lognorm":
             avg_size_in_bit = (
-                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3
+                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.5
             )
             # size_sigma = 0.8 + (60000 - float(size_sigma_candidate)) / 30000
             size_sigma = 2
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 1 + x * (avg_size_in_bit - min_size_in_bit) / size_sigma, 1 / x
             )
             psi = fsolve(func, 0.5)[0]
-            print("psi: ", psi)
+            # print("psi: ", psi)
             assert psi < 1.0
             f_sizes_in_byte = min_size_in_bit + size_sigma * genpareto.rvs(
                 c=psi, size=(n_flows_tmp,)
@@ -151,7 +151,7 @@ if __name__ == "__main__":
             print("size distribution not supported")
             sys.exit(0)
         # Ensure output directory exists
-
+        print(f"{shard}: {size_dist_candidate} {size_sigma_candidate}")
         output_txt_file = os.path.join(output_dir, f"sync-all-{shard}.txt")
         export_synthetic_distribution(
             f_sizes_in_byte, output_txt_file, num_percentiles=100
