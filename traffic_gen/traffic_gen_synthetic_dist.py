@@ -93,7 +93,7 @@ if __name__ == "__main__":
         n_flows_tmp = 100000
         if size_dist_candidate == "exp":
             mu = (
-                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.5
+                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3
                 - min_size_in_bit
             )
             f_sizes_in_byte = (
@@ -103,7 +103,7 @@ if __name__ == "__main__":
                 "int64"
             )  # Byte
         elif size_dist_candidate == "gaussian":
-            size_sigma = (float(size_sigma_candidate) / 5000.0) ** 2.5
+            size_sigma = (float(size_sigma_candidate) / 5000.0) ** 3
             mu = avg_size_base_in_bit * size_sigma - min_size_in_bit
 
             tmp = np.array(
@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 2.5
             )
             # size_sigma = 0.8 + (60000 - float(size_sigma_candidate)) / 30000
-            size_sigma = 2
+            size_sigma = 2.5
             # flow size
             mu = np.log(avg_size_in_bit - min_size_in_bit) - (size_sigma**2) / 2
             f_sizes_in_byte = (
@@ -134,7 +134,7 @@ if __name__ == "__main__":
             ).astype("int64")
         elif size_dist_candidate == "pareto":
             avg_size_in_bit = (
-                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3
+                avg_size_base_in_bit * (float(size_sigma_candidate) / 5000.0) ** 3.2
             )
             size_sigma = avg_size_in_bit // 2
             func = lambda x: 5 - np.power(
