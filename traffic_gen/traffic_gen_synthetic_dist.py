@@ -61,8 +61,26 @@ def export_synthetic_distribution(
 
     # Write the flow sizes and their corresponding percentiles to a text file
     with open(output_txt_file, "w") as f:
+        prev_size = None
+        prev_percentile = None
         for size, percentile in zip(flow_size_percentiles, percentiles):
-            f.write(f"{int(size)} {percentile:.9f}\n")
+            # Check if size and percentile are increasing
+            if prev_size is not None and prev_percentile is not None:
+                if size <= prev_size:
+                    size += 1
+                    # assert False, f"size decreased at {percentile}"
+                if percentile <= prev_percentile:
+                    assert False, f"percentile decreased at {size}"
+
+            # Write to file with conditional formatting for the last percentile
+            if percentile == 100 or percentile == 0:
+                f.write(f"{int(size)} {int(percentile)}\n")
+            else:
+                f.write(f"{int(size)} {percentile:.9f}\n")
+
+            # Update previous values
+            prev_size = size
+            prev_percentile = percentile
 
 
 if __name__ == "__main__":
