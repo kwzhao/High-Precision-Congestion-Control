@@ -356,63 +356,65 @@ if __name__ == "__main__":
         link_list = list(set().union(*link_info_list))
         link_list = sorted(link_list)
         np.save("%s/flink.npy" % (output_dir), np.array(link_list))
+        if enable_tr:
+            tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
+            log_path = tr_path.replace(".tr", ".log")
+            if not os.path.exists(log_path):
+                os.system(f"{cur_dir}/../analysis/trace_reader {tr_path} > {log_path}")
+            if os.path.exists(tr_path):
+                os.system("rm %s" % tr_path)
+            if os.path.exists(log_path):
+                remainsize_list = []
+                with open(log_path, "r") as file:
+                    for line in file:
+                        line = line.strip().rstrip(",").split(",")
+                        # Print each line
+                        if len(line[0]) > 1:
+                            line_dict = {}
+                            for i in range(len(line)):
+                                tmp = line[i].split(":")
+                                line_dict[int(tmp[0])] = int(tmp[1])
+                            remainsize_list.append(line_dict)
+                        else:
+                            remainsize_list.append([0])
 
-        tr_path = "%s/mix_%s%s.tr" % (output_dir, args.prefix, config_specs)
-        log_path = tr_path.replace(".tr", ".log")
-        if not os.path.exists(log_path):
-            os.system(f"{cur_dir}/../analysis/trace_reader {tr_path} > {log_path}")
-        if os.path.exists(tr_path):
-            os.system("rm %s" % tr_path)
-        if os.path.exists(log_path):
-            remainsize_list = []
-            with open(log_path, "r") as file:
-                for line in file:
-                    line = line.strip().rstrip(",").split(",")
-                    # Print each line
-                    if len(line[0]) > 1:
-                        line_dict = {}
-                        for i in range(len(line)):
-                            tmp = line[i].split(":")
-                            line_dict[int(tmp[0])] = int(tmp[1])
-                        remainsize_list.append(line_dict)
-                    else:
-                        remainsize_list.append([0])
+            for flow_size_threshold in flow_size_threshold_list:
+                (
+                    busy_periods,
+                    busy_periods_time,
+                    busy_periods_remainsize,
+                    remainsizes_num,
+                ) = gen_busy_periods(flows, flow_size_threshold, remainsize_list)
+                busy_periods = np.array(busy_periods, dtype=object)
+                np.save(
+                    "%s/period_%s%s_t%d.npy"
+                    % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                    busy_periods,
+                )
+                np.save(
+                    "%s/period_time_%s%s_t%d.npy"
+                    % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                    np.array(busy_periods_time),
+                )
+                busy_periods_remainsize = np.array(
+                    busy_periods_remainsize, dtype=object
+                )
+                np.save(
+                    "%s/period_remainsize_%s%s_t%d.npy"
+                    % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                    np.array(busy_periods_remainsize),
+                )
+                np.save(
+                    "%s/period_remainsize_num_%s%s_t%d.npy"
+                    % (output_dir, args.prefix, config_specs, flow_size_threshold),
+                    np.array(remainsizes_num),
+                )
+                # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
+                #     for period in flow_id_per_period_est:
+                #         file.write(" ".join(map(str, period)) + "\n")
 
-        for flow_size_threshold in flow_size_threshold_list:
-            (
-                busy_periods,
-                busy_periods_time,
-                busy_periods_remainsize,
-                remainsizes_num,
-            ) = gen_busy_periods(flows, flow_size_threshold, remainsize_list)
-            busy_periods = np.array(busy_periods, dtype=object)
-            np.save(
-                "%s/period_%s%s_t%d.npy"
-                % (output_dir, args.prefix, config_specs, flow_size_threshold),
-                busy_periods,
-            )
-            np.save(
-                "%s/period_time_%s%s_t%d.npy"
-                % (output_dir, args.prefix, config_specs, flow_size_threshold),
-                np.array(busy_periods_time),
-            )
-            busy_periods_remainsize = np.array(busy_periods_remainsize, dtype=object)
-            np.save(
-                "%s/period_remainsize_%s%s_t%d.npy"
-                % (output_dir, args.prefix, config_specs, flow_size_threshold),
-                np.array(busy_periods_remainsize),
-            )
-            np.save(
-                "%s/period_remainsize_num_%s%s_t%d.npy"
-                % (output_dir, args.prefix, config_specs, flow_size_threshold),
-                np.array(remainsizes_num),
-            )
-            # with open("%s/period_%s%s.txt" % (output_dir, args.prefix, config_specs), "w") as file:
-            #     for period in flow_id_per_period_est:
-            #         file.write(" ".join(map(str, period)) + "\n")
-
-        if os.path.exists(log_path):
-            os.system("rm %s" % log_path)
+            if os.path.exists(log_path):
+                os.system("rm %s" % log_path)
 
         # os.system("rm %s" % (file))
 
