@@ -100,7 +100,7 @@ if __name__ == "__main__":
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     fix_seed(0)
-    for shard in range(1000):
+    for shard in range(2000):
         size_dist_candidate = size_distribution_list[
             shard % len(size_distribution_list)
         ]
