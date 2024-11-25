@@ -115,7 +115,7 @@ if __name__ == "__main__":
         dest="bfsz",
         action="store",
         type=float,
-        default=30.0,
+        default=300.0,
         help="buffer size",
     )
     parser.add_argument(
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         dest="base_rtt",
         action="store",
         type=int,
-        default=8000,
+        default=14400,
         help="the base RTT",
     )
     args = parser.parse_args()
@@ -244,32 +244,12 @@ if __name__ == "__main__":
     mi = args.mi
     pint_log_base = args.pint_log_base
     pint_prob = args.pint_prob
-    # fwin = args.fwin
+
+    bfsz = args.bfsz * 10
+    fwin = args.fwin
     base_rtt = args.base_rtt
-
-    failure = ""
-    if args.down != "0 0 0":
-        failure = "_down"
-
-    bfsz_idx = CONFIG_TO_PARAM_DICT["bfsz"]
-    fwin_idx = CONFIG_TO_PARAM_DICT["fwin"]
-    pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
-    if enable_debug:
-        bfsz = int(PARAM_LIST[bfsz_idx][seed % 2] * PARAM_LIST[bfsz_idx][2])
-        fwin = int(PARAM_LIST[fwin_idx][seed % 2] * PARAM_LIST[fwin_idx][2])
-        enable_pfc = int(PARAM_LIST[pfc_idx][seed % 2])
-    else:
-        bfsz = int(
-            np.random.uniform(PARAM_LIST[bfsz_idx][0], PARAM_LIST[bfsz_idx][1])
-            * PARAM_LIST[bfsz_idx][2]
-        )
-        fwin = int(
-            np.random.uniform(PARAM_LIST[fwin_idx][0], PARAM_LIST[fwin_idx][1])
-            * PARAM_LIST[fwin_idx][2]
-        )
-        enable_pfc = int(np.random.choice(PARAM_LIST[pfc_idx], 1)[0])
-
-    dctcp_k = 20
+    enable_pfc = args.enable_pfc
+    dctcp_k = 30
     timely_t_low = 10000
     timely_t_high = 50000
     timely_beta = 0.8
@@ -278,84 +258,50 @@ if __name__ == "__main__":
     hpai = 25
     u_tgt = args.utgt / 100.0
 
+    failure = ""
+    if args.down != "0 0 0":
+        failure = "_down"
+
+    bfsz_idx = CONFIG_TO_PARAM_DICT["bfsz"]
+    fwin_idx = CONFIG_TO_PARAM_DICT["fwin"]
+    pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
+
     cc = args.cc
     cc_idx = CONFIG_TO_PARAM_DICT["cc"] + CC_LIST.index(cc)
     DEFAULT_PARAM_VEC[cc_idx] = 1.0
     enable_qcn = 1
     if cc == "dctcp":
         cc_idx = CONFIG_TO_PARAM_DICT["dctcp_k"]
-        if enable_debug:
-            dctcp_k = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            dctcp_k = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(dctcp_k) / PARAM_LIST[cc_idx][2]
+        dctcp_k = args.param_1
+        DEFAULT_PARAM_VEC[cc_idx] = float(dctcp_k)
     elif cc.startswith("dcqcn"):
         cc_idx = CONFIG_TO_PARAM_DICT["dcqcn_k_min"]
-        if enable_debug:
-            dcqcn_k_min = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            dcqcn_k_min = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(dcqcn_k_min) / PARAM_LIST[cc_idx][2]
+        dcqcn_k_min = args.param_1
+        DEFAULT_PARAM_VEC[cc_idx] = float(dcqcn_k_min)
 
         cc_idx = CONFIG_TO_PARAM_DICT["dcqcn_k_max"]
-        if enable_debug:
-            dcqcn_k_max = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            dcqcn_k_max = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(dcqcn_k_max) / PARAM_LIST[cc_idx][2]
+        dcqcn_k_max = args.param_2
+        DEFAULT_PARAM_VEC[cc_idx] = float(dcqcn_k_max)
         enable_pfc = 1
     elif cc.startswith("hp"):
         cc_idx = CONFIG_TO_PARAM_DICT["u_tgt"]
-        if enable_debug:
-            u_tgt = PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2]
-        else:
-            u_tgt = (
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = (u_tgt) / PARAM_LIST[cc_idx][2]
+        u_tgt = args.param_1 / 100.0
+        DEFAULT_PARAM_VEC[cc_idx] = float(args.param_1)
 
         cc_idx = CONFIG_TO_PARAM_DICT["hpai"]
-        if enable_debug:
-            hpai = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            hpai = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(hpai) / PARAM_LIST[cc_idx][2]
+        hpai = args.param_2 * 10
+        DEFAULT_PARAM_VEC[cc_idx] = float(args.param_2)
     elif cc.startswith("timely"):
         cc_idx = CONFIG_TO_PARAM_DICT["timely_t_low"]
-        if enable_debug:
-            timely_t_low = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            timely_t_low = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(timely_t_low) / PARAM_LIST[cc_idx][2]
+        timely_t_low = args.param_1 * 1000
+        DEFAULT_PARAM_VEC[cc_idx] = float(args.param_1)
 
         cc_idx = CONFIG_TO_PARAM_DICT["timely_t_high"]
-        if enable_debug:
-            timely_t_high = int(PARAM_LIST[cc_idx][seed % 2] * PARAM_LIST[cc_idx][2])
-        else:
-            timely_t_high = int(
-                np.random.uniform(PARAM_LIST[cc_idx][0], PARAM_LIST[cc_idx][1])
-                * PARAM_LIST[cc_idx][2]
-            )
-        DEFAULT_PARAM_VEC[cc_idx] = float(timely_t_high) / PARAM_LIST[cc_idx][2]
+        timely_t_high = args.param_2 * 1000
+        DEFAULT_PARAM_VEC[cc_idx] = float(args.param_2)
 
-    DEFAULT_PARAM_VEC[bfsz_idx] = float(bfsz) / PARAM_LIST[bfsz_idx][2]
-    DEFAULT_PARAM_VEC[fwin_idx] = float(fwin) / PARAM_LIST[fwin_idx][2]
+    DEFAULT_PARAM_VEC[bfsz_idx] = float(bfsz / 10.0)
+    DEFAULT_PARAM_VEC[fwin_idx] = float(fwin / 1000.0)
     DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
 
     config_specs = ""
