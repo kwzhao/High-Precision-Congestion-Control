@@ -264,7 +264,7 @@ if __name__ == "__main__":
 
     bfsz_idx = CONFIG_TO_PARAM_DICT["bfsz"]
     fwin_idx = CONFIG_TO_PARAM_DICT["fwin"]
-    pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
+    # pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
 
     cc = args.cc
     cc_idx = CONFIG_TO_PARAM_DICT["cc"] + CC_LIST.index(cc)
@@ -302,7 +302,7 @@ if __name__ == "__main__":
 
     DEFAULT_PARAM_VEC[bfsz_idx] = float(bfsz / 10.0)
     DEFAULT_PARAM_VEC[fwin_idx] = float(fwin / 1000.0)
-    DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
+    # DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
 
     config_specs = ""
     config_name = "%s/config_%s_%s%s%s.txt" % (root, topo, trace, failure, config_specs)
@@ -809,10 +809,10 @@ if __name__ == "__main__":
     with open("%s/param_%s%s%s.txt" % (root, topo, failure, config_specs), "w") as file:
         file.write(" ".join(map(str, DEFAULT_PARAM_VEC)) + "\n")
         file.write(
-            "0 {} {} {} {} {} {} {} {} {} {} {}\n".format(
+            "{} {} {} {} {} {} {} {} {} {}\n".format(
                 bfsz,
                 fwin,
-                enable_pfc,
+                # enable_pfc,
                 cc,
                 dctcp_k,
                 dcqcn_k_min,

@@ -38,7 +38,8 @@ timely_t_high = [200, 200, 1000]
 # cc
 CC_LIST = list(CC_DICT.keys())
 
-PARAM_NETWORK = [None, bfsz, fwin, enable_pfc]
+# PARAM_NETWORK = [None, bfsz, fwin, enable_pfc]
+PARAM_NETWORK = [bfsz, fwin]
 CC_IDX_BASE = len(PARAM_NETWORK)
 
 PARAM_CC = [None for _ in range(len(CC_LIST))]
@@ -52,9 +53,9 @@ PARAM_LIST = (
 )
 
 CONFIG_TO_PARAM_DICT = {
-    "bfsz": 1,
-    "fwin": 2,
-    "pfc": 3,
+    "bfsz": 0,
+    "fwin": 1,
+    # "pfc": 3,
     "cc": CC_IDX_BASE,
     "dctcp_k": CC_PARAM_IDX_BASE,
     "dcqcn_k_min": CC_PARAM_IDX_BASE + 1,
