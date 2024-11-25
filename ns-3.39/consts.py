@@ -13,9 +13,9 @@ enable_pfc = [1, 1]
 
 CC_DICT = {
     "dctcp": 8,
-    # "dcqcn_paper_vwin": 1,
-    # "hp": 3,
-    # "timely_vwin": 7,
+    "dcqcn_paper_vwin": 1,
+    "hp": 3,
+    "timely_vwin": 7,
     # "powertcp": 9,
     # "thetapowertcp": 10,
 }
