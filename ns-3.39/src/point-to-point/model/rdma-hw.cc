@@ -280,8 +280,8 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		std::cout << "sip " << sip << " dip " << dip << " sport " << sport  << " dport " << dport << std::endl;
 	}
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
-	if(win)
-		qp->SetWin(m_bps.GetBitRate() * 1 * baseRtt * 1e-9 / 8);
+	// if(win)
+	// 	qp->SetWin(m_bps.GetBitRate() * 1 * baseRtt * 1e-9 / 8);
 	qp->m_rate = m_bps;
 	qp->m_max_rate = m_bps;
 	if (m_cc_mode == 1) {
@@ -329,8 +329,8 @@ void RdmaHw::AddQueuePair(uint32_t flowId, uint64_t size, uint16_t pg, Ipv4Addre
 	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
 	// std::cout<<"before, m_bps: "<<m_bps.GetBitRate()<<", m_maxRate: "<<m_maxRate.GetBitRate()<<std::endl;
 	m_bps=std::min(m_bps,m_maxRate);
-	if(win)
-		qp->SetWin(m_bps.GetBitRate() * 1 * baseRtt * 1e-9 / 8);
+	// if(win)
+	// 	qp->SetWin(m_bps.GetBitRate() * 1 * baseRtt * 1e-9 / 8);
 	qp->m_rate = m_bps;
 	qp->m_max_rate = m_bps;
 	// std::cout<<"after, m_bps: "<<m_bps.GetBitRate()<<", m_maxRate: "<<m_maxRate.GetBitRate()<<std::endl;
