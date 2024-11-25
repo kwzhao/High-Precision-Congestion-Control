@@ -1,7 +1,7 @@
 import argparse
 import sys
 import os
-from consts import CC_LIST, PARAM_LIST, CONFIG_TO_PARAM_DICT, DEFAULT_PARAM_VEC
+from consts import CC_LIST, CONFIG_TO_PARAM_DICT, DEFAULT_PARAM_VEC
 import numpy as np
 import random
 
@@ -26,9 +26,9 @@ PACKET_PAYLOAD_SIZE 1000
 TOPOLOGY_FILE {root}/{topo}.txt
 FLOW_FILE {root}/{trace}.txt
 TRACE_FILE {local_dir}/trace.txt
-TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}_{cc}{failure}{config_specs}.tr
-FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}_{cc}{failure}{config_specs}.txt
-PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}_{cc}{failure}{config_specs}.txt
+TRACE_OUTPUT_FILE {root}/mix_{topo}_{trace}{failure}{config_specs}.tr
+FCT_OUTPUT_FILE {root}/fct_{topo}_{trace}{failure}{config_specs}.txt
+PFC_OUTPUT_FILE {root}/pfc_{topo}_{trace}{failure}{config_specs}.txt
 
 SIMULATOR_STOP_TIME {duration}
 
@@ -77,7 +77,7 @@ KMAX_MAP {kmax_map}
 KMIN_MAP {kmin_map}
 PMAX_MAP {pmax_map}
 BUFFER_SIZE {buffer_size}
-QLEN_MON_FILE {root}/qlen_{topo}_{trace}_{cc}{failure}{config_specs}.txt
+QLEN_MON_FILE {root}/qlen_{topo}_{trace}{failure}{config_specs}.txt
 QLEN_MON_START 1000000000
 QLEN_MON_END 3000000000
 

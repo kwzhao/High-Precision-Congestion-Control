@@ -292,7 +292,8 @@ if __name__ == "__main__":
     shard_cc = args.shard_cc
     # max_inflight_flows = args.max_inflight_flows
     # config_specs = "_s%d_i%d" % (shard_cc, max_inflight_flows)
-    config_specs = "_%s" % (args.cc)
+    # config_specs = "_%s" % (args.cc)
+    config_specs = ""
     output_dir = args.output_dir
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
