@@ -806,7 +806,9 @@ if __name__ == "__main__":
 
     with open(config_name, "w") as file:
         file.write(config)
-    with open("%s/param_%s%s%s.txt" % (root, topo, failure, config_specs), "w") as file:
+    with open(
+        "%s/param_%s_%s%s%s.txt" % (root, topo, trace, failure, config_specs), "w"
+    ) as file:
         file.write(" ".join(map(str, DEFAULT_PARAM_VEC)) + "\n")
         file.write(
             "{} {} {} {} {} {} {} {} {} {}\n".format(
@@ -824,6 +826,7 @@ if __name__ == "__main__":
             )
         )
     np.save(
-        "%s/param_%s%s%s.npy" % (root, topo, failure, config_specs), DEFAULT_PARAM_VEC
+        "%s/param_%s_%s%s%s.npy" % (root, topo, trace, failure, config_specs),
+        DEFAULT_PARAM_VEC,
     )
     os.system("./waf --run 'scratch/third %s'" % (config_name))
