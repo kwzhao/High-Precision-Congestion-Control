@@ -345,10 +345,10 @@ if __name__ == "__main__":
                 tmp = file.readline().strip().split(":")
                 flow_id = int(tmp[0])
                 link_info = tmp[1].split(",")
-                link_set = set([link_info[i] for i in range(1, len(link_info) - 1)])
+                link_list = [link_info[i] for i in range(1, len(link_info) - 1)]
                 if flow_id in flows:
-                    flows[flow_id]["links"] = link_set
-                link_info_list.append(list(link_set))
+                    flows[flow_id]["links"] = link_list
+                link_info_list.append(link_list)
 
         np.save(
             "%s/flow_to_path.npy" % (output_dir),
