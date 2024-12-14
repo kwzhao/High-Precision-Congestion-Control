@@ -366,19 +366,28 @@ if __name__ == "__main__":
                 os.system("rm %s" % tr_path)
             if os.path.exists(log_path):
                 remainsize_list = []
+                queuelen_list = defaultdict(list)
                 with open(log_path, "r") as file:
                     for line in file:
                         line = line.strip().rstrip(",").split(",")
                         # Print each line
-                        if len(line[0]) > 1:
-                            line_dict = {}
-                            for i in range(len(line)):
-                                tmp = line[i].split(":")
-                                line_dict[int(tmp[0])] = int(tmp[1])
-                            remainsize_list.append(line_dict)
+                        if not line[0].startswith("q"):
+                            if len(line[0]) > 1:
+                                line_dict = {}
+                                for i in range(len(line)):
+                                    tmp = line[i].split(":")
+                                    line_dict[int(tmp[0])] = int(tmp[1])
+                                remainsize_list.append(line_dict)
+                            else:
+                                remainsize_list.append([0])
                         else:
-                            remainsize_list.append([0])
-
+                            tmp = line[0].split("-")
+                            queuelen_list[int(tmp[1])].append(int(tmp[2]))
+            queuelen_list = np.array(queuelen_list, dtype=object)
+            np.save(
+                "%s/qlen_%s%s.npy" % (output_dir, args.prefix, config_specs),
+                queuelen_list,
+            )
             for flow_size_threshold in flow_size_threshold_list:
                 (
                     busy_periods,
