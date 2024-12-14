@@ -7,6 +7,7 @@ typedef uint64_t FlowInt;
 
 // Map to store the transmitted size for each active flow
 std::map<uint32_t, uint32_t> activeFlows;
+uint16_t numActiveFlows = -1;
 
 static uint32_t GetDevInt(uint16_t node, uint8_t intf){
 	return ((uint32_t)node << 8) | intf;
@@ -103,14 +104,18 @@ static inline void RemoveFlowTransmittedSize(uint32_t flowId) {
 static inline void PrintActiveFlows() {
 	if (activeFlows.empty()) {
 		printf("0\n");
+		numActiveFlows = 0;
 	}
 	else {
 		// printf("%u,", activeFlows.size());
-		for (const auto& flow : activeFlows) {
-			printf("%u:%u,", flow.first, flow.second);
-			// printf("%u,", flow.second);
+		if (numActiveFlows != activeFlows.size()) {
+			for (const auto& flow : activeFlows) {
+				printf("%u:%u,", flow.first, flow.second);
+				// printf("%u,", flow.second);
+			}
+			printf("\n");
+			numActiveFlows = activeFlows.size();
 		}
-		printf("\n");
 	}
 }
 
