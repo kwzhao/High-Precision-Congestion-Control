@@ -8,6 +8,7 @@ typedef uint64_t FlowInt;
 // Map to store the transmitted size for each active flow
 std::map<uint32_t, uint32_t> activeFlows;
 uint16_t numActiveFlows = -1;
+uint8_t numHostNode = 32;
 
 static uint32_t GetDevInt(uint16_t node, uint8_t intf){
 	return ((uint32_t)node << 8) | intf;
@@ -120,22 +121,27 @@ static inline void PrintActiveFlows() {
 }
 
 static inline void print_trace(ns3::TraceFormat &tr){
-	if (tr.queueEvent==0){
-		UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
-		return;
+	if (static_cast<uint8_t>(tr.node) <numHostNode) {
+		if (tr.queueEvent==0){
+			UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
+			return;
+		}
+		else if (tr.queueEvent==1){
+			InitFlowTransmittedSize(tr.flowId);
+			PrintActiveFlows();
+		}
+		else if (tr.queueEvent==2){
+			// UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
+			RemoveFlowTransmittedSize(tr.flowId);
+			PrintActiveFlows();
+		}
 	}
-	else if (tr.queueEvent==1){
-		InitFlowTransmittedSize(tr.flowId);
-		PrintActiveFlows();
+	else{
+		if (tr.data.seq==0 && tr.l3Prot==0x11){
+			printf("q-%u-%u\n", tr.flowId, tr.qlen);
+			// printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %hu %hu %c %u %lu %u %hu(%hu) %u %x %u", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.data.sport, tr.data.dport, l3ProtToChar(tr.l3Prot), tr.data.seq, tr.data.ts, tr.data.pg, tr.size, tr.data.payload, tr.flowId, tr.queueEvent, tr.nActiveFlows);
+		}
 	}
-	else if (tr.queueEvent==2){
-		// UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
-		RemoveFlowTransmittedSize(tr.flowId);
-		PrintActiveFlows();
-	}
-	// if (tr.flowId<38477){
-	// 	return;
-	// }
 	return;
 	switch (tr.l3Prot){
 		case 0x6:
