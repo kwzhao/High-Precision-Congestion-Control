@@ -437,6 +437,9 @@ void QbbHelper::PacketEventCallback(FILE *file, Ptr<QbbNetDevice> dev, Ptr<const
       }
       tr.Serialize(file);
     }
+    else if (tr.event == PEvent::Enqu){
+      tr.Serialize(file);
+    }
     // if (!tr.isFiltered && tr.qidx == 3){//for switch
     // if (tr.event == PEvent::Dequ){
     //   if (tr.data.payload!=1000){
