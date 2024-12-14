@@ -129,6 +129,7 @@ static inline void print_trace(ns3::TraceFormat &tr){
 		else if (tr.queueEvent==1){
 			InitFlowTransmittedSize(tr.flowId);
 			PrintActiveFlows();
+			printf("q-%u-%u\n", tr.flowId, tr.qlen);
 		}
 		else if (tr.queueEvent==2){
 			// UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
