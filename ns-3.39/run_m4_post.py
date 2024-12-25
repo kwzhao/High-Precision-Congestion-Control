@@ -429,7 +429,7 @@ if __name__ == "__main__":
         # os.system("rm %s" % (file))
 
         if os.path.exists("%s/flows.txt" % (output_dir)):
-            os.system("rm %s/flows.txt" % (output_dir))
+            # os.system("rm %s/flows.txt" % (output_dir))
 
             os.system(
                 "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
