@@ -156,9 +156,6 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
-// Queue for flows waiting to be sent
-// std::queue<FlowInput> waiting_flows;
-// uint32_t inflight_flows = 0; // Counter for inflight flows
 uint32_t max_inflight_flows = 0
 ; // Maximum number of inflight flows
 // Maintain inflight_flows and waiting_flows per client
