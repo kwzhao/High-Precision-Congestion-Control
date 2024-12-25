@@ -157,10 +157,13 @@ FlowInput flow_input = {0};
 uint32_t flow_num;
 
 // Queue for flows waiting to be sent
-std::queue<FlowInput> waiting_flows;
-uint32_t inflight_flows = 0; // Counter for inflight flows
+// std::queue<FlowInput> waiting_flows;
+// uint32_t inflight_flows = 0; // Counter for inflight flows
 uint32_t max_inflight_flows = 0
 ; // Maximum number of inflight flows
+// Maintain inflight_flows and waiting_flows per client
+std::unordered_map<uint32_t, uint32_t> inflight_flows_per_client;
+std::unordered_map<uint32_t, std::queue<FlowInput>> waiting_flows_per_client;
 
 void ReadFlowInput(){
     if (flow_input.idx < flow_num){
@@ -190,45 +193,44 @@ void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double d
 }
 
 
-void ScheduleFlowInputs(){
+void ScheduleFlowInputs() {
     while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
-        if (inflight_flows < max_inflight_flows) {
-            uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number
-            RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
+        uint32_t client_id = flow_input.src; // Use the source node as the client ID
+        if (inflight_flows_per_client[client_id] < max_inflight_flows) {
+            uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // Get a new port number
+            RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win ? fwin : 0, baseRtt);
             ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
-            appCon.Start(Seconds(0)); // setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at desired time.
-            inflight_flows++; // Increment the inflight flows counter
-            // std::cout << "From arrival, #inflight flows: " << inflight_flows<< " with flow-"<<flow_input.flowId << std::endl;
+            appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
+            inflight_flows_per_client[client_id]++; // Increment the inflight flows counter for this client
         } else {
-            waiting_flows.push(flow_input); // Queue the flow if max inflight flows is reached
+            waiting_flows_per_client[client_id].push(flow_input); // Queue the flow for this client if the max inflight flows is reached
         }
-        // get the next flow input
+        // Get the next flow input
         flow_input.idx++;
         ReadFlowInput();
     }
 
-    // schedule the next time to run this function
+    // Schedule the next time to run this function
     if (flow_input.idx < flow_num){
-        Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
-    }else { // no more flows, close the file
+        Simulator::Schedule(Seconds(flow_input.start_time) - Simulator::Now(), ScheduleFlowInputs);
+    } else { // No more flows, close the file
         flowf.close();
     }
 }
 
-void OnFlowCompletion(uint64_t flowId){
-    inflight_flows--; // Decrement the inflight flows counter
+void OnFlowCompletion(uint64_t flowId, uint32_t client_id) {
+    inflight_flows_per_client[client_id]--; // Decrement the inflight flows counter for this client
 
-    // Check if there are waiting flows and schedule the next one
-    while (!waiting_flows.empty() && inflight_flows < max_inflight_flows) {
-        FlowInput next_flow = waiting_flows.front();
-        waiting_flows.pop();
+    // Check if there are waiting flows for this client and schedule the next one
+    while (!waiting_flows_per_client[client_id].empty() && inflight_flows_per_client[client_id] < max_inflight_flows) {
+        FlowInput next_flow = waiting_flows_per_client[client_id].front();
+        waiting_flows_per_client[client_id].pop();
 
-        uint32_t port = portNumder[next_flow.src][next_flow.dst]++; // get a new port number
-        RdmaClientHelper clientHelper(next_flow.flowId, next_flow.pg, serverAddress[next_flow.src], serverAddress[next_flow.dst], port, next_flow.dport, next_flow.maxPacketCount, has_win?fwin:0, baseRtt);
+        uint32_t port = portNumder[next_flow.src][next_flow.dst]++; // Get a new port number
+        RdmaClientHelper clientHelper(next_flow.flowId, next_flow.pg, serverAddress[next_flow.src], serverAddress[next_flow.dst], port, next_flow.dport, next_flow.maxPacketCount, has_win ? fwin : 0, baseRtt);
         ApplicationContainer appCon = clientHelper.Install(n.Get(next_flow.src));
-        appCon.Start(Seconds(0)); // setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at desired time.
-        inflight_flows++; // Increment the inflight flows counter
-        // std::cout << "From queue, #inflight flows: " << inflight_flows << " with flow-"<<next_flow.flowId << std::endl;
+        appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
+        inflight_flows_per_client[client_id]++; // Increment the inflight flows counter for this client
     }
 }
 
@@ -241,14 +243,14 @@ uint32_t ip_to_node_id(Ipv4Address ip){
 }
 
 void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
-    // remove rxQp from the receiver
-    uint32_t sid = ip_to_node_id(q->sip), did = ip_to_node_id(q->dip);
+    uint32_t sid = ip_to_node_id(q->sip); // Source node ID as client ID
+    uint32_t did = ip_to_node_id(q->dip);
     Ptr<Node> dstNode = n.Get(did);
-    Ptr<RdmaDriver> rdma = dstNode->GetObject<RdmaDriver> ();
+    Ptr<RdmaDriver> rdma = dstNode->GetObject<RdmaDriver>();
     rdma->m_rdma->DeleteRxQp(q->sip.Get(), q->m_pg, q->sport);
 
-    // Call OnFlowCompletion when the flow finishes
-    OnFlowCompletion(q->m_flowId);
+    // Call OnFlowCompletion with client ID
+    OnFlowCompletion(q->m_flowId, sid);
 }
 
 void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
