@@ -181,9 +181,9 @@ if __name__ == "__main__":
         help="the base RTT",
     )
     args = parser.parse_args()
+    fix_seed(int(args.shard_total))
 
     seed = int(args.shard_cc)
-    fix_seed(int(args.shard_total))
 
     enable_debug = args.enable_debug
     enable_tr = args.enable_tr
@@ -201,6 +201,7 @@ if __name__ == "__main__":
 
     # fwin = args.fwin
     base_rtt = args.base_rtt
+    enable_pfc = 1
 
     failure = ""
     if args.down != "0 0 0":
@@ -208,11 +209,11 @@ if __name__ == "__main__":
 
     bfsz_idx = CONFIG_TO_PARAM_DICT["bfsz"]
     fwin_idx = CONFIG_TO_PARAM_DICT["fwin"]
-    pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
+    # pfc_idx = CONFIG_TO_PARAM_DICT["pfc"]
     if enable_debug:
         bfsz = int(PARAM_LIST[bfsz_idx][seed % 2] * PARAM_LIST[bfsz_idx][2])
         fwin = int(PARAM_LIST[fwin_idx][seed % 2] * PARAM_LIST[fwin_idx][2])
-        enable_pfc = int(PARAM_LIST[pfc_idx][seed % 2])
+        # enable_pfc = int(PARAM_LIST[pfc_idx][seed % 2])
     else:
         bfsz = int(
             np.random.uniform(PARAM_LIST[bfsz_idx][0], PARAM_LIST[bfsz_idx][1])
@@ -222,7 +223,7 @@ if __name__ == "__main__":
             np.random.uniform(PARAM_LIST[fwin_idx][0], PARAM_LIST[fwin_idx][1])
             * PARAM_LIST[fwin_idx][2]
         )
-        enable_pfc = int(np.random.choice(PARAM_LIST[pfc_idx], 1)[0])
+        # enable_pfc = int(np.random.choice(PARAM_LIST[pfc_idx], 1)[0])
 
     dctcp_k = 20
     timely_t_low = 10000
@@ -313,7 +314,7 @@ if __name__ == "__main__":
 
     DEFAULT_PARAM_VEC[bfsz_idx] = float(bfsz) / PARAM_LIST[bfsz_idx][2]
     DEFAULT_PARAM_VEC[fwin_idx] = float(fwin) / PARAM_LIST[fwin_idx][2]
-    DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
+    # DEFAULT_PARAM_VEC[pfc_idx] = enable_pfc
 
     config_specs = "_s%d_i%d" % (seed, max_inflight_flows)
     config_name = "%s/config_%s_%s%s%s.txt" % (root, topo, trace, failure, config_specs)
