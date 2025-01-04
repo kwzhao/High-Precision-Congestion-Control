@@ -428,24 +428,24 @@ if __name__ == "__main__":
 
         # os.system("rm %s" % (file))
 
-        if os.path.exists("%s/flows.txt" % (output_dir)):
-
-            with open("%s/flows.txt" % (output_dir), "r") as f:
-                all_lines = f.read().splitlines()
-            n_flows = int(all_lines[0].strip())
-            data_lines = all_lines[1:]
-            assert n_flows == len(data_lines)
-            size_list = []
-            fat_list = []
-            for line in data_lines:
-                tmp = line.split(" ")
-                size = tmp[-2]
-                fat = float(tmp[-1]) * 1e9
-                size_list.append(size)
-                fat_list.append(fat)
-            np.save("%s/fsize.npy" % (output_dir), np.array(size_list).astype("int64"))
-            np.save("%s/fat.npy" % (output_dir), np.array(fat_list).astype("int64"))
-            print(f"fsize: {len(size_list)}, fat: {len(fat_list)}")
+         with open("%s/flows.txt" % (output_dir), "r") as f:
+            all_lines = f.read().splitlines()
+        n_flows = int(all_lines[0].strip())
+        data_lines = all_lines[1:]
+        assert n_flows == len(data_lines)
+        size_list = []
+        fat_list = []
+        for line in data_lines:
+            tmp = line.split(" ")
+            size = tmp[-2]
+            fat = float(tmp[-1]) * 1e9
+            size_list.append(size)
+            fat_list.append(fat)
+        np.save("%s/fsize.npy" % (output_dir), np.array(size_list).astype("int64"))
+        np.save("%s/fat.npy" % (output_dir), np.array(fat_list).astype("int64"))
+        print(f"fsize: {len(size_list)}, fat: {len(fat_list)}")
+            
+        # if os.path.exists("%s/flows.txt" % (output_dir)):
 
             # os.system("rm %s/flows.txt" % (output_dir))
 
