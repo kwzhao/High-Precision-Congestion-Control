@@ -129,7 +129,7 @@ static inline void print_trace(ns3::TraceFormat &tr){
 		else if (tr.queueEvent==1){
 			InitFlowTransmittedSize(tr.flowId);
 			PrintActiveFlows();
-			printf("q-%u-%u\n", tr.flowId, tr.qlen/tr.size);
+			printf("q-%u-%u\n", tr.flowId, tr.qlen/1048);
 		}
 		else if (tr.queueEvent==2){
 			// UpdateFlowTransmittedSize(tr.flowId, tr.data.payload);
@@ -138,7 +138,7 @@ static inline void print_trace(ns3::TraceFormat &tr){
 		}
 	}
 	else if (tr.data.seq==0 && tr.l3Prot==0x11 && EventToStr((ns3::PEvent)tr.event)== "Enqu"){
-		printf("q-%u-%u\n", tr.flowId, tr.qlen/tr.size);
+		printf("q-%u-%u\n", tr.flowId, tr.qlen/1048);
 		// if (tr.qlen>0){
 		// 	printf("%lu n:%u %u:%u %u %s ecn:%x %08x %08x %hu %hu %c %u %lu %u %hu(%hu) %u %x %u\n", tr.time, tr.node, tr.intf, tr.qidx, tr.qlen, EventToStr((ns3::PEvent)tr.event), tr.ecn, tr.sip, tr.dip, tr.data.sport, tr.data.dport, l3ProtToChar(tr.l3Prot), tr.data.seq, tr.data.ts, tr.data.pg, tr.size, tr.data.payload, tr.flowId, tr.queueEvent, tr.nActiveFlows);
 		// }
