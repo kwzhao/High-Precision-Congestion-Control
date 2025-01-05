@@ -428,7 +428,7 @@ if __name__ == "__main__":
 
         # os.system("rm %s" % (file))
 
-         with open("%s/flows.txt" % (output_dir), "r") as f:
+        with open("%s/flows.txt" % (output_dir), "r") as f:
             all_lines = f.read().splitlines()
         n_flows = int(all_lines[0].strip())
         data_lines = all_lines[1:]
@@ -444,18 +444,18 @@ if __name__ == "__main__":
         np.save("%s/fsize.npy" % (output_dir), np.array(size_list).astype("int64"))
         np.save("%s/fat.npy" % (output_dir), np.array(fat_list).astype("int64"))
         print(f"fsize: {len(size_list)}, fat: {len(fat_list)}")
-            
+
         # if os.path.exists("%s/flows.txt" % (output_dir)):
 
-            # os.system("rm %s/flows.txt" % (output_dir))
+        # os.system("rm %s/flows.txt" % (output_dir))
 
-            # os.system(
-            #     "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
-            # )
+        # os.system(
+        #     "rm %s" % ("%s/pfc_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        # )
 
-            # os.system(
-            #     "rm %s" % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
-            # )
+        # os.system(
+        #     "rm %s" % ("%s/qlen_%s%s.txt" % (output_dir, args.prefix, config_specs))
+        # )
 
         # os.system(
         #     "rm %s"
