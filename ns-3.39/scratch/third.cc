@@ -156,7 +156,8 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
-uint32_t max_inflight_flows = 0
+uint32_t max_inflight_flows = 0;
+uint32_t n_clients_per_rack_for_closed_loop = 1;
 ; // Maximum number of inflight flows
 // Maintain inflight_flows and waiting_flows per client
 std::unordered_map<uint32_t, uint32_t> inflight_flows_per_client;
@@ -192,15 +193,15 @@ void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double d
 
 void ScheduleFlowInputs() {
     while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
-        uint32_t client_id = flow_input.src; // Use the source node as the client ID
-        if (inflight_flows_per_client[client_id] < max_inflight_flows) {
+        uint32_t inflight_traffic_id = flow_input.src / n_clients_per_rack_for_closed_loop;
+        if (inflight_flows_per_client[inflight_traffic_id] < max_inflight_flows) {
             uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // Get a new port number
             RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win ? fwin : 0, baseRtt);
             ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
             appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
-            inflight_flows_per_client[client_id]++; // Increment the inflight flows counter for this client
+            inflight_flows_per_client[inflight_traffic_id]++; // Increment the inflight flows counter for this client
         } else {
-            waiting_flows_per_client[client_id].push(flow_input); // Queue the flow for this client if the max inflight flows is reached
+            waiting_flows_per_client[inflight_traffic_id].push(flow_input); // Queue the flow for this client if the max inflight flows is reached
         }
         // Get the next flow input
         flow_input.idx++;
@@ -216,18 +217,19 @@ void ScheduleFlowInputs() {
 }
 
 void OnFlowCompletion(uint64_t flowId, uint32_t client_id) {
-    inflight_flows_per_client[client_id]--; // Decrement the inflight flows counter for this client
+    uint32_t inflight_traffic_id=client_id/n_clients_per_rack_for_closed_loop;
+    inflight_flows_per_client[inflight_traffic_id]--; // Decrement the inflight flows counter for this client
 
     // Check if there are waiting flows for this client and schedule the next one
-    while (!waiting_flows_per_client[client_id].empty() && inflight_flows_per_client[client_id] < max_inflight_flows) {
-        FlowInput next_flow = waiting_flows_per_client[client_id].front();
-        waiting_flows_per_client[client_id].pop();
+    while (!waiting_flows_per_client[inflight_traffic_id].empty() && inflight_flows_per_client[inflight_traffic_id] < max_inflight_flows) {
+        FlowInput next_flow = waiting_flows_per_client[inflight_traffic_id].front();
+        waiting_flows_per_client[inflight_traffic_id].pop();
 
         uint32_t port = portNumder[next_flow.src][next_flow.dst]++; // Get a new port number
         RdmaClientHelper clientHelper(next_flow.flowId, next_flow.pg, serverAddress[next_flow.src], serverAddress[next_flow.dst], port, next_flow.dport, next_flow.maxPacketCount, has_win ? fwin : 0, baseRtt);
         ApplicationContainer appCon = clientHelper.Install(n.Get(next_flow.src));
         appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
-        inflight_flows_per_client[client_id]++; // Increment the inflight flows counter for this client
+        inflight_flows_per_client[inflight_traffic_id]++; // Increment the inflight flows counter for this client
     }
 }
 
@@ -879,6 +881,10 @@ int main(int argc, char *argv[])
             else if (key.compare("MAX_INFLIGHT_FLOWS") == 0){
                 conf >> max_inflight_flows;
                 std::cout << "MAX_INFLIGHT_FLOWS\t\t\t" << max_inflight_flows << '\n';
+            }
+            else if (key.compare("N_CLIENTS_PER_RACK_FOR_CLOSED_LOOP") == 0){
+                conf >> n_clients_per_rack_for_closed_loop;
+                std::cout << "N_CLIENTS_PER_RACK_FOR_CLOSED_LOOP\t\t\t" << n_clients_per_rack_for_closed_loop << '\n';
             }
             fflush(stdout);
         }
