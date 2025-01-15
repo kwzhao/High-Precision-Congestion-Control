@@ -84,6 +84,7 @@ QLEN_MON_END 3000000000
 FIXED_WIN {fwin}
 BASE_RTT {base_rtt}
 MAX_INFLIGHT_FLOWS {max_inflight_flows}
+N_CLIENTS_PER_RACK_FOR_CLOSED_LOOP {n_clients_per_rack_for_closed_loop}
 """
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="run simulation")
@@ -150,6 +151,13 @@ if __name__ == "__main__":
         type=int,
         default=0,
         help="max inflgiht flows for close-loop traffic",
+    )
+    parser.add_argument(
+        "--n_clients_per_rack_for_closed_loop",
+        dest="n_clients_per_rack_for_closed_loop",
+        type=int,
+        default=1,
+        help="number of clients per rack for closed-loop traffic",
     )
     parser.add_argument(
         "--trace",
@@ -234,6 +242,7 @@ if __name__ == "__main__":
     enable_debug = args.enable_debug
     enable_tr = args.enable_tr
     max_inflight_flows = args.max_inflight_flows
+    n_clients_per_rack_for_closed_loop = args.n_clients_per_rack_for_closed_loop
 
     root = args.root
     topo = args.topo
@@ -389,6 +398,7 @@ if __name__ == "__main__":
                 enable_pfc=enable_pfc,
                 enable_qcn=enable_qcn,
                 max_inflight_flows=max_inflight_flows,
+                n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
             )
         elif args.cc == "dcqcn_paper":
             config = config_template.format(
@@ -432,6 +442,7 @@ if __name__ == "__main__":
                 enable_pfc=enable_pfc,
                 enable_qcn=enable_qcn,
                 max_inflight_flows=max_inflight_flows,
+                n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
             )
         elif args.cc == "dcqcn_vwin":
             config = config_template.format(
@@ -475,6 +486,7 @@ if __name__ == "__main__":
                 enable_pfc=enable_pfc,
                 enable_qcn=enable_qcn,
                 max_inflight_flows=max_inflight_flows,
+                n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
             )
         elif args.cc == "dcqcn_paper_vwin":
             config = config_template.format(
@@ -518,6 +530,7 @@ if __name__ == "__main__":
                 enable_pfc=enable_pfc,
                 enable_qcn=enable_qcn,
                 max_inflight_flows=max_inflight_flows,
+                n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
             )
     elif args.cc == "hp":
         ai = 10 * bw / 25
@@ -577,6 +590,7 @@ if __name__ == "__main__":
             enable_pfc=enable_pfc,
             enable_qcn=enable_qcn,
             max_inflight_flows=max_inflight_flows,
+            n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
         )
     elif args.cc == "dctcp":
         ai = 10  # ai is useless for dctcp
@@ -648,6 +662,7 @@ if __name__ == "__main__":
             enable_pfc=enable_pfc,
             enable_qcn=enable_qcn,
             max_inflight_flows=max_inflight_flows,
+            n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
         )
     elif args.cc == "timely":
         ai = 10 * bw / 10
@@ -693,6 +708,7 @@ if __name__ == "__main__":
             enable_pfc=enable_pfc,
             enable_qcn=enable_qcn,
             max_inflight_flows=max_inflight_flows,
+            n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
         )
     elif args.cc == "timely_vwin":
         ai = 10 * bw / 10
@@ -738,6 +754,7 @@ if __name__ == "__main__":
             enable_pfc=enable_pfc,
             enable_qcn=enable_qcn,
             max_inflight_flows=max_inflight_flows,
+            n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
         )
     elif args.cc == "hpccPint":
         ai = 10 * bw / 25
@@ -799,6 +816,7 @@ if __name__ == "__main__":
             enable_pfc=enable_pfc,
             enable_qcn=enable_qcn,
             max_inflight_flows=max_inflight_flows,
+            n_clients_per_rack_for_closed_loop=n_clients_per_rack_for_closed_loop,
         )
     else:
         print("unknown cc:", args.cc)
