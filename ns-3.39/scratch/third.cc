@@ -1226,7 +1226,7 @@ int main(int argc, char *argv[])
     printf("maxRtt=%lu maxBdp=%lu\n", maxRtt, maxBdp);
     baseRtt = maxRtt;
     // fwin = maxBdp;
-    printf("baseRtt: %lu, fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d, u_target: %f, ai: %s, enable_qcn: %d, max_inflight_flows: %d\n",baseRtt,fwin, buffer_size, enable_pfc, cc_mode,rate2kmin[10000000000], rate2kmax[10000000000],timely_t_low, timely_t_high, u_target, rate_ai.c_str(), enable_qcn, max_inflight_flows);
+    printf("baseRtt: %lu, fwin: %lu, bfsz: %d, enable_pfc: %d, cc_mode: %d, rate2kmin: %u, rate2kmax: %u, timely_t_low: %d, timely_t_high: %d, u_target: %f, ai: %s, enable_qcn: %d, max_inflight_flows: %d, n_clients_per_rack_for_closed_loop: %d\n",baseRtt,fwin, buffer_size, enable_pfc, cc_mode,rate2kmin[10000000000], rate2kmax[10000000000],timely_t_low, timely_t_high, u_target, rate_ai.c_str(), enable_qcn, max_inflight_flows, n_clients_per_rack_for_closed_loop);
     //
     // setup switch CC
     //
