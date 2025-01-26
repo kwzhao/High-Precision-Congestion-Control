@@ -1117,6 +1117,7 @@ int main(int argc, char *argv[])
                     sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
                 }
             }
+            totalHeadroom = std::min(totalHeadroom, static_cast<uint64_t>(buffer_size * 0.8));
             sw->m_mmu->SetBufferPool(buffer_size);
             sw->m_mmu->SetIngressPool(buffer_size - totalHeadroom);
             sw->m_mmu->SetSharedPool(buffer_size - totalHeadroom);
