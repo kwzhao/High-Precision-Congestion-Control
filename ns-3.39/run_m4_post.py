@@ -315,6 +315,25 @@ if __name__ == "__main__":
 
     file = "%s/fct_%s%s.txt" % (output_dir, args.prefix, config_specs)
     if not os.path.exists(file):
+        link_info_file = "%s/path_1.txt" % (output_dir)
+        link_info_list = []
+        with open(link_info_file, "r") as file:
+            num_flows, num_path = map(int, file.readline().strip().split(","))
+            # assert num_flows == len(fids)
+            # print(f"num_flows: {num_flows}, num_path: {num_path}")
+            for _ in range(num_flows):
+                tmp = file.readline().strip().split(":")
+                link_info = tmp[1].split(",")
+                link_list = [link_info[i] for i in range(1, len(link_info) - 1)]
+                link_info_list.append(link_list)
+
+        np.save(
+            "%s/flow_to_path.npy" % (output_dir),
+            np.array(link_info_list, dtype=object),
+        )
+        link_list = list(set().union(*link_info_list))
+        link_list = sorted(link_list)
+        np.save("%s/flink.npy" % (output_dir), np.array(link_list))
         exit(0)
     # flowId, sip, dip, sport, dport, size (B), start_time, fcts (ns), standalone_fct (ns)
     cmd = (
