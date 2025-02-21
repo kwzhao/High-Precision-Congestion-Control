@@ -847,4 +847,4 @@ if __name__ == "__main__":
         "%s/param_%s_%s%s%s.npy" % (root, topo, trace, failure, config_specs),
         DEFAULT_PARAM_VEC,
     )
-    #os.system("./waf --run 'scratch/third %s'" % (config_name))
+    os.system("./waf --run 'scratch/third %s'" % (config_name))
