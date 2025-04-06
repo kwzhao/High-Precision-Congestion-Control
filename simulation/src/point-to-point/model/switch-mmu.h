@@ -36,7 +36,8 @@ public:
 
 	bool ShouldSendCN(uint32_t ifindex, uint32_t qIndex);
 
-	void ConfigEcn(uint32_t port, uint32_t _kmin, uint32_t _kmax, double _pmax);
+	void ConfigEcn(uint32_t port, uint32_t qIndex, uint32_t _kmin, uint32_t _kmax, double _pmax);
+	void ConfigEcnK(uint32_t port, uint32_t qIndex, uint32_t _kmin, uint32_t _kmax);
 	void ConfigHdrm(uint32_t port, uint32_t size);
 	void ConfigNPort(uint32_t n_port);
 	void ConfigBufferSize(uint32_t size);
@@ -48,7 +49,7 @@ public:
 	uint32_t reserve;
 	uint32_t headroom[pCnt];
 	uint32_t resume_offset;
-	uint32_t kmin[pCnt], kmax[pCnt];
+	uint32_t kmin[pCnt][qCnt], kmax[pCnt][qCnt];
 	double pmax[pCnt];
 	uint32_t total_hdrm;
 	uint32_t total_rsrv;

@@ -131,16 +131,24 @@ uint32_t flow_num;
 
 uint32_t node_num, switch_num, link_num, trace_num;
 
+uint32_t const max_nr_weights = 8;
+uint32_t cwnds[max_nr_weights];
+Time weightUpdateInterval = Seconds(1);
+Time weightUpdateTime = Seconds(0);
+bool weightUpdatesDone = false;
+
 void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
+		std::cout << flow_input.src << " " << flow_input.dst << "\n";
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
 	}
 }
 void ScheduleFlowInputs(){
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
-		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
+		//RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
+		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg], baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
 
@@ -165,11 +173,6 @@ uint32_t ip_to_node_id(Ipv4Address ip){
 	return (ip.Get() >> 8) & 0xffff;
 }
 
-uint32_t max_nr_weights = 8;
-Time weightUpdateInterval = Seconds(1);
-Time weightUpdateTime = Seconds(0);
-bool weightUpdatesDone = false;
-
 void UpdateWeights(void)
 {
 	if (weightUpdatesDone) {
@@ -187,6 +190,7 @@ void UpdateWeights(void)
 		return;
 	}
 	uint32_t lim = std::min(max_nr_weights, nr_weights);
+	std::cout << lim << "\n";
 	for (uint32_t i = 0; i < lim; i++) {
 		uint32_t weight;
 		std::cin >> weight;
@@ -207,6 +211,47 @@ void UpdateWeights(void)
 	}
 
 	std::cout << "Applied " << lim << " weights" << std::endl;
+
+	std::cout << "Applying cwnds.." << std::endl;
+
+	// Read and load cwnds.
+	for (uint32_t i = 0; i < lim; i++) {
+		uint32_t cwnd;
+		std::cin >> cwnd;
+		std::cout << cwnd << std::endl;
+		cwnds[i] = cwnd;
+	}
+
+	std::cout << "Applied " << lim << "cwnds" << std::endl;
+
+	std::cout << "Applying DCTCP kmins..." << std::endl;
+	uint32_t kmins[max_nr_weights] = {0};
+	for (uint32_t i = 0; i < lim; i++) {
+		uint32_t kmin;
+		std::cin >> kmin;
+		std::cout << kmin << std::endl;
+		kmins[i] = kmin;
+	}
+
+	std::cout << "Applying DCTCP kmaxs..." << std::endl;
+	uint32_t kmaxs[max_nr_weights] = {0};
+	for (uint32_t i = 0; i < lim; i++) {
+		uint32_t kmax;
+		std::cin >> kmax;
+		std::cout << kmax << std::endl;
+		kmaxs[i] = kmax;
+	}
+
+	for (uint32_t i = 0; i < node_num; i++){
+		if (n.Get(i)->GetNodeType() == 1){ // is switch
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(i));
+			for (uint32_t j = 1; j < sw->GetNDevices(); j++){
+				for (uint32_t q = 0; q < max_nr_weights; q++) {
+					sw->m_mmu->ConfigEcnK(j, q + 1, kmins[q], kmaxs[q]);
+				}
+			}
+		}
+	}
 }
 
 
@@ -922,7 +967,9 @@ int main(int argc, char *argv[])
 				NS_ASSERT_MSG(rate2kmin.find(rate) != rate2kmin.end(), "must set kmin for each link speed");
 				NS_ASSERT_MSG(rate2kmax.find(rate) != rate2kmax.end(), "must set kmax for each link speed");
 				NS_ASSERT_MSG(rate2pmax.find(rate) != rate2pmax.end(), "must set pmax for each link speed");
-				sw->m_mmu->ConfigEcn(j, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
+				for (uint32_t q = 1; q < max_nr_weights; q++) {
+					sw->m_mmu->ConfigEcn(j, q, rate2kmin[rate], rate2kmax[rate], rate2pmax[rate]);
+				}
 				// set pfc
 				uint64_t delay = DynamicCast<QbbChannel>(dev->GetChannel())->GetDelay().GetTimeStep();
 				uint32_t headroom = rate * delay / 8 / 1000000000 * 3;
