@@ -99,19 +99,24 @@ namespace ns3 {
 	bool SwitchMmu::ShouldSendCN(uint32_t ifindex, uint32_t qIndex){
 		if (qIndex == 0)
 			return false;
-		if (egress_bytes[ifindex][qIndex] > kmax[ifindex])
+		if (egress_bytes[ifindex][qIndex] > kmax[ifindex][qIndex])
 			return true;
-		if (egress_bytes[ifindex][qIndex] > kmin[ifindex]){
-			double p = pmax[ifindex] * double(egress_bytes[ifindex][qIndex] - kmin[ifindex]) / (kmax[ifindex] - kmin[ifindex]);
+		if (egress_bytes[ifindex][qIndex] > kmin[ifindex][qIndex]){
+			double p = pmax[ifindex] * double(egress_bytes[ifindex][qIndex] - kmin[ifindex][qIndex]) / (kmax[ifindex][qIndex] - kmin[ifindex][qIndex]);
 			if (UniformVariable(0, 1).GetValue() < p)
 				return true;
 		}
 		return false;
 	}
-	void SwitchMmu::ConfigEcn(uint32_t port, uint32_t _kmin, uint32_t _kmax, double _pmax){
-		kmin[port] = _kmin * 1000;
-		kmax[port] = _kmax * 1000;
+	void SwitchMmu::ConfigEcn(uint32_t port, uint32_t qIndex, uint32_t _kmin, uint32_t _kmax, double _pmax){
+		kmin[port][qIndex] = _kmin * 1000;
+		kmax[port][qIndex] = _kmax * 1000;
 		pmax[port] = _pmax;
+	}
+
+	void SwitchMmu::ConfigEcnK(uint32_t port, uint32_t qIndex, uint32_t _kmin, uint32_t _kmax){
+		kmin[port][qIndex] = _kmin * 1000;
+		kmax[port][qIndex] = _kmax * 1000;
 	}
 	void SwitchMmu::ConfigHdrm(uint32_t port, uint32_t size){
 		headroom[port] = size;
