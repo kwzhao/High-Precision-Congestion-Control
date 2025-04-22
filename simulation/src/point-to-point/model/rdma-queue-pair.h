@@ -30,6 +30,7 @@ public:
 	uint32_t wp; // current window of packets
 	uint32_t lastPktSize;
 	Callback<void> m_notifyAppFinish;
+    uint32_t m_win_counter;
 
 	/******************************
 	 * runtime states

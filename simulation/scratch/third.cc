@@ -138,17 +138,20 @@ Time weightUpdateTime = Seconds(0);
 bool weightUpdatesDone = false;
 
 void ReadFlowInput(){
-	if (flow_input.idx < flow_num){
+    //std::cout << "flow getting created\n";
+	if (flow_input.idx < flow_num) {
 		flowf >> flow_input.flowId >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
-		std::cout << flow_input.src << " " << flow_input.dst << "\n";
+		//flow_input.maxPacketCount = std::max((uint32_t) 1, flow_input.maxPacketCount / (packet_payload_size));
+		//std::cout << "flow creation " << flow_input.flowId << " " << flow_input.pg << " " << flow_input.src << " " << flow_input.dst << " " << flow_input.dport << " " << flow_input.maxPacketCount << " " << cwnds[flow_input.pg] << "\n";
 		NS_ASSERT(n.Get(flow_input.src)->GetNodeType() == 0 && n.Get(flow_input.dst)->GetNodeType() == 0);
 	}
 }
-void ScheduleFlowInputs(){
+void ScheduleFlowInputs() {
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		//RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
-		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg], baseRtt);
+		//std::cout << flow_input.flowId << " " << flow_input.pg << " " << flow_input.src << " " << flow_input.dst << " " << flow_input.dport << " " << flow_input.maxPacketCount << " " << cwnds[flow_input.pg] << "\n";
+		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg] * 1000, baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
 
@@ -158,7 +161,7 @@ void ScheduleFlowInputs(){
 	}
 
 	// schedule the next time to run this function
-	if (flow_input.idx < flow_num){
+	if (flow_input.idx < flow_num) {
 		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
 	}else { // no more flows, close the file
 		flowf.close();
@@ -195,7 +198,7 @@ void UpdateWeights(void)
 		uint32_t weight;
 		std::cin >> weight;
 		std::cout << weight << std::endl;
-		weights[i] = weight;
+		weights[i + 1] = weight;
 	}
 
 	// Apply weights.
@@ -219,20 +222,23 @@ void UpdateWeights(void)
 		uint32_t cwnd;
 		std::cin >> cwnd;
 		std::cout << cwnd << std::endl;
-		cwnds[i] = cwnd;
+		cwnds[i + 1] = cwnd;
 	}
 
 	std::cout << "Applied " << lim << "cwnds" << std::endl;
 
 	std::cout << "Applying DCTCP kmins..." << std::endl;
 	uint32_t kmins[max_nr_weights] = {0};
+	uint32_t kmaxs[max_nr_weights] = {0};
 	for (uint32_t i = 0; i < lim; i++) {
 		uint32_t kmin;
 		std::cin >> kmin;
 		std::cout << kmin << std::endl;
 		kmins[i] = kmin;
+		kmaxs[i] = kmin;
 	}
 
+	/*
 	std::cout << "Applying DCTCP kmaxs..." << std::endl;
 	uint32_t kmaxs[max_nr_weights] = {0};
 	for (uint32_t i = 0; i < lim; i++) {
@@ -241,6 +247,7 @@ void UpdateWeights(void)
 		std::cout << kmax << std::endl;
 		kmaxs[i] = kmax;
 	}
+	*/
 
 	for (uint32_t i = 0; i < node_num; i++){
 		if (n.Get(i)->GetNodeType() == 1){ // is switch
@@ -456,8 +463,8 @@ uint64_t get_nic_rate(NodeContainer &n){
 
 void PrintProgress(Time interval)
 {
-	std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
-	Simulator::Schedule(interval, &PrintProgress, interval);
+	//std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
+	//Simulator::Schedule(interval, &PrintProgress, interval);
 }
 
 int main(int argc, char *argv[])
@@ -835,6 +842,7 @@ int main(int argc, char *argv[])
 	flowf >> flow_num;
 	tracef >> trace_num;
 
+    std::cout << "flow num is " << flow_num << "\n";
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
@@ -1137,6 +1145,9 @@ int main(int argc, char *argv[])
 			}
 	}
 
+	// Getting initial values
+	UpdateWeights();
+
 	flow_input.idx = 0;
 	if (flow_num > 0){
 		ReadFlowInput();
@@ -1162,7 +1173,7 @@ int main(int argc, char *argv[])
 	fflush(stdout);
 	NS_LOG_INFO("Run Simulation.");
 	Simulator::Schedule(MilliSeconds(1), &PrintProgress, MilliSeconds(1));
-	Simulator::ScheduleNow(&UpdateWeights);
+	//Simulator::ScheduleNow(&UpdateWeights);
 	Simulator::Stop(Seconds(simulator_stop_time));
 	Simulator::Run();
 	Simulator::Destroy();

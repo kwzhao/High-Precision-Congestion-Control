@@ -3,3 +3,6 @@
 /.waf*
 /mix
 *.pyc
+inputs
+outputs
+configs

@@ -15,7 +15,6 @@
 #include "cn-header.h"
 
 namespace ns3{
-
 TypeId RdmaHw::GetTypeId (void)
 {
 	static TypeId tid = TypeId ("ns3::RdmaHw")
@@ -408,7 +407,6 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 		std::cout << "ERROR: " << "node:" << m_node->GetId() << ' ' << (ch.l3Prot == 0xFC ? "ACK" : "NACK") << " NIC cannot find the flow\n";
 		return 0;
 	}
-
 	uint32_t nic_idx = GetNicIdxOfQp(qp);
 	Ptr<QbbNetDevice> dev = m_nic[nic_idx].dev;
 	if (m_ack_interval == 0)
@@ -1044,6 +1042,8 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 		if (ack_seq > qp->dctcp.m_highSeq)
 			qp->dctcp.m_caState = 0;
 	}
+    
+    qp->m_win_counter += m_mtu;
 
 	// check if need to reduce rate: ECN and not in CWR
 	if (cnp && qp->dctcp.m_caState == 0){
@@ -1051,6 +1051,8 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 		printf("%lu %s %08x %08x %u %u %.3lf->", Simulator::Now().GetTimeStep(), "rate", qp->sip.Get(), qp->dip.Get(), qp->sport, qp->dport, qp->m_rate.GetBitRate()*1e-9);
 		#endif
 		qp->m_rate = std::max(m_minRate, qp->m_rate * (1 - qp->dctcp.m_alpha / 2));
+        qp->m_win = std::max((uint32_t) 1000, (uint32_t) (qp->m_win * (1 - qp->dctcp.m_alpha / 2)));
+        qp->m_win_counter = 0;
 		#if PRINT_LOG
 		printf("%.3lf\n", qp->m_rate.GetBitRate() * 1e-9);
 		#endif
@@ -1059,8 +1061,15 @@ void RdmaHw::HandleAckDctcp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &
 	}
 
 	// additive inc
-	if (qp->dctcp.m_caState == 0 && new_batch)
+	if (qp->dctcp.m_caState == 0 && new_batch) {
+        auto old_rate = qp->m_rate;
 		qp->m_rate = std::min(qp->m_max_rate, qp->m_rate + m_dctcp_rai);
+        uint32_t old_cwnd = qp->m_win;
+        if (qp->m_win_counter >= qp->m_win) {
+            qp->m_win = std::min((uint32_t) 100000, qp->m_win + 1000);
+            qp->m_win_counter = 0;
+        }
+    }
 }
 
 /*********************

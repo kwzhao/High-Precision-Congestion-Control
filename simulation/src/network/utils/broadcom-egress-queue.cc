@@ -27,10 +27,11 @@
 
 NS_LOG_COMPONENT_DEFINE("BEgressQueue");
 
+//const unsigned ns3::BEgressQueue::qCnt; //max number of queues, 8 for switches
+
 namespace ns3 {
 
 	NS_OBJECT_ENSURE_REGISTERED(BEgressQueue);
-
 	TypeId BEgressQueue::GetTypeId(void)
 	{
 		static TypeId tid = TypeId("ns3::BEgressQueue")
@@ -77,7 +78,7 @@ namespace ns3 {
 		BEgressQueue::SetWeights(const uint32_t weights[], const uint32_t n)
 	{
 		uint32_t lim = std::min(qCnt, n);
-		for (uint32_t i = 0; i < lim; i++)
+		for (uint32_t i = 1; i < lim + 1; i++)
 		{
 			m_quantum[i] = weights[i];
 		}
@@ -160,6 +161,7 @@ namespace ns3 {
 				if (m_queues[i]->GetNPackets() > 0 && !paused[i])
 				{
 					// We only bump deficits for queues that are active
+					//std::cout << " switch weight " << i << " " << m_quantum[i] << "\n";
 					m_deficit[i] += m_quantum[i];
 				}
 			}
