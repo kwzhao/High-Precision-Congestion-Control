@@ -151,7 +151,7 @@ void ScheduleFlowInputs() {
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		//RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
 		//std::cout << flow_input.flowId << " " << flow_input.pg << " " << flow_input.src << " " << flow_input.dst << " " << flow_input.dport << " " << flow_input.maxPacketCount << " " << cwnds[flow_input.pg] << "\n";
-		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg] * 1000, baseRtt);
+		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg], baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
 

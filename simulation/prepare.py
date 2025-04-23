@@ -22,7 +22,7 @@ def parse_file(file):
     dctcp_ks = []
     for cl in classes:
         weights.append(int(data["weights"][str(cl)] * 1024))
-        cwnds.append(data["init_cwnds"][str(cl)])
+        cwnds.append(int(data["init_cwnds"][str(cl)]) * 1000)
         dctcp_ks.append(data["dctcp_ks"][str(cl)])
 
     max_dest = -1
