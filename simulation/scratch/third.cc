@@ -231,13 +231,16 @@ void UpdateWeights(void)
 	uint32_t kmins[max_nr_weights] = {0};
 	uint32_t kmaxs[max_nr_weights] = {0};
 	for (uint32_t i = 0; i < lim; i++) {
+		std::cout << "iter " << i << "\n";
 		uint32_t kmin;
 		std::cin >> kmin;
 		std::cout << kmin << std::endl;
+		std::cout << "cat\n";
 		kmins[i] = kmin;
 		kmaxs[i] = kmin;
+		std::cout << "assigned the tings\n";
 	}
-
+	std::cout << "Applied DCTCP kmins\n";
 	/*
 	std::cout << "Applying DCTCP kmaxs..." << std::endl;
 	uint32_t kmaxs[max_nr_weights] = {0};
@@ -463,8 +466,8 @@ uint64_t get_nic_rate(NodeContainer &n){
 
 void PrintProgress(Time interval)
 {
-	//std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
-	//Simulator::Schedule(interval, &PrintProgress, interval);
+	std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
+	Simulator::Schedule(interval, &PrintProgress, interval);
 }
 
 int main(int argc, char *argv[])
@@ -793,7 +796,7 @@ int main(int argc, char *argv[])
 			}else if (key.compare("WEIGHT_UPDATE_INTERVAL") == 0){
 				uint32_t wint;
 				conf >> wint;
-				weightUpdateInterval = Seconds(wint);
+				weightUpdateInterval = MilliSeconds(wint);
 				std::cout << "WEIGHT_UPDATE_INTERVAL\t\t\t\t" << weightUpdateInterval << '\n';
 			}
 			fflush(stdout);
