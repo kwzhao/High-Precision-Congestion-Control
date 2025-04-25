@@ -128,6 +128,7 @@ struct FlowInput{
 };
 FlowInput flow_input = {0};
 uint32_t flow_num;
+uint32_t flows_completed;
 
 uint32_t node_num, switch_num, link_num, trace_num;
 
@@ -150,7 +151,7 @@ void ScheduleFlowInputs() {
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		//RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?fwin:0, baseRtt);
-		//std::cout << flow_input.flowId << " " << flow_input.pg << " " << flow_input.src << " " << flow_input.dst << " " << flow_input.dport << " " << flow_input.maxPacketCount << " " << cwnds[flow_input.pg] << "\n";
+		std::cout << "flow entering " << flow_input.flowId << " " << flow_input.pg << " " << flow_input.src << " " << flow_input.dst << " " << flow_input.dport << " " << flow_input.maxPacketCount << " " << cwnds[flow_input.pg] << "\n";
 		RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, cwnds[flow_input.pg], baseRtt);
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
@@ -189,6 +190,7 @@ void UpdateWeights(void)
 	uint32_t weights[max_nr_weights] = {0};
 	std::cin >> nr_weights;
 	if (nr_weights == 0) {
+		std::cout << "received termination signal, not applying anymore\n";
 		weightUpdatesDone = true;
 		return;
 	}
@@ -304,6 +306,7 @@ void qp_delivered(FILE* fout, Ptr<RdmaRxQueuePair> rxq){
 			weightUpdateTime += weightUpdateInterval;
 		}
 	}
+	flows_completed += 1;
 }
 
 void get_pfc(FILE* fout, Ptr<QbbNetDevice> dev, uint32_t type){
@@ -466,6 +469,11 @@ uint64_t get_nic_rate(NodeContainer &n){
 
 void PrintProgress(Time interval)
 {
+	std::cout << "flow check " << flows_completed << " " << flow_num << "\n";
+	if (flows_completed >= flow_num) {
+		std::cout << "all flows completed, stopping simulation\n";
+		Simulator::Stop();
+	}
 	std::cout << "t = " << Simulator::Now().GetMilliSeconds() << " ms" << '\n';
 	Simulator::Schedule(interval, &PrintProgress, interval);
 }
@@ -846,6 +854,7 @@ int main(int argc, char *argv[])
 	tracef >> trace_num;
 
     std::cout << "flow num is " << flow_num << "\n";
+	flows_completed = 0;
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
