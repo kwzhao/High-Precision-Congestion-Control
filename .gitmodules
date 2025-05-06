@@ -1,0 +1,4 @@
+[submodule "UNISON-for-ns-3"]
+	path = UNISON-for-ns-3
+	url = git@github.com:liecn/UNISON-for-ns-3.git
+	branch = unison-3.39
