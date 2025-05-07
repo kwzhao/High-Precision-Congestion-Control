@@ -71,3 +71,5 @@ python ../analysis/fct_to_file_cc.py --shard 0 -p topo-pl-3-1-1000 --output_dir 
 trace-format.h -> ../ns-3.39/src/point-to-point/model/trace-format.h
 
 ../ns-3.39/src/point-to-point/helper/sim-setting.h
+
+./ns3 run 'scratch/third mix/config.txt'
