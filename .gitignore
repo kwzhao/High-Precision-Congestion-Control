@@ -219,3 +219,5 @@ model_ns3_35/
 ./__pycache__/
 .lock*
 .waf*
+cmd.sh
+
