@@ -404,7 +404,6 @@ void CalculateRoute(Ptr<Node> host){
     dis[host] = 0;
     delay[host] = 0;
     bw[host] = 0xfffffffffffffffflu;
-
     // BFS.
     for (int i = 0; i < (int)q.size(); i++){
         Ptr<Node> now = q[i];
