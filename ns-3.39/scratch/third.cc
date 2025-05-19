@@ -109,10 +109,6 @@ unordered_map<uint64_t, double> rate2pmax;
 
 double alpha_values[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
-// Performance tracking variables
-uint32_t g_total_flows_completed = 0;
-uint32_t g_total_flows_created = 0;
-
 /************************************************
  * Runtime variables
  ***********************************************/
@@ -196,32 +192,20 @@ void printBuffer(Ptr<OutputStreamWrapper> fout, NodeContainer switches, double d
 
 
 void ScheduleFlowInputs() {
-    std::vector<ApplicationContainer> appsToStart;
-    uint32_t flows_scheduled = 0;
-
     while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
         uint32_t inflight_traffic_id = flow_input.src / n_clients_per_rack_for_closed_loop;
         if (inflight_flows_per_client[inflight_traffic_id] < max_inflight_flows) {
             uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // Get a new port number
             RdmaClientHelper clientHelper(flow_input.flowId, flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win ? fwin : 0, baseRtt);
             ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
-            appsToStart.push_back(appCon);
+            appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
             inflight_flows_per_client[inflight_traffic_id]++; // Increment the inflight flows counter for this client
-            flows_scheduled++;
-            g_total_flows_created++;
         } else {
-            waiting_flows_per_client[inflight_traffic_id].push(flow_input); // Queue the flow if max inflight reached
+            waiting_flows_per_client[inflight_traffic_id].push(flow_input); // Queue the flow for this client if the max inflight flows is reached
         }
         // Get the next flow input
         flow_input.idx++;
         ReadFlowInput();
-    }
-
-    // Start all applications at once for better performance
-    if (flows_scheduled > 0) {
-        for (auto app : appsToStart) {
-            app.Start(Seconds(0));
-        }
     }
 
     // Schedule the next time to run this function
@@ -233,65 +217,19 @@ void ScheduleFlowInputs() {
 }
 
 void OnFlowCompletion(uint64_t flowId, uint32_t client_id) {
-    uint32_t inflight_traffic_id = client_id / n_clients_per_rack_for_closed_loop;
+    uint32_t inflight_traffic_id=client_id/n_clients_per_rack_for_closed_loop;
     inflight_flows_per_client[inflight_traffic_id]--; // Decrement the inflight flows counter for this client
 
-    // Batch process waiting flows
-    std::vector<ApplicationContainer> appsToStart;
-    
-    // Process as many waiting flows as possible
-    while (!waiting_flows_per_client[inflight_traffic_id].empty() && 
-           inflight_flows_per_client[inflight_traffic_id] < max_inflight_flows) {
-        
+    // Check if there are waiting flows for this client and schedule the next one
+    while (!waiting_flows_per_client[inflight_traffic_id].empty() && inflight_flows_per_client[inflight_traffic_id] < max_inflight_flows) {
         FlowInput next_flow = waiting_flows_per_client[inflight_traffic_id].front();
         waiting_flows_per_client[inflight_traffic_id].pop();
 
-        uint32_t port = portNumder[next_flow.src][next_flow.dst]++;
-        RdmaClientHelper clientHelper(next_flow.flowId, next_flow.pg, 
-                                     serverAddress[next_flow.src], 
-                                     serverAddress[next_flow.dst], 
-                                     port, next_flow.dport, 
-                                     next_flow.maxPacketCount, 
-                                     has_win ? fwin : 0, baseRtt);
-        
+        uint32_t port = portNumder[next_flow.src][next_flow.dst]++; // Get a new port number
+        RdmaClientHelper clientHelper(next_flow.flowId, next_flow.pg, serverAddress[next_flow.src], serverAddress[next_flow.dst], port, next_flow.dport, next_flow.maxPacketCount, has_win ? fwin : 0, baseRtt);
         ApplicationContainer appCon = clientHelper.Install(n.Get(next_flow.src));
-        appsToStart.push_back(appCon);
-        inflight_flows_per_client[inflight_traffic_id]++;
-        g_total_flows_created++;
-    }
-    
-    // Start all waiting flows at once
-    for (auto app : appsToStart) {
-        app.Start(Seconds(0));
-    }
-
-    // Efficient termination check
-    bool all_flows_completed = true;
-    // First quick check if we're done processing all flows
-    if (flow_input.idx < flow_num) {
-        all_flows_completed = false;
-    } else {
-        // Then check if all flows are completed
-        for (auto& pair : inflight_flows_per_client) {
-            if (pair.second > 0) {
-                all_flows_completed = false;
-                break;
-            }
-        }
-        
-        if (all_flows_completed) {
-            // Double-check no waiting flows
-            for (auto& pair : waiting_flows_per_client) {
-                if (!pair.second.empty()) {
-                    all_flows_completed = false;
-                    break;
-                }
-            }
-        }
-    }
-    
-    if (all_flows_completed) {
-        Simulator::Stop();
+        appCon.Start(Seconds(0)); // Setting the correct time here conflicts with Sim time since there is already a schedule event that triggered this function at the desired time.
+        inflight_flows_per_client[inflight_traffic_id]++; // Increment the inflight flows counter for this client
     }
 }
 
@@ -309,9 +247,6 @@ void qp_finish(FILE* fout, Ptr<RdmaQueuePair> q){
     Ptr<Node> dstNode = n.Get(did);
     Ptr<RdmaDriver> rdma = dstNode->GetObject<RdmaDriver>();
     rdma->m_rdma->DeleteRxQp(q->sip.Get(), q->m_pg, q->sport);
-
-    // Track flow completions 
-    g_total_flows_completed++;
 
     // Call OnFlowCompletion with client ID
     OnFlowCompletion(q->m_flowId, sid);
@@ -395,10 +330,6 @@ void CalculateRoute(Ptr<Node> host){
     map<Ptr<Node>, uint64_t> delay;
     map<Ptr<Node>, vector<uint64_t>> bws;
     map<Ptr<Node>, uint64_t> bw;
-    
-    // Only vectors can be reserved, not maps
-    q.reserve(1000);  // Reserve space for queue
-    
     // init BFS.
     q.push_back(host);
     dis[host] = 0;
@@ -509,7 +440,6 @@ void PrintProgress(Time interval)
 {
     double sim_pct = Simulator::Now().GetMilliSeconds() * 100.0 / (simulator_stop_time * 1000);
     std::cout << "t=" << Simulator::Now().GetMilliSeconds() << "ms "
-              << "[" << g_total_flows_completed << "/" << flow_num << " flows] "
               << sim_pct << "% complete" << std::endl;
     Simulator::Schedule(interval, &PrintProgress, interval);
 }
@@ -1435,8 +1365,7 @@ int main(int argc, char *argv[])
               << "  Route calculation: " << route_time << "s" << std::endl
               << "  Post-routing setup: " << post_routing_setup_time << "s" << std::endl
               << "  Simulation time: " << sim_time << "s" << std::endl
-              << "  Total run time: " << total_time << "s" << std::endl
-              << "  Flows completed: " << g_total_flows_completed << "/" << flow_num << std::endl;
+              << "  Total run time: " << total_time << "s" << std::endl;
     
     return 0;
 }
