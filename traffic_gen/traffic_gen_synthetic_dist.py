@@ -93,7 +93,7 @@ if __name__ == "__main__":
         "--output",
         dest="output",
         help="the output file",
-        default="/data1/lichenni/projects/per-flow-sim/parsimon-eval/workload/distributions/synthetic",
+        default="/data1/lichenni/projects/m4/parsimon-eval/workload/distributions/synthetic",
     )
     options = parser.parse_args()
     output_dir = options.output
